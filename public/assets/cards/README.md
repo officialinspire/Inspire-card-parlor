@@ -32,6 +32,18 @@ Collectible variants go in a deck's `variants` list. A variant can replace the b
 or individual cards (`overrides: { QH: { path: 'alt/queen-of-hearts' } }`). Variants are cosmetic only:
 ranks, suits and the 52-card composition never change.
 
+Each variant has an `unlock` (default, level, achievement, story chapter, or `{ type: 'credits', value: N }`
+for artwork bought in the Card Collection). An unowned or not-yet-uploaded variant falls back to the deck's
+standard artwork, so every deck always stays playable.
+
+Card art is never cropped or stretched: each image keeps its own aspect ratio and is letterboxed inside the
+card frame. Source files are only ever read, never rewritten.
+
+## Without touching code
+
+Artwork can also be switched on from `public/assets/artwork.json` (status, artist credit, face layout and
+variants per deck). See `public/assets/backgrounds/README.md` for the format.
+
 ## Checking a deck
 
 ```

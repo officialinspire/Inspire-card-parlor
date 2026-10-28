@@ -56,13 +56,15 @@ describe('progression', () => {
     expect(isDeckUnlocked('classic', p)).toBe(true);
     expect(isDeckUnlocked('fredericksburg', p)).toBe(false);
     expect(isDeckUnlocked('fredericksburg', { ...p, level: 3 })).toBe(true);
-    expect(isBoardUnlocked('oxblood-lounge', { ...p, level: 2 })).toBe(true);
+    expect(isBoardUnlocked('downtown_cafe', { ...p, level: 2 })).toBe(true);
+    expect(isBoardUnlocked('downtown_cafe', p)).toBe(false);
   });
 
   it('unlocks story rewards by chapter', () => {
     const p = createDefaultProfile();
     expect(isDeckUnlocked('eastern_woodlands', { ...p, storyChapter: 2 })).toBe(true);
-    expect(isBoardUnlocked('walnut-study', { ...p, storyChapter: 2 })).toBe(false);
+    expect(isBoardUnlocked('rappahannock_riverside', { ...p, storyChapter: 1 })).toBe(false);
+    expect(isBoardUnlocked('rappahannock_riverside', { ...p, storyChapter: 2 })).toBe(true);
   });
 });
 

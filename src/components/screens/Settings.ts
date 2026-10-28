@@ -13,12 +13,22 @@ import { icon } from '../icons';
 import { live } from '../live';
 import { notify } from '../Notifications';
 import { tabs } from '../Tabs';
+import { FEATURES } from '@/core/config';
+import { ageGate, ageGateLocked } from '../AgeGate';
+import { openDialog } from '../Dialog';
+import { deckThemes } from '@/decks';
+import { allBoards } from '@/boards/registry';
+import { artistCredit } from './Collection';
 import { button, screenFrame } from '../ui';
 import type { ScreenFactory } from '../Screen';
 
 export const SettingsScreen: ScreenFactory = ({ store }) => {
   const set = (patch: Partial<Settings>) => store.dispatch({ type: 'UPDATE_SETTINGS', patch });
   const s = () => store.state.settings;
+  const tagged = (el: HTMLElement, setting: string) => {
+    el.dataset.setting = setting;
+    return el;
+  };
   const panel = (...children: (Node | null)[]) => h('div', { class: 'settings-panel' }, ...children);
 
   const trackList = () =>
@@ -51,6 +61,24 @@ export const SettingsScreen: ScreenFactory = ({ store }) => {
           ),
         ),
     );
+
+  /** Every deck and board with its artist credit (adult decks only when enabled). */
+  const showCredits = () =>
+    openDialog({
+      title: 'Artwork credits',
+      icon: 'star',
+      class: 'dialog-wide',
+      body: h(
+        'dl',
+        { class: 'credits', 'data-credits': '' },
+        ...[...deckThemes.list(), ...allBoards()].flatMap((item) => [
+          h('dt', null, item.name),
+          h('dd', null, artistCredit(item.artist)),
+        ]),
+      ),
+      dismissValue: undefined,
+      actions: [{ label: 'Close', value: undefined }],
+    });
 
   const t = tabs([
     {
@@ -94,6 +122,24 @@ export const SettingsScreen: ScreenFactory = ({ store }) => {
             (v) => set({ reducedMotion: v }),
             'Minimize animations and transitions',
           ),
+          tagged(
+            toggle(
+              'Ambient table animation',
+              s().ambientAnimations,
+              (v) => set({ ambientAnimations: v }),
+              'Leaves, steam, rain… on gameboards',
+            ),
+            'ambientAnimations',
+          ),
+          tagged(
+            toggle(
+              'High-contrast tables',
+              s().highContrastTable,
+              (v) => set({ highContrastTable: v }),
+              'Shade busy boards so cards stand out',
+            ),
+            'highContrastTable',
+          ),
           segmented(
             'Card animation speed',
             [
@@ -135,34 +181,6 @@ export const SettingsScreen: ScreenFactory = ({ store }) => {
       id: 'content',
       label: 'Content',
       render: () => {
-        const mature = toggle(
-          'Mature decks (18+)',
-          s().matureContent,
-          async (on) => {
-            if (!on) {
-              set({ matureContent: false });
-              notify('Mature decks are hidden again.', { kind: 'info' });
-              return;
-            }
-            const ok = await confirmDialog({
-              title: 'Show mature decks?',
-              message:
-                'Some collectible decks contain adult themes. They stay out of menus and ordinary previews, and you can switch them off again any time. Please confirm you are 18 or older.',
-              confirmLabel: 'I am 18+, show them',
-              cancelLabel: 'Keep hidden',
-              icon: 'warning',
-            });
-            if (ok) {
-              set({ matureContent: true });
-              notify('Mature decks are now in your collection.', { kind: 'success' });
-            } else {
-              const input = mature.querySelector('input');
-              if (input) input.checked = false;
-            }
-          },
-          'Off by default. Adult-themed decks never appear in ordinary previews.',
-        );
-        mature.dataset.setting = 'matureContent';
         const placeholder = toggle(
           'Placeholder artwork',
           s().placeholderArt,
@@ -170,6 +188,40 @@ export const SettingsScreen: ScreenFactory = ({ store }) => {
           'Show the sprite-sheet template for decks whose artwork is not uploaded yet',
         );
         placeholder.dataset.setting = 'placeholderArt';
+        if (!FEATURES.matureContent) {
+          return panel(
+            h(
+              'p',
+              { class: 'control edition-note', 'data-edition': 'public' },
+              'Adult-only decks are not available in this edition.',
+            ),
+            placeholder,
+          );
+        }
+        const mature = toggle(
+          'Mature decks (18+)',
+          s().matureContent && s().ageVerified,
+          async (on) => {
+            const input = mature.querySelector('input')!;
+            if (!on) {
+              set({ matureContent: false });
+              notify('Mature decks are hidden again.', { kind: 'info' });
+              return;
+            }
+            const ok = s().ageVerified || (await ageGate());
+            if (!ok) {
+              input.checked = false;
+              notify(ageGateLocked() ? 'Mature decks are only available to adults.' : 'Mature decks stay hidden.', {
+                kind: 'info',
+              });
+              return;
+            }
+            set({ matureContent: true, ageVerified: true });
+            notify('Mature decks are now in your collection.', { kind: 'success' });
+          },
+          'Off by default. Requires an age check; never shown in ordinary previews.',
+        );
+        mature.dataset.setting = 'matureContent';
         return panel(mature, placeholder);
       },
     },
@@ -208,6 +260,10 @@ export const SettingsScreen: ScreenFactory = ({ store }) => {
             },
             { variant: 'danger', attrs: { 'data-action': 'reset' } },
           ),
+          button('Artwork credits', () => void showCredits(), {
+            variant: 'secondary',
+            attrs: { 'data-action': 'credits' },
+          }),
           h(
             'p',
             { class: 'about' },

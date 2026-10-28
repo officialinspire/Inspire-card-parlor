@@ -23,6 +23,8 @@ export async function expectScreen(page: Page, state: string): Promise<void> {
 /** Pages through the current screen's paginator until `selector` is visible. */
 export async function revealInPager(page: Page, selector: string) {
   const target = page.locator(`${CURRENT} ${selector}`);
+  // The pager lays out after its first measurement; wait for a rendered page first.
+  await page.locator(`${CURRENT} .pager-grid > *`).first().waitFor();
   const first = page.locator(`${CURRENT} [data-pager="dot-0"]`);
   if (!(await target.isVisible()) && (await first.isVisible())) await first.click();
   for (let i = 0; i < 10 && !(await target.isVisible()); i++) {

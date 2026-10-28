@@ -4,17 +4,29 @@ import { CardRenderer } from '@/engine/CardRenderer';
 import { CardAnimator } from '@/engine/CardAnimator';
 import { DeckThemeManager } from './DeckThemeManager';
 import { allDecks, DEFAULT_DECK_ID } from './registry';
+import { FEATURES } from '@/core/config';
+import { isDeckUnlocked, isVariantOwned } from '@/progression/levels';
+import { getDeck } from './registry';
+import { allBoards, DEFAULT_BOARD_ID } from '@/boards/registry';
 
 export * from './registry';
 export type { DeckTheme, PreviewContext } from './DeckThemeManager';
 
-const matureAllowed = () => store.state.settings.matureContent;
+/** Adult-only content needs an edition that allows it, the player's opt-in, and a passed age check. */
+export const matureAllowed = () =>
+  FEATURES.matureContent && store.state.settings.matureContent && store.state.settings.ageVerified;
 
 /** App-wide instances, bound to the store's settings and selections. */
 export const deckThemes = new DeckThemeManager({
   matureAllowed,
   placeholderArt: () => store.state.settings.placeholderArt,
   variantFor: (deckId) => store.state.selection.artVariants[deckId],
+  ownsVariant: (deckId, variantId) => {
+    const v = getDeck(deckId).variants.find((x) => x.id === variantId);
+    return !!v && isVariantOwned(deckId, v, store.state.profile);
+  },
+  ownsDeck: (deckId) => isDeckUnlocked(deckId, store.state.profile),
+  cardBack: () => store.state.selection.cardBack,
 });
 export const assetManager = new AssetManager({ matureAllowed });
 export const cardRenderer = new CardRenderer(assetManager);
@@ -35,13 +47,32 @@ export function attachDeckThemes(s: Store = store): void {
     s.dispatch({ type: 'REPLACE_DECKS', unavailable, known: allDecks().map((d) => d.id), fallback: DEFAULT_DECK_ID });
   };
   sanitize();
+  // Boards renamed or removed in an update fall back to the default table.
+  s.dispatch({ type: 'REPLACE_BOARD', known: allBoards().map((b) => b.id), fallback: DEFAULT_BOARD_ID });
   s.select(
-    (st) => st.settings.matureContent,
+    () => matureAllowed(),
     (allowed) => {
       deckThemes.invalidate();
       if (!allowed) assetManager.clear((key) => key.includes('@') && !deckThemes.isAvailable(key.split('@')[0]!));
       sanitize();
     },
+  );
+  // Ownership and back choice change what a theme resolves to.
+  s.select(
+    (st) => st.profile.ownedVariants,
+    () => deckThemes.invalidate(),
+  );
+  s.select(
+    (st) => st.selection.cardBack,
+    () => deckThemes.invalidate(),
+  );
+  s.select(
+    (st) => st.profile.level,
+    () => deckThemes.invalidate(),
+  );
+  s.select(
+    (st) => st.profile.unlockedAchievements,
+    () => deckThemes.invalidate(),
   );
   s.select(
     (st) => st.settings.placeholderArt,

@@ -1,14 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import {
-  CURRENT,
-  clickInPager,
-  clickNav,
-  enterParlor,
-  expectScreen,
-  revealInPager,
-  screenState,
-  seed,
-} from './helpers';
+import { CURRENT, clickInPager, clickNav, enterParlor, expectScreen, screenState, seed } from './helpers';
 
 const deckIds = async (page: Page) => {
   const seen = new Set<string>();
@@ -82,43 +73,28 @@ test('card gallery renders all 52 faces of the selected deck', async ({ page }) 
   expect(codes.size).toBe(52);
 });
 
-test('mature decks need confirmation, stay out of ordinary previews, and can be switched off', async ({ page }) => {
+test('the public edition has no adult-only content at all', async ({ page, request }) => {
   await seed(page, { profile: { level: 10 } });
   await enterParlor(page);
-
-  // Cancelling keeps them hidden.
-  await setContent(page, 'matureContent');
-  await expect(page.getByRole('alertdialog')).toContainText('18');
-  await page.locator('[data-dialog-action="false"]').click();
-  await expect(page.locator(`${CURRENT} [data-setting="matureContent"] input`)).not.toBeChecked();
-
-  // Confirming adds the deck, shown with a neutral cover in the catalog.
-  await page.locator(`${CURRENT} [data-setting="matureContent"]`).click();
-  await page.locator('[data-dialog-action="true"]').click();
-  await expect(page.locator(`${CURRENT} [data-setting="matureContent"] input`)).toBeChecked();
+  await setContent(page, 'placeholderArt'); // opens Settings → Content
+  await expect(page.locator(`${CURRENT} [data-edition="public"]`)).toContainText('not available in this edition');
+  await expect(page.locator(`${CURRENT} [data-setting="matureContent"]`)).toHaveCount(0);
+  // The adult-only asset folder is not part of the default build (the preview server
+  // answers unknown paths with the app page, so check the content).
+  expect(await (await request.get('assets/cards/mature/yummyhole_after_dark/README.md')).text()).not.toContain(
+    'artwork drop folder',
+  );
+  // Even a saved opt-in from elsewhere cannot switch it on.
+  await page.evaluate(() =>
+    (window as unknown as { __ICP__: { store: { dispatch(a: unknown): void } } }).__ICP__.store.dispatch({
+      type: 'UPDATE_SETTINGS',
+      patch: { matureContent: true, ageVerified: true },
+    }),
+  );
   await clickNav(page, 'home', 'MAIN_MENU');
   await page.locator(`${CURRENT} .menu-grid [data-nav="COLLECTION"]`).click();
   await expectScreen(page, 'COLLECTION');
-  expect(await deckIds(page)).toContain('yummyhole_after_dark');
-  const tile = await revealInPager(page, '[data-deck="yummyhole_after_dark"]');
-  await expect(tile.locator('.card')).toHaveAttribute('data-cover', 'true');
-  await expect(tile).toContainText('18+');
-
-  // The explicit detail view shows the deck; choose it.
-  await tile.click();
-  await expect(page.locator('[data-deck-detail="yummyhole_after_dark"] .card[data-cover]')).toHaveCount(0);
-  await page.locator('[data-dialog-action="use"]').click();
-
-  // The main menu is an ordinary preview: neutral cover, not the deck's art.
-  await clickNav(page, 'home', 'MAIN_MENU');
-  await expect(page.locator(`${CURRENT} [data-value="deck"]`)).toHaveText('Yummyhole After Dark');
-  await expect(page.locator(`${CURRENT} [data-status="deck"] .card`)).toHaveAttribute('data-cover', 'true');
-
-  // Switching off hides the deck again and resets the selection.
-  await setContent(page, 'matureContent');
-  await expect(page.locator(`${CURRENT} [data-setting="matureContent"] input`)).not.toBeChecked();
-  await clickNav(page, 'home', 'MAIN_MENU');
-  await expect(page.locator(`${CURRENT} [data-value="deck"]`)).toHaveText('Classic');
+  expect(await deckIds(page)).not.toContain('yummyhole_after_dark');
 });
 
 test('placeholder artwork renders cards from the sprite-sheet template', async ({ page }) => {
@@ -131,7 +107,7 @@ test('placeholder artwork renders cards from the sprite-sheet template', async (
 
   const card = page.locator(`${CURRENT} .gallery-cell .card[data-code="AS"]`);
   await expect(card).toHaveAttribute('data-art', 'atlas');
-  const style = await card.evaluate((el) => {
+  const style = await card.locator('.card-art-img').evaluate((el) => {
     const cs = getComputedStyle(el);
     return { image: cs.backgroundImage, position: cs.backgroundPosition, size: cs.backgroundSize };
   });

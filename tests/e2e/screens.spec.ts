@@ -27,16 +27,16 @@ test('gameboards: equip an unlocked board, dialogs close with Escape', async ({ 
   await seed(page, { profile: { level: 2 } });
   await enterParlor(page);
   await clickNav(page, 'GAMEBOARDS');
-  await clickInPager(page, '[data-board="velvet-green"]');
+  await clickInPager(page, '[data-board="backroom_card_table"]');
   await expect(page.getByRole('dialog')).toBeVisible();
   await page.keyboard.press('Escape');
   await expect(page.getByRole('dialog')).toHaveCount(0);
   await expectScreen(page, 'GAMEBOARDS');
 
-  await clickInPager(page, '[data-board="oxblood-lounge"]');
+  await clickInPager(page, '[data-board="downtown_cafe"]');
   await page.locator('[data-dialog-action="use"]').click();
   await clickNav(page, 'back', 'MAIN_MENU');
-  await expect(page.locator(`${CURRENT} [data-value="board"]`)).toHaveText('Oxblood Lounge');
+  await expect(page.locator(`${CURRENT} [data-value="board"]`)).toHaveText('Downtown Café');
 });
 
 test('story: first chapter starts a game, later chapters are locked', async ({ page }) => {

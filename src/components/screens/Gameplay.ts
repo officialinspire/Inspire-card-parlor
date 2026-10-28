@@ -25,6 +25,9 @@ import { confirmDialog, openDialog } from '../Dialog';
 import { segmented } from '../controls';
 import { avatar } from '../Avatar';
 import { iconButton, navHeader } from '../ui';
+import { Disposer } from '../Screen';
+import { applyBoard } from '@/boards/BoardRenderer';
+import { tableCustomizer } from '../customize';
 import type { ScreenFactory } from '../Screen';
 
 const PLAYABLE: GameId[] = ['klondike', 'spider', 'freecell', 'war', 'go-fish'];
@@ -38,22 +41,16 @@ const SOLITAIRE: GameId[] = ['klondike', 'spider', 'freecell'];
 export const GameplayScreen: ScreenFactory = ({ store }) => {
   const { gameId, deckId, boardId, storyChapterId } = store.state.selection;
   const game = getGame(gameId);
-  const deck = getDeck(deckThemes.safeDeckId(deckId));
-  const theme = deckThemes.resolve(deck.id);
-  const board = getBoard(boardId);
+  let deck = getDeck(deckThemes.safeDeckId(deckId));
+  let theme = deckThemes.resolve(deck.id);
+  let board = getBoard(boardId);
+  const d = new Disposer();
   const chapter = CHAPTERS.find((c) => c.id === storyChapterId);
   const playable = !!gameId && PLAYABLE.includes(gameId);
   let view: { destroy(): void } | null = null;
-  let finished = false;
 
-  const leave = async (then: () => void) => {
-    if (playable && !finished) {
-      // Progress is saved after every round/turn, so leaving never loses it.
-      then();
-      return;
-    }
-    then();
-  };
+  // Progress is saved after every round/turn, so leaving never loses it.
+  const leave = (then: () => void) => then();
 
   const hud = h('span', { class: 'hud-stats', 'data-hud': '' });
   const rules = gameId ? RULES[gameId] : undefined;
@@ -68,9 +65,10 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
     : null;
 
   const surface = h('div', { class: 'table-surface' });
+  const stage = h('div', { class: 'table-stage' }, surface);
   const el = h(
     'section',
-    { class: 'table', style: { '--felt': board.felt, '--rim': board.rim } },
+    { class: 'table' },
     h(
       'div',
       { class: 'table-hud' },
@@ -84,7 +82,41 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
       }),
       hud,
     ),
-    surface,
+    stage,
+  );
+
+  // ----- Board & deck customisation (live, never touching game state) -----
+  const subtitle = () => (chapter ? `Story · ${chapter.title}` : `${deck.name} · ${board.name}`);
+  const paintBoard = () => {
+    const st = store.state.settings;
+    board = getBoard(store.state.selection.boardId);
+    applyBoard(el, stage, board, {
+      ambient: st.ambientAnimations && !st.reducedMotion,
+      highContrast: st.highContrastTable,
+    });
+    const sub = el.querySelector('.screen-subtitle');
+    if (sub) sub.textContent = subtitle();
+  };
+  paintBoard();
+  d.add(store.select((st) => st.selection.boardId, paintBoard));
+  d.add(
+    store.select(
+      (st) => `${st.settings.ambientAnimations}|${st.settings.highContrastTable}|${st.settings.reducedMotion}`,
+      paintBoard,
+    ),
+  );
+  // A new deck, card back or artwork redraws the cards of the same game.
+  d.add(
+    store.select(
+      (st) =>
+        `${st.selection.deckId}|${st.selection.cardBack}|${JSON.stringify(st.selection.artVariants)}|${st.profile.ownedVariants.length}`,
+      () => {
+        deck = getDeck(deckThemes.safeDeckId(store.state.selection.deckId));
+        theme = deckThemes.resolve(deck.id);
+        paintBoard();
+        if (currentTable) mount(currentTable);
+      },
+    ),
   );
 
   async function showRules(): Promise<void> {
@@ -172,7 +204,10 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
         'div',
         { class: 'options-body' },
         body,
-        hasOptions ? h('p', { class: 'ask-hint' }, 'Changes apply to your next game.') : null,
+        hasOptions ? h('p', { class: 'ask-hint' }, 'Game options apply to your next game.') : null,
+        h('h3', { class: 'options-heading' }, 'Table'),
+        tableCustomizer(store),
+        h('p', { class: 'ask-hint' }, 'Deck, card back and table change right away; your game is untouched.'),
       ),
       dismissValue: 'close',
       actions: hasOptions
@@ -320,7 +355,6 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
 
   function mount(table: Table): void {
     view?.destroy();
-    finished = false;
     currentTable = table;
     surface.className = 'table-surface';
     const common = {
@@ -330,7 +364,6 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
       theme,
       onNewGame: () => void newGame(false),
       onExit: () => {
-        finished = true;
         navigate(AppState.MAIN_MENU);
       },
     };
@@ -402,6 +435,7 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
     },
     unmount() {
       view?.destroy();
+      d.dispose();
     },
   };
 };

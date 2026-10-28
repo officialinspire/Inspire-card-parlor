@@ -31,6 +31,12 @@ export interface Settings {
   klondikeDraw: 1 | 3;
   /** Spider: number of suits. */
   spiderSuits: 1 | 2 | 4;
+  /** Gentle background animation on gameboards. */
+  ambientAnimations: boolean;
+  /** Darker scrim behind cards on busy boards. */
+  highContrastTable: boolean;
+  /** Set once the age gate has been passed (no birth date is stored). */
+  ageVerified: boolean;
 }
 
 export interface GameStats {
@@ -51,6 +57,10 @@ export interface Profile {
   unlockedBoards: string[];
   unlockedAchievements: string[];
   storyChapter: number;
+  /** Starred decks (shown first and under the Favorites filter). */
+  favoriteDecks: string[];
+  /** Collected alternate artwork, as "deckId@variantId". */
+  ownedVariants: string[];
   stats: Record<GameId, GameStats>;
   createdAt: number;
 }
@@ -68,6 +78,8 @@ export interface Selection extends TableChoice {
   byGame: Partial<Record<GameId, TableChoice>>;
   /** Chosen alternate artwork per deck (deck id → variant id). Purely cosmetic. */
   artVariants: Record<string, string>;
+  /** Card back, independent of the deck: a deck id or "deckId@variantId"; null = the deck's own back. */
+  cardBack: string | null;
 }
 
 export type NotificationKind = 'info' | 'success' | 'warning' | 'error';

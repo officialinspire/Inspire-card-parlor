@@ -210,6 +210,9 @@ export function mountWar(ctx: WarViewContext) {
             .finished.catch(() => undefined);
         }),
       );
+      // The winnings now live in the pile; clear the field so no ghost cards linger.
+      oppSlot.replaceChildren();
+      youSlot.replaceChildren();
     }
   }
 

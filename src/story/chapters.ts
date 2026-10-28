@@ -52,7 +52,7 @@ export const CHAPTERS: readonly Chapter[] = [
     synopsis: 'Jules challenges the house to a round of War. Defend the parlor’s honor.',
     hostId: 'jules',
     gameId: 'war',
-    reward: { credits: 200, unlock: 'walnut-study' },
+    reward: { credits: 200, unlock: 'rappahannock_riverside' },
   },
   {
     id: 'chapter-4',

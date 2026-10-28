@@ -2,7 +2,9 @@ import type { Store } from './store';
 import { idb } from '@/storage/idb';
 import { wait } from '@/utils/timing';
 import { DECKS } from '@/decks/registry';
-import { BOARDS } from '@/boards/registry';
+import { allBoards } from '@/boards/registry';
+import { loadArtworkManifest } from '@/assets/artworkManifest';
+import { assetManager, deckThemes } from '@/decks';
 import { GAMES } from '@/games/registry';
 
 interface BootStep {
@@ -27,7 +29,18 @@ export async function runBoot(store: Store): Promise<void> {
   const base = import.meta.env.BASE_URL;
   const steps: BootStep[] = [
     { label: 'Unlocking the parlor doors…', run: () => idb.ready() },
-    { label: 'Polishing the tables…', run: () => Promise.all(BOARDS.map(() => wait(40))) },
+    { label: 'Polishing the tables…', run: () => Promise.all(allBoards().map(() => wait(30))) },
+    {
+      label: 'Unpacking the artwork…',
+      run: () =>
+        loadArtworkManifest().then((r) => {
+          // Artwork may have changed: drop cached themes and any art resolved before it arrived.
+          if (r?.applied.length) {
+            deckThemes.invalidate();
+            assetManager.clear();
+          }
+        }),
+    },
     { label: 'Shuffling the decks…', run: () => Promise.all(DECKS.map(() => wait(60))) },
     { label: 'Setting out the games…', run: () => wait(GAMES.length * 40) },
     { label: 'Lighting the lamps…', run: () => preloadImage(`${base}assets/icons/icon.svg`) },

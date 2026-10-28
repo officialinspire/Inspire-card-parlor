@@ -84,7 +84,9 @@ export type UnlockRequirement =
   | { type: 'default' }
   | { type: 'level'; value: number }
   | { type: 'achievement'; value: string }
-  | { type: 'story'; value: string };
+  | { type: 'story'; value: string }
+  /** Collectible: bought with credits in the Card Collection. */
+  | { type: 'credits'; value: number };
 
 export interface ArtistCredit {
   /** null until the commission credit is supplied with the artwork. */

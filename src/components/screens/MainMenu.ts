@@ -90,7 +90,10 @@ function statusStrip(): HTMLElement {
       const b = getBoard(id);
       el.dataset.nav = AppState.GAMEBOARDS;
       el.replaceChildren(
-        h('span', { class: 'status-visual chip-felt', style: { background: b.felt, borderColor: b.rim } }),
+        h('span', {
+          class: 'status-visual chip-felt',
+          style: { background: b.surface.felt, borderColor: b.surface.rim },
+        }),
         h('span', { class: 'status-text' }, h('small', null, 'Board'), h('span', { 'data-value': 'board' }, b.name)),
       );
     },

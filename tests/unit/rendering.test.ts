@@ -151,7 +151,11 @@ describe('AssetManager', () => {
     });
     const art = await new AssetManager({ baseUrl: '/', loadImage: fn }).loadDeck(theme);
     expect(art.back?.frame).toEqual({ x: 0, y: 672, w: 120, h: 168 });
-    expect(describeFace('QH', art)).toEqual({ kind: 'image', url: '/assets/cards/_placeholder/qh.png' });
+    expect(describeFace('QH', art)).toEqual({
+      kind: 'image',
+      url: '/assets/cards/_placeholder/qh.png',
+      ratio: 120 / 168,
+    });
     expect(describeFace('QS', art).kind).toBe('atlas');
   });
 
@@ -204,12 +208,15 @@ describe('CardRenderer', () => {
     expect(el.dataset.art).toBe('fallback');
     await am.loadDeck(theme);
     expect(el.dataset.art).toBe('atlas');
-    expect(el.style.backgroundImage).toContain(sheet);
-    expect(el.style.backgroundPosition).toBe('100% 0%');
+    const img = el.querySelector<HTMLElement>('.card-art-img')!;
+    expect(img.style.backgroundImage).toContain(sheet);
+    expect(img.style.backgroundPosition).toBe('100% 0%');
+    // The art layer keeps the frame's own proportions (120×168 cells).
+    expect(Number(img.style.getPropertyValue('--ar'))).toBeCloseTo(120 / 168, 5);
 
     const back = renderer.renderBack(theme);
     expect(back.dataset.art).toBe('atlas');
-    expect(back.style.backgroundPosition).toBe('0% 100%');
+    expect(back.querySelector<HTMLElement>('.card-art-img')!.style.backgroundPosition).toBe('0% 100%');
     el.remove();
   });
 

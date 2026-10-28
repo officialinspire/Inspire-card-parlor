@@ -3,7 +3,7 @@ import type { GameId, GameStats, Profile, Selection, Settings } from './types';
 export const GAME_IDS: readonly GameId[] = ['klondike', 'spider', 'freecell', 'war', 'go-fish'];
 
 export const DEFAULT_DECK = 'classic';
-export const DEFAULT_BOARD = 'velvet-green';
+export const DEFAULT_BOARD = 'backroom_card_table';
 export const DEFAULT_TRACK = 'lamplight';
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -27,6 +27,9 @@ export const DEFAULT_SETTINGS: Settings = {
   cpuDifficulty: 'normal',
   klondikeDraw: 1,
   spiderSuits: 1,
+  ambientAnimations: true,
+  highContrastTable: false,
+  ageVerified: false,
 };
 
 export function emptyStats(): GameStats {
@@ -40,9 +43,11 @@ export function createDefaultProfile(): Profile {
     xp: 0,
     credits: 250,
     unlockedDecks: [DEFAULT_DECK, 'inspire'],
-    unlockedBoards: [DEFAULT_BOARD],
+    unlockedBoards: [DEFAULT_BOARD, 'picnic_table'],
     unlockedAchievements: [],
     storyChapter: 0,
+    favoriteDecks: [],
+    ownedVariants: [],
     stats: Object.fromEntries(GAME_IDS.map((id) => [id, emptyStats()])) as Record<GameId, GameStats>,
     createdAt: Date.now(),
   };
@@ -56,5 +61,6 @@ export function createDefaultSelection(): Selection {
     storyChapterId: null,
     byGame: {},
     artVariants: {},
+    cardBack: null,
   };
 }

@@ -1,5 +1,6 @@
 import { h } from '@/utils/dom';
-import { BOARDS, type BoardDefinition } from '@/boards/registry';
+import { allBoards, type BoardDefinition } from '@/boards/registry';
+import { boardSwatch } from '@/boards/BoardRenderer';
 import { deckThemes, getDeck } from '@/decks';
 import type { DeckDefinition } from '@/decks/types';
 import { isBoardUnlocked, unlockHint } from '@/progression/levels';
@@ -9,25 +10,34 @@ import { icon } from '../icons';
 import { notify } from '../Notifications';
 import { paginator } from '../Paginator';
 import { badge, screenFrame } from '../ui';
+import { artistCredit, artistLine } from './Collection';
 import type { ScreenFactory } from '../Screen';
 
-/** Miniature table with a few cards from the given deck. */
+const AMBIENT_LABEL: Record<string, string> = {
+  none: 'Still',
+  breeze: 'Breeze',
+  dust: 'Lamplit dust',
+  steam: 'Coffee steam',
+  river: 'River shimmer',
+  leaves: 'Falling leaves',
+  sparkle: 'Casino sparkle',
+  paint: 'Drifting paint',
+  rain: 'Rain on the glass',
+  candle: 'Candlelight',
+};
+
+/** Board with a few sample cards on it (checks cards read well against the surface). */
 export function boardPreview(board: BoardDefinition, deck: DeckDefinition, large = false): HTMLElement {
-  return h(
-    'span',
-    {
-      class: `board-preview${large ? ' large' : ''}`,
-      style: { background: board.felt, borderColor: board.rim },
-      'aria-hidden': 'true',
-    },
-    cardBack(deck, 'mini'),
-    cardFace(deck, 'K', '♠', 'mini'),
-    cardFace(deck, 'Q', '♥', 'mini'),
-  );
+  const sw = boardSwatch(board, { ambient: large, className: large ? 'large' : '' });
+  sw.append(cardBack(deck, 'mini'), cardFace(deck, 'K', '♠', 'mini'), cardFace(deck, 'Q', '♥', 'mini'));
+  sw.style.setProperty('--board-ink', board.ink);
+  return sw;
 }
 
 export const GameboardsScreen: ScreenFactory = ({ store }) => {
-  const owned = BOARDS.filter((b) => isBoardUnlocked(b.id, store.state.profile)).length;
+  const boards = allBoards();
+  const owned = boards.filter((b) => isBoardUnlocked(b.id, store.state.profile)).length;
+  const deck = () => getDeck(deckThemes.safeDeckId(store.state.selection.deckId));
 
   const inspect = async (board: BoardDefinition) => {
     const unlocked = isBoardUnlocked(board.id, store.state.profile);
@@ -37,10 +47,20 @@ export const GameboardsScreen: ScreenFactory = ({ store }) => {
       class: 'dialog-wide',
       body: h(
         'div',
-        { class: 'item-detail' },
-        boardPreview(board, getDeck(deckThemes.safeDeckId(store.state.selection.deckId)), true),
+        { class: 'item-detail', 'data-board-detail': board.id },
+        boardPreview(board, deck(), true),
+        h(
+          'div',
+          { class: 'item-meta' },
+          badge(board.rarity, `badge-${board.rarity}`),
+          board.assets.status === 'pending' ? badge('Art coming soon', 'badge-soft') : null,
+          badge(AMBIENT_LABEL[board.ambient] ?? board.ambient, 'badge-soft'),
+        ),
+        artistCredit(board.artist),
         h('p', null, board.description),
-        unlocked ? null : h('p', { class: 'tile-lock' }, icon('lock'), unlockHint(board)),
+        unlocked
+          ? h('p', { class: 'unlock-status owned', 'data-unlock': 'owned' }, icon('check'), 'In your collection')
+          : h('p', { class: 'unlock-status', 'data-unlock': 'locked' }, icon('lock'), `Unlock: ${unlockHint(board)}`),
       ),
       dismissValue: 'close',
       actions:
@@ -59,12 +79,15 @@ export const GameboardsScreen: ScreenFactory = ({ store }) => {
   };
 
   const pager = paginator({
-    items: BOARDS,
+    items: boards,
     minTileWidth: 200,
-    minTileHeight: 170,
+    minTileHeight: 180,
     maxTileHeight: 260,
     label: 'Gameboards',
-    initialIndex: BOARDS.findIndex((b) => b.id === store.state.selection.boardId),
+    initialIndex: Math.max(
+      0,
+      boards.findIndex((b) => b.id === store.state.selection.boardId),
+    ),
     render: (board) => {
       const unlocked = isBoardUnlocked(board.id, store.state.profile);
       const equipped = store.state.selection.boardId === board.id;
@@ -77,19 +100,20 @@ export const GameboardsScreen: ScreenFactory = ({ store }) => {
           onclick: () => void inspect(board),
         },
         equipped ? h('span', { class: 'tile-check' }, icon('check')) : null,
-        boardPreview(board, getDeck(deckThemes.safeDeckId(store.state.selection.deckId))),
+        boardPreview(board, deck()),
         h('span', { class: 'tile-title' }, board.name),
+        h('span', { class: 'tile-artist' }, artistLine(board.artist)),
         unlocked
           ? equipped
             ? badge('In use', 'badge-accent')
-            : h('span', { class: 'tile-sub' }, board.description)
+            : badge(board.rarity, `badge-${board.rarity}`)
           : h('span', { class: 'tile-lock' }, icon('lock'), unlockHint(board)),
       );
     },
   });
 
   return {
-    el: screenFrame({ title: 'Gameboards', subtitle: `${owned} of ${BOARDS.length} tables owned`, body: pager.el }),
+    el: screenFrame({ title: 'Gameboards', subtitle: `${owned} of ${boards.length} tables owned`, body: pager.el }),
     unmount: pager.destroy,
   };
 };

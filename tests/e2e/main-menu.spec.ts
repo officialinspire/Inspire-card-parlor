@@ -24,7 +24,7 @@ test('shows every menu entry and the player status', async ({ page }) => {
   await expect(page.locator(`${CURRENT} [data-status="level"]`)).toContainText('1');
   await expect(page.locator(`${CURRENT} .pill-credits`)).toContainText('250');
   await expect(page.locator(`${CURRENT} [data-value="deck"]`)).toHaveText('Classic');
-  await expect(page.locator(`${CURRENT} [data-value="board"]`)).toHaveText('Velvet Green');
+  await expect(page.locator(`${CURRENT} [data-value="board"]`)).toHaveText('Backroom Card Table');
   await expect(page.locator(`${CURRENT} [data-value="music"]`)).toHaveText('Lamplight Shuffle');
 });
 

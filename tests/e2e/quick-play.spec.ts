@@ -71,24 +71,24 @@ test('remembers deck and board per game across reloads', async ({ page }) => {
   await seed(page, { profile: { level: 6 } });
   await enterParlor(page);
 
-  // Spider with Fredericksburg on Oxblood Lounge.
+  // Spider with Fredericksburg on Downtown Café.
   await clickNav(page, 'GAME_SELECTION');
   await playGame(page, 'spider');
   await clickInPager(page, '[data-deck="fredericksburg"]');
   await clickNav(page, 'BOARD_SELECTION');
-  await clickInPager(page, '[data-board="oxblood-lounge"]');
+  await clickInPager(page, '[data-board="downtown_cafe"]');
   await clickNav(page, 'GAMEPLAY');
   await page.locator('[data-dialog-action="deal"]').click();
   await clickNav(page, 'home', 'MAIN_MENU');
   await expect(page.locator(`${CURRENT} [data-value="deck"]`)).toHaveText('Fredericksburg');
-  await expect(page.locator(`${CURRENT} [data-value="board"]`)).toHaveText('Oxblood Lounge');
+  await expect(page.locator(`${CURRENT} [data-value="board"]`)).toHaveText('Downtown Café');
 
-  // Klondike with the classic deck on Midnight Blue.
+  // Klondike with the classic deck on Woodland Clearing.
   await clickNav(page, 'GAME_SELECTION');
   await playGame(page, 'klondike');
   await clickInPager(page, '[data-deck="classic"]');
   await clickNav(page, 'BOARD_SELECTION');
-  await clickInPager(page, '[data-board="midnight-blue"]');
+  await clickInPager(page, '[data-board="woodland_clearing"]');
   await clickNav(page, 'GAMEPLAY');
   await page.locator('[data-dialog-action="deal"]').click();
 
@@ -96,7 +96,7 @@ test('remembers deck and board per game across reloads', async ({ page }) => {
   await page.reload();
   await page.getByRole('button', { name: 'Enter Parlor' }).click();
   await expectScreen(page, 'MAIN_MENU');
-  await expect(page.locator(`${CURRENT} [data-value="board"]`)).toHaveText('Midnight Blue');
+  await expect(page.locator(`${CURRENT} [data-value="board"]`)).toHaveText('Woodland Clearing');
 
   // Quick Play opens on the last game played.
   await clickNav(page, 'GAME_SELECTION');
@@ -106,5 +106,5 @@ test('remembers deck and board per game across reloads', async ({ page }) => {
   await playGame(page, 'spider');
   await expect(page.locator(`${CURRENT} [data-deck="fredericksburg"]`)).toHaveAttribute('aria-pressed', 'true');
   await clickNav(page, 'BOARD_SELECTION');
-  await expect(page.locator(`${CURRENT} [data-board="oxblood-lounge"]`)).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator(`${CURRENT} [data-board="downtown_cafe"]`)).toHaveAttribute('aria-pressed', 'true');
 });

@@ -14,6 +14,10 @@ export type Action =
   | { type: 'START_GAME' }
   | { type: 'SELECT_ART_VARIANT'; deckId: string; variantId: string | null }
   | { type: 'REPLACE_DECKS'; unavailable: string[]; known: string[]; fallback: string }
+  | { type: 'REPLACE_BOARD'; known: string[]; fallback: string }
+  | { type: 'SELECT_CARD_BACK'; back: string | null }
+  | { type: 'TOGGLE_FAVORITE_DECK'; deckId: string }
+  | { type: 'OWN_VARIANT'; key: string; cost: number }
   | { type: 'UPDATE_SETTINGS'; patch: Partial<Settings> }
   | { type: 'UPDATE_PROFILE'; patch: Partial<Profile> }
   | { type: 'HYDRATE'; settings?: Partial<Settings>; profile?: Partial<Profile>; selection?: Partial<Selection> }
@@ -109,6 +113,33 @@ export function reduce(state: RootState, action: Action): RootState {
         selection: { ...sel, deckId: ok(sel.deckId) ? sel.deckId : action.fallback, byGame },
       };
     }
+    case 'REPLACE_BOARD': {
+      const sel = state.selection;
+      const ok = (id: string) => action.known.includes(id);
+      const byGameBad = Object.values(sel.byGame).some((c) => c && !ok(c.boardId));
+      if (ok(sel.boardId) && !byGameBad) return state;
+      const byGame = Object.fromEntries(
+        Object.entries(sel.byGame).map(([g, c]) => [g, c && !ok(c.boardId) ? { ...c, boardId: action.fallback } : c]),
+      ) as Selection['byGame'];
+      return { ...state, selection: { ...sel, boardId: ok(sel.boardId) ? sel.boardId : action.fallback, byGame } };
+    }
+    case 'SELECT_CARD_BACK':
+      return { ...state, selection: { ...state.selection, cardBack: action.back } };
+    case 'TOGGLE_FAVORITE_DECK': {
+      const favs = state.profile.favoriteDecks;
+      const favoriteDecks = favs.includes(action.deckId)
+        ? favs.filter((d) => d !== action.deckId)
+        : [...favs, action.deckId];
+      return { ...state, profile: { ...state.profile, favoriteDecks } };
+    }
+    case 'OWN_VARIANT': {
+      const p = state.profile;
+      if (p.ownedVariants.includes(action.key) || p.credits < action.cost) return state;
+      return {
+        ...state,
+        profile: { ...p, credits: p.credits - action.cost, ownedVariants: [...p.ownedVariants, action.key] },
+      };
+    }
     case 'UPDATE_SETTINGS':
       return { ...state, settings: { ...state.settings, ...action.patch } };
     case 'UPDATE_PROFILE':
@@ -127,6 +158,7 @@ export function reduce(state: RootState, action: Action): RootState {
           ...action.selection,
           byGame: { ...state.selection.byGame, ...action.selection?.byGame },
           artVariants: { ...state.selection.artVariants, ...action.selection?.artVariants },
+          cardBack: action.selection?.cardBack !== undefined ? action.selection.cardBack : state.selection.cardBack,
           storyChapterId: null,
         },
       };

@@ -69,6 +69,10 @@ function checkUnlock(u: UnlockRequirement, add: (l: IssueLevel, c: string, m: st
       if (!ACHIEVEMENTS.some((a) => a.id === u.value))
         add('error', 'unlock.achievement', `Unknown achievement "${u.value}"`);
       return;
+    case 'credits':
+      if (!Number.isInteger(u.value) || u.value < 1)
+        add('error', 'unlock.credits', 'Credit price must be a positive integer');
+      return;
     default:
       add('error', 'unlock.type', `Unknown unlock type "${(u as { type: string }).type}"`);
   }

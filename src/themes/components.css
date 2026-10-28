@@ -927,11 +927,20 @@ button.tile:active {
   /* Card-relative: % padding would be measured against the container's width. */
   padding: calc(var(--card-w) * 0.07);
 }
-/* Uploaded artwork (sprite-sheet frame or single image), set inline by CardRenderer. */
+/* Uploaded artwork (sprite-sheet frame or single image), set inline by CardRenderer.
+   The inner layer keeps the art's own aspect ratio inside the card (letterboxed). */
 .card-art {
-  background-color: transparent;
-  background-repeat: no-repeat;
+  container-type: size;
+  background: var(--card-letterbox, #fbf8f2);
   overflow: hidden;
+}
+.card-art-img {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: min(100cqw, calc(100cqh * var(--ar)));
+  height: min(100cqh, calc(100cqw / var(--ar)));
+  background-repeat: no-repeat;
 }
 /* Neutral cover: adult-themed decks in ordinary previews. */
 .card-cover {

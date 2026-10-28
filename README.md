@@ -4,7 +4,7 @@ A cozy collection of classic playing-card games featuring collectible illustrate
 
 **Developer:** OFFICIAL INSPIRE · [www.inspireclothing.art](https://www.inspireclothing.art)
 
-> **Status: v0.5.0 — all five games are playable.** Klondike, Spider, FreeCell, War and Go Fish, on the shared card engine, with saved games, statistics, hints and undo.
+> **Status: v0.6.0 — collectible decks and gameboards.** All five games are playable, with a deck and gameboard collection, card-back and artwork customization, and support for uploaded artwork.
 
 ## Games
 
@@ -88,7 +88,7 @@ npm run dev
 | `npm run format`              | Format with Prettier                                     |
 | `npm run format:check`        | Check formatting                                         |
 | `npm test`                    | Unit tests (Vitest + happy-dom)                          |
-| `npm run test:e2e`            | End-to-end tests (Playwright, 4 viewports)               |
+| `npm run test:e2e`            | End-to-end tests (Playwright, 4 viewports + adult build) |
 | `npm run test:all`            | Type-check, unit and end-to-end tests                    |
 | `npm run validate:decks`      | Check every deck's definition and required card assets   |
 | `npm run assets:placeholders` | Regenerate the placeholder template and per-deck READMEs |
@@ -187,7 +187,27 @@ public/
 - **Artwork is uploaded separately.** Every deck starts as `status: 'pending'` and is drawn procedurally. Drop the files in `public/assets/cards/<deck_id>/` (each folder's README lists them), set `status: 'ready'`, add the artist credit, and run `npm run validate:decks`. See `public/assets/cards/README.md` for sprite-sheet, TexturePacker and individual-image layouts.
 - **`AssetManager`** (`src/assets/`) loads WebP (or PNG) sheets and images, caches them and works out atlas frames.
 - **`DeckThemeManager`** resolves a deck plus any alternate artwork into a theme, and applies content rules.
-- **Mature content**: adult-themed decks live under `public/assets/cards/mature/` and are off by default (**Settings → Content**, with an 18+ confirmation). They are never requested while off and never shown in ordinary previews; menus and catalog tiles use a neutral cover.
+- **Mature content**: adult-themed decks live under `public/assets/cards/mature/` and are off by default (**Settings → Content**, with an age check, in editions built with adult content only). They are never requested while off and never shown in ordinary previews; menus and catalog tiles use a neutral cover.
+
+### Collection and customization
+
+- **Card Collection** (`src/components/screens/Collection.ts`): deck gallery with All / Owned / Favorites filters (favorites first), deck detail with preview, linked artist credit, unlock status and collectible alternate artwork (bought with credits or earned), a **Card Backs** tab, a card gallery for any deck, and overall completion (decks, artwork, boards).
+- **Gameboards** (`src/boards/`): Picnic Table, Backroom Card Table, Downtown Café, Rappahannock Riverside, Woodland Clearing, Jak Gold's Casino, Artist's Studio, Safehouse and Masonic Study. Each has credits, an unlock, an artwork slot, a CSS fallback surface and an optional ambient layer (breeze, dust, steam, river, leaves, sparkle, paint, rain, candlelight).
+- **Independent choices**: deck, card back and gameboard are separate selections. They can be changed mid-game from the table's Settings without touching the game itself.
+- **Always playable**: alternate artwork is cosmetic. Unowned or missing artwork falls back to the deck's standard look, and the deck's cards never change.
+- **Readability**: each board declares a text colour checked for WCAG AA contrast against its surface. A scrim layer sits between artwork and cards, dark boards add a light ring around cards, and there is an optional **High-contrast tables** setting.
+- **Uploaded artwork**: drop files into `public/assets/cards/<deck>/` or `public/assets/backgrounds/<board>/` and either edit the registry or add `public/assets/artwork.json` (validated at start-up). Art keeps its aspect ratio (cards are letterboxed, boards use `cover`), sprite sheets are used for card faces, and nothing is ever modified.
+- **Credits**: artist credits appear on deck and board details and in **Settings → Data → Artwork credits**.
+
+### Adult-only artwork
+
+Adult-themed decks are compiled out of the public default build: the setting is hidden and `assets/cards/mature/` is removed from the output. An edition for a platform that permits such content is built with:
+
+```bash
+VITE_ENABLE_MATURE_CONTENT=true npm run build
+```
+
+Even there, adult artwork stays off until the player turns it on and passes an age check: year of birth, assuming the birthday hasn't happened yet this year, plus explicit confirmation. Only the pass/fail result is stored, and a failed check blocks retries for the session. Adult art is never shown in ordinary previews.
 
 ### Visual identity
 

@@ -16,6 +16,8 @@ export interface DeckTheme {
   overrides: Partial<Record<CardCode, ImageRef>>;
   overrideBasePath?: string;
   fallback: FallbackStyle;
+  /** Set when the player chose a card back from another deck or artwork. */
+  backTheme?: DeckTheme;
 }
 
 /**
@@ -29,6 +31,12 @@ export interface ThemeContext {
   matureAllowed(): boolean;
   placeholderArt(): boolean;
   variantFor(deckId: DeckId): string | undefined;
+  /** Whether the player owns a piece of alternate artwork. Unowned art is never applied. */
+  ownsVariant?(deckId: DeckId, variantId: string): boolean;
+  /** Whether the player may use a deck (for card backs taken from other decks). */
+  ownsDeck?(deckId: DeckId): boolean;
+  /** Selected card back: deck id or "deckId@variantId"; null = the deck's own. */
+  cardBack?(): string | null;
 }
 
 /** Shared placeholder template (13×5 grid: 52 faces + back) used to preview the art pipeline. */
@@ -87,11 +95,50 @@ export class DeckThemeManager {
     const v = variantId ? deck.variants.find((x) => x.id === variantId) : undefined;
     if (!v) return null;
     if (v.contentRating === 'mature' && !this.ctx.matureAllowed()) return null;
+    // Cosmetic only: without ownership the deck simply uses its standard art.
+    if (this.ctx.ownsVariant && !this.ctx.ownsVariant(deck.id, v.id)) return null;
     return v;
+  }
+
+  /** The chosen card back as [deckId, variantId?] if it is usable, else null. */
+  backChoice(): [DeckId, string | undefined] | null {
+    const raw = this.ctx.cardBack?.();
+    if (!raw) return null;
+    const [deckId, variantId] = raw.split('@') as [string, string | undefined];
+    if (!this.isAvailable(deckId) || (this.ctx.ownsDeck && !this.ctx.ownsDeck(deckId))) return null;
+    if (variantId && !this.#variant(getDeck(deckId), variantId)) return null;
+    return [deckId, variantId];
+  }
+
+  /** Card backs the player can choose from: every usable deck, plus owned artwork with its own back. */
+  availableBacks(): { id: string; deckId: DeckId; variantId?: string; label: string }[] {
+    const out: { id: string; deckId: DeckId; variantId?: string; label: string }[] = [];
+    for (const d of this.list()) {
+      if (this.ctx.ownsDeck && !this.ctx.ownsDeck(d.id)) continue;
+      out.push({ id: d.id, deckId: d.id, label: d.name });
+      for (const v of this.variants(d.id)) {
+        if (!v.assets.back) continue;
+        if (this.ctx.ownsVariant && !this.ctx.ownsVariant(d.id, v.id)) continue;
+        out.push({ id: `${d.id}@${v.id}`, deckId: d.id, variantId: v.id, label: `${d.name} · ${v.name}` });
+      }
+    }
+    return out;
   }
 
   /** Resolve a deck (and its selected or given variant) to a renderable theme. */
   resolve(deckId: DeckId, variantId: string | undefined = this.ctx.variantFor(deckId)): DeckTheme {
+    const base = this.#resolveBase(deckId, variantId);
+    const back = this.backChoice();
+    if (!back) return base;
+    const backTheme = this.#resolveBase(back[0], back[1]);
+    if (backTheme.key === base.key) return base;
+    const key = `${base.key}|back:${backTheme.key}`;
+    let combined = this.#cache.get(key);
+    if (!combined) this.#cache.set(key, (combined = { ...base, key, backTheme }));
+    return combined;
+  }
+
+  #resolveBase(deckId: DeckId, variantId: string | undefined): DeckTheme {
     const deck = getDeck(this.safeDeckId(deckId));
     const variant = this.#variant(deck, variantId);
     const placeholder = this.ctx.placeholderArt();

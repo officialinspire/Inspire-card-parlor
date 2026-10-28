@@ -19,7 +19,7 @@ export function migrateProfile(raw: StoredProfile): Partial<Profile> {
 
 /** Loads saved settings/profile/selection into the store and keeps them saved. */
 export function attachPersistence(store: Store): void {
-  const { gameId, deckId, boardId, byGame, artVariants } = local.get<Partial<Selection>>(SELECTION_KEY, {});
+  const { gameId, deckId, boardId, byGame, artVariants, cardBack } = local.get<Partial<Selection>>(SELECTION_KEY, {});
   store.dispatch({
     type: 'HYDRATE',
     settings: local.get<Partial<Settings>>(SETTINGS_KEY, {}),
@@ -30,14 +30,15 @@ export function attachPersistence(store: Store): void {
       ...(boardId ? { boardId } : {}),
       ...(byGame ? { byGame } : {}),
       ...(artVariants ? { artVariants } : {}),
+      ...(cardBack !== undefined ? { cardBack } : {}),
     },
   });
 
   const saveSettings = debounce(() => local.set(SETTINGS_KEY, store.state.settings), 250);
   const saveProfile = debounce(() => local.set(PROFILE_KEY, store.state.profile), 250);
   const saveSelection = debounce(() => {
-    const { gameId, deckId, boardId, byGame, artVariants } = store.state.selection;
-    local.set(SELECTION_KEY, { gameId, deckId, boardId, byGame, artVariants });
+    const { gameId, deckId, boardId, byGame, artVariants, cardBack } = store.state.selection;
+    local.set(SELECTION_KEY, { gameId, deckId, boardId, byGame, artVariants, cardBack });
   }, 250);
   store.select((s) => s.settings, saveSettings);
   store.select((s) => s.profile, saveProfile);

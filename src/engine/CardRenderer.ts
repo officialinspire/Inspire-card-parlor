@@ -7,21 +7,27 @@ import type { DeckTheme } from '@/decks/DeckThemeManager';
 /** How one side of a card will be drawn. */
 export type CardVisual =
   | { kind: 'fallback' }
-  | { kind: 'image'; url: string }
-  | { kind: 'atlas'; url: string; backgroundSize: string; backgroundPosition: string };
+  | { kind: 'image'; url: string; ratio: number }
+  | { kind: 'atlas'; url: string; ratio: number; backgroundSize: string; backgroundPosition: string };
 
 /** Pure: pick the visual for a face from loaded art (override → atlas/individual → fallback). */
 export function describeFace(code: CardCode, art: DeckArt | undefined): CardVisual {
   if (!art) return { kind: 'fallback' };
   const override = art.overrides[code];
-  if (override) return { kind: 'image', url: override.url };
+  if (override) return { kind: 'image', url: override.url, ratio: override.width / override.height };
   if (art.faces?.kind === 'atlas') {
     const frame = art.faces.frames[code];
-    if (frame) return { kind: 'atlas', url: art.faces.sheet.url, ...frameStyle(frame, art.faces.sheet) };
+    if (frame)
+      return {
+        kind: 'atlas',
+        url: art.faces.sheet.url,
+        ratio: frame.w / frame.h,
+        ...frameStyle(frame, art.faces.sheet),
+      };
   }
   if (art.faces?.kind === 'individual') {
     const img = art.faces.images[code];
-    if (img) return { kind: 'image', url: img.url };
+    if (img) return { kind: 'image', url: img.url, ratio: img.width / img.height };
   }
   return { kind: 'fallback' };
 }
@@ -30,7 +36,9 @@ export function describeFace(code: CardCode, art: DeckArt | undefined): CardVisu
 export function describeBack(art: DeckArt | undefined): CardVisual {
   if (!art?.back) return { kind: 'fallback' };
   const { image, frame } = art.back;
-  return frame ? { kind: 'atlas', url: image.url, ...frameStyle(frame, image) } : { kind: 'image', url: image.url };
+  return frame
+    ? { kind: 'atlas', url: image.url, ratio: frame.w / frame.h, ...frameStyle(frame, image) }
+    : { kind: 'image', url: image.url, ratio: image.width / image.height };
 }
 
 export interface RenderOptions {
@@ -84,7 +92,9 @@ export class CardRenderer {
     return el;
   }
 
-  renderBack(theme: DeckTheme, opts: RenderOptions = {}): HTMLElement {
+  renderBack(deckTheme: DeckTheme, opts: RenderOptions = {}): HTMLElement {
+    // The player may pair any deck with a card back from another deck or artwork.
+    const theme = deckTheme.backTheme ?? deckTheme;
     const el = this.#base(theme, 'back', opts);
     el.setAttribute('aria-hidden', 'true');
     if (opts.cover) {
@@ -109,16 +119,16 @@ export class CardRenderer {
     el.dataset.art = visual.kind;
     el.classList.toggle('card-art', visual.kind !== 'fallback');
     if (visual.kind === 'fallback') {
-      el.style.backgroundImage = '';
-      el.style.backgroundSize = '';
-      el.style.backgroundPosition = '';
       fallback();
       return;
     }
-    el.replaceChildren();
-    el.style.backgroundImage = `url("${visual.url}")`;
-    el.style.backgroundSize = visual.kind === 'atlas' ? visual.backgroundSize : 'cover';
-    el.style.backgroundPosition = visual.kind === 'atlas' ? visual.backgroundPosition : 'center';
+    // Artwork sits in an inner layer sized to its own aspect ratio and centred
+    // (letterboxed), so it is never stretched or cropped.
+    const img = h('span', { class: 'card-art-img', style: { '--ar': String(visual.ratio || 5 / 7) } });
+    img.style.backgroundImage = `url("${visual.url}")`;
+    img.style.backgroundSize = visual.kind === 'atlas' ? visual.backgroundSize : '100% 100%';
+    img.style.backgroundPosition = visual.kind === 'atlas' ? visual.backgroundPosition : 'center';
+    el.replaceChildren(img);
   }
 
   #fallbackFace(el: HTMLElement, theme: DeckTheme, code: CardCode): void {

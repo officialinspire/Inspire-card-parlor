@@ -1,6 +1,6 @@
 import type { Profile } from '@/core/types';
 import { allDecks } from '@/decks/registry';
-import { BOARDS } from '@/boards/registry';
+import { allBoards } from '@/boards/registry';
 
 /** XP required to go from `level` to `level + 1`. Gentle curve for a cozy pace. */
 export const xpForLevel = (level: number) => Math.round(100 * Math.pow(level, 1.35));
@@ -32,6 +32,8 @@ export function isUnlocked(item: Unlockable, profile: Profile, owned: string[]):
       return profile.level >= Number(item.unlock.value);
     case 'achievement':
       return profile.unlockedAchievements.includes(String(item.unlock.value));
+    case 'credits':
+      return false; // only owned once bought (checked via `owned` above)
     case 'story': {
       const chapterNum = Number(String(item.unlock.value).replace('chapter-', ''));
       return profile.storyChapter >= chapterNum;
@@ -49,6 +51,8 @@ export function unlockHint(item: Unlockable): string {
       return 'Earn a special achievement';
     case 'story':
       return `Complete ${String(item.unlock.value).replace('chapter-', 'Chapter ')}`;
+    case 'credits':
+      return `${item.unlock.value} credits`;
     default:
       return '';
   }
@@ -60,6 +64,19 @@ export function isDeckUnlocked(id: string, p: Profile): boolean {
 }
 
 export function isBoardUnlocked(id: string, p: Profile): boolean {
-  const board = BOARDS.find((b) => b.id === id);
+  const board = allBoards().find((b) => b.id === id);
   return !!board && isUnlocked(board, p, p.unlockedBoards);
+}
+
+/** Alternate artwork is owned when bought, or when its unlock condition is met. */
+export function isVariantOwned(
+  deckId: string,
+  variant: { id: string; unlock: { type: string; value?: number | string } },
+  p: Profile,
+): boolean {
+  return isUnlocked(
+    variant,
+    p,
+    p.ownedVariants.map((k) => (k.startsWith(`${deckId}@`) ? k.slice(deckId.length + 1) : '')),
+  );
 }
