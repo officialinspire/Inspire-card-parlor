@@ -21,6 +21,12 @@ export interface Settings {
   matureContent: boolean;
   /** Render pending decks with the shared placeholder template instead of procedural cards. */
   placeholderArt: boolean;
+  /** War: opponent personality and pacing. */
+  warOpponent: string;
+  warSpeed: 'slow' | 'normal' | 'fast' | 'instant';
+  /** Go Fish: number of CPU opponents. */
+  goFishOpponents: 1 | 2 | 3;
+  cpuDifficulty: 'easy' | 'normal' | 'hard';
 }
 
 export interface GameStats {

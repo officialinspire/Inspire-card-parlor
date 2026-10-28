@@ -55,12 +55,12 @@ export const GAMES: readonly GameDefinition[] = [
     id: 'war',
     name: 'War',
     tagline: 'Flip, clash, conquer',
-    description: 'A quick duel of high cards against a parlor regular. Ties mean war!',
+    description: 'A quick duel of high cards against Jak Gold or another parlor regular. Ties mean war!',
     players: '1 vs CPU',
     difficulty: 1,
     durationMin: 5,
     icon: '⚔',
-    available: false,
+    available: true,
   },
   {
     id: 'go-fish',
@@ -71,7 +71,7 @@ export const GAMES: readonly GameDefinition[] = [
     difficulty: 1,
     durationMin: 7,
     icon: '❀',
-    available: false,
+    available: true,
   },
 ];
 

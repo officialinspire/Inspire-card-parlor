@@ -881,10 +881,16 @@ button.status-chip:hover {
 }
 .hud-stats {
   display: flex;
-  gap: 12px;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 4px;
+  font-size: 0.85em;
   font-weight: 800;
   color: var(--ink-soft);
   font-variant-numeric: tabular-nums;
+}
+.hud-stats:empty {
+  display: none;
 }
 .table-surface {
   flex: 1;
@@ -998,4 +1004,776 @@ button.status-chip:hover {
     grid-template-rows: 1fr;
     grid-template-columns: auto 1fr;
   }
+}
+
+.game-thumb-badge-end {
+  left: auto;
+  right: 20px;
+  background: var(--surface);
+}
+.table-surface-game {
+  display: flex;
+  padding: clamp(8px, 2vmin, 16px) calc(var(--safe-r) + clamp(8px, 2vmin, 16px))
+    calc(var(--safe-b) + clamp(8px, 2vmin, 16px)) calc(var(--safe-l) + clamp(8px, 2vmin, 16px));
+}
+
+/* ===================== Avatars & speech bubbles ===================== */
+.avatar {
+  --size: clamp(40px, 7vmin, 56px);
+  flex: none;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--avatar-color, var(--sage));
+  border: 2px solid var(--ill-line);
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.25);
+  color: #2f2a24;
+  font-weight: 800;
+  font-size: calc(var(--size) * 0.34);
+  letter-spacing: 0.02em;
+}
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.avatar .card {
+  --card-w: calc(var(--size) * 0.9);
+  box-shadow: none;
+}
+.avatar-sm {
+  --size: 30px;
+  border-width: 1.5px;
+}
+.avatar-you {
+  background: var(--surface-2);
+  font-size: 10px;
+}
+
+.bubble {
+  position: absolute;
+  z-index: 20;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: min(240px, 70vw);
+  padding: 8px 12px;
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1.5px solid var(--ill-line);
+  box-shadow: 0 3px 0 var(--edge);
+  font-weight: 800;
+  font-size: 0.9em;
+  line-height: 1.25;
+  text-align: center;
+  animation: bubble-in var(--dur) var(--ease-spring);
+  pointer-events: none;
+}
+.bubble::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 12px;
+  height: 12px;
+  background: inherit;
+  border-right: 1.5px solid var(--ill-line);
+  border-bottom: 1.5px solid var(--ill-line);
+  transform: translate(-50%, -6px) rotate(45deg);
+}
+.bubble-ask {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.bubble.leaving {
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+/* Opponents along the top speak downwards. */
+.gf-opp .bubble,
+.war-side-cpu .bubble {
+  bottom: auto;
+  top: calc(100% + 8px);
+}
+.gf-opp .bubble::after,
+.war-side-cpu .bubble::after {
+  top: auto;
+  bottom: 100%;
+  transform: translate(-50%, 6px) rotate(225deg);
+}
+@keyframes bubble-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.85);
+  }
+}
+
+/* ===================== War ===================== */
+.war {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  grid-template-areas: 'cpu' 'field' 'player' 'controls';
+  gap: clamp(6px, 1.6vmin, 14px);
+  --card-w: clamp(64px, 17vmin, 120px);
+}
+.war-side {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+.war-side-cpu {
+  grid-area: cpu;
+}
+.war-side-player {
+  grid-area: player;
+}
+.war-who {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff8ee;
+  font-weight: 800;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+.war-pile {
+  --card-w: clamp(44px, 11vmin, 76px);
+  position: relative;
+}
+.war-pile::before,
+.war-pile::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--card-w) * 0.09);
+  background: rgba(0, 0, 0, 0.25);
+  transform: translate(3px, 3px);
+  z-index: -1;
+}
+.war-pile.empty .card {
+  opacity: 0.15;
+}
+.war-count {
+  min-width: 3ch;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  box-shadow: 0 2px 0 var(--edge);
+}
+.war-field {
+  grid-area: field;
+  display: grid;
+  grid-template-rows: 1fr auto 1fr;
+  align-items: center;
+  justify-items: center;
+  min-height: 0;
+}
+.war-slot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(var(--card-w) * 1.4);
+  transition: opacity var(--dur);
+}
+.war-slot .war-card {
+  transition: transform var(--dur) var(--ease);
+}
+.war-slot .war-facedown {
+  margin-right: calc(var(--card-w) * -0.7);
+  transform: rotate(-6deg);
+}
+.war-slot .war-faceup {
+  z-index: 1;
+}
+.war-slot .war-faceup.win {
+  box-shadow:
+    0 0 0 3px var(--mustard),
+    0 0 24px color-mix(in srgb, var(--mustard) 70%, transparent);
+  transform: translateY(-4px) scale(1.04);
+}
+.war-slot.settled {
+  opacity: 0.45;
+}
+.war-banner {
+  min-height: 1.6em;
+  padding: 4px 16px;
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1rem, 2vmin + 0.6rem, 1.6rem);
+  color: #fff8ee;
+  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.45);
+}
+.war-banner:empty {
+  visibility: hidden;
+}
+.war-banner.is-war {
+  background: var(--danger);
+  animation: pop 0.4s var(--ease-spring);
+}
+.war-banner.is-win {
+  background: color-mix(in srgb, var(--sage) 85%, black);
+}
+.war-banner.is-loss {
+  background: rgba(0, 0, 0, 0.35);
+}
+.war-controls {
+  grid-area: controls;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  padding-bottom: var(--edge-size);
+}
+.war-controls .btn {
+  min-width: 0;
+}
+@keyframes pop {
+  from {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+}
+/* Landscape: piles on either side of the battle. */
+@media (orientation: landscape) {
+  .war {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+    grid-template-areas: 'cpu field player' 'controls controls controls';
+    --card-w: clamp(56px, 22vh, 120px);
+  }
+  .war-side {
+    flex-direction: column;
+  }
+  .war-field {
+    grid-template-rows: 1fr auto 1fr;
+  }
+}
+@media (orientation: landscape) and (max-height: 540px) {
+  .war {
+    --card-w: clamp(46px, 22vh, 84px);
+  }
+  .war-field {
+    grid-template-columns: 1fr auto 1fr;
+    grid-template-rows: 1fr;
+    gap: 8px;
+  }
+  .war-pile {
+    --card-w: clamp(36px, 12vh, 56px);
+  }
+  .war-controls .btn {
+    min-height: 38px;
+    padding: 0.3em 0.9em;
+  }
+}
+
+.victory-burst {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  pointer-events: none;
+  --card-w: 40px;
+}
+.burst-card {
+  position: absolute;
+  left: -20px;
+  top: -28px;
+  animation: burst 1.6s var(--ease) var(--delay) both;
+}
+@keyframes burst {
+  0% {
+    transform: rotate(var(--a)) translateY(0) scale(0.4);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(var(--a)) translateY(calc(var(--d) * -1)) rotate(540deg) scale(1);
+    opacity: 0;
+  }
+}
+
+/* ===================== Go Fish ===================== */
+.gofish {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: clamp(6px, 1.4vmin, 12px);
+  --card-w: clamp(52px, 13vmin, 92px);
+}
+.gf-opponents {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 8px;
+}
+.gf-opp {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas: 'avatar meta' 'fan fan';
+  align-items: center;
+  gap: 4px 8px;
+  padding: 8px;
+  border-radius: var(--radius-m);
+  background: rgba(0, 0, 0, 0.18);
+  color: #fff8ee;
+  min-width: 0;
+  transition: box-shadow var(--dur);
+}
+.gf-opp .avatar {
+  grid-area: avatar;
+  --size: clamp(32px, 6vmin, 48px);
+}
+.gf-opp.is-turn,
+.gf-you.is-turn {
+  box-shadow: 0 0 0 3px var(--mustard);
+}
+.gf-opp.is-empty .gf-fan {
+  opacity: 0.3;
+}
+.gf-opp-meta {
+  grid-area: meta;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.15;
+}
+.gf-opp-name {
+  font-weight: 800;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.gf-opp-stats {
+  display: flex;
+  gap: 8px;
+  font-size: 0.78em;
+  font-weight: 700;
+  opacity: 0.9;
+  white-space: nowrap;
+}
+.gf-fan {
+  grid-area: fan;
+  display: flex;
+  justify-content: center;
+  min-height: calc(var(--mini-w) * 1.4);
+  --mini-w: clamp(18px, 4vmin, 28px);
+}
+.gf-mini {
+  --card-w: var(--mini-w);
+  margin-left: calc(var(--mini-w) * -0.55);
+}
+.gf-mini:first-child {
+  margin-left: 0;
+}
+.gf-mini .card-back-mark {
+  display: none;
+}
+.gf-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 0;
+}
+.gf-pond {
+  position: relative;
+  --card-w: clamp(44px, 10vmin, 70px);
+}
+.gf-pond.empty .card {
+  opacity: 0.2;
+}
+.gf-pond-count {
+  position: absolute;
+  right: -10px;
+  bottom: -8px;
+  min-width: 28px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 800;
+  text-align: center;
+  box-shadow: 0 2px 0 var(--edge);
+}
+.gf-status {
+  max-width: 90%;
+  min-height: 2.6em;
+  padding: 6px 12px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.22);
+  color: #fff8ee;
+  font-weight: 700;
+  text-align: center;
+}
+.gf-status:empty {
+  visibility: hidden;
+}
+.gf-you {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  border-radius: var(--radius-m);
+  background: rgba(0, 0, 0, 0.12);
+  transition: box-shadow var(--dur);
+}
+.gf-you > .bubble {
+  bottom: calc(100% + 8px);
+}
+.gf-books {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-height: 0;
+  --card-w: clamp(22px, 5vmin, 32px);
+}
+.gf-book .card {
+  box-shadow:
+    0 0 0 1.5px var(--ill-line),
+    2px 2px 0 rgba(255, 255, 255, 0.6),
+    4px 4px 0 rgba(0, 0, 0, 0.2);
+}
+.gf-book .card-corner.br {
+  display: none;
+}
+.gf-hand {
+  display: flex;
+  justify-content: center;
+  min-height: calc(var(--card-w) * 1.4 + 10px);
+  padding-top: 10px;
+}
+.gf-card {
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  border-radius: calc(var(--card-w) * 0.09);
+  transition: transform var(--dur-fast) var(--ease);
+  flex: none;
+}
+.gf-card + .gf-card {
+  margin-left: calc(var(--overlap, 0px) * -1);
+}
+.gf-card:not(:disabled):hover,
+.gf-card:focus-visible {
+  transform: translateY(-10px);
+  z-index: 2;
+}
+.gf-card:disabled {
+  cursor: default;
+}
+.gf-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+.gf-actions .btn-primary {
+  min-width: 140px;
+}
+.gf-flying {
+  position: absolute;
+  z-index: 30;
+  --card-w: 40px;
+  pointer-events: none;
+}
+@media (orientation: landscape) and (max-height: 540px) {
+  .gofish {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-areas: 'opp center' 'you you';
+    --card-w: clamp(40px, 15vh, 64px);
+  }
+  .gf-opponents {
+    grid-area: opp;
+  }
+  .gf-center {
+    grid-area: center;
+  }
+  .gf-you {
+    grid-area: you;
+    flex-direction: row;
+    align-items: flex-end;
+  }
+  .gf-you .gf-hand {
+    flex: 1;
+  }
+  .gf-books {
+    width: 80px;
+  }
+  .gf-actions {
+    flex-direction: column-reverse;
+  }
+  /* Avatar, details and face-down cards on one row. */
+  .gf-opp {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: 'avatar meta fan';
+    padding: 6px;
+  }
+  .gf-fan {
+    --mini-w: clamp(14px, 4.5vh, 22px);
+    min-height: 0;
+  }
+  .gf-status {
+    font-size: 0.85em;
+  }
+}
+
+/* ===================== Game dialogs ===================== */
+.dialog-ask {
+  width: min(400px, 100%);
+}
+.ask-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.rank-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+}
+.rank-btn {
+  position: relative;
+  min-height: 44px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  background: var(--surface-2);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.05em;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+.rank-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.rank-btn.active {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+}
+.rank-count {
+  font-family: var(--font-body);
+  font-size: 0.6em;
+  margin-top: 2px;
+}
+.ask-label {
+  font-weight: 800;
+  color: var(--ink);
+}
+.opp-pick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.opp-btn {
+  flex: 1 1 110px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border);
+  background: var(--surface-2);
+  color: var(--ink);
+  cursor: pointer;
+  text-align: left;
+}
+.opp-btn.active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.opp-btn-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+  min-width: 0;
+}
+.opp-btn-text small {
+  color: var(--ink-faint);
+}
+.ask-hint {
+  font-size: 0.75em;
+  color: var(--ink-faint);
+}
+@media (pointer: coarse) {
+  .ask-hint {
+    display: none;
+  }
+}
+.options-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.lineup {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.lineup-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+  color: var(--ink);
+  max-width: 120px;
+}
+.lineup-item small {
+  color: var(--ink-faint);
+}
+.dialog-options .segmented {
+  flex-wrap: wrap;
+}
+.rules {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 14px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+.rules dt {
+  font-weight: 800;
+  color: var(--ink);
+}
+.rules dd {
+  margin: 0;
+}
+@media (max-width: 480px) {
+  .rules {
+    grid-template-columns: 1fr;
+  }
+  .rules dd {
+    margin-bottom: 6px;
+  }
+}
+.result-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.result-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+.standings {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.standings li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  border-radius: 12px;
+  background: var(--surface-2);
+  color: var(--ink);
+}
+.standings li.winner {
+  background: color-mix(in srgb, var(--mustard) 22%, var(--surface));
+}
+.standing-name {
+  flex: 1;
+}
+.result-rewards {
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.war-controls .btn-ghost,
+.gf-actions .btn-ghost {
+  color: #fff8ee;
+  border-color: rgba(255, 248, 238, 0.4);
+}
+
+/* Three opponents on a narrow phone: stack each opponent's details. */
+@media (max-width: 600px) {
+  .gf-opponents[data-count-players='3'] .gf-opp {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'avatar' 'meta' 'fan';
+    justify-items: center;
+    text-align: center;
+    padding: 6px 4px;
+  }
+  .gf-opponents[data-count-players='3'] .gf-opp-stats {
+    flex-direction: column;
+    gap: 0;
+  }
+  .gf-opponents[data-count-players='3'] .gf-opp-meta {
+    align-items: center;
+    max-width: 100%;
+  }
+}
+@media (orientation: landscape) and (max-height: 540px) {
+  .lineup-item small {
+    display: none;
+  }
+  .lineup .avatar {
+    --size: 32px;
+  }
+  .dialog-options .dialog-body,
+  .options-body {
+    gap: 6px;
+  }
+  .dialog-options .control {
+    min-height: 44px;
+    padding: 4px 12px;
+  }
+}
+/* Keep edge opponents' bubbles on screen. */
+.gf-opponents:not([data-count-players='1']) .gf-opp:first-child .bubble {
+  left: 0;
+  transform: none;
+  animation-name: fade-in;
+}
+.gf-opponents:not([data-count-players='1']) .gf-opp:last-child .bubble {
+  left: auto;
+  right: 0;
+  transform: none;
+  animation-name: fade-in;
+}
+.gf-opponents:not([data-count-players='1']) .gf-opp:first-child .bubble::after {
+  left: 24px;
+}
+.gf-opponents:not([data-count-players='1']) .gf-opp:last-child .bubble::after {
+  left: auto;
+  right: 12px;
 }

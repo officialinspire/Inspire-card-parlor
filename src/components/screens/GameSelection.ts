@@ -52,6 +52,7 @@ export const GameSelectionScreen: ScreenFactory = ({ store }) => {
             { class: 'game-thumb' },
             gameThumbnail(g.id),
             g.id === lastGame ? badge('Last played', 'badge-accent game-thumb-badge') : null,
+            g.available ? null : badge('Rules coming soon', 'badge-soft game-thumb-badge game-thumb-badge-end'),
           ),
           h(
             'div',

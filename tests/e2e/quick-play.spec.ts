@@ -60,7 +60,7 @@ test('Play → deck → board → table, then leave with a confirmation', async 
 test('table buttons work: change board and main menu', async ({ page }) => {
   await enterParlor(page);
   await clickNav(page, 'GAME_SELECTION');
-  await playGame(page, 'war');
+  await playGame(page, 'freecell');
   await clickNav(page, 'BOARD_SELECTION');
   await clickNav(page, 'GAMEPLAY');
   await page.locator(`${CURRENT} .placard-actions [data-nav="BOARD_SELECTION"]`).click();

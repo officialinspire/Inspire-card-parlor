@@ -98,6 +98,12 @@ export class Pile {
     return removed;
   }
 
+  /** Place cards underneath the pile (e.g. War winnings go to the bottom of the hand). */
+  insertBottom(...cards: Card[]): this {
+    this.cards.unshift(...cards);
+    return this;
+  }
+
   clear(): Card[] {
     return this.cards.splice(0);
   }

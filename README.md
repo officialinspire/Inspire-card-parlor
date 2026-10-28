@@ -4,17 +4,47 @@ A cozy collection of classic playing-card games featuring collectible illustrate
 
 **Developer:** OFFICIAL INSPIRE · [www.inspireclothing.art](https://www.inspireclothing.art)
 
-> **Status: v0.3.0 — card engine & deck system.** Menus, navigation, the card engine (cards, decks, piles, hands, dealing, moves, saves) and the deck registry with artwork loading are in place and tested. Game rules are not implemented yet; the table screen is a placeholder.
+> **Status: v0.4.0 — War and Go Fish are playable.** Menus, the card engine, the deck registry, and two complete games with CPU opponents, saved games and statistics. Klondike, Spider and FreeCell deal correctly but their rules are still to come.
 
-## Games (planned)
+## Games
 
-| Game               | Players      | Status      |
-| ------------------ | ------------ | ----------- |
-| Klondike Solitaire | Solo         | Coming soon |
-| Spider Solitaire   | Solo         | Coming soon |
-| FreeCell           | Solo         | Coming soon |
-| War                | 1 vs CPU     | Coming soon |
-| Go Fish            | 1 vs 1–3 CPU | Coming soon |
+| Game               | Players      | Status                   |
+| ------------------ | ------------ | ------------------------ |
+| War                | 1 vs CPU     | **Playable**             |
+| Go Fish            | 1 vs 1–3 CPU | **Playable**             |
+| Klondike Solitaire | Solo         | Deal ready, rules coming |
+| Spider Solitaire   | Solo         | Deal ready, rules coming |
+| FreeCell           | Solo         | Deal ready, rules coming |
+
+### War
+
+You against a CPU opponent (Jak Gold by default). Controls: **Play Round**, **Auto Play / Pause**, **Speed** (½×, 1×, 2×, Max) and **Restart**; keyboard **Space** plays a round, **A** auto-plays, **S** changes speed, **R** restarts. Card flips, battle and war animations, a round counter, card counts and a victory celebration.
+
+Rules (`src/games/war/WarGame.ts`): 26 cards each; higher card wins (Ace high); ties go to war (three face down, one face up, repeated on further ties); a player short of cards for a war plays all but their last card face down and turns the last one up, and a player with no card to turn loses; winnings are shuffled under the winner's pile; you win by owning all 52 cards (both running out in the same war is a draw).
+
+### Go Fish
+
+You against 1, 2 or 3 CPUs. Tap a card (or press **Enter**) to open the compact rank picker, choose a rank and an opponent, and ask; keyboard: **A 2–9 0 J Q K** pick a rank, **← →** pick an opponent, **Enter** asks. Opponents' cards are only ever shown face down, and requests and replies appear in speech bubbles.
+
+Rules (`src/games/goFish/GoFishGame.ts`, also shown in-game under **How to play**):
+
+- **Deal**: 7 cards each with 2–3 players, 5 with 4.
+- **Successful request**: the opponent hands over every card of that rank and you ask again.
+- **Go fish**: draw from the pond. Drawing the rank you asked for lets you ask again; any other card ends your turn.
+- **Books**: four of a kind are laid down immediately (including from the deal or a draw).
+- **Empty hand**: when you need to ask with no cards, draw one and carry on. If the pond is empty too, you sit out the rest of the game. If every opponent's hand is empty, draw instead of asking and your turn ends.
+- **Exhausted stock**: going fishing with an empty pond draws nothing and ends your turn.
+- **Scoring**: when all 13 books are down, most books wins; ties share the win.
+
+### CPU opponents
+
+`src/games/cpu/personalities.ts` defines **Jak Gold**, **Friendly Local** and **Strategic Opponent**, each with play-style traits (memory, whimsy, pressure on the leader, greed) and their own lines of dialogue. Difficulty (**Easy / Normal / Hard**) limits how much of the game's history a CPU remembers. CPUs decide from a `PlayerView` (`src/games/goFish/view.ts`) that contains only their own hand, card counts, books, the pond size and the public history of requests and replies; other players' cards are never passed in, and a test checks a CPU decides identically whatever the hidden cards are.
+
+Character portraits go in `public/assets/characters/<id>.webp|png`. Until one is uploaded, Jak Gold uses the Jak Gold deck's card back (once that artwork is ready) and otherwise a monogram.
+
+### Saves and statistics
+
+Games save after every round or turn (IndexedDB) and offer **Resume** when you come back. Finished games update per-game statistics (played, wins, streaks, best time, best score), award XP, credits and achievements, and clear the save.
 
 ## Tech stack
 
@@ -137,7 +167,7 @@ public/
 | `CardRenderer` | Card elements from sprite-sheet frames, single images, or procedural fallbacks; upgrades in place when art loads             |
 | `CardAnimator` | FLIP moves, flips, deals, reject shake; honours speed and reduced-motion settings                                            |
 
-`src/games/setups.ts` deals the opening table for Klondike, Spider, FreeCell, War and Go Fish.
+`src/games/setups.ts` deals the opening table for Klondike, Spider, FreeCell, War and Go Fish. War and Go Fish engines build on these (`src/games/war`, `src/games/goFish`).
 
 ### Decks and artwork
 

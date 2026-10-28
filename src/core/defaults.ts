@@ -21,6 +21,10 @@ export const DEFAULT_SETTINGS: Settings = {
   analyticsEnabled: true,
   matureContent: false,
   placeholderArt: false,
+  warOpponent: 'jak_gold',
+  warSpeed: 'normal',
+  goFishOpponents: 1,
+  cpuDifficulty: 'normal',
 };
 
 export function emptyStats(): GameStats {

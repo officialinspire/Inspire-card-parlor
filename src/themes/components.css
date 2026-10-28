@@ -843,7 +843,8 @@ button.tile:active {
 .dialog-body {
   color: var(--ink-soft);
   min-height: 0;
-  overflow: hidden;
+  /* Fallback for very short screens; dialogs are sized to fit without it. */
+  overflow-y: auto;
 }
 .dialog-actions {
   display: flex;
