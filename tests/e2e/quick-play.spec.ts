@@ -35,7 +35,7 @@ test('lists all five games with thumbnail, description, difficulty, stats and a 
   expect([...seen].sort()).toEqual([...GAMES].sort());
 });
 
-test('Play → deck → board → table, then leave with a confirmation', async ({ page }) => {
+test('Play → deck → board → table; leaving keeps the game to resume', async ({ page }) => {
   await enterParlor(page);
   await clickNav(page, 'GAME_SELECTION');
   await playGame(page, 'klondike');
@@ -43,30 +43,18 @@ test('Play → deck → board → table, then leave with a confirmation', async 
   await clickNav(page, 'BOARD_SELECTION');
   await expect(page.locator(`${CURRENT} .nav-steps li.current`)).toHaveText('Board');
   await clickNav(page, 'GAMEPLAY');
+  await page.locator('[data-dialog-action="deal"]').click();
   await expect(page.locator(`${CURRENT} .screen-title`)).toHaveText('Klondike');
 
-  // Back asks first; cancelling keeps you at the table.
+  // Back returns to the board step; the game is saved, so there is nothing to confirm.
   await page.locator(`${CURRENT} [data-nav="back"]`).click();
-  await expect(page.getByRole('alertdialog')).toBeVisible();
-  await page.locator('[data-dialog-action="false"]').click();
-  await expectScreen(page, 'GAMEPLAY');
-
-  // Home → confirm → main menu.
-  await page.locator(`${CURRENT} [data-nav="home"]`).click();
-  await page.locator('[data-dialog-action="true"]').click();
-  await expectScreen(page, 'MAIN_MENU');
-});
-
-test('table buttons work: change board and main menu', async ({ page }) => {
-  await enterParlor(page);
-  await clickNav(page, 'GAME_SELECTION');
-  await playGame(page, 'freecell');
-  await clickNav(page, 'BOARD_SELECTION');
-  await clickNav(page, 'GAMEPLAY');
-  await page.locator(`${CURRENT} .placard-actions [data-nav="BOARD_SELECTION"]`).click();
   await expectScreen(page, 'BOARD_SELECTION');
   await clickNav(page, 'GAMEPLAY');
-  await page.locator(`${CURRENT} .placard-actions [data-nav="MAIN_MENU"]`).click();
+  await expect(page.getByRole('dialog')).toContainText('Resume');
+  await page.locator('[data-dialog-action="resume"]').click();
+
+  // Home goes straight to the main menu.
+  await page.locator(`${CURRENT} [data-nav="home"]`).click();
   await expectScreen(page, 'MAIN_MENU');
 });
 
@@ -90,8 +78,8 @@ test('remembers deck and board per game across reloads', async ({ page }) => {
   await clickNav(page, 'BOARD_SELECTION');
   await clickInPager(page, '[data-board="oxblood-lounge"]');
   await clickNav(page, 'GAMEPLAY');
-  await page.locator(`${CURRENT} .placard-actions [data-nav="MAIN_MENU"]`).click();
-  await expectScreen(page, 'MAIN_MENU');
+  await page.locator('[data-dialog-action="deal"]').click();
+  await clickNav(page, 'home', 'MAIN_MENU');
   await expect(page.locator(`${CURRENT} [data-value="deck"]`)).toHaveText('Fredericksburg');
   await expect(page.locator(`${CURRENT} [data-value="board"]`)).toHaveText('Oxblood Lounge');
 
@@ -102,6 +90,7 @@ test('remembers deck and board per game across reloads', async ({ page }) => {
   await clickNav(page, 'BOARD_SELECTION');
   await clickInPager(page, '[data-board="midnight-blue"]');
   await clickNav(page, 'GAMEPLAY');
+  await page.locator('[data-dialog-action="deal"]').click();
 
   await page.waitForTimeout(400); // let the debounced save land
   await page.reload();

@@ -4,17 +4,29 @@ A cozy collection of classic playing-card games featuring collectible illustrate
 
 **Developer:** OFFICIAL INSPIRE · [www.inspireclothing.art](https://www.inspireclothing.art)
 
-> **Status: v0.4.0 — War and Go Fish are playable.** Menus, the card engine, the deck registry, and two complete games with CPU opponents, saved games and statistics. Klondike, Spider and FreeCell deal correctly but their rules are still to come.
+> **Status: v0.5.0 — all five games are playable.** Klondike, Spider, FreeCell, War and Go Fish, on the shared card engine, with saved games, statistics, hints and undo.
 
 ## Games
 
-| Game               | Players      | Status                   |
-| ------------------ | ------------ | ------------------------ |
-| War                | 1 vs CPU     | **Playable**             |
-| Go Fish            | 1 vs 1–3 CPU | **Playable**             |
-| Klondike Solitaire | Solo         | Deal ready, rules coming |
-| Spider Solitaire   | Solo         | Deal ready, rules coming |
-| FreeCell           | Solo         | Deal ready, rules coming |
+| Game               | Players      | Options                     |
+| ------------------ | ------------ | --------------------------- |
+| Klondike Solitaire | Solo         | Draw 1 / Draw 3             |
+| Spider Solitaire   | Solo         | 1, 2 or 4 suits (two decks) |
+| FreeCell           | Solo         | —                           |
+| War                | 1 vs CPU     | Opponent, speed             |
+| Go Fish            | 1 vs 1–3 CPU | Opponents, difficulty       |
+
+### Solitaire (Klondike, Spider, FreeCell)
+
+Shared table: **New**, **Restart** (same deal), **Undo**, **Hint**, **Pause** (hides the board and stops the clock; also automatic when the app is hidden), plus **Rules**, **Settings** and **Statistics** in the header. Moves, time and score are shown above the board. Games save after every move.
+
+Controls: drag cards (touch or mouse), or tap a card to select it and tap where it should go; double-tap sends a card to its best spot. Tap the stock to draw (Klondike) or deal (Spider). Keyboard: **U** / **Ctrl+Z** undo, **H** hint, **P** pause, **D** or **Space** draw/deal. Card size and column overlap adapt to the screen in portrait and landscape, and the page never scrolls during play. Starting a new game over a started one counts as a loss.
+
+Rules are documented at the top of each engine and in-game under **How to play**:
+
+- **Klondike** (`src/games/solitaire/KlondikeGame.ts`): seven columns, stock and waste, four foundations; Draw 1 or Draw 3 with unlimited recycling; build down in alternating colours, runs move together, only Kings fill empty columns; foundations by suit from the Ace (the top card can come back down); hidden cards turn up automatically; **Auto-finish** when everything is face up; Windows-style scoring.
+- **Spider** (`SpiderGame.ts`): two decks, ten columns, 1/2/4 suits; any card on one rank higher, but only same-suit runs move together; anything into an empty column; dealing needs every column filled; complete King→Ace runs are removed automatically; win with eight runs. Score starts at 500, −1 per move, +100 per run.
+- **FreeCell** (`FreeCellGame.ts`): eight columns, four free cells, four foundations; build down in alternating colours; any card into an empty column; runs move together up to (free cells + 1) × 2^(empty columns), not counting an empty destination column.
 
 ### War
 

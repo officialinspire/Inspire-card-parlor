@@ -1777,3 +1777,209 @@ button.status-chip:hover {
   left: auto;
   right: 12px;
 }
+
+/* ===================== Solitaire board ===================== */
+.solitaire {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.sol-board {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  --card-w: 60px;
+}
+.sol-slot,
+.sol-card {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--card-w);
+}
+.sol-slot {
+  aspect-ratio: 5 / 7;
+  border-radius: calc(var(--card-w) * 0.09);
+  border: 2px dashed rgba(255, 248, 238, 0.35);
+  background: rgba(0, 0, 0, 0.12);
+  display: grid;
+  place-items: center;
+  color: rgba(255, 248, 238, 0.5);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: calc(var(--card-w) * 0.32);
+}
+.sol-slot-tableau {
+  border-style: dotted;
+  background: rgba(0, 0, 0, 0.06);
+}
+.sol-slot-cell {
+  border-style: solid;
+  border-color: rgba(255, 248, 238, 0.28);
+}
+.sol-slot-stock {
+  cursor: pointer;
+}
+.sol-slot-stock.recycle::before {
+  content: '↻';
+  font-size: calc(var(--card-w) * 0.5);
+  color: rgba(255, 248, 238, 0.7);
+}
+.sol-stock-count {
+  position: absolute;
+  bottom: calc(var(--card-w) * -0.18);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 300;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: max(10px, calc(var(--card-w) * 0.16));
+  white-space: nowrap;
+  box-shadow: 0 2px 0 var(--edge);
+}
+.sol-stock-count:empty {
+  display: none;
+}
+.sol-card {
+  transition: transform 0.22s var(--ease);
+  will-change: transform;
+}
+.sol-card.pickable {
+  cursor: grab;
+}
+.sol-card.dragging {
+  transition: none;
+  cursor: grabbing;
+  pointer-events: none;
+  filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.35));
+}
+.sol-card.selected {
+  box-shadow:
+    0 0 0 2px var(--ill-line),
+    0 0 0 5px var(--mustard);
+}
+.sol-card[data-hint='source'],
+.sol-card[data-hint='target'],
+.sol-slot[data-hint='target'] {
+  box-shadow:
+    0 0 0 2px var(--ill-line),
+    0 0 0 5px var(--sky),
+    0 0 18px var(--sky);
+  animation: hint-pulse 0.9s ease-in-out 2;
+}
+@keyframes hint-pulse {
+  50% {
+    filter: brightness(1.12);
+  }
+}
+.sol-flip {
+  animation: sol-flip 0.26s var(--ease);
+}
+@keyframes sol-flip {
+  from {
+    clip-path: inset(0 50%);
+  }
+}
+.sol-shake {
+  animation: sol-shake 0.3s ease;
+}
+@keyframes sol-shake {
+  25% {
+    translate: -6px 0;
+  }
+  50% {
+    translate: 6px 0;
+  }
+  75% {
+    translate: -3px 0;
+  }
+}
+.sol-dance {
+  animation: sol-dance 1.2s var(--ease-spring) calc(var(--i) * 30ms) 2 alternate;
+}
+@keyframes sol-dance {
+  to {
+    translate: 0 -18px;
+    rotate: 6deg;
+  }
+}
+.sol-board.paused .sol-card {
+  visibility: hidden;
+}
+.sol-pause {
+  position: absolute;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: rgba(0, 0, 0, 0.25);
+  color: #fff8ee;
+  font-family: var(--font-display);
+  font-size: 1.6em;
+  font-weight: 800;
+  backdrop-filter: blur(2px);
+}
+.sol-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  flex: none;
+  padding-bottom: var(--edge-size);
+}
+.sol-controls .btn {
+  min-width: 0;
+  padding-inline: 0.9em;
+}
+.sol-controls .btn-ghost {
+  color: #fff8ee;
+  border-color: rgba(255, 248, 238, 0.4);
+}
+.stats-dialog {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.reduced-motion .sol-card {
+  transition: none;
+}
+@media (orientation: landscape) and (max-height: 540px) {
+  .solitaire {
+    flex-direction: row;
+  }
+  .sol-controls {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+  }
+  .sol-controls .btn {
+    min-height: 34px;
+  }
+}
+/* Narrow phones: compact table header so the game name fits beside its buttons. */
+@media (max-width: 480px) {
+  .table-hud .nav-actions {
+    gap: 4px;
+  }
+  .table-hud .nav-actions .btn-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 11px;
+  }
+  .table-hud .nav-actions .btn-icon .icon {
+    width: 18px;
+    height: 18px;
+  }
+  .table-hud .screen-title {
+    font-size: 1.1rem;
+  }
+}

@@ -266,14 +266,3 @@ test.describe('Go Fish', () => {
     await expect(page.getByRole('dialog')).toContainText('Empty pond');
   });
 });
-
-test.describe('Solitaire tables', () => {
-  for (const id of ['klondike', 'spider', 'freecell']) {
-    test(`${id} opens its table`, async ({ page }) => {
-      await enterParlor(page);
-      await openTable(page, id);
-      await expect(page.locator(`${CURRENT} .table-placard`)).toBeVisible();
-      await expect(page.locator(`${CURRENT} .table-fan .card`)).toHaveCount(5);
-    });
-  }
-});

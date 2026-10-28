@@ -10,7 +10,7 @@ export interface GameResult {
   score?: number;
   durationMs: number;
   /** Extra facts for achievements. */
-  details?: { warsLost?: number; books?: number };
+  details?: { warsLost?: number; books?: number; suits?: number; usedCell?: boolean };
   at?: Date;
 }
 
@@ -54,6 +54,8 @@ export function earnedAchievements(profile: Profile, stats: Record<GameId, GameS
   earn('klondike-10', stats.klondike.won >= 10);
   earn('war-flawless', won && r.gameId === 'war' && (r.details?.warsLost ?? 0) === 0);
   earn('gofish-sweep', r.gameId === 'go-fish' && (r.details?.books ?? 0) >= 7);
+  earn('spider-4suit', won && r.gameId === 'spider' && r.details?.suits === 4);
+  earn('freecell-nocell', won && r.gameId === 'freecell' && r.details?.usedCell === false);
   const hour = (r.at ?? new Date()).getHours();
   earn('night-owl', hour < 4);
   return out;

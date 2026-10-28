@@ -80,10 +80,16 @@ export function openDialog<T>(opts: DialogOptions<T>): Promise<T> {
       const i = stack.findIndex((d) => d.id === id);
       const [entry] = stack.splice(i, 1);
       store.dispatch({ type: 'MODAL_CLOSED', id });
+      // Closed now: it only fades out visually, so take it out of the accessibility tree
+      // and input at once (a new dialog may open while this one is still fading).
+      panel.removeAttribute('role');
+      panel.removeAttribute('aria-modal');
+      backdrop.setAttribute('aria-hidden', 'true');
+      backdrop.inert = true;
       backdrop.classList.remove('open');
       const finish = () => {
         backdrop.remove();
-        if (!stack.length) host.hidden = true;
+        if (!host.childElementCount) host.hidden = true;
       };
       backdrop.addEventListener('transitionend', finish, { once: true });
       setTimeout(finish, 260);

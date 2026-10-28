@@ -27,7 +27,7 @@ export const GAMES: readonly GameDefinition[] = [
     difficulty: 1,
     durationMin: 8,
     icon: '♠',
-    available: false,
+    available: true,
   },
   {
     id: 'spider',
@@ -38,7 +38,7 @@ export const GAMES: readonly GameDefinition[] = [
     difficulty: 3,
     durationMin: 15,
     icon: '✶',
-    available: false,
+    available: true,
   },
   {
     id: 'freecell',
@@ -49,7 +49,7 @@ export const GAMES: readonly GameDefinition[] = [
     difficulty: 2,
     durationMin: 10,
     icon: '◈',
-    available: false,
+    available: true,
   },
   {
     id: 'war',

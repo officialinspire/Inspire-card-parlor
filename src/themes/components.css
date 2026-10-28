@@ -924,7 +924,8 @@ button.tile:active {
 }
 .card-back.card-fallback {
   background: var(--card-base, #5b1a1f);
-  padding: 7%;
+  /* Card-relative: % padding would be measured against the container's width. */
+  padding: calc(var(--card-w) * 0.07);
 }
 /* Uploaded artwork (sprite-sheet frame or single image), set inline by CardRenderer. */
 .card-art {

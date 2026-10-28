@@ -58,8 +58,9 @@ export class CardRenderer {
   /** Render a game card (face up or down). */
   renderCard(card: Card, theme: DeckTheme, opts: RenderOptions = {}): HTMLElement {
     const el = card.faceUp ? this.renderFace(theme, card.code, opts) : this.renderBack(theme, opts);
-    el.dataset.cardId = card.id;
-    if (!card.faceUp) el.setAttribute('aria-label', 'Face-down card');
+    // Face-down cards carry no identity, so hidden cards cannot be read from the page.
+    if (card.faceUp) el.dataset.cardId = card.id;
+    else el.setAttribute('aria-label', 'Face-down card');
     return el;
   }
 

@@ -25,6 +25,8 @@ export const DEFAULT_SETTINGS: Settings = {
   warSpeed: 'normal',
   goFishOpponents: 1,
   cpuDifficulty: 'normal',
+  klondikeDraw: 1,
+  spiderSuits: 1,
 };
 
 export function emptyStats(): GameStats {

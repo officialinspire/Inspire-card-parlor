@@ -27,6 +27,10 @@ export interface Settings {
   /** Go Fish: number of CPU opponents. */
   goFishOpponents: 1 | 2 | 3;
   cpuDifficulty: 'easy' | 'normal' | 'hard';
+  /** Klondike: cards turned per stock tap. */
+  klondikeDraw: 1 | 3;
+  /** Spider: number of suits. */
+  spiderSuits: 1 | 2 | 4;
 }
 
 export interface GameStats {
