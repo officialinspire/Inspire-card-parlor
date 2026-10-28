@@ -1,4 +1,5 @@
 import type { AssetStatus } from '@/decks/types';
+import { studioCredit } from '@/decks/assets';
 import type { BoardDefinition } from './types';
 
 export type { BoardDefinition, AmbientKind } from './types';
@@ -12,6 +13,8 @@ const assets = (id: string, status: AssetStatus = 'pending') => ({
 
 const LIGHT_INK = '#fff8ee';
 const DARK_INK = '#2a231c';
+/** For mid-tone wood, where the regular dark ink falls just short of 4.5:1. */
+const DEEP_INK = '#140e08';
 
 /**
  * Gameboards. Artwork is uploaded separately (see public/assets/backgrounds/);
@@ -22,27 +25,27 @@ const registry: BoardDefinition[] = [
   {
     id: 'picnic_table',
     name: 'Picnic Table',
-    description: 'Gingham cloth on a sunny outdoor table.',
-    artist: { name: null, note: 'Board artwork pending upload.' },
+    description: 'Weathered wooden planks in dappled sunlight, ready for an afternoon game.',
+    artist: studioCredit(),
     rarity: 'common',
     unlock: { type: 'default' },
-    assets: assets('picnic_table'),
+    assets: assets('picnic_table', 'ready'),
     surface: {
-      base: '#d9c3a0',
-      felt: 'repeating-linear-gradient(0deg, rgba(196,74,62,.28) 0 22px, transparent 22px 44px), repeating-linear-gradient(90deg, rgba(196,74,62,.28) 0 22px, transparent 22px 44px), linear-gradient(#efe2c8, #d9c3a0)',
-      rim: '#a8754c',
+      base: '#c57232',
+      felt: 'repeating-linear-gradient(0deg, rgba(90,50,20,.35) 0 2px, transparent 2px 64px), linear-gradient(#c98a4f, #b8743d)',
+      rim: '#7a4a24',
     },
-    ink: DARK_INK,
+    ink: DEEP_INK,
     ambient: 'breeze',
   },
   {
     id: 'backroom_card_table',
     name: 'Backroom Card Table',
-    description: 'Green baize under a single hanging lamp.',
-    artist: { name: null, note: 'Board artwork pending upload.' },
+    description: 'The INSPIRE emerald felt table with its carved wooden rail.',
+    artist: studioCredit(),
     rarity: 'common',
     unlock: { type: 'default' },
-    assets: assets('backroom_card_table'),
+    assets: assets('backroom_card_table', 'ready'),
     surface: {
       base: '#1d5236',
       felt: 'radial-gradient(120% 90% at 50% 25%, #2f7a4f 0%, #1d5236 55%, #10301f 100%)',
@@ -70,17 +73,17 @@ const registry: BoardDefinition[] = [
   {
     id: 'rappahannock_riverside',
     name: 'Rappahannock Riverside',
-    description: 'A blanket spread out on the riverbank.',
-    artist: { name: null, note: 'Board artwork pending upload.' },
+    description: 'A woven game mat spread on the mossy bank of the Rappahannock.',
+    artist: studioCredit(),
     rarity: 'rare',
     unlock: { type: 'story', value: 'chapter-2' },
-    assets: assets('rappahannock_riverside'),
+    assets: assets('rappahannock_riverside', 'ready'),
     surface: {
-      base: '#2e5a63',
-      felt: 'radial-gradient(130% 80% at 50% 110%, #1f4650 0%, transparent 60%), linear-gradient(180deg, #3d6f72, #2e5a63 55%, #244a52)',
-      rim: '#6d5a3f',
+      base: '#daac73',
+      felt: 'repeating-linear-gradient(45deg, rgba(120,90,50,.18) 0 3px, transparent 3px 6px), linear-gradient(#d6bd8e, #c9ad7c)',
+      rim: '#4f5e3a',
     },
-    ink: LIGHT_INK,
+    ink: DARK_INK,
     ambient: 'river',
   },
   {

@@ -1,0 +1,645 @@
+{
+  "deck": "fredericksburg",
+  "source": "Fredericksburg Heritage Playing Card Sheet.png",
+  "sourceSize": {
+    "width": 1659,
+    "height": 948
+  },
+  "sourceRows": ["hearts", "diamonds", "clubs", "spades"],
+  "cell": {
+    "width": 147,
+    "height": 185
+  },
+  "layout": {
+    "columns": 13,
+    "rows": 4,
+    "suitOrder": ["spades", "hearts", "diamonds", "clubs"],
+    "rankOrder": ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
+  },
+  "frames": {
+    "AH": {
+      "x": 14,
+      "y": 17,
+      "w": 123,
+      "h": 176
+    },
+    "2H": {
+      "x": 138,
+      "y": 17,
+      "w": 121,
+      "h": 176
+    },
+    "3H": {
+      "x": 257,
+      "y": 17,
+      "w": 121,
+      "h": 176
+    },
+    "4H": {
+      "x": 380,
+      "y": 17,
+      "w": 120,
+      "h": 176
+    },
+    "5H": {
+      "x": 502,
+      "y": 17,
+      "w": 119,
+      "h": 176
+    },
+    "6H": {
+      "x": 623,
+      "y": 17,
+      "w": 121,
+      "h": 176
+    },
+    "7H": {
+      "x": 747,
+      "y": 17,
+      "w": 120,
+      "h": 176
+    },
+    "8H": {
+      "x": 869,
+      "y": 17,
+      "w": 121,
+      "h": 177
+    },
+    "9H": {
+      "x": 992,
+      "y": 17,
+      "w": 123,
+      "h": 177
+    },
+    "10H": {
+      "x": 1118,
+      "y": 17,
+      "w": 119,
+      "h": 176
+    },
+    "JH": {
+      "x": 1239,
+      "y": 17,
+      "w": 140,
+      "h": 177
+    },
+    "QH": {
+      "x": 1382,
+      "y": 17,
+      "w": 139,
+      "h": 177
+    },
+    "KH": {
+      "x": 1523,
+      "y": 17,
+      "w": 126,
+      "h": 177
+    },
+    "AD": {
+      "x": 14,
+      "y": 200,
+      "w": 123,
+      "h": 181
+    },
+    "2D": {
+      "x": 138,
+      "y": 200,
+      "w": 121,
+      "h": 181
+    },
+    "3D": {
+      "x": 257,
+      "y": 200,
+      "w": 122,
+      "h": 181
+    },
+    "4D": {
+      "x": 381,
+      "y": 200,
+      "w": 119,
+      "h": 181
+    },
+    "5D": {
+      "x": 502,
+      "y": 200,
+      "w": 120,
+      "h": 181
+    },
+    "6D": {
+      "x": 623,
+      "y": 200,
+      "w": 122,
+      "h": 182
+    },
+    "7D": {
+      "x": 746,
+      "y": 200,
+      "w": 121,
+      "h": 182
+    },
+    "8D": {
+      "x": 868,
+      "y": 200,
+      "w": 122,
+      "h": 182
+    },
+    "9D": {
+      "x": 992,
+      "y": 200,
+      "w": 123,
+      "h": 182
+    },
+    "10D": {
+      "x": 1118,
+      "y": 200,
+      "w": 119,
+      "h": 182
+    },
+    "JD": {
+      "x": 1239,
+      "y": 200,
+      "w": 140,
+      "h": 182
+    },
+    "QD": {
+      "x": 1381,
+      "y": 200,
+      "w": 140,
+      "h": 182
+    },
+    "KD": {
+      "x": 1523,
+      "y": 200,
+      "w": 126,
+      "h": 182
+    },
+    "AC": {
+      "x": 15,
+      "y": 387,
+      "w": 122,
+      "h": 183
+    },
+    "2C": {
+      "x": 138,
+      "y": 387,
+      "w": 121,
+      "h": 182
+    },
+    "3C": {
+      "x": 257,
+      "y": 387,
+      "w": 122,
+      "h": 183
+    },
+    "4C": {
+      "x": 380,
+      "y": 387,
+      "w": 120,
+      "h": 182
+    },
+    "5C": {
+      "x": 501,
+      "y": 387,
+      "w": 121,
+      "h": 183
+    },
+    "6C": {
+      "x": 623,
+      "y": 387,
+      "w": 122,
+      "h": 183
+    },
+    "7C": {
+      "x": 746,
+      "y": 387,
+      "w": 122,
+      "h": 183
+    },
+    "8C": {
+      "x": 866,
+      "y": 387,
+      "w": 124,
+      "h": 183
+    },
+    "9C": {
+      "x": 992,
+      "y": 387,
+      "w": 123,
+      "h": 182
+    },
+    "10C": {
+      "x": 1118,
+      "y": 387,
+      "w": 119,
+      "h": 182
+    },
+    "JC": {
+      "x": 1239,
+      "y": 387,
+      "w": 140,
+      "h": 183
+    },
+    "QC": {
+      "x": 1381,
+      "y": 387,
+      "w": 140,
+      "h": 183
+    },
+    "KC": {
+      "x": 1523,
+      "y": 387,
+      "w": 126,
+      "h": 183
+    },
+    "AS": {
+      "x": 15,
+      "y": 575,
+      "w": 122,
+      "h": 181
+    },
+    "2S": {
+      "x": 138,
+      "y": 575,
+      "w": 121,
+      "h": 181
+    },
+    "3S": {
+      "x": 257,
+      "y": 575,
+      "w": 122,
+      "h": 181
+    },
+    "4S": {
+      "x": 380,
+      "y": 575,
+      "w": 121,
+      "h": 181
+    },
+    "5S": {
+      "x": 499,
+      "y": 575,
+      "w": 124,
+      "h": 181
+    },
+    "6S": {
+      "x": 621,
+      "y": 575,
+      "w": 124,
+      "h": 181
+    },
+    "7S": {
+      "x": 746,
+      "y": 575,
+      "w": 122,
+      "h": 181
+    },
+    "8S": {
+      "x": 866,
+      "y": 575,
+      "w": 124,
+      "h": 181
+    },
+    "9S": {
+      "x": 992,
+      "y": 575,
+      "w": 123,
+      "h": 181
+    },
+    "10S": {
+      "x": 1118,
+      "y": 575,
+      "w": 119,
+      "h": 181
+    },
+    "JS": {
+      "x": 1239,
+      "y": 575,
+      "w": 140,
+      "h": 181
+    },
+    "QS": {
+      "x": 1381,
+      "y": 575,
+      "w": 140,
+      "h": 181
+    },
+    "KS": {
+      "x": 1523,
+      "y": 575,
+      "w": 126,
+      "h": 181
+    }
+  },
+  "extras": {
+    "joker1": {
+      "x": 15,
+      "y": 761,
+      "w": 123,
+      "h": 174
+    },
+    "joker2": {
+      "x": 139,
+      "y": 761,
+      "w": 121,
+      "h": 174
+    },
+    "back": {
+      "x": 256,
+      "y": 761,
+      "w": 125,
+      "h": 174
+    }
+  },
+  "jokers": 2,
+  "verification": {
+    "AH": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "2H": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 2,
+      "pipsOk": true
+    },
+    "3H": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 3,
+      "pipsOk": true
+    },
+    "4H": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 4,
+      "pipsOk": true
+    },
+    "5H": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 5,
+      "pipsOk": true
+    },
+    "6H": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 6,
+      "pipsOk": true
+    },
+    "7H": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 7,
+      "pipsOk": true
+    },
+    "8H": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 8,
+      "pipsOk": true
+    },
+    "9H": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 9,
+      "pipsOk": true
+    },
+    "10H": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 10,
+      "pipsOk": true
+    },
+    "JH": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "QH": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "KH": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "AD": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "2D": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 2,
+      "pipsOk": true
+    },
+    "3D": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 3,
+      "pipsOk": true
+    },
+    "4D": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 4,
+      "pipsOk": true
+    },
+    "5D": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 5,
+      "pipsOk": true
+    },
+    "6D": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 6,
+      "pipsOk": true
+    },
+    "7D": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 7,
+      "pipsOk": true
+    },
+    "8D": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 8,
+      "pipsOk": true
+    },
+    "9D": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 9,
+      "pipsOk": true
+    },
+    "10D": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 10,
+      "pipsOk": true
+    },
+    "JD": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "QD": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "KD": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "AC": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "2C": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 2,
+      "pipsOk": true
+    },
+    "3C": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 3,
+      "pipsOk": true
+    },
+    "4C": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 4,
+      "pipsOk": true
+    },
+    "5C": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 5,
+      "pipsOk": true
+    },
+    "6C": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 6,
+      "pipsOk": true
+    },
+    "7C": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 7,
+      "pipsOk": true
+    },
+    "8C": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 8,
+      "pipsOk": true
+    },
+    "9C": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 9,
+      "pipsOk": true
+    },
+    "10C": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 10,
+      "pipsOk": true
+    },
+    "JC": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "QC": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "KC": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "AS": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "2S": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 2,
+      "pipsOk": true
+    },
+    "3S": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 3,
+      "pipsOk": true
+    },
+    "4S": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 4,
+      "pipsOk": true
+    },
+    "5S": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 5,
+      "pipsOk": true
+    },
+    "6S": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 6,
+      "pipsOk": true
+    },
+    "7S": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 7,
+      "pipsOk": true
+    },
+    "8S": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 8,
+      "pipsOk": true
+    },
+    "9S": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 9,
+      "pipsOk": true
+    },
+    "10S": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 8,
+      "pipsOk": false
+    },
+    "JS": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "QS": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "KS": {
+      "colour": "black",
+      "colourOk": true
+    }
+  },
+  "automatedIssues": ["10S: 8 pips counted"],
+  "reviewedOk": {},
+  "artworkIssues": [
+    {
+      "cards": ["10S"],
+      "issue": "Eight pips instead of ten (indices are correct).",
+      "checks": ["pips"]
+    }
+  ]
+}

@@ -1,0 +1,718 @@
+{
+  "deck": "inspire",
+  "source": "blackjak-cards-inspire-theme.png",
+  "sourceSize": {
+    "width": 1448,
+    "height": 1086
+  },
+  "sourceRows": ["spades", "hearts", "clubs", "diamonds"],
+  "cell": {
+    "width": 121,
+    "height": 177
+  },
+  "layout": {
+    "columns": 13,
+    "rows": 4,
+    "suitOrder": ["spades", "hearts", "diamonds", "clubs"],
+    "rankOrder": ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
+  },
+  "frames": {
+    "AS": {
+      "x": 39,
+      "y": 37,
+      "w": 115,
+      "h": 170
+    },
+    "2S": {
+      "x": 158,
+      "y": 37,
+      "w": 99,
+      "h": 169
+    },
+    "3S": {
+      "x": 262,
+      "y": 37,
+      "w": 98,
+      "h": 170
+    },
+    "4S": {
+      "x": 364,
+      "y": 37,
+      "w": 100,
+      "h": 169
+    },
+    "5S": {
+      "x": 468,
+      "y": 37,
+      "w": 100,
+      "h": 169
+    },
+    "6S": {
+      "x": 572,
+      "y": 37,
+      "w": 100,
+      "h": 169
+    },
+    "7S": {
+      "x": 676,
+      "y": 37,
+      "w": 100,
+      "h": 170
+    },
+    "8S": {
+      "x": 781,
+      "y": 37,
+      "w": 100,
+      "h": 169
+    },
+    "9S": {
+      "x": 885,
+      "y": 37,
+      "w": 100,
+      "h": 170
+    },
+    "10S": {
+      "x": 990,
+      "y": 37,
+      "w": 98,
+      "h": 170
+    },
+    "JS": {
+      "x": 1092,
+      "y": 37,
+      "w": 102,
+      "h": 170
+    },
+    "QS": {
+      "x": 1198,
+      "y": 37,
+      "w": 103,
+      "h": 170
+    },
+    "KS": {
+      "x": 1305,
+      "y": 37,
+      "w": 109,
+      "h": 170
+    },
+    "AH": {
+      "x": 38,
+      "y": 221,
+      "w": 116,
+      "h": 173
+    },
+    "2H": {
+      "x": 158,
+      "y": 221,
+      "w": 99,
+      "h": 173
+    },
+    "3H": {
+      "x": 261,
+      "y": 221,
+      "w": 99,
+      "h": 173
+    },
+    "4H": {
+      "x": 364,
+      "y": 221,
+      "w": 100,
+      "h": 173
+    },
+    "5H": {
+      "x": 467,
+      "y": 221,
+      "w": 101,
+      "h": 173
+    },
+    "6H": {
+      "x": 572,
+      "y": 221,
+      "w": 100,
+      "h": 173
+    },
+    "7H": {
+      "x": 676,
+      "y": 221,
+      "w": 100,
+      "h": 173
+    },
+    "8H": {
+      "x": 781,
+      "y": 221,
+      "w": 100,
+      "h": 173
+    },
+    "9H": {
+      "x": 885,
+      "y": 221,
+      "w": 100,
+      "h": 173
+    },
+    "10H": {
+      "x": 990,
+      "y": 221,
+      "w": 99,
+      "h": 173
+    },
+    "JH": {
+      "x": 1092,
+      "y": 222,
+      "w": 102,
+      "h": 173
+    },
+    "QH": {
+      "x": 1198,
+      "y": 222,
+      "w": 103,
+      "h": 173
+    },
+    "KH": {
+      "x": 1305,
+      "y": 222,
+      "w": 109,
+      "h": 173
+    },
+    "AC": {
+      "x": 38,
+      "y": 410,
+      "w": 116,
+      "h": 176
+    },
+    "2C": {
+      "x": 158,
+      "y": 411,
+      "w": 99,
+      "h": 174
+    },
+    "3C": {
+      "x": 261,
+      "y": 411,
+      "w": 99,
+      "h": 175
+    },
+    "4C": {
+      "x": 364,
+      "y": 411,
+      "w": 100,
+      "h": 174
+    },
+    "5C": {
+      "x": 467,
+      "y": 411,
+      "w": 101,
+      "h": 175
+    },
+    "6C": {
+      "x": 572,
+      "y": 411,
+      "w": 100,
+      "h": 174
+    },
+    "7C": {
+      "x": 675,
+      "y": 411,
+      "w": 101,
+      "h": 175
+    },
+    "8C": {
+      "x": 781,
+      "y": 411,
+      "w": 100,
+      "h": 175
+    },
+    "9C": {
+      "x": 885,
+      "y": 411,
+      "w": 100,
+      "h": 175
+    },
+    "10C": {
+      "x": 990,
+      "y": 411,
+      "w": 99,
+      "h": 175
+    },
+    "JC": {
+      "x": 1092,
+      "y": 411,
+      "w": 102,
+      "h": 175
+    },
+    "QC": {
+      "x": 1198,
+      "y": 411,
+      "w": 103,
+      "h": 175
+    },
+    "KC": {
+      "x": 1305,
+      "y": 411,
+      "w": 109,
+      "h": 176
+    },
+    "AD": {
+      "x": 38,
+      "y": 608,
+      "w": 116,
+      "h": 172
+    },
+    "2D": {
+      "x": 158,
+      "y": 608,
+      "w": 99,
+      "h": 172
+    },
+    "3D": {
+      "x": 261,
+      "y": 608,
+      "w": 99,
+      "h": 172
+    },
+    "4D": {
+      "x": 364,
+      "y": 608,
+      "w": 100,
+      "h": 172
+    },
+    "5D": {
+      "x": 467,
+      "y": 608,
+      "w": 101,
+      "h": 172
+    },
+    "6D": {
+      "x": 572,
+      "y": 608,
+      "w": 100,
+      "h": 172
+    },
+    "7D": {
+      "x": 675,
+      "y": 608,
+      "w": 101,
+      "h": 172
+    },
+    "8D": {
+      "x": 781,
+      "y": 608,
+      "w": 100,
+      "h": 172
+    },
+    "9D": {
+      "x": 884,
+      "y": 608,
+      "w": 101,
+      "h": 172
+    },
+    "10D": {
+      "x": 989,
+      "y": 608,
+      "w": 100,
+      "h": 173
+    },
+    "JD": {
+      "x": 1092,
+      "y": 608,
+      "w": 102,
+      "h": 173
+    },
+    "QD": {
+      "x": 1198,
+      "y": 608,
+      "w": 103,
+      "h": 173
+    },
+    "KD": {
+      "x": 1304,
+      "y": 608,
+      "w": 110,
+      "h": 173
+    }
+  },
+  "extras": {
+    "joker1": {
+      "x": 40,
+      "y": 795,
+      "w": 154,
+      "h": 245
+    },
+    "joker2": {
+      "x": 221,
+      "y": 794,
+      "w": 90,
+      "h": 246
+    },
+    "back": {
+      "x": 307,
+      "y": 794,
+      "w": 75,
+      "h": 246
+    }
+  },
+  "jokers": 2,
+  "verification": {
+    "AS": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "2S": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 2,
+      "pipsOk": true
+    },
+    "3S": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 3,
+      "pipsOk": true
+    },
+    "4S": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 4,
+      "pipsOk": true
+    },
+    "5S": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 5,
+      "pipsOk": true
+    },
+    "6S": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 6,
+      "pipsOk": true
+    },
+    "7S": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 6,
+      "pipsOk": false
+    },
+    "8S": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 8,
+      "pipsOk": true
+    },
+    "9S": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 9,
+      "pipsOk": true
+    },
+    "10S": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 10,
+      "pipsOk": true
+    },
+    "JS": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "QS": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "KS": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "AH": {
+      "colour": "black",
+      "colourOk": false
+    },
+    "2H": {
+      "colour": "black",
+      "colourOk": false,
+      "pips": 2,
+      "pipsOk": true
+    },
+    "3H": {
+      "colour": "black",
+      "colourOk": false,
+      "pips": 3,
+      "pipsOk": true
+    },
+    "4H": {
+      "colour": "black",
+      "colourOk": false,
+      "pips": 4,
+      "pipsOk": true
+    },
+    "5H": {
+      "colour": "black",
+      "colourOk": false,
+      "pips": 5,
+      "pipsOk": true
+    },
+    "6H": {
+      "colour": "black",
+      "colourOk": false,
+      "pips": 6,
+      "pipsOk": true
+    },
+    "7H": {
+      "colour": "black",
+      "colourOk": false,
+      "pips": 6,
+      "pipsOk": false
+    },
+    "8H": {
+      "colour": "black",
+      "colourOk": false,
+      "pips": 8,
+      "pipsOk": true
+    },
+    "9H": {
+      "colour": "black",
+      "colourOk": false,
+      "pips": 9,
+      "pipsOk": true
+    },
+    "10H": {
+      "colour": "black",
+      "colourOk": false,
+      "pips": 10,
+      "pipsOk": true
+    },
+    "JH": {
+      "colour": "black",
+      "colourOk": false
+    },
+    "QH": {
+      "colour": "black",
+      "colourOk": false
+    },
+    "KH": {
+      "colour": "black",
+      "colourOk": false
+    },
+    "AC": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "2C": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 2,
+      "pipsOk": true
+    },
+    "3C": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 3,
+      "pipsOk": true
+    },
+    "4C": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 4,
+      "pipsOk": true
+    },
+    "5C": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 5,
+      "pipsOk": true
+    },
+    "6C": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 6,
+      "pipsOk": true
+    },
+    "7C": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 6,
+      "pipsOk": false
+    },
+    "8C": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 8,
+      "pipsOk": true
+    },
+    "9C": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 9,
+      "pipsOk": true
+    },
+    "10C": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 10,
+      "pipsOk": true
+    },
+    "JC": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "QC": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "KC": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "AD": {
+      "colour": "black",
+      "colourOk": false
+    },
+    "2D": {
+      "colour": "black",
+      "colourOk": false,
+      "pips": 2,
+      "pipsOk": true
+    },
+    "3D": {
+      "colour": "black",
+      "colourOk": false,
+      "pips": 3,
+      "pipsOk": true
+    },
+    "4D": {
+      "colour": "black",
+      "colourOk": false,
+      "pips": 4,
+      "pipsOk": true
+    },
+    "5D": {
+      "colour": "black",
+      "colourOk": false,
+      "pips": 5,
+      "pipsOk": true
+    },
+    "6D": {
+      "colour": "black",
+      "colourOk": false,
+      "pips": 6,
+      "pipsOk": true
+    },
+    "7D": {
+      "colour": "black",
+      "colourOk": false,
+      "pips": 7,
+      "pipsOk": true
+    },
+    "8D": {
+      "colour": "black",
+      "colourOk": false,
+      "pips": 8,
+      "pipsOk": true
+    },
+    "9D": {
+      "colour": "black",
+      "colourOk": false,
+      "pips": 9,
+      "pipsOk": true
+    },
+    "10D": {
+      "colour": "black",
+      "colourOk": false,
+      "pips": 10,
+      "pipsOk": true
+    },
+    "JD": {
+      "colour": "black",
+      "colourOk": false
+    },
+    "QD": {
+      "colour": "black",
+      "colourOk": false
+    },
+    "KD": {
+      "colour": "black",
+      "colourOk": false
+    }
+  },
+  "automatedIssues": [
+    "7S: 6 pips counted",
+    "AH: looks black",
+    "2H: looks black",
+    "3H: looks black",
+    "4H: looks black",
+    "5H: looks black",
+    "6H: looks black",
+    "7H: looks black, 6 pips counted",
+    "8H: looks black",
+    "9H: looks black",
+    "10H: looks black",
+    "JH: looks black",
+    "QH: looks black",
+    "KH: looks black",
+    "7C: 6 pips counted",
+    "AD: looks black",
+    "2D: looks black",
+    "3D: looks black",
+    "4D: looks black",
+    "5D: looks black",
+    "6D: looks black",
+    "7D: looks black",
+    "8D: looks black",
+    "9D: looks black",
+    "10D: looks black",
+    "JD: looks black",
+    "QD: looks black",
+    "KD: looks black"
+  ],
+  "reviewedOk": {},
+  "artworkIssues": [
+    {
+      "cards": [
+        "AH",
+        "2H",
+        "3H",
+        "4H",
+        "5H",
+        "6H",
+        "7H",
+        "8H",
+        "9H",
+        "10H",
+        "JH",
+        "QH",
+        "KH",
+        "AD",
+        "2D",
+        "3D",
+        "4D",
+        "5D",
+        "6D",
+        "7D",
+        "8D",
+        "9D",
+        "10D",
+        "JD",
+        "QD",
+        "KD"
+      ],
+      "issue": "Hearts and diamonds are printed in black, so red and black suits can only be told apart by shape. Solitaire colour rules still work, but red versions are recommended.",
+      "checks": ["colour"]
+    },
+    {
+      "cards": ["7S", "7H", "7C"],
+      "issue": "Six pips instead of seven, and the bottom index reads \"Z\" instead of an inverted 7.",
+      "checks": ["pips"]
+    },
+    {
+      "cards": ["AS"],
+      "issue": "Bottom-right index letter is malformed."
+    },
+    {
+      "cards": ["JH", "QH", "KH"],
+      "issue": "Bottom-right suit symbol is a spade instead of a heart (top-left index is correct)."
+    },
+    {
+      "cards": ["7D"],
+      "issue": "Bottom index 7 is not inverted like the other cards."
+    }
+  ]
+}

@@ -120,7 +120,7 @@ describe('AssetManager', () => {
 
   it('never requests files for pending decks', async () => {
     const { fn } = loader({});
-    const art = await new AssetManager({ loadImage: fn }).loadDeck(themes().resolve('classic'));
+    const art = await new AssetManager({ loadImage: fn }).loadDeck(themes().resolve('freemasonry'));
     expect(fn).not.toHaveBeenCalled();
     expect(art.faces).toBeNull();
     expect(art.missing).toHaveLength(52);
@@ -140,7 +140,7 @@ describe('AssetManager', () => {
 
   it('uses grid back cells and variant overrides', async () => {
     const theme: DeckTheme = {
-      ...themes(true).resolve('classic'),
+      ...themes(true).resolve('freemasonry'),
       key: 'ph-test',
       overrides: { QH: { path: 'qh', formats: ['png'] } },
     };
@@ -198,7 +198,7 @@ describe('CardRenderer', () => {
   });
 
   it('renders sprite-sheet art once loaded and upgrades existing elements', async () => {
-    const theme = { ...themes(true).resolve('classic'), key: 'upgrade-test' };
+    const theme = { ...themes(true).resolve('freemasonry'), key: 'upgrade-test' };
     const sheet = '/assets/cards/_placeholder/faces.svg';
     am = new AssetManager({ baseUrl: '/', loadImage: loader({ [sheet]: [1560, 840] }).fn });
     renderer = new CardRenderer(am);

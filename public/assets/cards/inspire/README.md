@@ -1,19 +1,21 @@
-# INSPIRE — artwork drop folder
+# BlackJak INSPIRE — extracted deck
 
-Status: **pending**
+Built by `scripts/art/extract_cards.py` from `art/sources/blackjak-cards-inspire-theme.png` (1448×1086). Do not edit these files by hand; replace the source sheet and run `npm run art:cards`.
 
-Upload the commissioned artwork for this deck here, then set `assets.status` to `'ready'`
-and fill in `artist` in `src/decks/definitions/inspire.ts`.
+| File           | Contents                                                     |
+| -------------- | ------------------------------------------------------------ |
+| `faces.webp`   | 52 faces, 13 × 4 grid (A…K; ♠ ♥ ♦ ♣), 121×177 px cells       |
+| `back.webp`    | card back                                                    |
+| `extras.webp`  | jokers (not used by the five games)                          |
+| `preview.webp` | catalog preview fan                                          |
+| `atlas.json`   | source frame of every card, identity checks and review notes |
 
-## Card faces
+Source row order: spades, hearts, clubs, diamonds. Faces verified: 52/52.
 
-One sprite sheet, `faces.webp` (PNG accepted as a fallback). Grid of 13 columns × 4 rows: columns A, 2 … 10, J, Q, K; rows ♠ ♥ ♦ ♣. Any cell size works; all cells must be equal.
+## Artwork notes
 
-## Required files
-
-- face sprite sheet: `faces.webp` or `faces.png`
-- card back: `back.webp` or `back.png`
-- preview image: `preview.webp` or `preview.png`
-
-Check with `npm run validate:decks`. See `public/assets/cards/README.md` for other layouts
-(individual images, explicit frames, TexturePacker JSON) and alternate artwork.
+- AH, 2H, 3H, 4H, 5H, 6H, 7H, 8H, 9H, 10H, JH, QH, KH, AD, 2D, 3D, 4D, 5D, 6D, 7D, 8D, 9D, 10D, JD, QD, KD: Hearts and diamonds are printed in black, so red and black suits can only be told apart by shape. Solitaire colour rules still work, but red versions are recommended.
+- 7S, 7H, 7C: Six pips instead of seven, and the bottom index reads "Z" instead of an inverted 7.
+- AS: Bottom-right index letter is malformed.
+- JH, QH, KH: Bottom-right suit symbol is a spade instead of a heart (top-left index is correct).
+- 7D: Bottom index 7 is not inverted like the other cards.

@@ -1,10 +1,5 @@
-# Backroom Card Table — artwork drop folder
+# Backroom Card Table — artwork
 
-Upload the commissioned board artwork here:
-
-- `background.webp` (or `.png`): the full table image. It is shown with `cover`, so it is never stretched; keep important detail away from the edges.
-- `preview.webp` (or `.png`): catalog thumbnail.
-- Optional `ambient.webp|png`: a one-row sprite sheet for the ambient layer.
-
-Then mark the board ready with its artist credit, either in `src/boards/registry.ts` or in
-`public/assets/artwork.json` (see `public/assets/backgrounds/README.md`).
+Status: **ready**. `background.webp` (1448×1086) and `preview.webp` are built from
+`art/sources/Inspire Emerald Felt Game Table.png` by `npm run art:images`. To replace the art, replace the source file and run that
+command again; the game shows the image with `cover`, so it is never stretched.

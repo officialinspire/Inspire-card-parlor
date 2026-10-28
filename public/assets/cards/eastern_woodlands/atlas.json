@@ -1,0 +1,578 @@
+{
+  "deck": "eastern_woodlands",
+  "source": "Eastern Woodland Playing Card Sprite Sheet.png",
+  "sourceSize": {
+    "width": 1536,
+    "height": 1024
+  },
+  "sourceRows": ["spades", "hearts", "diamonds", "clubs"],
+  "cell": {
+    "width": 141,
+    "height": 209
+  },
+  "layout": {
+    "columns": 13,
+    "rows": 4,
+    "suitOrder": ["spades", "hearts", "diamonds", "clubs"],
+    "rankOrder": ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
+  },
+  "frames": {
+    "AS": {
+      "x": 4,
+      "y": 5,
+      "w": 138,
+      "h": 207
+    },
+    "2S": {
+      "x": 142,
+      "y": 5,
+      "w": 118,
+      "h": 207
+    },
+    "3S": {
+      "x": 261,
+      "y": 5,
+      "w": 121,
+      "h": 207
+    },
+    "4S": {
+      "x": 382,
+      "y": 5,
+      "w": 114,
+      "h": 207
+    },
+    "5S": {
+      "x": 496,
+      "y": 5,
+      "w": 113,
+      "h": 207
+    },
+    "6S": {
+      "x": 610,
+      "y": 5,
+      "w": 111,
+      "h": 207
+    },
+    "7S": {
+      "x": 722,
+      "y": 5,
+      "w": 110,
+      "h": 207
+    },
+    "8S": {
+      "x": 833,
+      "y": 5,
+      "w": 111,
+      "h": 207
+    },
+    "9S": {
+      "x": 944,
+      "y": 5,
+      "w": 113,
+      "h": 207
+    },
+    "10S": {
+      "x": 1058,
+      "y": 5,
+      "w": 127,
+      "h": 207
+    },
+    "JS": {
+      "x": 1186,
+      "y": 5,
+      "w": 114,
+      "h": 207
+    },
+    "QS": {
+      "x": 1301,
+      "y": 5,
+      "w": 111,
+      "h": 207
+    },
+    "KS": {
+      "x": 1411,
+      "y": 5,
+      "w": 122,
+      "h": 207
+    },
+    "AH": {
+      "x": 4,
+      "y": 217,
+      "w": 130,
+      "h": 205
+    },
+    "2H": {
+      "x": 135,
+      "y": 217,
+      "w": 119,
+      "h": 205
+    },
+    "3H": {
+      "x": 254,
+      "y": 217,
+      "w": 114,
+      "h": 205
+    },
+    "4H": {
+      "x": 369,
+      "y": 217,
+      "w": 116,
+      "h": 205
+    },
+    "5H": {
+      "x": 485,
+      "y": 217,
+      "w": 112,
+      "h": 205
+    },
+    "6H": {
+      "x": 598,
+      "y": 217,
+      "w": 119,
+      "h": 205
+    },
+    "7H": {
+      "x": 717,
+      "y": 217,
+      "w": 114,
+      "h": 205
+    },
+    "8H": {
+      "x": 831,
+      "y": 217,
+      "w": 114,
+      "h": 205
+    },
+    "9H": {
+      "x": 945,
+      "y": 217,
+      "w": 113,
+      "h": 205
+    },
+    "10H": {
+      "x": 1058,
+      "y": 217,
+      "w": 125,
+      "h": 205
+    },
+    "JH": {
+      "x": 1184,
+      "y": 217,
+      "w": 115,
+      "h": 205
+    },
+    "QH": {
+      "x": 1300,
+      "y": 217,
+      "w": 114,
+      "h": 205
+    },
+    "KH": {
+      "x": 1414,
+      "y": 217,
+      "w": 120,
+      "h": 205
+    },
+    "AD": {
+      "x": 4,
+      "y": 427,
+      "w": 128,
+      "h": 202
+    },
+    "2D": {
+      "x": 133,
+      "y": 427,
+      "w": 116,
+      "h": 202
+    },
+    "3D": {
+      "x": 249,
+      "y": 427,
+      "w": 117,
+      "h": 202
+    },
+    "4D": {
+      "x": 367,
+      "y": 427,
+      "w": 115,
+      "h": 202
+    },
+    "5D": {
+      "x": 482,
+      "y": 427,
+      "w": 115,
+      "h": 202
+    },
+    "6D": {
+      "x": 597,
+      "y": 427,
+      "w": 116,
+      "h": 202
+    },
+    "7D": {
+      "x": 713,
+      "y": 427,
+      "w": 115,
+      "h": 202
+    },
+    "8D": {
+      "x": 828,
+      "y": 427,
+      "w": 113,
+      "h": 202
+    },
+    "9D": {
+      "x": 941,
+      "y": 427,
+      "w": 112,
+      "h": 202
+    },
+    "10D": {
+      "x": 1054,
+      "y": 427,
+      "w": 126,
+      "h": 202
+    },
+    "JD": {
+      "x": 1182,
+      "y": 427,
+      "w": 117,
+      "h": 202
+    },
+    "QD": {
+      "x": 1298,
+      "y": 427,
+      "w": 111,
+      "h": 202
+    },
+    "KD": {
+      "x": 1410,
+      "y": 427,
+      "w": 123,
+      "h": 202
+    },
+    "AC": {
+      "x": 4,
+      "y": 634,
+      "w": 133,
+      "h": 208
+    },
+    "2C": {
+      "x": 137,
+      "y": 634,
+      "w": 118,
+      "h": 208
+    },
+    "3C": {
+      "x": 255,
+      "y": 634,
+      "w": 116,
+      "h": 208
+    },
+    "4C": {
+      "x": 371,
+      "y": 635,
+      "w": 113,
+      "h": 206
+    },
+    "5C": {
+      "x": 485,
+      "y": 634,
+      "w": 109,
+      "h": 208
+    },
+    "6C": {
+      "x": 595,
+      "y": 635,
+      "w": 118,
+      "h": 207
+    },
+    "7C": {
+      "x": 713,
+      "y": 634,
+      "w": 116,
+      "h": 208
+    },
+    "8C": {
+      "x": 829,
+      "y": 634,
+      "w": 111,
+      "h": 207
+    },
+    "9C": {
+      "x": 940,
+      "y": 634,
+      "w": 116,
+      "h": 208
+    },
+    "10C": {
+      "x": 1057,
+      "y": 634,
+      "w": 122,
+      "h": 207
+    },
+    "JC": {
+      "x": 1180,
+      "y": 634,
+      "w": 118,
+      "h": 207
+    },
+    "QC": {
+      "x": 1297,
+      "y": 634,
+      "w": 115,
+      "h": 207
+    },
+    "KC": {
+      "x": 1412,
+      "y": 634,
+      "w": 121,
+      "h": 207
+    }
+  },
+  "extras": {
+    "back": {
+      "x": 4,
+      "y": 847,
+      "w": 234,
+      "h": 153
+    },
+    "back_turtle": {
+      "x": 243,
+      "y": 847,
+      "w": 221,
+      "h": 152
+    }
+  },
+  "jokers": 0,
+  "verification": {
+    "AS": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "2S": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "3S": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "4S": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "5S": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "6S": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "7S": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "8S": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "9S": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "10S": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "JS": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "QS": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "KS": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "AH": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "2H": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "3H": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "4H": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "5H": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "6H": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "7H": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "8H": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "9H": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "10H": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "JH": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "QH": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "KH": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "AD": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "2D": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "3D": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "4D": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "5D": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "6D": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "7D": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "8D": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "9D": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "10D": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "JD": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "QD": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "KD": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "AC": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "2C": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "3C": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "4C": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "5C": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "6C": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "7C": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "8C": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "9C": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "10C": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "JC": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "QC": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "KC": {
+      "colour": "black",
+      "colourOk": true
+    }
+  },
+  "automatedIssues": [],
+  "reviewedOk": {},
+  "artworkIssues": [
+    {
+      "cards": ["QS"],
+      "issue": "Bottom-right index reads \"0\" instead of Q."
+    },
+    {
+      "cards": ["KS"],
+      "issue": "Bottom-right index reads \"X\" instead of K."
+    },
+    {
+      "cards": ["3H"],
+      "issue": "Bottom-right index 3 is malformed."
+    },
+    {
+      "cards": [],
+      "issue": "Both card backs are drawn landscape and are turned upright for play. The sheet has no jokers."
+    }
+  ]
+}

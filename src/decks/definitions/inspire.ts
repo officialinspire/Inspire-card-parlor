@@ -1,15 +1,15 @@
-import { standardAssets } from '../assets';
+import { extractedAssets, studioCredit } from '../assets';
 import type { DeckDefinition } from '../types';
 
 export const InspireDeck: DeckDefinition = {
   id: 'inspire',
-  name: 'INSPIRE',
-  description: 'The house deck of INSPIRE CARD PARLOR by OFFICIAL INSPIRE.',
-  artist: { name: null, note: 'Commissioned artwork pending upload.' },
+  name: 'BlackJak INSPIRE',
+  description: 'Bold black-and-white INSPIRE design: leaf-mark aces, branded court cards and the INSPIRE back.',
+  artist: studioCredit(),
   rarity: 'common',
   contentRating: 'general',
   unlock: { type: 'default' },
-  assets: standardAssets('assets/cards/inspire/'),
+  assets: extractedAssets('assets/cards/inspire/'),
   fallback: {
     back: { base: '#c8643f', accent: '#fbe3cf', pattern: 'plain', mark: 'I' },
     face: { paper: '#fffaf1', red: '#b8432f', black: '#2f2a24' },

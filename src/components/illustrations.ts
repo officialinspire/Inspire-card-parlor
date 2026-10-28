@@ -1,4 +1,4 @@
-import { svg } from '@/utils/dom';
+import { h, svg } from '@/utils/dom';
 import type { GameId } from '@/core/types';
 
 /*
@@ -110,4 +110,19 @@ export function gameThumbnail(id: GameId, className = ''): SVGElement {
       <rect class="ill-felt" width="200" height="120" rx="10"/>${THUMBS[id]}
     </svg>`,
   );
+}
+
+/**
+ * The INSPIRE Card Parlor logo. Its alt text carries the title for screen
+ * readers; if the image cannot load, the alt text is shown in its place.
+ */
+export function brandLogo(className = ''): HTMLImageElement {
+  return h('img', {
+    class: `brand-logo ${className}`.trim(),
+    src: `${import.meta.env.BASE_URL}assets/branding/logo.webp`,
+    alt: 'INSPIRE Card Parlor',
+    width: '960',
+    height: '582',
+    decoding: 'async',
+  }) as HTMLImageElement;
 }

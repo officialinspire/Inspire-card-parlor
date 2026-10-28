@@ -6,6 +6,7 @@ import { DantesWorldDeck } from './definitions/dantes_world';
 import { YummyholeStandardDeck } from './definitions/yummyhole_standard';
 import { YummyholeAfterDarkDeck } from './definitions/yummyhole_after_dark';
 import { FredericksburgDeck } from './definitions/fredericksburg';
+import { FredericksburgDowntownDeck } from './definitions/fredericksburg_downtown';
 import { EasternWoodlandsDeck } from './definitions/eastern_woodlands';
 import { SpycraftDeck } from './definitions/spycraft';
 import { FreemasonryDeck } from './definitions/freemasonry';
@@ -31,6 +32,7 @@ export function registerDeck(deck: DeckDefinition): void {
   YummyholeStandardDeck,
   YummyholeAfterDarkDeck,
   FredericksburgDeck,
+  FredericksburgDowntownDeck,
   EasternWoodlandsDeck,
   SpycraftDeck,
   FreemasonryDeck,

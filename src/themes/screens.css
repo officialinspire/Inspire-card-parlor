@@ -211,6 +211,7 @@
 .menu-title {
   font-size: clamp(1.4rem, 3.4vmin + 0.5rem, 2.4rem);
   font-weight: 800;
+  line-height: 0;
 }
 .menu-header-right {
   display: flex;
@@ -272,6 +273,37 @@
   inset: 0;
   width: 100%;
   height: 100%;
+}
+/* The Rappahannock riverfront by day, Fredericksburg's lit waterfront by night (cover-fit, never stretched). */
+.menu-hero-art {
+  position: absolute;
+  inset: 0;
+  background: var(--menu-day) center 62% / cover no-repeat;
+}
+[data-theme='night'] .menu-hero-art {
+  background-image: var(--menu-night);
+}
+/* A soft foot so the Quick Play button reads against the water. */
+.menu-hero-art::after {
+  content: '';
+  position: absolute;
+  inset: 45% 0 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.35));
+}
+.brand-logo {
+  display: block;
+  height: auto;
+  object-fit: contain;
+}
+.menu-logo {
+  height: clamp(40px, 7vmin, 64px);
+  width: auto;
+}
+.init-logo {
+  width: auto;
+  height: clamp(110px, 30vmin, 260px);
+  max-width: 100%;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.25));
 }
 .quickplay {
   position: relative;
@@ -692,6 +724,10 @@ button.status-chip:hover {
 }
 .card.mini {
   box-shadow: 0 0 0 1px var(--ill-line);
+}
+.card.mini.card-art,
+.gf-book .card.card-art {
+  box-shadow: none;
 }
 .card.mini .card-back-mark {
   display: none;
@@ -1343,7 +1379,10 @@ button.status-chip:hover {
   position: relative;
   flex: 1;
   min-height: 0;
+  min-width: 0;
   display: grid;
+  /* One shrinkable column: a long hand or fan must not widen the table past the screen. */
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto minmax(0, 1fr) auto;
   gap: clamp(6px, 1.4vmin, 12px);
   --card-w: clamp(52px, 13vmin, 92px);
@@ -1894,6 +1933,16 @@ button.status-chip:hover {
     0 0 0 2px var(--ill-line),
     0 0 0 5px var(--mustard);
 }
+/* Artwork cards draw their own outline, so highlights follow the card's shape. */
+.sol-card.selected.card-art {
+  box-shadow: none;
+  --card-art-shadow: drop-shadow(0 0 1.5px var(--mustard)) drop-shadow(0 0 1.5px var(--mustard))
+    drop-shadow(0 0 2px var(--mustard));
+}
+.sol-card.card-art[data-hint] {
+  box-shadow: none;
+  --card-art-shadow: drop-shadow(0 0 2px var(--sky)) drop-shadow(0 0 6px var(--sky));
+}
 .sol-card[data-hint='source'],
 .sol-card[data-hint='target'],
 .sol-slot[data-hint='target'] {
@@ -1974,6 +2023,12 @@ button.status-chip:hover {
   color: var(--board-ink, #fff8ee);
   border-color: color-mix(in srgb, var(--board-ink, #fff8ee) 45%, transparent);
 }
+/* Over painted boards, outline buttons get a solid backing so busy artwork
+   (wood grain, logos) never runs through their labels. */
+.table[data-board-art='image'] :is(.sol-controls, .war-controls, .gf-actions) .btn-ghost {
+  background: color-mix(in srgb, var(--board-base) 82%, transparent);
+  backdrop-filter: blur(3px);
+}
 .stats-dialog {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
@@ -2024,6 +2079,10 @@ button.status-chip:hover {
   background: rgba(255, 255, 255, 0.6);
 }
 /* Dark boards: a faint light ring keeps dark card backs distinct from the felt. */
+.table[data-board-tone='dark'] .card.card-art {
+  box-shadow: none;
+  --card-art-shadow: drop-shadow(0 0 1px rgba(255, 255, 255, 0.35)) drop-shadow(0 2px 3px rgba(0, 0, 0, 0.35));
+}
 .table[data-board-tone='dark'] .card {
   box-shadow:
     0 0 0 1.5px var(--ill-line),

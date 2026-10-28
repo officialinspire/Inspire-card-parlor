@@ -4,7 +4,7 @@ A cozy collection of classic playing-card games featuring collectible illustrate
 
 **Developer:** OFFICIAL INSPIRE · [www.inspireclothing.art](https://www.inspireclothing.art)
 
-> **Status: v0.6.0 — collectible decks and gameboards.** All five games are playable, with a deck and gameboard collection, card-back and artwork customization, and support for uploaded artwork.
+> **Status: v0.7.0 — illustrated decks.** Eight decks drawn from the uploaded artwork are playable in all five games, alongside illustrated gameboards, menu backgrounds and the INSPIRE Card Parlor logo.
 
 ## Games
 
@@ -198,6 +198,26 @@ public/
 - **Readability**: each board declares a text colour checked for WCAG AA contrast against its surface. A scrim layer sits between artwork and cards, dark boards add a light ring around cards, and there is an optional **High-contrast tables** setting.
 - **Uploaded artwork**: drop files into `public/assets/cards/<deck>/` or `public/assets/backgrounds/<board>/` and either edit the registry or add `public/assets/artwork.json` (validated at start-up). Art keeps its aspect ratio (cards are letterboxed, boards use `cover`), sprite sheets are used for card faces, and nothing is ever modified.
 - **Credits**: artist credits appear on deck and board details and in **Settings → Data → Artwork credits**.
+
+### Production artwork pipeline
+
+The uploaded originals live unmodified in `art/sources/` (not shipped); see `art/ASSET_INVENTORY.md`.
+
+- `npm run art:cards` (`scripts/art/extract_cards.py`) cuts each card sheet listed in `art/sources/manifest.json` into a normalized 13 × 4 `faces.webp`, plus `back.webp`, `preview.webp`, jokers and an `atlas.json`. Card boundaries come from the gaps in each sheet, not a fixed grid. Cards are never stretched: each is scaled uniformly to the deck's common height and centred in a transparent cell.
+- Every card's identity is checked against the artwork: suit colour from the corner index, and pip count for 2–10. Each flag was reviewed by eye. Real defects are recorded per deck (`README.md`, `atlas.json`), and `npm run validate:decks` fails on any flag that has not been reviewed.
+- `npm run art:images` builds the gameboards, the day and night menu backgrounds, the logo and the app icons.
+- Needs Python 3 with `pillow`, `numpy` and `opencv-python-headless`. Only needed to rebuild art; the game and its tests use the committed output.
+
+| Deck                                       | Source sheet                                     | Faces | Artwork notes                                                                  |
+| ------------------------------------------ | ------------------------------------------------ | ----- | ------------------------------------------------------------------------------ |
+| BlackJak Standard (`classic`)              | `blackjak-cards-standard.png`                    | 52/52 | none                                                                           |
+| BlackJak INSPIRE (`inspire`)               | `blackjak-cards-inspire-theme.png`               | 52/52 | red suits printed black; 7♠ 7♥ 7♣ have six pips; J♥ Q♥ K♥ bottom index shows ♠ |
+| BlackJak Jak Gold (`jak_gold`)             | `blackjak-cards-jak-theme.png`                   | 52/52 | celestial design: confirm it is the intended Jak Gold art                      |
+| Dante's World                              | `Dante's World Neon Monster Card Atlas.png`      | 52/52 | all 5s have four pips, all 7s six                                              |
+| Fredericksburg Heritage (`fredericksburg`) | `Fredericksburg Heritage Playing Card Sheet.png` | 52/52 | 10♠ has eight pips                                                             |
+| Downtown Fredericksburg Collector          | `Downtown Fredericksburg Collector Deck.png`     | 52/52 | landscape back (shown rotated); short jokers                                   |
+| Eastern Woodlands                          | `Eastern Woodland Playing Card Sprite Sheet.png` | 52/52 | Q♠ K♠ 3♥ bottom indices malformed; landscape backs                             |
+| Spycraft                                   | `Vintage spycraft playing card sprite sheet.png` | 52/52 | 10♠ has eight pips                                                             |
 
 ### Adult-only artwork
 

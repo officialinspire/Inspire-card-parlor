@@ -11,7 +11,7 @@ test('collection: inspect a deck and equip it', async ({ page }) => {
   await page.locator('[data-dialog-action="use"]').click();
   await expect(page.locator('.toast')).toContainText('Fredericksburg');
   await clickNav(page, 'home', 'MAIN_MENU');
-  await expect(page.locator(`${CURRENT} [data-value="deck"]`)).toHaveText('Fredericksburg');
+  await expect(page.locator(`${CURRENT} [data-value="deck"]`)).toHaveText('Fredericksburg Heritage');
 });
 
 test('collection tabs: gallery and characters', async ({ page }) => {

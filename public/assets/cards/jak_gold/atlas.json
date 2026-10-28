@@ -1,0 +1,658 @@
+{
+  "deck": "jak_gold",
+  "source": "blackjak-cards-jak-theme.png",
+  "sourceSize": {
+    "width": 1448,
+    "height": 1086
+  },
+  "sourceRows": ["hearts", "diamonds", "clubs", "spades"],
+  "cell": {
+    "width": 130,
+    "height": 193
+  },
+  "layout": {
+    "columns": 13,
+    "rows": 4,
+    "suitOrder": ["spades", "hearts", "diamonds", "clubs"],
+    "rankOrder": ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
+  },
+  "frames": {
+    "AH": {
+      "x": 15,
+      "y": 26,
+      "w": 125,
+      "h": 187
+    },
+    "2H": {
+      "x": 142,
+      "y": 26,
+      "w": 108,
+      "h": 187
+    },
+    "3H": {
+      "x": 252,
+      "y": 26,
+      "w": 107,
+      "h": 187
+    },
+    "4H": {
+      "x": 362,
+      "y": 26,
+      "w": 105,
+      "h": 187
+    },
+    "5H": {
+      "x": 470,
+      "y": 26,
+      "w": 105,
+      "h": 187
+    },
+    "6H": {
+      "x": 577,
+      "y": 26,
+      "w": 106,
+      "h": 187
+    },
+    "7H": {
+      "x": 685,
+      "y": 26,
+      "w": 105,
+      "h": 187
+    },
+    "8H": {
+      "x": 793,
+      "y": 26,
+      "w": 106,
+      "h": 187
+    },
+    "9H": {
+      "x": 900,
+      "y": 26,
+      "w": 105,
+      "h": 187
+    },
+    "10H": {
+      "x": 1007,
+      "y": 26,
+      "w": 99,
+      "h": 187
+    },
+    "JH": {
+      "x": 1107,
+      "y": 26,
+      "w": 104,
+      "h": 187
+    },
+    "QH": {
+      "x": 1213,
+      "y": 26,
+      "w": 107,
+      "h": 187
+    },
+    "KH": {
+      "x": 1322,
+      "y": 26,
+      "w": 112,
+      "h": 187
+    },
+    "AD": {
+      "x": 15,
+      "y": 223,
+      "w": 125,
+      "h": 188
+    },
+    "2D": {
+      "x": 142,
+      "y": 223,
+      "w": 108,
+      "h": 188
+    },
+    "3D": {
+      "x": 252,
+      "y": 224,
+      "w": 107,
+      "h": 187
+    },
+    "4D": {
+      "x": 362,
+      "y": 224,
+      "w": 105,
+      "h": 187
+    },
+    "5D": {
+      "x": 470,
+      "y": 224,
+      "w": 105,
+      "h": 187
+    },
+    "6D": {
+      "x": 577,
+      "y": 224,
+      "w": 105,
+      "h": 187
+    },
+    "7D": {
+      "x": 685,
+      "y": 224,
+      "w": 105,
+      "h": 187
+    },
+    "8D": {
+      "x": 793,
+      "y": 224,
+      "w": 106,
+      "h": 187
+    },
+    "9D": {
+      "x": 900,
+      "y": 224,
+      "w": 105,
+      "h": 187
+    },
+    "10D": {
+      "x": 1007,
+      "y": 224,
+      "w": 99,
+      "h": 187
+    },
+    "JD": {
+      "x": 1107,
+      "y": 224,
+      "w": 104,
+      "h": 187
+    },
+    "QD": {
+      "x": 1213,
+      "y": 223,
+      "w": 107,
+      "h": 188
+    },
+    "KD": {
+      "x": 1322,
+      "y": 223,
+      "w": 112,
+      "h": 188
+    },
+    "AC": {
+      "x": 15,
+      "y": 424,
+      "w": 125,
+      "h": 194
+    },
+    "2C": {
+      "x": 142,
+      "y": 424,
+      "w": 108,
+      "h": 194
+    },
+    "3C": {
+      "x": 252,
+      "y": 424,
+      "w": 107,
+      "h": 194
+    },
+    "4C": {
+      "x": 362,
+      "y": 424,
+      "w": 105,
+      "h": 194
+    },
+    "5C": {
+      "x": 469,
+      "y": 424,
+      "w": 105,
+      "h": 193
+    },
+    "6C": {
+      "x": 576,
+      "y": 424,
+      "w": 106,
+      "h": 192
+    },
+    "7C": {
+      "x": 685,
+      "y": 424,
+      "w": 105,
+      "h": 192
+    },
+    "8C": {
+      "x": 793,
+      "y": 425,
+      "w": 106,
+      "h": 191
+    },
+    "9C": {
+      "x": 900,
+      "y": 425,
+      "w": 105,
+      "h": 191
+    },
+    "10C": {
+      "x": 1007,
+      "y": 425,
+      "w": 99,
+      "h": 191
+    },
+    "JC": {
+      "x": 1107,
+      "y": 425,
+      "w": 104,
+      "h": 192
+    },
+    "QC": {
+      "x": 1213,
+      "y": 426,
+      "w": 108,
+      "h": 191
+    },
+    "KC": {
+      "x": 1322,
+      "y": 425,
+      "w": 112,
+      "h": 192
+    },
+    "AS": {
+      "x": 15,
+      "y": 631,
+      "w": 125,
+      "h": 196
+    },
+    "2S": {
+      "x": 142,
+      "y": 631,
+      "w": 108,
+      "h": 196
+    },
+    "3S": {
+      "x": 252,
+      "y": 631,
+      "w": 107,
+      "h": 196
+    },
+    "4S": {
+      "x": 361,
+      "y": 631,
+      "w": 106,
+      "h": 197
+    },
+    "5S": {
+      "x": 470,
+      "y": 631,
+      "w": 104,
+      "h": 196
+    },
+    "6S": {
+      "x": 576,
+      "y": 631,
+      "w": 106,
+      "h": 196
+    },
+    "7S": {
+      "x": 685,
+      "y": 631,
+      "w": 105,
+      "h": 196
+    },
+    "8S": {
+      "x": 792,
+      "y": 631,
+      "w": 107,
+      "h": 196
+    },
+    "9S": {
+      "x": 901,
+      "y": 632,
+      "w": 104,
+      "h": 196
+    },
+    "10S": {
+      "x": 1007,
+      "y": 632,
+      "w": 99,
+      "h": 196
+    },
+    "JS": {
+      "x": 1107,
+      "y": 632,
+      "w": 104,
+      "h": 196
+    },
+    "QS": {
+      "x": 1213,
+      "y": 632,
+      "w": 108,
+      "h": 196
+    },
+    "KS": {
+      "x": 1322,
+      "y": 632,
+      "w": 112,
+      "h": 196
+    }
+  },
+  "extras": {
+    "joker1": {
+      "x": 15,
+      "y": 833,
+      "w": 155,
+      "h": 234
+    },
+    "joker2": {
+      "x": 172,
+      "y": 834,
+      "w": 158,
+      "h": 233
+    },
+    "back": {
+      "x": 332,
+      "y": 834,
+      "w": 103,
+      "h": 235
+    }
+  },
+  "jokers": 2,
+  "verification": {
+    "AH": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "2H": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 2,
+      "pipsOk": true
+    },
+    "3H": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 3,
+      "pipsOk": true
+    },
+    "4H": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 4,
+      "pipsOk": true
+    },
+    "5H": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 5,
+      "pipsOk": true
+    },
+    "6H": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 6,
+      "pipsOk": true
+    },
+    "7H": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 7,
+      "pipsOk": true
+    },
+    "8H": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 8,
+      "pipsOk": true
+    },
+    "9H": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 9,
+      "pipsOk": true
+    },
+    "10H": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 12,
+      "pipsOk": false
+    },
+    "JH": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "QH": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "KH": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "AD": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "2D": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 2,
+      "pipsOk": true
+    },
+    "3D": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 3,
+      "pipsOk": true
+    },
+    "4D": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 5,
+      "pipsOk": false
+    },
+    "5D": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 5,
+      "pipsOk": true
+    },
+    "6D": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 6,
+      "pipsOk": true
+    },
+    "7D": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 7,
+      "pipsOk": true
+    },
+    "8D": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 8,
+      "pipsOk": true
+    },
+    "9D": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 10,
+      "pipsOk": false
+    },
+    "10D": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 12,
+      "pipsOk": false
+    },
+    "JD": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "QD": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "KD": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "AC": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "2C": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 2,
+      "pipsOk": true
+    },
+    "3C": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 3,
+      "pipsOk": true
+    },
+    "4C": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 4,
+      "pipsOk": true
+    },
+    "5C": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 5,
+      "pipsOk": true
+    },
+    "6C": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 6,
+      "pipsOk": true
+    },
+    "7C": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 7,
+      "pipsOk": true
+    },
+    "8C": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 8,
+      "pipsOk": true
+    },
+    "9C": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 9,
+      "pipsOk": true
+    },
+    "10C": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 11,
+      "pipsOk": false
+    },
+    "JC": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "QC": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "KC": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "AS": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "2S": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 2,
+      "pipsOk": true
+    },
+    "3S": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 3,
+      "pipsOk": true
+    },
+    "4S": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 4,
+      "pipsOk": true
+    },
+    "5S": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 5,
+      "pipsOk": true
+    },
+    "6S": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 6,
+      "pipsOk": true
+    },
+    "7S": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 7,
+      "pipsOk": true
+    },
+    "8S": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 8,
+      "pipsOk": true
+    },
+    "9S": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 9,
+      "pipsOk": true
+    },
+    "10S": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 11,
+      "pipsOk": false
+    },
+    "JS": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "QS": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "KS": {
+      "colour": "black",
+      "colourOk": true
+    }
+  },
+  "automatedIssues": [
+    "10H: 12 pips counted",
+    "4D: 5 pips counted",
+    "9D: 10 pips counted",
+    "10D: 12 pips counted",
+    "10C: 11 pips counted",
+    "10S: 11 pips counted"
+  ],
+  "reviewedOk": {
+    "4D": "Pip count confirmed by eye; on these narrow cards the corner suit sits against the pips.",
+    "9D": "Pip count confirmed by eye; on these narrow cards the corner suit sits against the pips.",
+    "10D": "Pip count confirmed by eye; on these narrow cards the corner suit sits against the pips.",
+    "10H": "Pip count confirmed by eye; on these narrow cards the corner suit sits against the pips.",
+    "10C": "Pip count confirmed by eye; on these narrow cards the corner suit sits against the pips.",
+    "10S": "Pip count confirmed by eye; on these narrow cards the corner suit sits against the pips."
+  },
+  "artworkIssues": [
+    {
+      "cards": [],
+      "issue": "The sheet named \"jak theme\" is a celestial design (winged hearts, globes); it does not depict Jak Gold. Mapped to the Jak Gold deck by file name \u2014 confirm this is intended."
+    }
+  ]
+}

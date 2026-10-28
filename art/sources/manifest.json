@@ -1,0 +1,240 @@
+{
+  "about": "Uploaded card sheets and how their rows are ordered. Read by scripts/art/extract_cards.py. Row order was read from each sheet's indices, not assumed.",
+  "decks": [
+    {
+      "id": "classic",
+      "name": "BlackJak Standard",
+      "source": "blackjak-cards-standard.png",
+      "background": {
+        "type": "alpha"
+      },
+      "rows": ["hearts", "diamonds", "clubs", "spades"],
+      "extras": ["joker1", "joker2", "back"],
+      "review": {
+        "reviewedOk": {
+          "10S": "10 pips counted by eye; two pips touch in the automated count."
+        },
+        "artworkIssues": []
+      }
+    },
+    {
+      "id": "inspire",
+      "name": "BlackJak INSPIRE",
+      "source": "blackjak-cards-inspire-theme.png",
+      "background": {
+        "type": "alpha"
+      },
+      "rows": ["spades", "hearts", "clubs", "diamonds"],
+      "extras": ["joker1", "joker2", "back"],
+      "review": {
+        "reviewedOk": {},
+        "artworkIssues": [
+          {
+            "cards": [
+              "AH",
+              "2H",
+              "3H",
+              "4H",
+              "5H",
+              "6H",
+              "7H",
+              "8H",
+              "9H",
+              "10H",
+              "JH",
+              "QH",
+              "KH",
+              "AD",
+              "2D",
+              "3D",
+              "4D",
+              "5D",
+              "6D",
+              "7D",
+              "8D",
+              "9D",
+              "10D",
+              "JD",
+              "QD",
+              "KD"
+            ],
+            "issue": "Hearts and diamonds are printed in black, so red and black suits can only be told apart by shape. Solitaire colour rules still work, but red versions are recommended.",
+            "checks": ["colour"]
+          },
+          {
+            "cards": ["7S", "7H", "7C"],
+            "issue": "Six pips instead of seven, and the bottom index reads \"Z\" instead of an inverted 7.",
+            "checks": ["pips"]
+          },
+          {
+            "cards": ["AS"],
+            "issue": "Bottom-right index letter is malformed."
+          },
+          {
+            "cards": ["JH", "QH", "KH"],
+            "issue": "Bottom-right suit symbol is a spade instead of a heart (top-left index is correct)."
+          },
+          {
+            "cards": ["7D"],
+            "issue": "Bottom index 7 is not inverted like the other cards."
+          }
+        ]
+      }
+    },
+    {
+      "id": "jak_gold",
+      "name": "BlackJak Jak Gold",
+      "source": "blackjak-cards-jak-theme.png",
+      "background": {
+        "type": "alpha"
+      },
+      "rows": ["hearts", "diamonds", "clubs", "spades"],
+      "extras": ["joker1", "joker2", "back"],
+      "review": {
+        "reviewedOk": {
+          "4D": "Pip count confirmed by eye; on these narrow cards the corner suit sits against the pips.",
+          "9D": "Pip count confirmed by eye; on these narrow cards the corner suit sits against the pips.",
+          "10D": "Pip count confirmed by eye; on these narrow cards the corner suit sits against the pips.",
+          "10H": "Pip count confirmed by eye; on these narrow cards the corner suit sits against the pips.",
+          "10C": "Pip count confirmed by eye; on these narrow cards the corner suit sits against the pips.",
+          "10S": "Pip count confirmed by eye; on these narrow cards the corner suit sits against the pips."
+        },
+        "artworkIssues": [
+          {
+            "cards": [],
+            "issue": "The sheet named \"jak theme\" is a celestial design (winged hearts, globes); it does not depict Jak Gold. Mapped to the Jak Gold deck by file name — confirm this is intended."
+          }
+        ]
+      }
+    },
+    {
+      "id": "dantes_world",
+      "name": "Dante's World",
+      "source": "Dante's World Neon Monster Card Atlas.png",
+      "background": {
+        "type": "color",
+        "color": [10, 10, 4],
+        "tolerance": 70
+      },
+      "rows": ["hearts", "diamonds", "clubs", "spades"],
+      "extras": ["joker1", "joker2", "back"],
+      "review": {
+        "reviewedOk": {},
+        "artworkIssues": [
+          {
+            "cards": ["5H", "5D", "5C", "5S"],
+            "issue": "Four pips instead of five (indices are correct).",
+            "checks": ["pips"]
+          },
+          {
+            "cards": ["7H", "7D", "7C", "7S"],
+            "issue": "Six pips instead of seven (indices are correct).",
+            "checks": ["pips"]
+          }
+        ]
+      }
+    },
+    {
+      "id": "fredericksburg",
+      "name": "Fredericksburg Heritage",
+      "source": "Fredericksburg Heritage Playing Card Sheet.png",
+      "background": {
+        "type": "alpha"
+      },
+      "rows": ["hearts", "diamonds", "clubs", "spades"],
+      "extras": ["joker1", "joker2", "back"],
+      "review": {
+        "reviewedOk": {},
+        "artworkIssues": [
+          {
+            "cards": ["10S"],
+            "issue": "Eight pips instead of ten (indices are correct).",
+            "checks": ["pips"]
+          }
+        ]
+      }
+    },
+    {
+      "id": "fredericksburg_downtown",
+      "name": "Downtown Fredericksburg Collector",
+      "source": "Downtown Fredericksburg Collector Deck.png",
+      "background": {
+        "type": "color",
+        "color": [27, 85, 48],
+        "tolerance": 70
+      },
+      "rows": ["clubs", "diamonds", "hearts", "spades"],
+      "extras": ["joker1", "joker2", "back"],
+      "pipCards": false,
+      "review": {
+        "reviewedOk": {},
+        "artworkIssues": [
+          {
+            "cards": [],
+            "issue": "The card back is drawn landscape; it is turned upright for play, so its title reads sideways. A portrait back is recommended."
+          },
+          {
+            "cards": [],
+            "issue": "Both jokers are shorter than the other cards (they appear cut off by the bottom of the sheet). Jokers are not used by the five games."
+          }
+        ]
+      }
+    },
+    {
+      "id": "eastern_woodlands",
+      "name": "Eastern Woodlands",
+      "source": "Eastern Woodland Playing Card Sprite Sheet.png",
+      "background": {
+        "type": "color",
+        "color": [8, 8, 8],
+        "tolerance": 60
+      },
+      "rows": ["spades", "hearts", "diamonds", "clubs"],
+      "pipCards": false,
+      "extras": ["back", "back_turtle"],
+      "review": {
+        "reviewedOk": {},
+        "artworkIssues": [
+          {
+            "cards": ["QS"],
+            "issue": "Bottom-right index reads \"0\" instead of Q."
+          },
+          {
+            "cards": ["KS"],
+            "issue": "Bottom-right index reads \"X\" instead of K."
+          },
+          {
+            "cards": ["3H"],
+            "issue": "Bottom-right index 3 is malformed."
+          },
+          {
+            "cards": [],
+            "issue": "Both card backs are drawn landscape and are turned upright for play. The sheet has no jokers."
+          }
+        ]
+      }
+    },
+    {
+      "id": "spycraft",
+      "name": "Spycraft",
+      "source": "Vintage spycraft playing card sprite sheet.png",
+      "background": {
+        "type": "alpha"
+      },
+      "rows": ["hearts", "diamonds", "clubs", "spades"],
+      "extras": ["joker1", "joker2", "back"],
+      "review": {
+        "reviewedOk": {
+          "2S": "Two pips confirmed by eye."
+        },
+        "artworkIssues": [
+          {
+            "cards": ["10S"],
+            "issue": "Eight pips instead of ten (indices are correct).",
+            "checks": ["pips"]
+          }
+        ]
+      }
+    }
+  ]
+}

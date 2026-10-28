@@ -1,19 +1,18 @@
-# Dante's World — artwork drop folder
+# Dante's World — extracted deck
 
-Status: **pending**
+Built by `scripts/art/extract_cards.py` from `art/sources/Dante's World Neon Monster Card Atlas.png` (1658×949). Do not edit these files by hand; replace the source sheet and run `npm run art:cards`.
 
-Upload the commissioned artwork for this deck here, then set `assets.status` to `'ready'`
-and fill in `artist` in `src/decks/definitions/dantes_world.ts`.
+| File           | Contents                                                     |
+| -------------- | ------------------------------------------------------------ |
+| `faces.webp`   | 52 faces, 13 × 4 grid (A…K; ♠ ♥ ♦ ♣), 134×187 px cells       |
+| `back.webp`    | card back                                                    |
+| `extras.webp`  | jokers (not used by the five games)                          |
+| `preview.webp` | catalog preview fan                                          |
+| `atlas.json`   | source frame of every card, identity checks and review notes |
 
-## Card faces
+Source row order: hearts, diamonds, clubs, spades. Faces verified: 52/52.
 
-One sprite sheet, `faces.webp` (PNG accepted as a fallback). Grid of 13 columns × 4 rows: columns A, 2 … 10, J, Q, K; rows ♠ ♥ ♦ ♣. Any cell size works; all cells must be equal.
+## Artwork notes
 
-## Required files
-
-- face sprite sheet: `faces.webp` or `faces.png`
-- card back: `back.webp` or `back.png`
-- preview image: `preview.webp` or `preview.png`
-
-Check with `npm run validate:decks`. See `public/assets/cards/README.md` for other layouts
-(individual images, explicit frames, TexturePacker JSON) and alternate artwork.
+- 5H, 5D, 5C, 5S: Four pips instead of five (indices are correct).
+- 7H, 7D, 7C, 7S: Six pips instead of seven (indices are correct).

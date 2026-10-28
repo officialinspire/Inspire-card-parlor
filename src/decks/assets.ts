@@ -1,4 +1,4 @@
-import type { DeckAssets } from './types';
+import type { ArtistCredit, DeckAssets } from './types';
 
 /**
  * Default asset layout every deck starts with until its artwork arrives:
@@ -21,3 +21,26 @@ export function standardAssets(basePath: string): DeckAssets {
 }
 
 export const MATURE_ASSET_ROOT = 'assets/cards/mature/';
+
+/** Credit for the commissioned artwork uploaded by the studio; replace with the illustrator once confirmed. */
+export const studioCredit = (): ArtistCredit => ({
+  name: 'OFFICIAL INSPIRE',
+  url: 'https://www.inspireclothing.art',
+  note: 'Commissioned artwork. Individual illustrator credit to be confirmed.',
+});
+
+/**
+ * Layout written by scripts/art/extract_cards.py from an uploaded sprite
+ * sheet: a normalized 13 × 4 faces.webp (A…K; ♠ ♥ ♦ ♣), back.webp and
+ * preview.webp. The cards' source frames and identity checks are recorded in
+ * atlas.json next to them.
+ */
+export function extractedAssets(basePath: string): DeckAssets {
+  return {
+    basePath,
+    status: 'ready',
+    faces: { type: 'atlas', image: { path: 'faces', formats: ['webp'] }, grid: { columns: 13, rows: 4 } },
+    back: { path: 'back', formats: ['webp'] },
+    preview: { path: 'preview', formats: ['webp'] },
+  };
+}

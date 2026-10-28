@@ -25,6 +25,8 @@ export interface DeckReport {
   issues: DeckIssue[];
   requiredFiles: RequiredFile[];
   missingFiles: RequiredFile[];
+  /** Set for decks cut from an uploaded sprite sheet (atlas.json). */
+  atlas?: { verifiedFaces: number; artworkIssues: number };
 }
 
 const ID_RE = /^[a-z0-9_]+$/;

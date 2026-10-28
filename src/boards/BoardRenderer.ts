@@ -46,13 +46,17 @@ export function ambientLayer(kind: AmbientKind): HTMLElement {
  */
 export function applyBoard(table: HTMLElement, surface: HTMLElement, board: BoardDefinition, opts: BoardOptions): void {
   table.dataset.board = board.id;
-  table.dataset.boardTone = isLight(board.surface.base) ? 'light' : 'dark';
+  // Tone follows the board's text colour: mid-tone surfaces (wood) are paired
+  // with dark ink, so they get the light-board panels that suit dark ink.
+  table.dataset.boardTone = isLight(board.ink) ? 'dark' : 'light';
   table.classList.toggle('high-contrast', opts.highContrast);
   table.style.setProperty('--felt', board.surface.felt);
   table.style.setProperty('--rim', board.surface.rim);
   table.style.setProperty('--board-ink', board.ink);
   table.style.setProperty('--board-base', board.surface.base);
   table.style.removeProperty('--board-art');
+  // The CSS surface shows until (and unless) the artwork has loaded.
+  table.dataset.boardArt = 'fallback';
 
   surface.querySelector(':scope > .ambient')?.remove();
   if (opts.ambient && board.ambient !== 'none') surface.prepend(ambientLayer(board.ambient));
@@ -60,12 +64,20 @@ export function applyBoard(table: HTMLElement, surface: HTMLElement, board: Boar
   if (board.assets.status === 'ready') {
     void assetManager.loadImage(board.assets.basePath, board.assets.background).then((img) => {
       if (img && table.dataset.board === board.id) {
-        table.style.setProperty('--board-art', `url("${img.url}")`);
+        table.style.setProperty('--board-art', cssUrl(img.url));
         table.dataset.boardArt = 'image';
       }
     });
-  } else table.dataset.boardArt = 'fallback';
+  }
 }
+
+/**
+ * url() for a custom property. Relative URLs inside custom properties resolve
+ * against the stylesheet that uses them (dist/assets/…), not the page, so
+ * they are made absolute first.
+ */
+export const cssUrl = (url: string) =>
+  `url("${typeof document === 'undefined' ? url : new URL(url, document.baseURI).href}")`;
 
 /** Miniature board for tiles, chips and dialogs. */
 export function boardSwatch(board: BoardDefinition, opts: { ambient?: boolean; className?: string } = {}): HTMLElement {
@@ -78,7 +90,7 @@ export function boardSwatch(board: BoardDefinition, opts: { ambient?: boolean; c
   if (opts.ambient && board.ambient !== 'none') el.appendChild(ambientLayer(board.ambient));
   if (board.assets.status === 'ready') {
     void assetManager.loadImage(board.assets.basePath, board.assets.preview).then((img) => {
-      if (img) el.style.setProperty('--board-art', `url("${img.url}")`);
+      if (img) el.style.setProperty('--board-art', cssUrl(img.url));
     });
   }
   return el;

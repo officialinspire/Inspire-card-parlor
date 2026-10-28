@@ -155,7 +155,7 @@ test('card back is chosen independently of the deck', async ({ page }) => {
   await expect(page.locator(`${CURRENT} [data-back="jak_gold"]`)).toHaveAttribute('aria-pressed', 'true');
   await clickNav(page, 'home', 'MAIN_MENU');
   await openKlondike(page);
-  // Faces from the Classic deck, backs from Jak Gold.
+  // Faces from the BlackJak Standard (classic) deck, backs from Jak Gold.
   await expect(page.locator(`${CURRENT} .sol-card.card-face`).first()).toHaveAttribute('data-theme', /^classic@/);
   await expect(page.locator(`${CURRENT} .sol-card.card-back`).first()).toHaveAttribute('data-theme', /^jak_gold@/);
 });
@@ -189,7 +189,7 @@ test('changing board, deck or back mid-game keeps the game exactly as it was', a
   await expect(page.locator(`${CURRENT} .sol-card.card-back`).first()).toHaveAttribute('data-theme', /^jak_gold@/);
   expect(await moves(page)).toBe(1);
   expect(await layout()).toBe(before);
-  await expect(page.locator(`${CURRENT} .screen-subtitle`)).toHaveText('INSPIRE · Woodland Clearing');
+  await expect(page.locator(`${CURRENT} .screen-subtitle`)).toHaveText('BlackJak INSPIRE · Woodland Clearing');
 });
 
 test('ambient layers and high contrast are optional', async ({ page }) => {

@@ -74,5 +74,5 @@ test('adults can opt in; adult art never appears in ordinary previews; opting ou
   await openContentSettings(page);
   await page.locator(`${CURRENT} [data-setting="matureContent"]`).click();
   await clickNav(page, 'home', 'MAIN_MENU');
-  await expect(page.locator(`${CURRENT} [data-value="deck"]`)).toHaveText('Classic');
+  await expect(page.locator(`${CURRENT} [data-value="deck"]`)).toHaveText('BlackJak Standard');
 });

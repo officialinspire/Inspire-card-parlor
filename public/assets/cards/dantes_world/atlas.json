@@ -1,0 +1,659 @@
+{
+  "deck": "dantes_world",
+  "source": "Dante's World Neon Monster Card Atlas.png",
+  "sourceSize": {
+    "width": 1658,
+    "height": 949
+  },
+  "sourceRows": ["hearts", "diamonds", "clubs", "spades"],
+  "cell": {
+    "width": 134,
+    "height": 187
+  },
+  "layout": {
+    "columns": 13,
+    "rows": 4,
+    "suitOrder": ["spades", "hearts", "diamonds", "clubs"],
+    "rankOrder": ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
+  },
+  "frames": {
+    "AH": {
+      "x": 8,
+      "y": 7,
+      "w": 124,
+      "h": 180
+    },
+    "2H": {
+      "x": 136,
+      "y": 7,
+      "w": 116,
+      "h": 180
+    },
+    "3H": {
+      "x": 256,
+      "y": 7,
+      "w": 122,
+      "h": 180
+    },
+    "4H": {
+      "x": 382,
+      "y": 7,
+      "w": 123,
+      "h": 180
+    },
+    "5H": {
+      "x": 509,
+      "y": 7,
+      "w": 121,
+      "h": 180
+    },
+    "6H": {
+      "x": 634,
+      "y": 7,
+      "w": 125,
+      "h": 180
+    },
+    "7H": {
+      "x": 763,
+      "y": 7,
+      "w": 127,
+      "h": 180
+    },
+    "8H": {
+      "x": 895,
+      "y": 7,
+      "w": 125,
+      "h": 181
+    },
+    "9H": {
+      "x": 1024,
+      "y": 8,
+      "w": 123,
+      "h": 180
+    },
+    "10H": {
+      "x": 1152,
+      "y": 7,
+      "w": 124,
+      "h": 181
+    },
+    "JH": {
+      "x": 1280,
+      "y": 7,
+      "w": 124,
+      "h": 180
+    },
+    "QH": {
+      "x": 1408,
+      "y": 7,
+      "w": 123,
+      "h": 180
+    },
+    "KH": {
+      "x": 1536,
+      "y": 7,
+      "w": 119,
+      "h": 180
+    },
+    "AD": {
+      "x": 8,
+      "y": 192,
+      "w": 124,
+      "h": 179
+    },
+    "2D": {
+      "x": 136,
+      "y": 192,
+      "w": 116,
+      "h": 179
+    },
+    "3D": {
+      "x": 256,
+      "y": 192,
+      "w": 122,
+      "h": 179
+    },
+    "4D": {
+      "x": 382,
+      "y": 192,
+      "w": 123,
+      "h": 179
+    },
+    "5D": {
+      "x": 509,
+      "y": 192,
+      "w": 121,
+      "h": 179
+    },
+    "6D": {
+      "x": 634,
+      "y": 192,
+      "w": 125,
+      "h": 179
+    },
+    "7D": {
+      "x": 763,
+      "y": 192,
+      "w": 127,
+      "h": 179
+    },
+    "8D": {
+      "x": 895,
+      "y": 192,
+      "w": 125,
+      "h": 179
+    },
+    "9D": {
+      "x": 1024,
+      "y": 192,
+      "w": 123,
+      "h": 179
+    },
+    "10D": {
+      "x": 1152,
+      "y": 192,
+      "w": 124,
+      "h": 179
+    },
+    "JD": {
+      "x": 1280,
+      "y": 192,
+      "w": 124,
+      "h": 179
+    },
+    "QD": {
+      "x": 1408,
+      "y": 192,
+      "w": 123,
+      "h": 179
+    },
+    "KD": {
+      "x": 1536,
+      "y": 192,
+      "w": 119,
+      "h": 179
+    },
+    "AC": {
+      "x": 8,
+      "y": 376,
+      "w": 124,
+      "h": 185
+    },
+    "2C": {
+      "x": 136,
+      "y": 376,
+      "w": 116,
+      "h": 185
+    },
+    "3C": {
+      "x": 256,
+      "y": 376,
+      "w": 122,
+      "h": 185
+    },
+    "4C": {
+      "x": 382,
+      "y": 375,
+      "w": 123,
+      "h": 186
+    },
+    "5C": {
+      "x": 509,
+      "y": 375,
+      "w": 121,
+      "h": 185
+    },
+    "6C": {
+      "x": 634,
+      "y": 375,
+      "w": 125,
+      "h": 185
+    },
+    "7C": {
+      "x": 763,
+      "y": 375,
+      "w": 127,
+      "h": 186
+    },
+    "8C": {
+      "x": 895,
+      "y": 376,
+      "w": 125,
+      "h": 185
+    },
+    "9C": {
+      "x": 1024,
+      "y": 376,
+      "w": 123,
+      "h": 185
+    },
+    "10C": {
+      "x": 1151,
+      "y": 376,
+      "w": 125,
+      "h": 185
+    },
+    "JC": {
+      "x": 1280,
+      "y": 375,
+      "w": 124,
+      "h": 185
+    },
+    "QC": {
+      "x": 1408,
+      "y": 375,
+      "w": 123,
+      "h": 185
+    },
+    "KC": {
+      "x": 1536,
+      "y": 375,
+      "w": 119,
+      "h": 185
+    },
+    "AS": {
+      "x": 8,
+      "y": 565,
+      "w": 124,
+      "h": 186
+    },
+    "2S": {
+      "x": 136,
+      "y": 565,
+      "w": 116,
+      "h": 186
+    },
+    "3S": {
+      "x": 256,
+      "y": 565,
+      "w": 122,
+      "h": 186
+    },
+    "4S": {
+      "x": 382,
+      "y": 565,
+      "w": 123,
+      "h": 186
+    },
+    "5S": {
+      "x": 509,
+      "y": 565,
+      "w": 120,
+      "h": 186
+    },
+    "6S": {
+      "x": 634,
+      "y": 565,
+      "w": 125,
+      "h": 186
+    },
+    "7S": {
+      "x": 763,
+      "y": 565,
+      "w": 127,
+      "h": 186
+    },
+    "8S": {
+      "x": 895,
+      "y": 565,
+      "w": 125,
+      "h": 186
+    },
+    "9S": {
+      "x": 1024,
+      "y": 565,
+      "w": 123,
+      "h": 186
+    },
+    "10S": {
+      "x": 1152,
+      "y": 565,
+      "w": 124,
+      "h": 186
+    },
+    "JS": {
+      "x": 1280,
+      "y": 565,
+      "w": 124,
+      "h": 186
+    },
+    "QS": {
+      "x": 1408,
+      "y": 565,
+      "w": 123,
+      "h": 185
+    },
+    "KS": {
+      "x": 1536,
+      "y": 565,
+      "w": 120,
+      "h": 185
+    }
+  },
+  "extras": {
+    "joker1": {
+      "x": 8,
+      "y": 756,
+      "w": 161,
+      "h": 183
+    },
+    "joker2": {
+      "x": 175,
+      "y": 756,
+      "w": 155,
+      "h": 183
+    },
+    "back": {
+      "x": 337,
+      "y": 756,
+      "w": 146,
+      "h": 183
+    }
+  },
+  "jokers": 2,
+  "verification": {
+    "AH": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "2H": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 2,
+      "pipsOk": true
+    },
+    "3H": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 3,
+      "pipsOk": true
+    },
+    "4H": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 4,
+      "pipsOk": true
+    },
+    "5H": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 4,
+      "pipsOk": false
+    },
+    "6H": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 6,
+      "pipsOk": true
+    },
+    "7H": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 6,
+      "pipsOk": false
+    },
+    "8H": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 8,
+      "pipsOk": true
+    },
+    "9H": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 9,
+      "pipsOk": true
+    },
+    "10H": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 10,
+      "pipsOk": true
+    },
+    "JH": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "QH": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "KH": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "AD": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "2D": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 2,
+      "pipsOk": true
+    },
+    "3D": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 3,
+      "pipsOk": true
+    },
+    "4D": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 4,
+      "pipsOk": true
+    },
+    "5D": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 4,
+      "pipsOk": false
+    },
+    "6D": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 6,
+      "pipsOk": true
+    },
+    "7D": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 6,
+      "pipsOk": false
+    },
+    "8D": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 8,
+      "pipsOk": true
+    },
+    "9D": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 9,
+      "pipsOk": true
+    },
+    "10D": {
+      "colour": "red",
+      "colourOk": true,
+      "pips": 10,
+      "pipsOk": true
+    },
+    "JD": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "QD": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "KD": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "AC": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "2C": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 2,
+      "pipsOk": true
+    },
+    "3C": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 3,
+      "pipsOk": true
+    },
+    "4C": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 4,
+      "pipsOk": true
+    },
+    "5C": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 4,
+      "pipsOk": false
+    },
+    "6C": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 6,
+      "pipsOk": true
+    },
+    "7C": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 6,
+      "pipsOk": false
+    },
+    "8C": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 8,
+      "pipsOk": true
+    },
+    "9C": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 9,
+      "pipsOk": true
+    },
+    "10C": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 10,
+      "pipsOk": true
+    },
+    "JC": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "QC": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "KC": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "AS": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "2S": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 2,
+      "pipsOk": true
+    },
+    "3S": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 3,
+      "pipsOk": true
+    },
+    "4S": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 4,
+      "pipsOk": true
+    },
+    "5S": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 4,
+      "pipsOk": false
+    },
+    "6S": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 6,
+      "pipsOk": true
+    },
+    "7S": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 6,
+      "pipsOk": false
+    },
+    "8S": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 8,
+      "pipsOk": true
+    },
+    "9S": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 9,
+      "pipsOk": true
+    },
+    "10S": {
+      "colour": "black",
+      "colourOk": true,
+      "pips": 10,
+      "pipsOk": true
+    },
+    "JS": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "QS": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "KS": {
+      "colour": "black",
+      "colourOk": true
+    }
+  },
+  "automatedIssues": [
+    "5H: 4 pips counted",
+    "7H: 6 pips counted",
+    "5D: 4 pips counted",
+    "7D: 6 pips counted",
+    "5C: 4 pips counted",
+    "7C: 6 pips counted",
+    "5S: 4 pips counted",
+    "7S: 6 pips counted"
+  ],
+  "reviewedOk": {},
+  "artworkIssues": [
+    {
+      "cards": ["5H", "5D", "5C", "5S"],
+      "issue": "Four pips instead of five (indices are correct).",
+      "checks": ["pips"]
+    },
+    {
+      "cards": ["7H", "7D", "7C", "7S"],
+      "issue": "Six pips instead of seven (indices are correct).",
+      "checks": ["pips"]
+    }
+  ]
+}

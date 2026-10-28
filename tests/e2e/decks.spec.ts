@@ -35,6 +35,7 @@ test('collection lists the deck registry with mature decks hidden by default', a
       'dantes_world',
       'eastern_woodlands',
       'fredericksburg',
+      'fredericksburg_downtown',
       'freemasonry',
       'inspire',
       'jak_gold',
@@ -48,11 +49,24 @@ test('collection lists the deck registry with mature decks hidden by default', a
 test('deck details show attribution status and fallback cards', async ({ page }) => {
   await enterParlor(page);
   await clickNav(page, 'COLLECTION');
+  // A deck whose artwork has not been uploaded yet.
+  await clickInPager(page, '[data-deck="freemasonry"]');
+  const pending = page.locator('[data-deck-detail="freemasonry"]');
+  await expect(pending).toContainText('Artist credit coming with the artwork');
+  await expect(pending).toContainText('Art coming soon');
+  await expect(pending.locator('.card[data-art="fallback"]')).toHaveCount(4);
+  await page.keyboard.press('Escape');
+  await expect(pending).toBeHidden();
+
+  // A deck built from its uploaded sprite sheet: preview image and credit.
   await clickInPager(page, '[data-deck="inspire"]');
-  const detail = page.locator('[data-deck-detail="inspire"]');
-  await expect(detail).toContainText('Artist credit coming with the artwork');
-  await expect(detail).toContainText('Art coming soon');
-  await expect(detail.locator('.card[data-art="fallback"]')).toHaveCount(4);
+  const ready = page.locator('[data-deck-detail="inspire"]');
+  await expect(ready).toContainText('OFFICIAL INSPIRE');
+  await expect(ready).not.toContainText('Art coming soon');
+  await expect(ready.locator('[data-preview="image"] img')).toHaveAttribute(
+    'src',
+    /assets\/cards\/inspire\/preview\.webp$/,
+  );
   await page.keyboard.press('Escape');
 });
 
@@ -104,8 +118,11 @@ test('placeholder artwork renders cards from the sprite-sheet template', async (
   await page.locator(`${CURRENT} .menu-grid [data-nav="COLLECTION"]`).click();
   await expectScreen(page, 'COLLECTION');
   await page.locator(`${CURRENT} [data-tab="gallery"]`).click();
+  // The template stands in only for decks whose artwork is still pending.
+  await page.locator(`${CURRENT} select[data-gallery-deck]`).selectOption('freemasonry');
 
-  const card = page.locator(`${CURRENT} .gallery-cell .card[data-code="AS"]`);
+  // Scope to the new deck's card so the previous deck's card can't be read mid re-render.
+  const card = page.locator(`${CURRENT} .gallery-cell .card[data-code="AS"][data-theme^="freemasonry"]`);
   await expect(card).toHaveAttribute('data-art', 'atlas');
   const style = await card.locator('.card-art-img').evaluate((el) => {
     const cs = getComputedStyle(el);

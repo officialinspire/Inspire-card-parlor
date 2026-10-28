@@ -80,7 +80,7 @@ test('remembers deck and board per game across reloads', async ({ page }) => {
   await clickNav(page, 'GAMEPLAY');
   await page.locator('[data-dialog-action="deal"]').click();
   await clickNav(page, 'home', 'MAIN_MENU');
-  await expect(page.locator(`${CURRENT} [data-value="deck"]`)).toHaveText('Fredericksburg');
+  await expect(page.locator(`${CURRENT} [data-value="deck"]`)).toHaveText('Fredericksburg Heritage');
   await expect(page.locator(`${CURRENT} [data-value="board"]`)).toHaveText('Downtown Café');
 
   // Klondike with the classic deck on Woodland Clearing.

@@ -1,0 +1,576 @@
+{
+  "deck": "fredericksburg_downtown",
+  "source": "Downtown Fredericksburg Collector Deck.png",
+  "sourceSize": {
+    "width": 1536,
+    "height": 1024
+  },
+  "sourceRows": ["clubs", "diamonds", "hearts", "spades"],
+  "cell": {
+    "width": 135,
+    "height": 209
+  },
+  "layout": {
+    "columns": 13,
+    "rows": 4,
+    "suitOrder": ["spades", "hearts", "diamonds", "clubs"],
+    "rankOrder": ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
+  },
+  "frames": {
+    "AC": {
+      "x": 6,
+      "y": 5,
+      "w": 129,
+      "h": 206
+    },
+    "2C": {
+      "x": 135,
+      "y": 5,
+      "w": 111,
+      "h": 206
+    },
+    "3C": {
+      "x": 244,
+      "y": 6,
+      "w": 112,
+      "h": 205
+    },
+    "4C": {
+      "x": 356,
+      "y": 6,
+      "w": 114,
+      "h": 205
+    },
+    "5C": {
+      "x": 469,
+      "y": 6,
+      "w": 114,
+      "h": 205
+    },
+    "6C": {
+      "x": 582,
+      "y": 6,
+      "w": 113,
+      "h": 205
+    },
+    "7C": {
+      "x": 694,
+      "y": 6,
+      "w": 113,
+      "h": 205
+    },
+    "8C": {
+      "x": 806,
+      "y": 6,
+      "w": 114,
+      "h": 205
+    },
+    "9C": {
+      "x": 920,
+      "y": 6,
+      "w": 115,
+      "h": 205
+    },
+    "10C": {
+      "x": 1034,
+      "y": 6,
+      "w": 114,
+      "h": 205
+    },
+    "JC": {
+      "x": 1148,
+      "y": 6,
+      "w": 128,
+      "h": 206
+    },
+    "QC": {
+      "x": 1276,
+      "y": 6,
+      "w": 127,
+      "h": 206
+    },
+    "KC": {
+      "x": 1403,
+      "y": 6,
+      "w": 128,
+      "h": 206
+    },
+    "AD": {
+      "x": 6,
+      "y": 223,
+      "w": 125,
+      "h": 206
+    },
+    "2D": {
+      "x": 131,
+      "y": 223,
+      "w": 114,
+      "h": 206
+    },
+    "3D": {
+      "x": 243,
+      "y": 223,
+      "w": 114,
+      "h": 207
+    },
+    "4D": {
+      "x": 356,
+      "y": 223,
+      "w": 114,
+      "h": 207
+    },
+    "5D": {
+      "x": 468,
+      "y": 223,
+      "w": 115,
+      "h": 207
+    },
+    "6D": {
+      "x": 581,
+      "y": 223,
+      "w": 116,
+      "h": 207
+    },
+    "7D": {
+      "x": 696,
+      "y": 223,
+      "w": 113,
+      "h": 206
+    },
+    "8D": {
+      "x": 808,
+      "y": 223,
+      "w": 114,
+      "h": 207
+    },
+    "9D": {
+      "x": 921,
+      "y": 223,
+      "w": 116,
+      "h": 206
+    },
+    "10D": {
+      "x": 1035,
+      "y": 223,
+      "w": 118,
+      "h": 207
+    },
+    "JD": {
+      "x": 1152,
+      "y": 223,
+      "w": 125,
+      "h": 207
+    },
+    "QD": {
+      "x": 1277,
+      "y": 223,
+      "w": 127,
+      "h": 207
+    },
+    "KD": {
+      "x": 1403,
+      "y": 223,
+      "w": 128,
+      "h": 207
+    },
+    "AH": {
+      "x": 5,
+      "y": 439,
+      "w": 126,
+      "h": 205
+    },
+    "2H": {
+      "x": 131,
+      "y": 439,
+      "w": 114,
+      "h": 205
+    },
+    "3H": {
+      "x": 243,
+      "y": 440,
+      "w": 114,
+      "h": 204
+    },
+    "4H": {
+      "x": 355,
+      "y": 440,
+      "w": 114,
+      "h": 204
+    },
+    "5H": {
+      "x": 469,
+      "y": 440,
+      "w": 113,
+      "h": 204
+    },
+    "6H": {
+      "x": 582,
+      "y": 440,
+      "w": 114,
+      "h": 204
+    },
+    "7H": {
+      "x": 694,
+      "y": 440,
+      "w": 115,
+      "h": 204
+    },
+    "8H": {
+      "x": 807,
+      "y": 440,
+      "w": 115,
+      "h": 204
+    },
+    "9H": {
+      "x": 920,
+      "y": 440,
+      "w": 118,
+      "h": 204
+    },
+    "10H": {
+      "x": 1036,
+      "y": 440,
+      "w": 119,
+      "h": 205
+    },
+    "JH": {
+      "x": 1155,
+      "y": 440,
+      "w": 124,
+      "h": 204
+    },
+    "QH": {
+      "x": 1279,
+      "y": 440,
+      "w": 126,
+      "h": 205
+    },
+    "KH": {
+      "x": 1404,
+      "y": 440,
+      "w": 126,
+      "h": 205
+    },
+    "AS": {
+      "x": 6,
+      "y": 655,
+      "w": 126,
+      "h": 197
+    },
+    "2S": {
+      "x": 132,
+      "y": 654,
+      "w": 113,
+      "h": 198
+    },
+    "3S": {
+      "x": 244,
+      "y": 655,
+      "w": 114,
+      "h": 197
+    },
+    "4S": {
+      "x": 357,
+      "y": 655,
+      "w": 113,
+      "h": 197
+    },
+    "5S": {
+      "x": 469,
+      "y": 655,
+      "w": 112,
+      "h": 197
+    },
+    "6S": {
+      "x": 580,
+      "y": 655,
+      "w": 117,
+      "h": 196
+    },
+    "7S": {
+      "x": 696,
+      "y": 655,
+      "w": 113,
+      "h": 197
+    },
+    "8S": {
+      "x": 808,
+      "y": 655,
+      "w": 114,
+      "h": 197
+    },
+    "9S": {
+      "x": 920,
+      "y": 655,
+      "w": 118,
+      "h": 197
+    },
+    "10S": {
+      "x": 1037,
+      "y": 655,
+      "w": 117,
+      "h": 199
+    },
+    "JS": {
+      "x": 1153,
+      "y": 656,
+      "w": 126,
+      "h": 199
+    },
+    "QS": {
+      "x": 1279,
+      "y": 656,
+      "w": 126,
+      "h": 199
+    },
+    "KS": {
+      "x": 1405,
+      "y": 656,
+      "w": 126,
+      "h": 199
+    }
+  },
+  "extras": {
+    "joker1": {
+      "x": 6,
+      "y": 860,
+      "w": 138,
+      "h": 155
+    },
+    "joker2": {
+      "x": 153,
+      "y": 860,
+      "w": 143,
+      "h": 155
+    },
+    "back": {
+      "x": 308,
+      "y": 860,
+      "w": 241,
+      "h": 155
+    }
+  },
+  "jokers": 2,
+  "verification": {
+    "AC": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "2C": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "3C": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "4C": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "5C": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "6C": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "7C": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "8C": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "9C": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "10C": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "JC": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "QC": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "KC": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "AD": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "2D": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "3D": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "4D": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "5D": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "6D": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "7D": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "8D": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "9D": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "10D": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "JD": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "QD": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "KD": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "AH": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "2H": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "3H": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "4H": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "5H": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "6H": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "7H": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "8H": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "9H": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "10H": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "JH": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "QH": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "KH": {
+      "colour": "red",
+      "colourOk": true
+    },
+    "AS": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "2S": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "3S": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "4S": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "5S": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "6S": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "7S": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "8S": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "9S": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "10S": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "JS": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "QS": {
+      "colour": "black",
+      "colourOk": true
+    },
+    "KS": {
+      "colour": "black",
+      "colourOk": true
+    }
+  },
+  "automatedIssues": [],
+  "reviewedOk": {},
+  "artworkIssues": [
+    {
+      "cards": [],
+      "issue": "The card back is drawn landscape; it is turned upright for play, so its title reads sideways. A portrait back is recommended."
+    },
+    {
+      "cards": [],
+      "issue": "Both jokers are shorter than the other cards (they appear cut off by the bottom of the sheet). Jokers are not used by the five games."
+    }
+  ]
+}

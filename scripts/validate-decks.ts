@@ -10,6 +10,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { allDecks } from '../src/decks/registry';
 import { validateDeckFiles, validateRegistry } from '../src/decks/validation';
+import { checkAtlasReport, webpSize, type AtlasReport } from '../src/decks/atlasReport';
 
 const args = new Set(process.argv.slice(2));
 const strict = args.has('--strict');
@@ -30,6 +31,24 @@ const reports = await Promise.all(
   ),
 );
 
+// Decks cut from uploaded sprite sheets also carry atlas.json: 52 distinct,
+// correctly ordered cards, and every identity flag reviewed.
+for (const r of reports) {
+  const deck = decks.find((d) => d.id === r.deckId)!;
+  const meta = join(publicDir, deck.assets.basePath, 'atlas.json');
+  if (!existsSync(meta)) continue;
+  const report = JSON.parse(readFileSync(meta, 'utf8')) as AtlasReport;
+  const size = webpSize(readFileSync(join(publicDir, deck.assets.basePath, 'faces.webp')));
+  for (const p of checkAtlasReport(report, size)) {
+    r.issues.push({ level: 'error', code: `atlas.${p.code}`, message: p.message });
+    r.ok = false;
+  }
+  r.atlas = {
+    verifiedFaces: Object.keys(report.frames).length,
+    artworkIssues: report.artworkIssues.length,
+  };
+}
+
 if (args.has('--json')) {
   console.log(JSON.stringify(reports, null, 2));
 } else {
@@ -38,7 +57,8 @@ if (args.has('--json')) {
     const warnings = r.issues.filter((i) => i.level === 'warning');
     const mark = errors.length ? '✗' : warnings.length ? '•' : '✓';
     console.log(
-      `${mark} ${r.deckId.padEnd(22)} ${r.status.padEnd(8)} ${r.requiredFiles.length - r.missingFiles.length}/${r.requiredFiles.length} files`,
+      `${mark} ${r.deckId.padEnd(24)} ${r.status.padEnd(8)} ${r.requiredFiles.length - r.missingFiles.length}/${r.requiredFiles.length} files` +
+        (r.atlas ? `  ${r.atlas.verifiedFaces}/52 faces  ${r.atlas.artworkIssues} artwork notes` : ''),
     );
     for (const i of [...errors, ...warnings])
       console.log(`    ${i.level === 'error' ? 'error  ' : 'warning'} ${i.code}: ${i.message}`);

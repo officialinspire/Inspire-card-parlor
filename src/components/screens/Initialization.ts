@@ -6,7 +6,7 @@ import { deckThemes, getDeck } from '@/decks';
 import { audio, getTrack } from '@/audio';
 import { track } from '@/analytics/analytics';
 import { cardBack } from '../Card';
-import { parlorScene } from '../illustrations';
+import { brandLogo, parlorScene } from '../illustrations';
 import { progressBar, button } from '../ui';
 import { Disposer, type ScreenFactory } from '../Screen';
 
@@ -72,12 +72,7 @@ export const InitializationScreen: ScreenFactory = ({ store }) => {
       h(
         'div',
         { class: 'init-title' },
-        h(
-          'h1',
-          { class: 'game-title screen-title', tabindex: '-1' },
-          h('span', { class: 'game-title-top' }, 'INSPIRE'),
-          h('span', null, 'Card Parlor'),
-        ),
+        h('h1', { class: 'game-title screen-title', tabindex: '-1' }, brandLogo('init-logo')),
         h('p', { class: 'game-tagline' }, 'Classic card games · Collectible decks · Cozy nights'),
       ),
       h('div', { class: 'init-loader' }, bar, label, enter),

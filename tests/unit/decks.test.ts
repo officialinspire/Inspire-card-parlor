@@ -22,9 +22,22 @@ const INITIAL = [
   'yummyhole_standard',
   'yummyhole_after_dark',
   'fredericksburg',
+  'fredericksburg_downtown',
   'eastern_woodlands',
   'spycraft',
   'freemasonry',
+];
+
+/** Decks whose artwork has been uploaded and extracted (art/sources/manifest.json). */
+const UPLOADED = [
+  'classic',
+  'inspire',
+  'jak_gold',
+  'dantes_world',
+  'fredericksburg',
+  'fredericksburg_downtown',
+  'eastern_woodlands',
+  'spycraft',
 ];
 
 const ctx = (
@@ -81,12 +94,18 @@ describe('deck registry', () => {
       expect(d.assets.faces, id).toBeDefined();
       expect(d.assets.back, id).toBeDefined();
       expect(d.assets.preview, id).toBeDefined();
-      expect(d.assets.status, `${id}: artwork is uploaded separately`).toBe('pending');
+      expect(d.assets.status, id).toBe(UPLOADED.includes(id) ? 'ready' : 'pending');
     }
   });
 
   it('does not invent artist credits', () => {
-    for (const id of INITIAL) expect(getDeck(id).artist.name, id).toBeNull();
+    for (const id of INITIAL) {
+      const { artist } = getDeck(id);
+      if (!UPLOADED.includes(id)) expect(artist.name, id).toBeNull();
+      // Uploaded art is credited to the commissioning studio until the illustrator is confirmed.
+      else
+        expect(artist, id).toMatchObject({ name: 'OFFICIAL INSPIRE', note: expect.stringMatching(/to be confirmed/) });
+    }
   });
 
   it('falls back to classic for unknown ids and refuses duplicates', () => {
@@ -191,12 +210,12 @@ describe('deck validation', () => {
 
   it('reports missing files: warnings while pending, errors once ready', async () => {
     const none = () => false;
-    const pending = await validateDeckFiles(getDeck('classic'), none);
+    const pending = await validateDeckFiles(getDeck('freemasonry'), none);
     expect(pending.ok).toBe(true);
     expect(pending.issues.find((i) => i.code === 'files.missing')?.level).toBe('warning');
     expect(pending.missingFiles.map((f) => f.purpose)).toEqual(['face sprite sheet', 'card back', 'preview image']);
 
-    const strict = await validateDeckFiles(getDeck('classic'), none, { strict: true });
+    const strict = await validateDeckFiles(getDeck('freemasonry'), none, { strict: true });
     expect(strict.ok).toBe(false);
 
     const ready = await validateDeckFiles(fixture, none);
@@ -259,9 +278,11 @@ describe('DeckThemeManager', () => {
 
   it('substitutes the placeholder template for pending decks on request', () => {
     const m = new DeckThemeManager(ctx({ placeholder: true }));
-    expect(m.resolve('classic').placeholder).toBe(true);
-    expect(m.resolve('classic').assets).toBe(PLACEHOLDER_ASSETS);
+    expect(m.resolve('freemasonry').placeholder).toBe(true);
+    expect(m.resolve('freemasonry').assets).toBe(PLACEHOLDER_ASSETS);
     expect(m.resolve('test_fixture').placeholder).toBe(false);
-    expect(new DeckThemeManager(ctx()).resolve('classic').placeholder).toBe(false);
+    // Decks with uploaded artwork never fall back to the template.
+    expect(m.resolve('classic').placeholder).toBe(false);
+    expect(new DeckThemeManager(ctx()).resolve('freemasonry').placeholder).toBe(false);
   });
 });

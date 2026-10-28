@@ -85,15 +85,19 @@ function themes(
 }
 
 describe('gameboards', () => {
+  const UPLOADED_BOARDS = ['picnic_table', 'backroom_card_table', 'rappahannock_riverside'];
+
   it('registers the nine boards with full metadata', () => {
     expect(allBoards().map((b) => b.id)).toEqual(BOARD_IDS);
     for (const b of allBoards()) {
       expect(b.name, b.id).toBeTruthy();
       expect(b.description, b.id).toBeTruthy();
       expect(b.artist, b.id).toBeDefined();
-      expect(b.artist.name, `${b.id}: no invented credits`).toBeNull();
+      const uploaded = UPLOADED_BOARDS.includes(b.id);
+      // Uploaded boards are credited to the commissioning studio; the rest have no invented credit.
+      expect(b.artist.name, b.id).toBe(uploaded ? 'OFFICIAL INSPIRE' : null);
       expect(b.assets.basePath).toBe(`assets/backgrounds/${b.id}/`);
-      expect(b.assets.status).toBe('pending');
+      expect(b.assets.status, b.id).toBe(uploaded ? 'ready' : 'pending');
       const u = b.unlock;
       if (u.type === 'story') expect(CHAPTERS.some((c) => c.id === u.value)).toBe(true);
       if (u.type === 'achievement') expect(ACHIEVEMENTS.some((a) => a.id === u.value)).toBe(true);
@@ -113,6 +117,7 @@ describe('gameboards', () => {
     applyBoard(table, stage, getBoard('picnic_table'), { ambient: true, highContrast: false });
     expect(table.dataset.board).toBe('picnic_table');
     expect(table.dataset.boardTone).toBe('light');
+    // Artwork loads asynchronously; the CSS surface shows until it arrives.
     expect(table.dataset.boardArt).toBe('fallback');
     expect(table.style.getPropertyValue('--board-ink')).toBe(getBoard('picnic_table').ink);
     expect(stage.querySelector('[data-ambient="breeze"]')).not.toBeNull();
@@ -247,15 +252,16 @@ describe('favorites and completion', () => {
     // Classic, INSPIRE and the fixture (which copies Classic's default unlock).
     expect(fresh.decks).toEqual({ owned: 3, total: decks.length });
     expect(fresh.boards).toEqual({ owned: 2, total: 9 });
-    expect(fresh.artwork).toEqual({ owned: 0, total: 2 }); // the fixture's two pieces
-    expect(fresh.percent).toBe(Math.floor((5 / (decks.length + 9 + 2)) * 100));
+    // The fixture's two pieces plus the Eastern Woodlands turtle back.
+    expect(fresh.artwork).toEqual({ owned: 0, total: 3 });
+    expect(fresh.percent).toBe(Math.floor((5 / (decks.length + 9 + 3)) * 100));
 
     const everything = {
       ...createDefaultProfile(),
       level: 99,
       storyChapter: 99,
       unlockedAchievements: ACHIEVEMENTS.map((a) => a.id),
-      ownedVariants: ['collectible_fixture@gilded'],
+      ownedVariants: ['collectible_fixture@gilded', 'eastern_woodlands@turtle'],
     };
     expect(collectionProgress(everything, decks, allBoards()).percent).toBe(100);
   });
@@ -283,11 +289,11 @@ describe('uploaded artwork manifest', () => {
   });
 
   it('rejects invalid entries without changing anything', () => {
-    const before = JSON.stringify(getDeck('spycraft'));
+    const before = JSON.stringify(getDeck('yummyhole_standard'));
     const result = applyArtworkManifest({
       version: 1,
       decks: {
-        spycraft: { status: 'ready' }, // ready without an artist credit
+        yummyhole_standard: { status: 'ready' }, // ready without an artist credit
         nope: { status: 'ready' },
         freemasonry: { faces: { type: 'atlas', image: { path: 'faces' }, grid: { columns: 12, rows: 4 } } }, // missing Kings
       },
@@ -299,9 +305,9 @@ describe('uploaded artwork manifest', () => {
       'nope',
       'nope',
       'picnic_table',
-      'spycraft',
+      'yummyhole_standard',
     ]);
-    expect(JSON.stringify(getDeck('spycraft'))).toBe(before);
+    expect(JSON.stringify(getDeck('yummyhole_standard'))).toBe(before);
     expect(applyArtworkManifest({ version: 2 }).rejected[0]!.id).toBe('manifest');
   });
 

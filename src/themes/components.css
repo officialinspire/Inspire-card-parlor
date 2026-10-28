@@ -929,10 +929,14 @@ button.tile:active {
 }
 /* Uploaded artwork (sprite-sheet frame or single image), set inline by CardRenderer.
    The inner layer keeps the art's own aspect ratio inside the card (letterboxed). */
-.card-art {
+/* The slot stays 5:7 so every layout holds; the card drawn inside keeps the
+   artwork's own outline (rounded corners and all), so the frame itself is
+   transparent and the shadow follows the printed card, not the slot. */
+.card.card-art {
   container-type: size;
-  background: var(--card-letterbox, #fbf8f2);
-  overflow: hidden;
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
 }
 .card-art-img {
   position: absolute;
@@ -941,6 +945,9 @@ button.tile:active {
   width: min(100cqw, calc(100cqh * var(--ar)));
   height: min(100cqh, calc(100cqw / var(--ar)));
   background-repeat: no-repeat;
+  filter: var(--card-art-shadow, drop-shadow(0 1px 0 rgba(0, 0, 0, 0.28)) drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2)));
+  /* Own compositing layer: flips and drags move a texture instead of repainting the sprite. */
+  backface-visibility: hidden;
 }
 /* Neutral cover: adult-themed decks in ordinary previews. */
 .card-cover {

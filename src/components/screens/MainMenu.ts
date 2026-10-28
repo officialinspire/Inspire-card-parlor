@@ -7,7 +7,8 @@ import { getBoard } from '@/boards/registry';
 import { audio, getTrack, nextTrackId } from '@/audio';
 import { levelProgress } from '@/progression/levels';
 import { icon, type IconName } from '../icons';
-import { parlorScene } from '../illustrations';
+import { brandLogo, parlorScene } from '../illustrations';
+import { cssUrl } from '@/boards/BoardRenderer';
 import { live } from '../live';
 import { cardBack } from '../Card';
 import { button, creditsPill, fullscreenButton, iconButton, progressBar } from '../ui';
@@ -145,6 +146,8 @@ export const MainMenuScreen: ScreenFactory = () => {
     },
   );
 
+  const artUrl = (path: string) => cssUrl(`${import.meta.env.BASE_URL}assets/${path}`);
+
   const el = h(
     'section',
     { class: 'menu' },
@@ -154,12 +157,25 @@ export const MainMenuScreen: ScreenFactory = () => {
       h(
         'div',
         { class: 'menu-brand' },
-        h('span', { class: 'brand-mark' }, 'INSPIRE'),
-        h('h1', { class: 'menu-title screen-title', tabindex: '-1' }, 'Card Parlor'),
+        h('h1', { class: 'menu-title screen-title', tabindex: '-1' }, brandLogo('menu-logo')),
       ),
       h('div', { class: 'menu-header-right' }, levelCard(), creditsPill(), fullscreenButton()),
     ),
-    h('div', { class: 'menu-hero' }, parlorScene('menu-scene'), quickPlay),
+    h(
+      'div',
+      { class: 'menu-hero' },
+      // The illustrated scene stays underneath as the fallback while the riverfront painting loads.
+      parlorScene('menu-scene'),
+      h('div', {
+        class: 'menu-hero-art',
+        'aria-hidden': 'true',
+        style: {
+          '--menu-day': artUrl('backgrounds/menu/day.webp'),
+          '--menu-night': artUrl('backgrounds/menu/night.webp'),
+        },
+      }),
+      quickPlay,
+    ),
     statusStrip(),
     h(
       'nav',

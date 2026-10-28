@@ -1,7 +1,7 @@
 /* INSPIRE CARD PARLOR — offline service worker.
  * Navigation requests: network first, falling back to the cached shell.
  * Other same-origin GETs: stale-while-revalidate. */
-const CACHE = 'icp-cache-v1';
+const CACHE = 'icp-cache-v2';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './assets/icons/icon.svg'];
 
 self.addEventListener('install', (event) => {
