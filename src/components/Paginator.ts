@@ -73,16 +73,26 @@ export function paginator<T>(opts: PaginatorOptions<T>) {
   );
   const viewport = h('div', { class: 'pager-viewport', tabindex: '-1' }, grid);
   const el = h('div', { class: 'pager' }, viewport, nav);
+  nav.hidden = true;
 
   let layout: GridLayout = { cols: 1, rows: 1, perPage: 1, pages: 1 };
   let page = 0;
   let pendingIndex = opts.initialIndex ?? -1;
 
+  // Space the page controls take (44px buttons + 10px gap), reserved only when there are several pages.
+  const NAV_SPACE = 54;
+
   function measure(): void {
     const { clientWidth: w, clientHeight: hgt } = viewport;
     if (!w || !hgt) return;
     const first = pendingIndex >= 0 ? pendingIndex : page * layout.perPage;
-    layout = computeGrid(w, hgt, opts.items.length, { ...opts, gap });
+    // Measure against the total space (as if the nav were hidden), then make room for
+    // the nav only if it will be shown. The result no longer depends on the nav's
+    // current visibility, so showing it does not trigger a second, different layout.
+    const total = hgt + (nav.hidden ? 0 : NAV_SPACE);
+    const o = { ...opts, gap };
+    layout = computeGrid(w, total, opts.items.length, o);
+    if (layout.pages > 1) layout = computeGrid(w, total - NAV_SPACE, opts.items.length, o);
     page = clamp(Math.floor(first / layout.perPage), 0, layout.pages - 1);
     pendingIndex = -1;
     draw();

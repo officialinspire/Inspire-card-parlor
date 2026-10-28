@@ -69,26 +69,26 @@ describe('selection memory', () => {
   it('remembers the deck and board last dealt for each game', () => {
     const s = boot();
     s.dispatch({ type: 'SELECT_GAME', gameId: 'spider' });
-    s.dispatch({ type: 'SELECT_DECK', deckId: 'midnight-jazz' });
+    s.dispatch({ type: 'SELECT_DECK', deckId: 'fredericksburg' });
     s.dispatch({ type: 'SELECT_BOARD', boardId: 'oxblood-lounge' });
     s.dispatch({ type: 'START_GAME' });
 
     s.dispatch({ type: 'SELECT_GAME', gameId: 'klondike' });
-    s.dispatch({ type: 'SELECT_DECK', deckId: 'inspire-classic' });
+    s.dispatch({ type: 'SELECT_DECK', deckId: 'classic' });
     s.dispatch({ type: 'SELECT_BOARD', boardId: 'velvet-green' });
     s.dispatch({ type: 'START_GAME' });
 
     s.dispatch({ type: 'SELECT_GAME', gameId: 'spider' });
-    expect(s.state.selection).toMatchObject({ gameId: 'spider', deckId: 'midnight-jazz', boardId: 'oxblood-lounge' });
+    expect(s.state.selection).toMatchObject({ gameId: 'spider', deckId: 'fredericksburg', boardId: 'oxblood-lounge' });
     s.dispatch({ type: 'SELECT_GAME', gameId: 'klondike' });
-    expect(s.state.selection).toMatchObject({ deckId: 'inspire-classic', boardId: 'velvet-green' });
+    expect(s.state.selection).toMatchObject({ deckId: 'classic', boardId: 'velvet-green' });
   });
 
   it('keeps the current deck and board for a game never played before', () => {
     const s = boot();
-    s.dispatch({ type: 'SELECT_DECK', deckId: 'garden-tea' });
+    s.dispatch({ type: 'SELECT_DECK', deckId: 'eastern_woodlands' });
     s.dispatch({ type: 'SELECT_GAME', gameId: 'war' });
-    expect(s.state.selection.deckId).toBe('garden-tea');
+    expect(s.state.selection.deckId).toBe('eastern_woodlands');
   });
 
   it('does not record a choice without a selected game', () => {
@@ -131,14 +131,14 @@ describe('hydration', () => {
           war: { played: 3, won: 2, bestTimeMs: null, bestScore: null, currentStreak: 1, longestStreak: 2 },
         } as never,
       },
-      selection: { deckId: 'neon-alley', storyChapterId: 'chapter-2' },
+      selection: { deckId: 'spycraft', storyChapterId: 'chapter-2' },
     });
     expect(s.state.settings.musicTrack).toBe('midnight-tea');
     expect(s.state.settings.masterVolume).toBeGreaterThan(0);
     expect(s.state.profile.credits).toBe(900);
     expect(s.state.profile.stats.war.played).toBe(3);
     expect(s.state.profile.stats.klondike.played).toBe(0);
-    expect(s.state.selection.deckId).toBe('neon-alley');
+    expect(s.state.selection.deckId).toBe('spycraft');
     expect(s.state.selection.storyChapterId).toBeNull();
   });
 });

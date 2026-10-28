@@ -1,7 +1,7 @@
 {
   "name": "inspire-card-parlor",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "INSPIRE CARD PARLOR — a cozy collection of classic playing-card games by OFFICIAL INSPIRE.",
   "type": "module",
   "author": "OFFICIAL INSPIRE (https://www.inspireclothing.art)",
@@ -16,13 +16,16 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "test:all": "npm run typecheck && npm run test && npm run test:e2e"
+    "test:all": "npm run typecheck && npm run test && npm run test:e2e",
+    "validate:decks": "tsx scripts/validate-decks.ts",
+    "assets:placeholders": "tsx scripts/generate-placeholders.ts"
   },
   "devDependencies": {
     "@playwright/test": "^1.63.0",
     "@types/node": "^26.6.5",
     "happy-dom": "^21.0.4",
     "prettier": "^3.9.10",
+    "tsx": "^4.23.15",
     "typescript": "^7.0.2",
     "vite": "^8.3.5",
     "vitest": "^5.0.5"

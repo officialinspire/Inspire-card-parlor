@@ -1,6 +1,7 @@
 import { h } from '@/utils/dom';
 import { BOARDS, type BoardDefinition } from '@/boards/registry';
-import { getDeck, type DeckDefinition } from '@/decks/registry';
+import { deckThemes, getDeck } from '@/decks';
+import type { DeckDefinition } from '@/decks/types';
 import { isBoardUnlocked, unlockHint } from '@/progression/levels';
 import { cardBack, cardFace } from '../Card';
 import { openDialog } from '../Dialog';
@@ -37,7 +38,7 @@ export const GameboardsScreen: ScreenFactory = ({ store }) => {
       body: h(
         'div',
         { class: 'item-detail' },
-        boardPreview(board, getDeck(store.state.selection.deckId), true),
+        boardPreview(board, getDeck(deckThemes.safeDeckId(store.state.selection.deckId)), true),
         h('p', null, board.description),
         unlocked ? null : h('p', { class: 'tile-lock' }, icon('lock'), unlockHint(board)),
       ),
@@ -76,7 +77,7 @@ export const GameboardsScreen: ScreenFactory = ({ store }) => {
           onclick: () => void inspect(board),
         },
         equipped ? h('span', { class: 'tile-check' }, icon('check')) : null,
-        boardPreview(board, getDeck(store.state.selection.deckId)),
+        boardPreview(board, getDeck(deckThemes.safeDeckId(store.state.selection.deckId))),
         h('span', { class: 'tile-title' }, board.name),
         unlocked
           ? equipped

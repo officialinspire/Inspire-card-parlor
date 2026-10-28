@@ -2,7 +2,7 @@ import { h } from '@/utils/dom';
 import { AppState } from '@/core/states';
 import { navigate } from '@/core/store';
 import { BOARDS } from '@/boards/registry';
-import { getDeck } from '@/decks/registry';
+import { deckThemes, getDeck } from '@/decks';
 import { getGame } from '@/games/registry';
 import { isBoardUnlocked, unlockHint } from '@/progression/levels';
 import { audio } from '@/audio';
@@ -17,7 +17,7 @@ import { boardPreview } from './Gameboards';
 
 export const BoardSelectionScreen: ScreenFactory = ({ store }) => {
   const game = getGame(store.state.selection.gameId);
-  const deck = getDeck(store.state.selection.deckId);
+  const deck = getDeck(deckThemes.safeDeckId(store.state.selection.deckId));
   const pager = paginator({
     items: BOARDS,
     minTileWidth: 200,

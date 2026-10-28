@@ -132,6 +132,48 @@ export const SettingsScreen: ScreenFactory = ({ store }) => {
         ),
     },
     {
+      id: 'content',
+      label: 'Content',
+      render: () => {
+        const mature = toggle(
+          'Mature decks (18+)',
+          s().matureContent,
+          async (on) => {
+            if (!on) {
+              set({ matureContent: false });
+              notify('Mature decks are hidden again.', { kind: 'info' });
+              return;
+            }
+            const ok = await confirmDialog({
+              title: 'Show mature decks?',
+              message:
+                'Some collectible decks contain adult themes. They stay out of menus and ordinary previews, and you can switch them off again any time. Please confirm you are 18 or older.',
+              confirmLabel: 'I am 18+, show them',
+              cancelLabel: 'Keep hidden',
+              icon: 'warning',
+            });
+            if (ok) {
+              set({ matureContent: true });
+              notify('Mature decks are now in your collection.', { kind: 'success' });
+            } else {
+              const input = mature.querySelector('input');
+              if (input) input.checked = false;
+            }
+          },
+          'Off by default. Adult-themed decks never appear in ordinary previews.',
+        );
+        mature.dataset.setting = 'matureContent';
+        const placeholder = toggle(
+          'Placeholder artwork',
+          s().placeholderArt,
+          (v) => set({ placeholderArt: v }),
+          'Show the sprite-sheet template for decks whose artwork is not uploaded yet',
+        );
+        placeholder.dataset.setting = 'placeholderArt';
+        return panel(mature, placeholder);
+      },
+    },
+    {
       id: 'data',
       label: 'Data',
       render: () =>

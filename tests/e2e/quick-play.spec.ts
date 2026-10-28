@@ -6,6 +6,7 @@ import {
   expectNoOverflow,
   expectScreen,
   playGame,
+  revealInPager,
   seed,
   clickInPager,
 } from './helpers';
@@ -73,31 +74,31 @@ test('locked decks explain how to unlock them', async ({ page }) => {
   await enterParlor(page);
   await clickNav(page, 'GAME_SELECTION');
   await playGame(page, 'spider');
-  await clickInPager(page, '[data-deck="midnight-jazz"]');
+  await clickInPager(page, '[data-deck="fredericksburg"]');
   await expect(page.locator('.toast')).toContainText('Reach level 3');
-  await expect(page.locator(`${CURRENT} [data-deck="inspire-classic"]`)).toHaveAttribute('aria-pressed', 'true');
+  await expect(await revealInPager(page, '[data-deck="classic"]')).toHaveAttribute('aria-pressed', 'true');
 });
 
 test('remembers deck and board per game across reloads', async ({ page }) => {
   await seed(page, { profile: { level: 6 } });
   await enterParlor(page);
 
-  // Spider with Midnight Jazz on Oxblood Lounge.
+  // Spider with Fredericksburg on Oxblood Lounge.
   await clickNav(page, 'GAME_SELECTION');
   await playGame(page, 'spider');
-  await clickInPager(page, '[data-deck="midnight-jazz"]');
+  await clickInPager(page, '[data-deck="fredericksburg"]');
   await clickNav(page, 'BOARD_SELECTION');
   await clickInPager(page, '[data-board="oxblood-lounge"]');
   await clickNav(page, 'GAMEPLAY');
   await page.locator(`${CURRENT} .placard-actions [data-nav="MAIN_MENU"]`).click();
   await expectScreen(page, 'MAIN_MENU');
-  await expect(page.locator(`${CURRENT} [data-value="deck"]`)).toHaveText('Midnight Jazz');
+  await expect(page.locator(`${CURRENT} [data-value="deck"]`)).toHaveText('Fredericksburg');
   await expect(page.locator(`${CURRENT} [data-value="board"]`)).toHaveText('Oxblood Lounge');
 
   // Klondike with the classic deck on Midnight Blue.
   await clickNav(page, 'GAME_SELECTION');
   await playGame(page, 'klondike');
-  await clickInPager(page, '[data-deck="inspire-classic"]');
+  await clickInPager(page, '[data-deck="classic"]');
   await clickNav(page, 'BOARD_SELECTION');
   await clickInPager(page, '[data-board="midnight-blue"]');
   await clickNav(page, 'GAMEPLAY');
@@ -114,7 +115,7 @@ test('remembers deck and board per game across reloads', async ({ page }) => {
 
   // Picking Spider again restores its own deck and board.
   await playGame(page, 'spider');
-  await expect(page.locator(`${CURRENT} [data-deck="midnight-jazz"]`)).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator(`${CURRENT} [data-deck="fredericksburg"]`)).toHaveAttribute('aria-pressed', 'true');
   await clickNav(page, 'BOARD_SELECTION');
   await expect(page.locator(`${CURRENT} [data-board="oxblood-lounge"]`)).toHaveAttribute('aria-pressed', 'true');
 });

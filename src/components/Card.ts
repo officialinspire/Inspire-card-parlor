@@ -1,37 +1,36 @@
-import { h } from '@/utils/dom';
-import type { DeckDefinition } from '@/decks/registry';
+import { cardRenderer, deckThemes } from '@/decks';
+import type { DeckDefinition } from '@/decks/types';
+import type { PreviewContext } from '@/decks/DeckThemeManager';
+import { cardCode, RANKS, type Rank, type Suit as EngineSuit } from '@/engine/Card';
 
+/** Suit symbols used by menu screens; mapped onto engine suits. */
 export type Suit = '♠' | '♥' | '♦' | '♣';
 export const SUITS: readonly Suit[] = ['♠', '♥', '♦', '♣'];
-export const RANKS = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'] as const;
+export const RANK_LABELS = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'] as const;
 
-const SUIT_NAME: Record<Suit, string> = { '♠': 'spades', '♥': 'hearts', '♦': 'diamonds', '♣': 'clubs' };
+const SUIT_OF: Record<Suit, EngineSuit> = { '♠': 'spades', '♥': 'hearts', '♦': 'diamonds', '♣': 'clubs' };
+const rankOf = (label: string) => RANKS[RANK_LABELS.indexOf(label as (typeof RANK_LABELS)[number])] as Rank;
 
-/** CSS-rendered card back for a deck (placeholder until illustrated art ships). */
-export function cardBack(deck: DeckDefinition, extraClass = ''): HTMLElement {
-  return h(
-    'div',
-    {
-      class: `card card-back pattern-${deck.back.pattern} ${extraClass}`.trim(),
-      style: { '--card-base': deck.back.base, '--card-accent': deck.back.accent },
-      'aria-hidden': 'true',
-    },
-    h('div', { class: 'card-back-inner' }, h('span', { class: 'card-back-mark' }, 'I')),
-  );
+/**
+ * Card back for menus and previews. In ordinary previews, adult-themed decks
+ * show a neutral cover instead of their artwork.
+ */
+export function cardBack(deck: DeckDefinition, extraClass = '', context: PreviewContext = 'ordinary'): HTMLElement {
+  return cardRenderer.renderBack(deckThemes.resolve(deck.id), {
+    className: extraClass,
+    cover: !deckThemes.canShowArt(deck.id, context),
+  });
 }
 
-export function cardFace(deck: DeckDefinition, rank: string, suit: Suit, extraClass = ''): HTMLElement {
-  const red = suit === '♥' || suit === '♦';
-  return h(
-    'div',
-    {
-      class: `card card-face ${extraClass}`.trim(),
-      style: { '--card-paper': deck.face.paper, '--card-ink': red ? deck.face.red : deck.face.black },
-      role: 'img',
-      'aria-label': `${rank} of ${SUIT_NAME[suit]}`,
-    },
-    h('span', { class: 'card-corner tl' }, rank, h('br'), suit),
-    h('span', { class: 'card-pip' }, suit),
-    h('span', { class: 'card-corner br' }, rank, h('br'), suit),
-  );
+export function cardFace(
+  deck: DeckDefinition,
+  rank: string,
+  suit: Suit,
+  extraClass = '',
+  context: PreviewContext = 'ordinary',
+): HTMLElement {
+  if (!deckThemes.canShowArt(deck.id, context)) return cardBack(deck, extraClass, context);
+  return cardRenderer.renderFace(deckThemes.resolve(deck.id), cardCode(rankOf(rank), SUIT_OF[suit]), {
+    className: extraClass,
+  });
 }

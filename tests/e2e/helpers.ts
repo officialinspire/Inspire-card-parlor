@@ -20,15 +20,20 @@ export async function expectScreen(page: Page, state: string): Promise<void> {
   });
 }
 
-/** Pages through the current screen's paginator until `selector` is visible, then clicks it. */
-export async function clickInPager(page: Page, selector: string): Promise<void> {
+/** Pages through the current screen's paginator until `selector` is visible. */
+export async function revealInPager(page: Page, selector: string) {
   const target = page.locator(`${CURRENT} ${selector}`);
   const first = page.locator(`${CURRENT} [data-pager="dot-0"]`);
   if (!(await target.isVisible()) && (await first.isVisible())) await first.click();
   for (let i = 0; i < 10 && !(await target.isVisible()); i++) {
     await page.locator(`${CURRENT} [data-pager="next"]`).click();
   }
-  await target.click();
+  return target;
+}
+
+/** Pages through the current screen's paginator until `selector` is visible, then clicks it. */
+export async function clickInPager(page: Page, selector: string): Promise<void> {
+  await (await revealInPager(page, selector)).click();
 }
 
 /** Pages through Quick Play until the game's Play button is on screen, then presses it. */

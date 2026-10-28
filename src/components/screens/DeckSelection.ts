@@ -1,7 +1,7 @@
 import { h } from '@/utils/dom';
 import { AppState } from '@/core/states';
 import { navigate } from '@/core/store';
-import { DECKS } from '@/decks/registry';
+import { deckThemes } from '@/decks';
 import { getGame } from '@/games/registry';
 import { isDeckUnlocked, unlockHint } from '@/progression/levels';
 import { audio } from '@/audio';
@@ -14,6 +14,7 @@ import type { ScreenFactory } from '../Screen';
 import { SETUP_STEPS } from './GameSelection';
 
 export const DeckSelectionScreen: ScreenFactory = ({ store }) => {
+  const DECKS = deckThemes.list();
   const game = getGame(store.state.selection.gameId);
   const pager = paginator({
     items: DECKS,

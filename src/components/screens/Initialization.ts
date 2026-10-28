@@ -2,7 +2,7 @@ import { h } from '@/utils/dom';
 import { APP } from '@/core/config';
 import { AppState } from '@/core/states';
 import { navigate } from '@/core/store';
-import { getDeck } from '@/decks/registry';
+import { deckThemes, getDeck } from '@/decks';
 import { audio, getTrack } from '@/audio';
 import { track } from '@/analytics/analytics';
 import { cardBack } from '../Card';
@@ -12,7 +12,7 @@ import { Disposer, type ScreenFactory } from '../Screen';
 
 export const InitializationScreen: ScreenFactory = ({ store }) => {
   const d = new Disposer();
-  const deck = getDeck(store.state.selection.deckId);
+  const deck = getDeck(deckThemes.safeDeckId(store.state.selection.deckId));
 
   const shuffle = h(
     'div',

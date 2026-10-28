@@ -354,6 +354,7 @@
   justify-content: center;
   gap: 10px;
   flex: none;
+  height: var(--tap);
 }
 .pager-dots {
   display: flex;
@@ -511,6 +512,14 @@ button.tile:active {
   background: var(--surface-sunk);
   color: var(--ink-soft);
   white-space: nowrap;
+}
+.badge-mature {
+  background: color-mix(in srgb, var(--danger) 16%, transparent);
+  color: var(--danger);
+}
+.badge-soft {
+  background: transparent;
+  border: 1px dashed var(--border);
 }
 .badge-accent {
   background: var(--accent);
@@ -912,9 +921,29 @@ button.tile:active {
   position: relative;
   flex: none;
 }
-.card-back {
+.card-back.card-fallback {
   background: var(--card-base, #5b1a1f);
   padding: 7%;
+}
+/* Uploaded artwork (sprite-sheet frame or single image), set inline by CardRenderer. */
+.card-art {
+  background-color: transparent;
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+/* Neutral cover: adult-themed decks in ordinary previews. */
+.card-cover {
+  display: grid;
+  place-items: center;
+  background: repeating-linear-gradient(135deg, var(--surface-2) 0 6px, var(--surface-sunk) 6px 12px);
+}
+.card-cover-mark {
+  font-weight: 800;
+  font-size: calc(var(--card-w) * 0.22);
+  color: var(--ink-soft);
+  background: var(--surface);
+  border-radius: 999px;
+  padding: 0.1em 0.45em;
 }
 .card-back-inner {
   width: 100%;
@@ -973,7 +1002,7 @@ button.tile:active {
   border: 1.5px solid var(--card-accent);
   line-height: 1;
 }
-.card-face {
+.card-face.card-fallback {
   background: var(--card-paper, #fbf5ea);
   color: var(--card-ink, #1d1410);
   font-family: var(--font-display);

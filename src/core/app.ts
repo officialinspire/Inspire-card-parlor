@@ -4,6 +4,7 @@ import { attachPersistence } from '@/storage/persistence';
 import { attachAudio } from '@/audio';
 import { attachAnalytics, track } from '@/analytics/analytics';
 import { attachTheme } from '@/themes/theme';
+import { attachDeckThemes } from '@/decks';
 import { ScreenManager } from '@/components/ScreenManager';
 import { attachDialogs } from '@/components/Dialog';
 import { attachNotifications } from '@/components/Notifications';
@@ -16,6 +17,7 @@ import { APP } from './config';
 /** BOOT: wire every subsystem to the store, build the shell, then start loading. */
 export async function startApp(mount: HTMLElement): Promise<void> {
   attachPersistence(store);
+  attachDeckThemes(store);
   attachTheme(store);
   attachAudio(store);
   attachAnalytics(store);

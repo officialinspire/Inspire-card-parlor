@@ -2,7 +2,7 @@ import { h } from '@/utils/dom';
 import { APP } from '@/core/config';
 import { AppState } from '@/core/states';
 import { navigate, store } from '@/core/store';
-import { getDeck } from '@/decks/registry';
+import { deckThemes, getDeck } from '@/decks';
 import { getBoard } from '@/boards/registry';
 import { audio, getTrack, nextTrackId } from '@/audio';
 import { levelProgress } from '@/progression/levels';
@@ -75,7 +75,7 @@ function statusStrip(): HTMLElement {
     statusChip('deck', 'Selected deck — open Card Collection', () => navigate(AppState.COLLECTION)),
     (s) => s.selection.deckId,
     (el, id) => {
-      const d = getDeck(id);
+      const d = getDeck(deckThemes.safeDeckId(id));
       el.dataset.nav = AppState.COLLECTION;
       el.replaceChildren(
         h('span', { class: 'status-visual' }, cardBack(d, 'chip-card')),

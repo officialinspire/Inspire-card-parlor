@@ -12,6 +12,8 @@ export type Action =
   | { type: 'SELECT_BOARD'; boardId: string }
   | { type: 'SELECT_STORY_CHAPTER'; chapterId: string | null }
   | { type: 'START_GAME' }
+  | { type: 'SELECT_ART_VARIANT'; deckId: string; variantId: string | null }
+  | { type: 'REPLACE_DECKS'; unavailable: string[]; known: string[]; fallback: string }
   | { type: 'UPDATE_SETTINGS'; patch: Partial<Settings> }
   | { type: 'UPDATE_PROFILE'; patch: Partial<Profile> }
   | { type: 'HYDRATE'; settings?: Partial<Settings>; profile?: Partial<Profile>; selection?: Partial<Selection> }
@@ -88,6 +90,25 @@ export function reduce(state: RootState, action: Action): RootState {
         selection: { ...state.selection, byGame: { ...state.selection.byGame, [gameId]: { deckId, boardId } } },
       };
     }
+    case 'SELECT_ART_VARIANT': {
+      const artVariants = { ...state.selection.artVariants };
+      if (action.variantId) artVariants[action.deckId] = action.variantId;
+      else delete artVariants[action.deckId];
+      return { ...state, selection: { ...state.selection, artVariants } };
+    }
+    case 'REPLACE_DECKS': {
+      const ok = (id: string) => action.known.includes(id) && !action.unavailable.includes(id);
+      const sel = state.selection;
+      const byGameChanged = Object.values(sel.byGame).some((c) => c && !ok(c.deckId));
+      if (ok(sel.deckId) && !byGameChanged) return state;
+      const byGame = Object.fromEntries(
+        Object.entries(sel.byGame).map(([g, c]) => [g, c && !ok(c.deckId) ? { ...c, deckId: action.fallback } : c]),
+      ) as Selection['byGame'];
+      return {
+        ...state,
+        selection: { ...sel, deckId: ok(sel.deckId) ? sel.deckId : action.fallback, byGame },
+      };
+    }
     case 'UPDATE_SETTINGS':
       return { ...state, settings: { ...state.settings, ...action.patch } };
     case 'UPDATE_PROFILE':
@@ -105,6 +126,7 @@ export function reduce(state: RootState, action: Action): RootState {
           ...state.selection,
           ...action.selection,
           byGame: { ...state.selection.byGame, ...action.selection?.byGame },
+          artVariants: { ...state.selection.artVariants, ...action.selection?.artVariants },
           storyChapterId: null,
         },
       };

@@ -17,6 +17,10 @@ export interface Settings {
   autoComplete: boolean;
   cardAnimationSpeed: 'slow' | 'normal' | 'fast';
   analyticsEnabled: boolean;
+  /** Adult-themed decks and artwork. Off by default; enabling requires confirmation. */
+  matureContent: boolean;
+  /** Render pending decks with the shared placeholder template instead of procedural cards. */
+  placeholderArt: boolean;
 }
 
 export interface GameStats {
@@ -52,6 +56,8 @@ export interface Selection extends TableChoice {
   storyChapterId: string | null;
   /** Last deck/board used for each game, restored when that game is picked again. */
   byGame: Partial<Record<GameId, TableChoice>>;
+  /** Chosen alternate artwork per deck (deck id → variant id). Purely cosmetic. */
+  artVariants: Record<string, string>;
 }
 
 export type NotificationKind = 'info' | 'success' | 'warning' | 'error';

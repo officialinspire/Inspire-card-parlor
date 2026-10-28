@@ -4,7 +4,7 @@ A cozy collection of classic playing-card games featuring collectible illustrate
 
 **Developer:** OFFICIAL INSPIRE · [www.inspireclothing.art](https://www.inspireclothing.art)
 
-> **Status: v0.2.0 — main menu & navigation.** The full menu, Quick Play flow (game → deck → board), collection, gameboards, settings, music, dialogs and notifications are in place and covered by tests. Game rules are not implemented yet; the table screen is a placeholder.
+> **Status: v0.3.0 — card engine & deck system.** Menus, navigation, the card engine (cards, decks, piles, hands, dealing, moves, saves) and the deck registry with artwork loading are in place and tested. Game rules are not implemented yet; the table screen is a placeholder.
 
 ## Games (planned)
 
@@ -37,17 +37,19 @@ npm install
 npm run dev
 ```
 
-| Script                 | What it does                                            |
-| ---------------------- | ------------------------------------------------------- |
-| `npm run dev`          | Start the dev server (LAN-accessible for phone testing) |
-| `npm run build`        | Type-check, then build to `dist/`                       |
-| `npm run preview`      | Serve the production build locally                      |
-| `npm run typecheck`    | Run `tsc --noEmit`                                      |
-| `npm run format`       | Format with Prettier                                    |
-| `npm run format:check` | Check formatting                                        |
-| `npm test`             | Unit tests (Vitest + happy-dom)                         |
-| `npm run test:e2e`     | End-to-end tests (Playwright, 4 viewports)              |
-| `npm run test:all`     | Type-check, unit and end-to-end tests                   |
+| Script                        | What it does                                             |
+| ----------------------------- | -------------------------------------------------------- |
+| `npm run dev`                 | Start the dev server (LAN-accessible for phone testing)  |
+| `npm run build`               | Type-check, then build to `dist/`                        |
+| `npm run preview`             | Serve the production build locally                       |
+| `npm run typecheck`           | Run `tsc --noEmit`                                       |
+| `npm run format`              | Format with Prettier                                     |
+| `npm run format:check`        | Check formatting                                         |
+| `npm test`                    | Unit tests (Vitest + happy-dom)                          |
+| `npm run test:e2e`            | End-to-end tests (Playwright, 4 viewports)               |
+| `npm run test:all`            | Type-check, unit and end-to-end tests                    |
+| `npm run validate:decks`      | Check every deck's definition and required card assets   |
+| `npm run assets:placeholders` | Regenerate the placeholder template and per-deck READMEs |
 
 ## Testing
 
@@ -116,6 +118,34 @@ public/
   assets/{cards,backgrounds,music,sfx,characters,icons}
   manifest.webmanifest, sw.js
 ```
+
+### Card engine
+
+`src/engine/` is shared by all five games. Card art never affects rules.
+
+| Module         | What it does                                                                                                                 |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `Card`         | Rank, suit, colour, facing; ids unique across multiple decks (`"1:QH"`); asset codes (`AS`, `10H`, `KD`)                     |
+| `Deck`         | Standard 52-card decks, multi-deck sets, Spider (1/2/4 suits, 104 cards); Fisher–Yates `shuffle`, `draw`, round-robin `deal` |
+| `Pile`         | Ordered stack (stock, waste, tableau, foundation, cell…): take, push, remove, reveal, turn over                              |
+| `Hand`         | Player hand for War and Go Fish: ask for a rank, extract books, sort                                                         |
+| `random`       | Seedable PRNG (reproducible deals, savable state) and `fisherYates`                                                          |
+| `stacking`     | Build rules: descending alternating, same suit, foundations, complete runs, FreeCell supermove                               |
+| `moves`        | `moveCards` with rule checks, source reveal and facing; `undoMove`                                                           |
+| `Table`        | All piles of a game, move history/undo, `snapshot()` / `Table.restore()` with integrity checks                               |
+| `saves`        | `SaveStore` save slots (IndexedDB, or in-memory)                                                                             |
+| `CardRenderer` | Card elements from sprite-sheet frames, single images, or procedural fallbacks; upgrades in place when art loads             |
+| `CardAnimator` | FLIP moves, flips, deals, reject shake; honours speed and reduced-motion settings                                            |
+
+`src/games/setups.ts` deals the opening table for Klondike, Spider, FreeCell, War and Go Fish.
+
+### Decks and artwork
+
+- **Registry**: `src/decks/definitions/<deck_id>.ts`, one module per deck, collected in `src/decks/registry.ts`. Each deck has an id, name, description, artist attribution, rarity, unlock requirement, content rating, face/back/preview assets, fallback colours and optional alternate artwork.
+- **Artwork is uploaded separately.** Every deck starts as `status: 'pending'` and is drawn procedurally. Drop the files in `public/assets/cards/<deck_id>/` (each folder's README lists them), set `status: 'ready'`, add the artist credit, and run `npm run validate:decks`. See `public/assets/cards/README.md` for sprite-sheet, TexturePacker and individual-image layouts.
+- **`AssetManager`** (`src/assets/`) loads WebP (or PNG) sheets and images, caches them and works out atlas frames.
+- **`DeckThemeManager`** resolves a deck plus any alternate artwork into a theme, and applies content rules.
+- **Mature content**: adult-themed decks live under `public/assets/cards/mature/` and are off by default (**Settings → Content**, with an 18+ confirmation). They are never requested while off and never shown in ordinary previews; menus and catalog tiles use a neutral cover.
 
 ### Visual identity
 

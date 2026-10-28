@@ -2,7 +2,7 @@ import { h } from '@/utils/dom';
 import { AppState } from '@/core/states';
 import { goBack, navigate } from '@/core/store';
 import { getBoard } from '@/boards/registry';
-import { getDeck } from '@/decks/registry';
+import { deckThemes, getDeck } from '@/decks';
 import { getGame } from '@/games/registry';
 import { CHAPTERS } from '@/story/chapters';
 import { cardBack, cardFace } from '../Card';
@@ -17,7 +17,7 @@ import type { ScreenFactory } from '../Screen';
 export const GameplayScreen: ScreenFactory = ({ store }) => {
   const { gameId, deckId, boardId, storyChapterId } = store.state.selection;
   const game = getGame(gameId);
-  const deck = getDeck(deckId);
+  const deck = getDeck(deckThemes.safeDeckId(deckId));
   const board = getBoard(boardId);
   const chapter = CHAPTERS.find((c) => c.id === storyChapterId);
 
@@ -31,12 +31,16 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
     if (ok) then();
   };
 
-  const stock = h('div', { class: 'table-stock' }, ...Array.from({ length: 4 }, () => cardBack(deck, 'stacked')));
+  const stock = h(
+    'div',
+    { class: 'table-stock' },
+    ...Array.from({ length: 4 }, () => cardBack(deck, 'stacked', 'explicit')),
+  );
   const fan = h(
     'div',
     { class: 'table-fan' },
     ...(['A', 'K', 'Q', 'J', '10'] as const).map((r, i) =>
-      cardFace(deck, r, (['♠', '♥', '♣', '♦', '♠'] as const)[i]!, 'fanned'),
+      cardFace(deck, r, (['♠', '♥', '♣', '♦', '♠'] as const)[i]!, 'fanned', 'explicit'),
     ),
   );
 

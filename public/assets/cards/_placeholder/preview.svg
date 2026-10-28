@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="320" viewBox="0 0 480 320">
+  <rect width="480" height="320" fill="#ebe7df"/>
+  <rect x="150" y="70" width="120" height="168" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4" transform="rotate(-14 210 154)"/>
+  <rect x="184" y="70" width="120" height="168" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4" transform="rotate(-5 244 154)"/>
+  <rect x="218" y="70" width="120" height="168" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4" transform="rotate(5 278 154)"/>
+  <rect x="252" y="70" width="120" height="168" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4" transform="rotate(14 312 154)"/>
+  <text x="240" y="290" text-anchor="middle" font-family="monospace" font-size="16" fill="#6d675e">PLACEHOLDER PREVIEW</text>
+</svg>

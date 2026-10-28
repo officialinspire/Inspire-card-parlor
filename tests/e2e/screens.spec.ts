@@ -5,13 +5,13 @@ test('collection: inspect a deck and equip it', async ({ page }) => {
   await seed(page, { profile: { level: 3 } });
   await enterParlor(page);
   await clickNav(page, 'COLLECTION');
-  await clickInPager(page, '[data-deck="midnight-jazz"]');
+  await clickInPager(page, '[data-deck="fredericksburg"]');
   const dialog = page.getByRole('dialog');
-  await expect(dialog).toContainText('Midnight Jazz');
+  await expect(dialog).toContainText('Fredericksburg');
   await page.locator('[data-dialog-action="use"]').click();
-  await expect(page.locator('.toast')).toContainText('Midnight Jazz');
+  await expect(page.locator('.toast')).toContainText('Fredericksburg');
   await clickNav(page, 'home', 'MAIN_MENU');
-  await expect(page.locator(`${CURRENT} [data-value="deck"]`)).toHaveText('Midnight Jazz');
+  await expect(page.locator(`${CURRENT} [data-value="deck"]`)).toHaveText('Fredericksburg');
 });
 
 test('collection tabs: gallery and characters', async ({ page }) => {

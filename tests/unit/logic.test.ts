@@ -53,15 +53,15 @@ describe('progression', () => {
 
   it('unlocks decks and boards by level', () => {
     const p = createDefaultProfile();
-    expect(isDeckUnlocked('inspire-classic', p)).toBe(true);
-    expect(isDeckUnlocked('midnight-jazz', p)).toBe(false);
-    expect(isDeckUnlocked('midnight-jazz', { ...p, level: 3 })).toBe(true);
+    expect(isDeckUnlocked('classic', p)).toBe(true);
+    expect(isDeckUnlocked('fredericksburg', p)).toBe(false);
+    expect(isDeckUnlocked('fredericksburg', { ...p, level: 3 })).toBe(true);
     expect(isBoardUnlocked('oxblood-lounge', { ...p, level: 2 })).toBe(true);
   });
 
   it('unlocks story rewards by chapter', () => {
     const p = createDefaultProfile();
-    expect(isDeckUnlocked('garden-tea', { ...p, storyChapter: 2 })).toBe(true);
+    expect(isDeckUnlocked('eastern_woodlands', { ...p, storyChapter: 2 })).toBe(true);
     expect(isBoardUnlocked('walnut-study', { ...p, storyChapter: 2 })).toBe(false);
   });
 });
@@ -111,14 +111,14 @@ describe('persistence', () => {
       'icp:selection',
       JSON.stringify({
         gameId: 'freecell',
-        deckId: 'midnight-jazz',
+        deckId: 'fredericksburg',
         boardId: 'midnight-blue',
         byGame: { war: { deckId: 'a', boardId: 'b' } },
       }),
     );
     const s = new Store();
     attachPersistence(s);
-    expect(s.state.selection).toMatchObject({ gameId: 'freecell', deckId: 'midnight-jazz', boardId: 'midnight-blue' });
+    expect(s.state.selection).toMatchObject({ gameId: 'freecell', deckId: 'fredericksburg', boardId: 'midnight-blue' });
     expect(s.state.selection.byGame.war).toEqual({ deckId: 'a', boardId: 'b' });
 
     s.dispatch({ type: 'SELECT_BOARD', boardId: 'velvet-green' });

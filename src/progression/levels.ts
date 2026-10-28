@@ -1,5 +1,5 @@
 import type { Profile } from '@/core/types';
-import { DECKS } from '@/decks/registry';
+import { allDecks } from '@/decks/registry';
 import { BOARDS } from '@/boards/registry';
 
 /** XP required to go from `level` to `level + 1`. Gentle curve for a cozy pace. */
@@ -54,15 +54,12 @@ export function unlockHint(item: Unlockable): string {
   }
 }
 
-export const isDeckUnlocked = (id: string, p: Profile) =>
-  isUnlocked(
-    DECKS.find((d) => d.id === id)!,
-    p,
-    p.unlockedDecks,
-  );
-export const isBoardUnlocked = (id: string, p: Profile) =>
-  isUnlocked(
-    BOARDS.find((b) => b.id === id)!,
-    p,
-    p.unlockedBoards,
-  );
+export function isDeckUnlocked(id: string, p: Profile): boolean {
+  const deck = allDecks().find((d) => d.id === id);
+  return !!deck && isUnlocked(deck, p, p.unlockedDecks);
+}
+
+export function isBoardUnlocked(id: string, p: Profile): boolean {
+  const board = BOARDS.find((b) => b.id === id);
+  return !!board && isUnlocked(board, p, p.unlockedBoards);
+}

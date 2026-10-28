@@ -1,0 +1,369 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1560" height="840" viewBox="0 0 1560 840">
+  <!-- PLACEHOLDER template: rows ♠ ♥ ♦ ♣, columns A…K, back at row 5 column 1. Not deck artwork. -->
+  <rect width="1560" height="840" fill="#ebe7df"/>
+  <g transform="translate(0 0)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#3a3632">A</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#3a3632">♠</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">AS</text>
+  </g>
+  <g transform="translate(120 0)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#3a3632">2</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#3a3632">♠</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">2S</text>
+  </g>
+  <g transform="translate(240 0)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#3a3632">3</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#3a3632">♠</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">3S</text>
+  </g>
+  <g transform="translate(360 0)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#3a3632">4</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#3a3632">♠</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">4S</text>
+  </g>
+  <g transform="translate(480 0)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#3a3632">5</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#3a3632">♠</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">5S</text>
+  </g>
+  <g transform="translate(600 0)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#3a3632">6</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#3a3632">♠</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">6S</text>
+  </g>
+  <g transform="translate(720 0)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#3a3632">7</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#3a3632">♠</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">7S</text>
+  </g>
+  <g transform="translate(840 0)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#3a3632">8</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#3a3632">♠</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">8S</text>
+  </g>
+  <g transform="translate(960 0)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#3a3632">9</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#3a3632">♠</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">9S</text>
+  </g>
+  <g transform="translate(1080 0)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#3a3632">10</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#3a3632">♠</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">10S</text>
+  </g>
+  <g transform="translate(1200 0)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#3a3632">J</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#3a3632">♠</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">JS</text>
+  </g>
+  <g transform="translate(1320 0)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#3a3632">Q</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#3a3632">♠</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">QS</text>
+  </g>
+  <g transform="translate(1440 0)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#3a3632">K</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#3a3632">♠</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">KS</text>
+  </g>
+  <g transform="translate(0 168)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#b5473a">A</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#b5473a">♥</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">AH</text>
+  </g>
+  <g transform="translate(120 168)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#b5473a">2</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#b5473a">♥</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">2H</text>
+  </g>
+  <g transform="translate(240 168)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#b5473a">3</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#b5473a">♥</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">3H</text>
+  </g>
+  <g transform="translate(360 168)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#b5473a">4</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#b5473a">♥</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">4H</text>
+  </g>
+  <g transform="translate(480 168)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#b5473a">5</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#b5473a">♥</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">5H</text>
+  </g>
+  <g transform="translate(600 168)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#b5473a">6</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#b5473a">♥</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">6H</text>
+  </g>
+  <g transform="translate(720 168)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#b5473a">7</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#b5473a">♥</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">7H</text>
+  </g>
+  <g transform="translate(840 168)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#b5473a">8</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#b5473a">♥</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">8H</text>
+  </g>
+  <g transform="translate(960 168)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#b5473a">9</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#b5473a">♥</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">9H</text>
+  </g>
+  <g transform="translate(1080 168)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#b5473a">10</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#b5473a">♥</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">10H</text>
+  </g>
+  <g transform="translate(1200 168)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#b5473a">J</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#b5473a">♥</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">JH</text>
+  </g>
+  <g transform="translate(1320 168)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#b5473a">Q</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#b5473a">♥</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">QH</text>
+  </g>
+  <g transform="translate(1440 168)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#b5473a">K</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#b5473a">♥</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">KH</text>
+  </g>
+  <g transform="translate(0 336)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#b5473a">A</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#b5473a">♦</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">AD</text>
+  </g>
+  <g transform="translate(120 336)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#b5473a">2</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#b5473a">♦</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">2D</text>
+  </g>
+  <g transform="translate(240 336)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#b5473a">3</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#b5473a">♦</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">3D</text>
+  </g>
+  <g transform="translate(360 336)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#b5473a">4</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#b5473a">♦</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">4D</text>
+  </g>
+  <g transform="translate(480 336)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#b5473a">5</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#b5473a">♦</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">5D</text>
+  </g>
+  <g transform="translate(600 336)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#b5473a">6</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#b5473a">♦</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">6D</text>
+  </g>
+  <g transform="translate(720 336)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#b5473a">7</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#b5473a">♦</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">7D</text>
+  </g>
+  <g transform="translate(840 336)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#b5473a">8</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#b5473a">♦</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">8D</text>
+  </g>
+  <g transform="translate(960 336)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#b5473a">9</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#b5473a">♦</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">9D</text>
+  </g>
+  <g transform="translate(1080 336)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#b5473a">10</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#b5473a">♦</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">10D</text>
+  </g>
+  <g transform="translate(1200 336)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#b5473a">J</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#b5473a">♦</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">JD</text>
+  </g>
+  <g transform="translate(1320 336)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#b5473a">Q</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#b5473a">♦</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">QD</text>
+  </g>
+  <g transform="translate(1440 336)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#b5473a">K</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#b5473a">♦</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">KD</text>
+  </g>
+  <g transform="translate(0 504)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#3a3632">A</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#3a3632">♣</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">AC</text>
+  </g>
+  <g transform="translate(120 504)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#3a3632">2</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#3a3632">♣</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">2C</text>
+  </g>
+  <g transform="translate(240 504)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#3a3632">3</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#3a3632">♣</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">3C</text>
+  </g>
+  <g transform="translate(360 504)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#3a3632">4</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#3a3632">♣</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">4C</text>
+  </g>
+  <g transform="translate(480 504)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#3a3632">5</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#3a3632">♣</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">5C</text>
+  </g>
+  <g transform="translate(600 504)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#3a3632">6</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#3a3632">♣</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">6C</text>
+  </g>
+  <g transform="translate(720 504)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#3a3632">7</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#3a3632">♣</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">7C</text>
+  </g>
+  <g transform="translate(840 504)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#3a3632">8</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#3a3632">♣</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">8C</text>
+  </g>
+  <g transform="translate(960 504)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#3a3632">9</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#3a3632">♣</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">9C</text>
+  </g>
+  <g transform="translate(1080 504)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#3a3632">10</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#3a3632">♣</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">10C</text>
+  </g>
+  <g transform="translate(1200 504)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#3a3632">J</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#3a3632">♣</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">JC</text>
+  </g>
+  <g transform="translate(1320 504)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#3a3632">Q</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#3a3632">♣</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">QC</text>
+  </g>
+  <g transform="translate(1440 504)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="700" fill="#3a3632">K</text>
+    <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="44" fill="#3a3632">♣</text>
+    <text x="60" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#9a948a">KC</text>
+  </g>
+  <g transform="translate(0 672)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <rect x="14" y="14" width="92" height="140" rx="6" fill="#d9d4ca"/>
+    <text x="60" y="90" text-anchor="middle" font-family="monospace" font-size="14" fill="#6d675e">BACK</text>
+  </g>
+  <g transform="translate(120 672)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="60" y="84" text-anchor="middle" font-family="monospace" font-size="11" fill="#b9b3a8">unused</text>
+  </g>
+  <g transform="translate(240 672)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="60" y="84" text-anchor="middle" font-family="monospace" font-size="11" fill="#b9b3a8">unused</text>
+  </g>
+  <g transform="translate(360 672)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="60" y="84" text-anchor="middle" font-family="monospace" font-size="11" fill="#b9b3a8">unused</text>
+  </g>
+  <g transform="translate(480 672)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="60" y="84" text-anchor="middle" font-family="monospace" font-size="11" fill="#b9b3a8">unused</text>
+  </g>
+  <g transform="translate(600 672)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="60" y="84" text-anchor="middle" font-family="monospace" font-size="11" fill="#b9b3a8">unused</text>
+  </g>
+  <g transform="translate(720 672)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="60" y="84" text-anchor="middle" font-family="monospace" font-size="11" fill="#b9b3a8">unused</text>
+  </g>
+  <g transform="translate(840 672)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="60" y="84" text-anchor="middle" font-family="monospace" font-size="11" fill="#b9b3a8">unused</text>
+  </g>
+  <g transform="translate(960 672)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="60" y="84" text-anchor="middle" font-family="monospace" font-size="11" fill="#b9b3a8">unused</text>
+  </g>
+  <g transform="translate(1080 672)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="60" y="84" text-anchor="middle" font-family="monospace" font-size="11" fill="#b9b3a8">unused</text>
+  </g>
+  <g transform="translate(1200 672)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="60" y="84" text-anchor="middle" font-family="monospace" font-size="11" fill="#b9b3a8">unused</text>
+  </g>
+  <g transform="translate(1320 672)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="60" y="84" text-anchor="middle" font-family="monospace" font-size="11" fill="#b9b3a8">unused</text>
+  </g>
+  <g transform="translate(1440 672)">
+    <rect x="4" y="4" width="112" height="160" rx="10" fill="#f7f4ee" stroke="#9a948a" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="60" y="84" text-anchor="middle" font-family="monospace" font-size="11" fill="#b9b3a8">unused</text>
+  </g>
+</svg>

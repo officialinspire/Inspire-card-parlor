@@ -2,7 +2,7 @@ import type { GameId, GameStats, Profile, Selection, Settings } from './types';
 
 export const GAME_IDS: readonly GameId[] = ['klondike', 'spider', 'freecell', 'war', 'go-fish'];
 
-export const DEFAULT_DECK = 'inspire-classic';
+export const DEFAULT_DECK = 'classic';
 export const DEFAULT_BOARD = 'velvet-green';
 export const DEFAULT_TRACK = 'lamplight';
 
@@ -19,6 +19,8 @@ export const DEFAULT_SETTINGS: Settings = {
   autoComplete: true,
   cardAnimationSpeed: 'normal',
   analyticsEnabled: true,
+  matureContent: false,
+  placeholderArt: false,
 };
 
 export function emptyStats(): GameStats {
@@ -31,7 +33,7 @@ export function createDefaultProfile(): Profile {
     level: 1,
     xp: 0,
     credits: 250,
-    unlockedDecks: [DEFAULT_DECK],
+    unlockedDecks: [DEFAULT_DECK, 'inspire'],
     unlockedBoards: [DEFAULT_BOARD],
     unlockedAchievements: [],
     storyChapter: 0,
@@ -41,5 +43,12 @@ export function createDefaultProfile(): Profile {
 }
 
 export function createDefaultSelection(): Selection {
-  return { gameId: null, deckId: DEFAULT_DECK, boardId: DEFAULT_BOARD, storyChapterId: null, byGame: {} };
+  return {
+    gameId: null,
+    deckId: DEFAULT_DECK,
+    boardId: DEFAULT_BOARD,
+    storyChapterId: null,
+    byGame: {},
+    artVariants: {},
+  };
 }

@@ -43,7 +43,7 @@ export const CHAPTERS: readonly Chapter[] = [
     synopsis: 'Uncle Otto swears no FreeCell deal is unwinnable. Prove him right.',
     hostId: 'otto',
     gameId: 'freecell',
-    reward: { credits: 150, unlock: 'garden-tea' },
+    reward: { credits: 150, unlock: 'eastern_woodlands' },
   },
   {
     id: 'chapter-3',
