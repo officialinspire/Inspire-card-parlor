@@ -1,12 +1,13 @@
 import { h } from '@/utils/dom';
 import { AppState } from '@/core/states';
-import { navigate } from '@/core/store';
+import { goBack, navigate } from '@/core/store';
 import { getBoard } from '@/boards/registry';
 import { getDeck } from '@/decks/registry';
 import { getGame } from '@/games/registry';
 import { CHAPTERS } from '@/story/chapters';
 import { cardBack, cardFace } from '../Card';
-import { backButton, button } from '../ui';
+import { confirmDialog } from '../Dialog';
+import { button, navHeader } from '../ui';
 import type { ScreenFactory } from '../Screen';
 
 /**
@@ -19,6 +20,16 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
   const deck = getDeck(deckId);
   const board = getBoard(boardId);
   const chapter = CHAPTERS.find((c) => c.id === storyChapterId);
+
+  const leave = async (then: () => void) => {
+    const ok = await confirmDialog({
+      title: 'Leave the table?',
+      message: 'This deal will be set aside. You can start a fresh one any time.',
+      confirmLabel: 'Leave',
+      cancelLabel: 'Keep playing',
+    });
+    if (ok) then();
+  };
 
   const stock = h('div', { class: 'table-stock' }, ...Array.from({ length: 4 }, () => cardBack(deck, 'stacked')));
   const fan = h(
@@ -33,16 +44,16 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
     'section',
     { class: 'table', style: { '--felt': board.felt, '--rim': board.rim } },
     h(
-      'header',
+      'div',
       { class: 'table-hud' },
-      backButton(),
-      h(
-        'div',
-        { class: 'hud-title' },
-        h('h1', { class: 'screen-title', tabindex: '-1' }, game?.name ?? 'Table'),
-        h('p', { class: 'screen-subtitle' }, chapter ? `Story · ${chapter.title}` : `${deck.name} · ${board.name}`),
-      ),
-      h('div', { class: 'hud-stats' }, h('span', null, '⏱ 0:00'), h('span', null, '✦ 0')),
+      navHeader({
+        title: game?.name ?? 'Table',
+        subtitle: chapter ? `Story · ${chapter.title}` : `${deck.name} · ${board.name}`,
+        back: () => void leave(goBack),
+        home: () => void leave(() => navigate(AppState.MAIN_MENU)),
+        showCredits: false,
+        actions: [h('span', { class: 'hud-stats' }, h('span', null, '0:00'), h('span', null, '0 pts'))],
+      }),
     ),
     h(
       'div',
@@ -52,17 +63,20 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
       h(
         'div',
         { class: 'table-placard' },
-        h('h2', null, 'Table is set'),
+        h('h2', null, 'The table is set'),
         h(
           'p',
           null,
-          `${game?.name ?? 'This game'} rules are on their way. The deck, table and HUD are ready for the dealer.`,
+          `${game?.name ?? 'This game'} rules are on their way. Your deck and board are ready for the dealer.`,
         ),
         h(
           'div',
           { class: 'placard-actions' },
-          button('Change Table', () => navigate(AppState.BOARD_SELECTION), { variant: 'ghost' }),
-          button('Main Menu', () => navigate(AppState.MAIN_MENU)),
+          button('Change board', () => navigate(AppState.BOARD_SELECTION), {
+            variant: 'ghost',
+            attrs: { 'data-nav': AppState.BOARD_SELECTION },
+          }),
+          button('Main menu', () => navigate(AppState.MAIN_MENU), { attrs: { 'data-nav': AppState.MAIN_MENU } }),
         ),
       ),
     ),

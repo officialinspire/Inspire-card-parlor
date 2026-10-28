@@ -16,7 +16,7 @@ export interface Chapter {
   synopsis: string;
   hostId: string;
   gameId: GameId;
-  reward: { coins: number; unlock?: string };
+  reward: { credits: number; unlock?: string };
 }
 
 export const CHARACTERS: readonly Character[] = [
@@ -34,7 +34,7 @@ export const CHAPTERS: readonly Chapter[] = [
     synopsis: 'You inherit a dusty card parlor. Mae shows you the ropes with a patient game of Klondike.',
     hostId: 'mae',
     gameId: 'klondike',
-    reward: { coins: 100 },
+    reward: { credits: 100 },
   },
   {
     id: 'chapter-2',
@@ -43,7 +43,7 @@ export const CHAPTERS: readonly Chapter[] = [
     synopsis: 'Uncle Otto swears no FreeCell deal is unwinnable. Prove him right.',
     hostId: 'otto',
     gameId: 'freecell',
-    reward: { coins: 150, unlock: 'garden-tea' },
+    reward: { credits: 150, unlock: 'garden-tea' },
   },
   {
     id: 'chapter-3',
@@ -52,7 +52,7 @@ export const CHAPTERS: readonly Chapter[] = [
     synopsis: 'Jules challenges the house to a round of War. Defend the parlor’s honor.',
     hostId: 'jules',
     gameId: 'war',
-    reward: { coins: 200, unlock: 'walnut-study' },
+    reward: { credits: 200, unlock: 'walnut-study' },
   },
   {
     id: 'chapter-4',
@@ -61,7 +61,7 @@ export const CHAPTERS: readonly Chapter[] = [
     synopsis: 'Ivy plays the late set while regulars gather for Go Fish.',
     hostId: 'ivy',
     gameId: 'go-fish',
-    reward: { coins: 250 },
+    reward: { credits: 250 },
   },
   {
     id: 'chapter-5',
@@ -70,7 +70,7 @@ export const CHAPTERS: readonly Chapter[] = [
     synopsis: 'An old Spider layout hides the parlor’s oldest secret.',
     hostId: 'mae',
     gameId: 'spider',
-    reward: { coins: 400 },
+    reward: { credits: 400 },
   },
 ];
 

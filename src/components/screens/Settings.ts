@@ -3,14 +3,17 @@ import { APP } from '@/core/config';
 import { AppState } from '@/core/states';
 import { navigate } from '@/core/store';
 import type { Settings } from '@/core/types';
-import { createDefaultProfile, DEFAULT_SETTINGS } from '@/core/defaults';
+import { createDefaultProfile, createDefaultSelection, DEFAULT_SETTINGS } from '@/core/defaults';
 import { resetAllData } from '@/storage/persistence';
 import { fullscreen } from '@/utils/device';
-import { audio } from '@/audio';
+import { audio, TRACKS } from '@/audio';
 import { segmented, slider, toggle } from '../controls';
+import { confirmDialog } from '../Dialog';
+import { icon } from '../icons';
+import { live } from '../live';
+import { notify } from '../Notifications';
 import { tabs } from '../Tabs';
 import { button, screenFrame } from '../ui';
-import { showModal } from '../Modal';
 import type { ScreenFactory } from '../Screen';
 
 export const SettingsScreen: ScreenFactory = ({ store }) => {
@@ -18,26 +21,73 @@ export const SettingsScreen: ScreenFactory = ({ store }) => {
   const s = () => store.state.settings;
   const panel = (...children: (Node | null)[]) => h('div', { class: 'settings-panel' }, ...children);
 
+  const trackList = () =>
+    live(
+      h('div', { class: 'control control-tracks', role: 'radiogroup', 'aria-label': 'Music track' }),
+      (st) => st.settings.musicTrack,
+      (el, current) =>
+        el.replaceChildren(
+          h('span', { class: 'control-label' }, 'Music track'),
+          h(
+            'div',
+            { class: 'track-list' },
+            ...TRACKS.map((t) =>
+              h(
+                'button',
+                {
+                  type: 'button',
+                  role: 'radio',
+                  'aria-checked': String(t.id === current),
+                  class: `track${t.id === current ? ' active' : ''}`,
+                  'data-track': t.id,
+                  onclick: () => {
+                    void audio.unlock().then(() => set({ musicTrack: t.id }));
+                  },
+                },
+                icon(t.id === current ? 'music' : 'play'),
+                h('span', null, h('strong', null, t.title), h('small', null, t.mood)),
+              ),
+            ),
+          ),
+        ),
+    );
+
   const t = tabs([
     {
       id: 'audio',
       label: 'Audio',
-      icon: '♪',
       render: () =>
         panel(
           slider('Master volume', s().masterVolume, (v) => set({ masterVolume: v })),
-          slider('Music', s().musicVolume, (v) => set({ musicVolume: v })),
           slider('Sound effects', s().sfxVolume, (v) => set({ sfxVolume: v })),
           toggle('Mute all', s().muted, (v) => set({ muted: v })),
-          button('Test sound', () => audio.play('chime'), { variant: 'ghost', sfx: null }),
+          button('Test sound', () => audio.play('chime'), { variant: 'secondary', sfx: null, icon: 'music' }),
+        ),
+    },
+    {
+      id: 'music',
+      label: 'Music',
+      render: () =>
+        panel(
+          slider('Music volume', s().musicVolume, (v) => set({ musicVolume: v })),
+          trackList(),
         ),
     },
     {
       id: 'display',
       label: 'Display',
-      icon: '◐',
       render: () =>
         panel(
+          segmented(
+            'Parlor lighting',
+            [
+              { value: 'auto', label: 'Auto' },
+              { value: 'day', label: 'Day' },
+              { value: 'night', label: 'Night' },
+            ],
+            s().theme,
+            (v) => set({ theme: v }),
+          ),
           toggle(
             'Reduced motion',
             s().reducedMotion,
@@ -55,14 +105,20 @@ export const SettingsScreen: ScreenFactory = ({ store }) => {
             (v) => set({ cardAnimationSpeed: v }),
           ),
           fullscreen.supported()
-            ? button('Toggle fullscreen', () => void fullscreen.toggle(), { variant: 'ghost' })
+            ? live(
+                toggle('Fullscreen', store.state.fullscreen, () => void fullscreen.toggle(), 'Also: F key'),
+                (st) => st.fullscreen,
+                (el, on) => {
+                  const input = el.querySelector('input');
+                  if (input) input.checked = on;
+                },
+              )
             : null,
         ),
     },
     {
       id: 'gameplay',
       label: 'Gameplay',
-      icon: '♠',
       render: () =>
         panel(
           toggle('Left-handed layout', s().leftHanded, (v) => set({ leftHanded: v }), 'Mirror stock and controls'),
@@ -78,7 +134,6 @@ export const SettingsScreen: ScreenFactory = ({ store }) => {
     {
       id: 'data',
       label: 'Data',
-      icon: '⛁',
       render: () =>
         panel(
           toggle(
@@ -90,13 +145,26 @@ export const SettingsScreen: ScreenFactory = ({ store }) => {
           button(
             'Reset all progress',
             async () => {
-              if (!confirm('Erase all progress, collection and settings? This cannot be undone.')) return;
+              const ok = await confirmDialog({
+                title: 'Reset all progress?',
+                message:
+                  'Your level, credits, collection, statistics and settings will be erased. This cannot be undone.',
+                confirmLabel: 'Erase everything',
+                cancelLabel: 'Keep my progress',
+                danger: true,
+              });
+              if (!ok) return;
               await resetAllData();
-              store.dispatch({ type: 'HYDRATE', settings: { ...DEFAULT_SETTINGS }, profile: createDefaultProfile() });
-              showModal(store, 'Progress reset', 'The parlor has been swept clean. Welcome back!');
+              store.dispatch({
+                type: 'HYDRATE',
+                settings: { ...DEFAULT_SETTINGS },
+                profile: createDefaultProfile(),
+                selection: createDefaultSelection(),
+              });
+              notify('The parlor has been swept clean. Welcome back!', { kind: 'success' });
               navigate(AppState.MAIN_MENU);
             },
-            { variant: 'ghost', class: 'btn-danger' },
+            { variant: 'danger', attrs: { 'data-action': 'reset' } },
           ),
           h(
             'p',

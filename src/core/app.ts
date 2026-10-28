@@ -1,11 +1,12 @@
 import { h } from '@/utils/dom';
-import { getOrientation, trackViewport } from '@/utils/device';
+import { fullscreen, getOrientation, trackViewport } from '@/utils/device';
 import { attachPersistence } from '@/storage/persistence';
 import { attachAudio } from '@/audio';
 import { attachAnalytics, track } from '@/analytics/analytics';
 import { attachTheme } from '@/themes/theme';
 import { ScreenManager } from '@/components/ScreenManager';
-import { attachModalLayer } from '@/components/Modal';
+import { attachDialogs } from '@/components/Dialog';
+import { attachNotifications } from '@/components/Notifications';
 import { SCREENS } from '@/components/screens';
 import { AppState } from './states';
 import { goBack, navigate, store } from './store';
@@ -23,17 +24,27 @@ export async function startApp(mount: HTMLElement): Promise<void> {
   store.dispatch({ type: 'SET_ONLINE', online: navigator.onLine });
   addEventListener('online', () => store.dispatch({ type: 'SET_ONLINE', online: true }));
   addEventListener('offline', () => store.dispatch({ type: 'SET_ONLINE', online: false }));
+  document.addEventListener('fullscreenchange', () =>
+    store.dispatch({ type: 'SET_FULLSCREEN', fullscreen: fullscreen.active() }),
+  );
 
   const stage = h('main', { class: 'stage' });
   mount.replaceChildren(stage);
   new ScreenManager(stage, store, SCREENS);
-  attachModalLayer(mount, store);
+  attachDialogs(mount, store);
+  attachNotifications(mount, store);
 
-  // Keyboard: Escape acts as "back" outside the hub and splash.
   addEventListener('keydown', (e) => {
-    if (e.key !== 'Escape' || store.state.modal) return;
+    if (store.state.modals.length || e.metaKey || e.ctrlKey || e.altKey) return;
     const s = store.state.screen;
-    if (s !== AppState.MAIN_MENU && s !== AppState.INITIALIZATION && s !== AppState.BOOT) goBack();
+    // Escape / Backspace act as "back" everywhere except the hub and splash.
+    if ((e.key === 'Escape' || e.key === 'Backspace') && s !== AppState.MAIN_MENU && s !== AppState.INITIALIZATION) {
+      // Gameplay owns its own back (it asks before leaving the table).
+      if (s === AppState.GAMEPLAY)
+        document.querySelector<HTMLElement>('.screen:not([aria-hidden]) [data-nav="back"]')?.click();
+      else goBack();
+    }
+    if (e.key === 'f' || e.key === 'F') void fullscreen.toggle();
   });
 
   // Block pinch/double-tap zoom gestures on iOS for a native feel.
@@ -48,6 +59,6 @@ export async function startApp(mount: HTMLElement): Promise<void> {
     navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`).catch(() => undefined);
   }
 
-  // Expose the store for debugging in development.
-  if (import.meta.env.DEV) Object.assign(window, { __ICP__: { store, navigate } });
+  // Expose the store for debugging and end-to-end tests.
+  Object.assign(window, { __ICP__: { store, navigate } });
 }

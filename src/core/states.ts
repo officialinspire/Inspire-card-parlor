@@ -9,6 +9,7 @@ export const AppState = {
   GAMEPLAY: 'GAMEPLAY',
   STORY_MODE: 'STORY_MODE',
   COLLECTION: 'COLLECTION',
+  GAMEBOARDS: 'GAMEBOARDS',
   ACHIEVEMENTS: 'ACHIEVEMENTS',
   SETTINGS: 'SETTINGS',
   STATISTICS: 'STATISTICS',
@@ -16,20 +17,22 @@ export const AppState = {
 
 export type AppState = (typeof AppState)[keyof typeof AppState];
 
-/**
- * Allowed transitions. Anything not listed here is rejected by the store,
- * which keeps navigation predictable as the game grows.
- */
-const MENU_HUB: AppState[] = [
+/** Screens reachable from the main menu and from every menu screen's header. */
+export const MENU_HUB: readonly AppState[] = [
   AppState.MAIN_MENU,
   AppState.GAME_SELECTION,
   AppState.STORY_MODE,
   AppState.COLLECTION,
+  AppState.GAMEBOARDS,
   AppState.ACHIEVEMENTS,
   AppState.SETTINGS,
   AppState.STATISTICS,
 ];
 
+/**
+ * Allowed transitions. Anything not listed here is rejected by the store,
+ * which keeps navigation predictable as the game grows.
+ */
 export const TRANSITIONS: Record<AppState, readonly AppState[]> = {
   BOOT: [AppState.INITIALIZATION],
   INITIALIZATION: [AppState.MAIN_MENU],
@@ -40,6 +43,7 @@ export const TRANSITIONS: Record<AppState, readonly AppState[]> = {
   GAMEPLAY: [...MENU_HUB, AppState.BOARD_SELECTION, AppState.DECK_SELECTION],
   STORY_MODE: [...MENU_HUB, AppState.DECK_SELECTION, AppState.GAMEPLAY],
   COLLECTION: MENU_HUB,
+  GAMEBOARDS: MENU_HUB,
   ACHIEVEMENTS: MENU_HUB,
   SETTINGS: MENU_HUB,
   STATISTICS: MENU_HUB,

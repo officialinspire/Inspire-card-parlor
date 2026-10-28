@@ -3,9 +3,10 @@ import { APP } from '@/core/config';
 import { AppState } from '@/core/states';
 import { navigate } from '@/core/store';
 import { getDeck } from '@/decks/registry';
-import { audio } from '@/audio';
+import { audio, getTrack } from '@/audio';
 import { track } from '@/analytics/analytics';
 import { cardBack } from '../Card';
+import { parlorScene } from '../illustrations';
 import { progressBar, button } from '../ui';
 import { Disposer, type ScreenFactory } from '../Screen';
 
@@ -30,7 +31,7 @@ export const InitializationScreen: ScreenFactory = ({ store }) => {
     async () => {
       await audio.unlock();
       audio.play('chime');
-      audio.startMusic();
+      audio.startMusic(getTrack(store.state.settings.musicTrack));
       track('enter_parlor');
       const p = store.state.profile;
       if (!p.unlockedAchievements.includes('first-visit')) {
@@ -41,7 +42,7 @@ export const InitializationScreen: ScreenFactory = ({ store }) => {
       }
       navigate(AppState.MAIN_MENU);
     },
-    { sfx: null, class: 'btn-enter' },
+    { sfx: null, size: 'lg', class: 'btn-enter', attrs: { 'data-nav': AppState.MAIN_MENU } },
   );
   enter.hidden = true;
 
@@ -57,21 +58,31 @@ export const InitializationScreen: ScreenFactory = ({ store }) => {
   const el = h(
     'section',
     { class: 'init' },
+    parlorScene('init-scene'),
     h(
       'div',
-      { class: 'init-brand' },
-      h('span', { class: 'brand-mark' }, 'INSPIRE'),
-      h('span', { class: 'brand-sub' }, `${APP.developer} presents`),
+      { class: 'init-content' },
+      h(
+        'div',
+        { class: 'init-brand' },
+        h('span', { class: 'brand-mark' }, 'INSPIRE'),
+        h('span', { class: 'brand-sub' }, `${APP.developer} presents`),
+      ),
+      h('div', { class: 'init-stage' }, shuffle),
+      h(
+        'div',
+        { class: 'init-title' },
+        h(
+          'h1',
+          { class: 'game-title screen-title', tabindex: '-1' },
+          h('span', { class: 'game-title-top' }, 'INSPIRE'),
+          h('span', null, 'Card Parlor'),
+        ),
+        h('p', { class: 'game-tagline' }, 'Classic card games · Collectible decks · Cozy nights'),
+      ),
+      h('div', { class: 'init-loader' }, bar, label, enter),
+      h('p', { class: 'init-version' }, `v${APP.version}`),
     ),
-    h('div', { class: 'init-stage' }, shuffle),
-    h(
-      'div',
-      { class: 'init-title' },
-      h('h1', { class: 'game-title screen-title', tabindex: '-1' }, h('span', null, 'INSPIRE'), ' CARD PARLOR'),
-      h('p', { class: 'game-tagline' }, 'Classic card games · Collectible decks · Cozy nights'),
-    ),
-    h('div', { class: 'init-loader' }, bar, label, enter),
-    h('p', { class: 'init-version' }, `v${APP.version}`),
   );
 
   renderBoot();

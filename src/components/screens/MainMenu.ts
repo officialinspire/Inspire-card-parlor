@@ -1,45 +1,146 @@
-import { frag, h } from '@/utils/dom';
+import { h } from '@/utils/dom';
 import { APP } from '@/core/config';
 import { AppState } from '@/core/states';
-import { navigate } from '@/core/store';
+import { navigate, store } from '@/core/store';
+import { getDeck } from '@/decks/registry';
+import { getBoard } from '@/boards/registry';
+import { audio, getTrack, nextTrackId } from '@/audio';
 import { levelProgress } from '@/progression/levels';
-import { fullscreen } from '@/utils/device';
-import { button, progressBar } from '../ui';
-import { Disposer, type ScreenFactory } from '../Screen';
+import { icon, type IconName } from '../icons';
+import { parlorScene } from '../illustrations';
+import { live } from '../live';
+import { cardBack } from '../Card';
+import { button, creditsPill, fullscreenButton, iconButton, progressBar } from '../ui';
+import type { ScreenFactory } from '../Screen';
 
-const ENTRIES: { state: AppState; label: string; icon: string; hint: string; primary?: boolean }[] = [
-  { state: AppState.GAME_SELECTION, label: 'Play', icon: '♠', hint: 'Five classic games', primary: true },
-  { state: AppState.STORY_MODE, label: 'Story', icon: '📖', hint: 'The parlor’s tale' },
-  { state: AppState.COLLECTION, label: 'Collection', icon: '🃏', hint: 'Decks & boards' },
-  { state: AppState.ACHIEVEMENTS, label: 'Achievements', icon: '★', hint: 'Trophies' },
-  { state: AppState.STATISTICS, label: 'Statistics', icon: '📊', hint: 'Your records' },
-  { state: AppState.SETTINGS, label: 'Settings', icon: '⚙', hint: 'Sound & display' },
+interface MenuEntry {
+  state: AppState;
+  label: string;
+  icon: IconName;
+  hint: string;
+}
+
+export const MENU_ENTRIES: readonly MenuEntry[] = [
+  { state: AppState.STORY_MODE, label: 'Story Mode', icon: 'story', hint: 'The parlor’s tale' },
+  { state: AppState.COLLECTION, label: 'Card Collection', icon: 'cards', hint: 'Decks & cards' },
+  { state: AppState.GAMEBOARDS, label: 'Gameboards', icon: 'board', hint: 'Tables & felts' },
+  { state: AppState.ACHIEVEMENTS, label: 'Achievements', icon: 'trophy', hint: 'Trophies' },
+  { state: AppState.STATISTICS, label: 'Statistics', icon: 'stats', hint: 'Your records' },
+  { state: AppState.SETTINGS, label: 'Settings', icon: 'settings', hint: 'Sound & display' },
 ];
 
-export const MainMenuScreen: ScreenFactory = ({ store }) => {
-  const d = new Disposer();
-  const profileChip = h('div', { class: 'profile-chip' });
+/** Level badge with XP progress; tapping opens Statistics. */
+function levelCard(): HTMLElement {
+  const el = h('button', {
+    type: 'button',
+    class: 'menu-level',
+    'data-nav': AppState.STATISTICS,
+    'data-status': 'level',
+    onclick: () => {
+      audio.play('tap');
+      navigate(AppState.STATISTICS);
+    },
+  });
+  return live(
+    el,
+    (s) => s.profile,
+    (node, p) => {
+      const lp = levelProgress(p);
+      node.title = `Level ${lp.level} — ${lp.current} / ${lp.needed} XP`;
+      node.setAttribute('aria-label', `Player level ${lp.level}, ${lp.current} of ${lp.needed} XP`);
+      node.replaceChildren(
+        h('span', { class: 'menu-level-num' }, String(lp.level)),
+        h('span', { class: 'menu-level-meta' }, h('span', null, `Level ${lp.level}`), progressBar(lp.ratio)),
+      );
+    },
+  );
+}
 
-  const renderProfile = () => {
-    const p = store.state.profile;
-    const lp = levelProgress(p);
-    profileChip.replaceChildren(
-      h('span', { class: 'profile-level', title: 'Level' }, String(lp.level)),
-      h(
-        'span',
-        { class: 'profile-meta' },
-        h('span', { class: 'profile-name' }, p.playerName),
-        progressBar(lp.ratio, `${lp.current} of ${lp.needed} XP`),
-      ),
-      h('span', { class: 'profile-coins', title: 'Coins' }, `◉ ${p.coins}`),
-    );
-  };
-  renderProfile();
-  d.add(store.select((s) => s.profile, renderProfile));
+/** A tappable chip in the status strip (selected deck / board / music). */
+function statusChip(kind: string, label: string, onClick: () => void): HTMLButtonElement {
+  return h('button', {
+    type: 'button',
+    class: `status-chip status-${kind}`,
+    'data-status': kind,
+    'aria-label': label,
+    onclick: () => {
+      audio.play('tap');
+      onClick();
+    },
+  });
+}
 
-  const fsButton = fullscreen.supported()
-    ? button('⛶', () => void fullscreen.toggle(), { variant: 'icon', title: 'Toggle fullscreen' })
-    : null;
+function statusStrip(): HTMLElement {
+  const deck = live(
+    statusChip('deck', 'Selected deck — open Card Collection', () => navigate(AppState.COLLECTION)),
+    (s) => s.selection.deckId,
+    (el, id) => {
+      const d = getDeck(id);
+      el.dataset.nav = AppState.COLLECTION;
+      el.replaceChildren(
+        h('span', { class: 'status-visual' }, cardBack(d, 'chip-card')),
+        h('span', { class: 'status-text' }, h('small', null, 'Deck'), h('span', { 'data-value': 'deck' }, d.name)),
+      );
+    },
+  );
+  const board = live(
+    statusChip('board', 'Selected gameboard — open Gameboards', () => navigate(AppState.GAMEBOARDS)),
+    (s) => s.selection.boardId,
+    (el, id) => {
+      const b = getBoard(id);
+      el.dataset.nav = AppState.GAMEBOARDS;
+      el.replaceChildren(
+        h('span', { class: 'status-visual chip-felt', style: { background: b.felt, borderColor: b.rim } }),
+        h('span', { class: 'status-text' }, h('small', null, 'Board'), h('span', { 'data-value': 'board' }, b.name)),
+      );
+    },
+  );
+  const music = live(
+    h('div', { class: 'status-chip status-music', 'data-status': 'music' }),
+    (s) => s.settings.musicTrack,
+    (el, id) => {
+      const t = getTrack(id);
+      el.replaceChildren(
+        h('span', { class: 'status-visual music-visual' }, icon('music')),
+        h(
+          'span',
+          { class: 'status-text', 'aria-live': 'polite' },
+          h('small', null, 'Now playing'),
+          h('span', { 'data-value': 'music' }, t.title),
+        ),
+        iconButton(
+          'next',
+          'Next track',
+          () => {
+            void audio
+              .unlock()
+              .then(() => store.dispatch({ type: 'UPDATE_SETTINGS', patch: { musicTrack: nextTrackId(id) } }));
+          },
+          { size: 'sm', sfx: null, class: 'status-next', attrs: { 'data-action': 'next-track' } },
+        ),
+      );
+    },
+  );
+  return h('div', { class: 'menu-status', 'aria-label': 'Current setup' }, deck, board, music);
+}
+
+export const MainMenuScreen: ScreenFactory = () => {
+  const quickPlay = button(
+    h(
+      'span',
+      { class: 'quickplay-text' },
+      h('span', { class: 'quickplay-label' }, 'Quick Play'),
+      h('span', { class: 'quickplay-hint' }, 'Five classic card games'),
+    ),
+    () => navigate(AppState.GAME_SELECTION),
+    {
+      variant: 'primary',
+      size: 'lg',
+      icon: 'play',
+      class: 'quickplay',
+      attrs: { 'data-nav': AppState.GAME_SELECTION },
+    },
+  );
 
   const el = h(
     'section',
@@ -50,23 +151,27 @@ export const MainMenuScreen: ScreenFactory = ({ store }) => {
       h(
         'div',
         { class: 'menu-brand' },
-        h('span', { class: 'brand-mark small' }, 'INSPIRE'),
+        h('span', { class: 'brand-mark' }, 'INSPIRE'),
         h('h1', { class: 'menu-title screen-title', tabindex: '-1' }, 'Card Parlor'),
       ),
-      h('div', { class: 'menu-header-right' }, profileChip, fsButton),
+      h('div', { class: 'menu-header-right' }, levelCard(), creditsPill(), fullscreenButton()),
     ),
+    h('div', { class: 'menu-hero' }, parlorScene('menu-scene'), quickPlay),
+    statusStrip(),
     h(
       'nav',
       { class: 'menu-grid', 'aria-label': 'Main menu' },
-      ...ENTRIES.map((e) =>
+      ...MENU_ENTRIES.map((e) =>
         button(
-          frag(
-            h('span', { class: 'menu-tile-icon', 'aria-hidden': 'true' }, e.icon),
+          h(
+            'span',
+            { class: 'menu-tile-content' },
+            h('span', { class: 'menu-tile-icon' }, icon(e.icon)),
             h('span', { class: 'menu-tile-label' }, e.label),
             h('span', { class: 'menu-tile-hint' }, e.hint),
           ),
           () => navigate(e.state),
-          { variant: 'plain', class: `menu-tile${e.primary ? ' menu-tile-primary' : ''}` },
+          { variant: 'plain', class: 'menu-tile', attrs: { 'data-nav': e.state } },
         ),
       ),
     ),
@@ -78,5 +183,5 @@ export const MainMenuScreen: ScreenFactory = ({ store }) => {
     ),
   );
 
-  return { el, unmount: () => d.dispose() };
+  return { el };
 };

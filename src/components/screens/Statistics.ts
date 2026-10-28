@@ -2,31 +2,25 @@ import { h } from '@/utils/dom';
 import { GAMES } from '@/games/registry';
 import type { GameStats } from '@/core/types';
 import { levelProgress } from '@/progression/levels';
+import { gameThumbnail } from '../illustrations';
 import { tabs } from '../Tabs';
-import { screenFrame } from '../ui';
+import { progressBar, screenFrame, statItem } from '../ui';
 import type { ScreenFactory } from '../Screen';
+import { fmtTime, winRate } from './GameSelection';
 
-const fmtTime = (ms: number | null) =>
-  ms == null ? '—' : `${Math.floor(ms / 60000)}:${String(Math.floor((ms % 60000) / 1000)).padStart(2, '0')}`;
-
-function statGrid(entries: [string, string | number][]): HTMLElement {
-  return h(
-    'dl',
-    { class: 'stat-grid' },
-    ...entries.map(([k, v]) => h('div', { class: 'stat' }, h('dt', null, k), h('dd', null, String(v)))),
-  );
+function statGrid(...items: HTMLElement[]): HTMLElement {
+  return h('div', { class: 'stat-grid' }, ...items);
 }
 
-function gameStats(s: GameStats): HTMLElement {
-  const rate = s.played ? `${Math.round((s.won / s.played) * 100)}%` : '—';
-  return statGrid([
-    ['Played', s.played],
-    ['Won', s.won],
-    ['Win rate', rate],
-    ['Best time', fmtTime(s.bestTimeMs)],
-    ['Best score', s.bestScore ?? '—'],
-    ['Streak', `${s.currentStreak} (best ${s.longestStreak})`],
-  ]);
+function gameStats(s: GameStats): HTMLElement[] {
+  return [
+    statItem('Played', s.played),
+    statItem('Won', s.won),
+    statItem('Win rate', winRate(s)),
+    statItem('Best time', fmtTime(s.bestTimeMs)),
+    statItem('Best score', s.bestScore ?? '—'),
+    statItem('Streak', `${s.currentStreak} · best ${s.longestStreak}`),
+  ];
 }
 
 export const StatisticsScreen: ScreenFactory = ({ store }) => {
@@ -41,16 +35,40 @@ export const StatisticsScreen: ScreenFactory = ({ store }) => {
       id: 'overview',
       label: 'Overview',
       render: () =>
-        statGrid([
-          ['Level', lp.level],
-          ['XP', `${lp.current} / ${lp.needed}`],
-          ['Coins', p.coins],
-          ['Games played', played],
-          ['Games won', won],
-          ['Story chapter', p.storyChapter],
-        ]),
+        h(
+          'div',
+          { class: 'stats-panel' },
+          h(
+            'div',
+            { class: 'stats-level' },
+            h('span', { class: 'menu-level-num' }, String(lp.level)),
+            h(
+              'div',
+              null,
+              h('strong', null, `Level ${lp.level}`),
+              progressBar(lp.ratio),
+              h('small', null, `${lp.current} / ${lp.needed} XP`),
+            ),
+          ),
+          statGrid(
+            statItem('Credits', p.credits.toLocaleString()),
+            statItem('Games played', played),
+            statItem('Games won', won),
+            statItem('Story chapter', p.storyChapter),
+          ),
+        ),
     },
-    ...GAMES.map((g) => ({ id: g.id, label: g.name, render: () => gameStats(p.stats[g.id]) })),
+    ...GAMES.map((g) => ({
+      id: g.id,
+      label: g.name,
+      render: () =>
+        h(
+          'div',
+          { class: 'stats-panel' },
+          h('div', { class: 'stats-thumb' }, gameThumbnail(g.id)),
+          statGrid(...gameStats(p.stats[g.id])),
+        ),
+    })),
   ]);
 
   return {

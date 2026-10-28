@@ -7,10 +7,13 @@ import { getGame } from '@/games/registry';
 import { isBoardUnlocked, unlockHint } from '@/progression/levels';
 import { audio } from '@/audio';
 import { track } from '@/analytics/analytics';
-import { cardBack } from '../Card';
+import { icon } from '../icons';
+import { notify } from '../Notifications';
 import { paginator } from '../Paginator';
 import { button, screenFrame } from '../ui';
 import type { ScreenFactory } from '../Screen';
+import { SETUP_STEPS } from './GameSelection';
+import { boardPreview } from './Gameboards';
 
 export const BoardSelectionScreen: ScreenFactory = ({ store }) => {
   const game = getGame(store.state.selection.gameId);
@@ -19,7 +22,8 @@ export const BoardSelectionScreen: ScreenFactory = ({ store }) => {
     items: BOARDS,
     minTileWidth: 200,
     minTileHeight: 170,
-    label: 'Boards',
+    maxTileHeight: 260,
+    label: 'Gameboards',
     initialIndex: BOARDS.findIndex((b) => b.id === store.state.selection.boardId),
     render: (board) => {
       const unlocked = isBoardUnlocked(board.id, store.state.profile);
@@ -31,38 +35,44 @@ export const BoardSelectionScreen: ScreenFactory = ({ store }) => {
           class: `tile board-tile${selected ? ' selected' : ''}${unlocked ? '' : ' locked'}`,
           'aria-pressed': String(selected),
           'aria-disabled': String(!unlocked),
+          'data-board': board.id,
           onclick: () => {
-            if (!unlocked) return audio.play('error');
+            if (!unlocked)
+              return void notify(`${board.name}: ${unlockHint(board)} to unlock.`, { kind: 'warning', icon: 'lock' });
             audio.play('tap');
             store.dispatch({ type: 'SELECT_BOARD', boardId: board.id });
             pager.refresh();
           },
         },
+        selected ? h('span', { class: 'tile-check' }, icon('check')) : null,
+        boardPreview(board, deck),
+        h('span', { class: 'tile-title' }, board.name),
         h(
           'span',
-          { class: 'board-preview', style: { background: board.felt, borderColor: board.rim } },
-          cardBack(deck, 'mini'),
-          cardBack(deck, 'mini'),
-          cardBack(deck, 'mini'),
+          { class: 'tile-sub' },
+          unlocked ? board.description : h('span', { class: 'tile-lock' }, icon('lock'), unlockHint(board)),
         ),
-        h('span', { class: 'tile-title' }, board.name),
-        h('span', { class: 'tile-sub' }, unlocked ? board.description : `🔒 ${unlockHint(board)}`),
       );
     },
   });
 
   return {
     el: screenFrame({
-      title: 'Choose a Table',
-      subtitle: game ? `${game.name} · Step 3 of 3` : 'Step 3 of 3',
+      title: game ? game.name : 'Choose a Board',
+      steps: { current: 3, total: 3, labels: SETUP_STEPS },
       body: pager.el,
       footer: button(
         'Deal Cards',
         () => {
-          track('game_start', { ...store.state.selection });
+          store.dispatch({ type: 'START_GAME' });
+          track('game_start', {
+            gameId: store.state.selection.gameId,
+            deckId: deck.id,
+            boardId: store.state.selection.boardId,
+          });
           navigate(AppState.GAMEPLAY);
         },
-        { sfx: 'shuffle' },
+        { sfx: 'shuffle', icon: 'play', attrs: { 'data-nav': AppState.GAMEPLAY } },
       ),
     }),
     unmount: pager.destroy,

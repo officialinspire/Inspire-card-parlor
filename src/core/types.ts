@@ -2,11 +2,15 @@ import type { AppState } from './states';
 
 export type GameId = 'klondike' | 'spider' | 'freecell' | 'war' | 'go-fish';
 
+export type ThemeMode = 'auto' | 'day' | 'night';
+
 export interface Settings {
   masterVolume: number;
   musicVolume: number;
   sfxVolume: number;
   muted: boolean;
+  musicTrack: string;
+  theme: ThemeMode;
   reducedMotion: boolean;
   leftHanded: boolean;
   showHints: boolean;
@@ -28,7 +32,7 @@ export interface Profile {
   playerName: string;
   level: number;
   xp: number;
-  coins: number;
+  credits: number;
   unlockedDecks: string[];
   unlockedBoards: string[];
   unlockedAchievements: string[];
@@ -37,18 +41,34 @@ export interface Profile {
   createdAt: number;
 }
 
-export interface Selection {
-  gameId: GameId | null;
+export interface TableChoice {
   deckId: string;
   boardId: string;
-  /** Set when gameplay was launched from Story Mode. */
-  storyChapterId: string | null;
 }
 
-export interface ModalState {
+export interface Selection extends TableChoice {
+  gameId: GameId | null;
+  /** Set when gameplay was launched from Story Mode. */
+  storyChapterId: string | null;
+  /** Last deck/board used for each game, restored when that game is picked again. */
+  byGame: Partial<Record<GameId, TableChoice>>;
+}
+
+export type NotificationKind = 'info' | 'success' | 'warning' | 'error';
+
+export interface Notification {
+  id: number;
+  message: string;
+  kind: NotificationKind;
+  icon?: string;
+  /** ms before auto-dismiss; 0 keeps it until dismissed. */
+  duration: number;
+}
+
+/** Open dialogs are owned by the UI layer; the store tracks them so input (Escape/back) can defer to them. */
+export interface ModalRef {
   id: string;
   title: string;
-  body: string;
 }
 
 export interface RootState {
@@ -58,7 +78,9 @@ export interface RootState {
   selection: Selection;
   settings: Settings;
   profile: Profile;
-  modal: ModalState | null;
+  modals: ModalRef[];
+  notifications: Notification[];
   orientation: 'portrait' | 'landscape';
+  fullscreen: boolean;
   online: boolean;
 }

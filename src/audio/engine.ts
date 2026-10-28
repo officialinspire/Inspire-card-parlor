@@ -1,4 +1,5 @@
 import type { Settings } from '@/core/types';
+import { TRACKS, type MusicTrack } from './tracks';
 
 export type Sfx = 'tap' | 'back' | 'flip' | 'shuffle' | 'chime' | 'error';
 
@@ -20,6 +21,7 @@ class AudioEngine {
   };
   #musicTimer: ReturnType<typeof setTimeout> | null = null;
   #noise: AudioBuffer | null = null;
+  #track: MusicTrack = TRACKS[0]!;
 
   get unlocked(): boolean {
     return this.#ctx?.state === 'running';
@@ -120,28 +122,32 @@ class AudioEngine {
     }
   }
 
-  /** Gentle generative lounge pad: slow ii–V–I–vi voicings with soft bell notes. */
-  startMusic(): void {
-    if (!this.unlocked || this.#musicTimer) return;
-    const chords = [
-      [146.83, 174.61, 220.0, 261.63], // Dm7
-      [196.0, 246.94, 293.66, 349.23], // G7
-      [130.81, 164.81, 196.0, 246.94], // Cmaj7
-      [220.0, 261.63, 329.63, 392.0], // Am7
-    ];
+  /** Starts (or switches to) a generative track. */
+  startMusic(track: MusicTrack = this.#track): void {
+    const switching = track.id !== this.#track.id;
+    this.#track = track;
+    if (!this.unlocked) return;
+    if (this.#musicTimer && !switching) return;
+    this.stopMusic();
     let step = 0;
-    const bar = 4.2;
     const loop = () => {
       const ctx = this.#ctx!;
       const t = ctx.currentTime + 0.05;
+      const { chords, bar, bells, bellOctave } = this.#track;
       const chord = chords[step % chords.length]!;
       chord.forEach((f) => this.#pad(f, t, bar + 1));
-      const bell = chord[Math.floor(Math.random() * chord.length)]! * 4;
-      this.#tone(bell, t + bar * 0.5, 1.8, 'sine', 0.05, this.#music);
+      for (const at of bells) {
+        const bell = chord[Math.floor(Math.random() * chord.length)]! * bellOctave;
+        this.#tone(bell, t + bar * at, 1.8, 'sine', 0.05, this.#music);
+      }
       step++;
       this.#musicTimer = setTimeout(loop, bar * 1000);
     };
     loop();
+  }
+
+  get playing(): boolean {
+    return this.#musicTimer !== null;
   }
 
   #pad(freq: number, start: number, dur: number): void {
@@ -149,13 +155,13 @@ class AudioEngine {
     const g = ctx.createGain();
     const lp = ctx.createBiquadFilter();
     lp.type = 'lowpass';
-    lp.frequency.value = 900;
+    lp.frequency.value = this.#track.warmth;
     g.gain.setValueAtTime(0, start);
     g.gain.linearRampToValueAtTime(0.07, start + 1.2);
     g.gain.linearRampToValueAtTime(0, start + dur);
     for (const detune of [-6, 6]) {
       const osc = ctx.createOscillator();
-      osc.type = 'triangle';
+      osc.type = this.#track.pad;
       osc.frequency.value = freq;
       osc.detune.value = detune;
       osc.connect(lp);

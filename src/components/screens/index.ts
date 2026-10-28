@@ -8,6 +8,7 @@ import { BoardSelectionScreen } from './BoardSelection';
 import { GameplayScreen } from './Gameplay';
 import { StoryModeScreen } from './StoryMode';
 import { CollectionScreen } from './Collection';
+import { GameboardsScreen } from './Gameboards';
 import { AchievementsScreen } from './Achievements';
 import { SettingsScreen } from './Settings';
 import { StatisticsScreen } from './Statistics';
@@ -22,6 +23,7 @@ export const SCREENS: ScreenRegistry = {
   [AppState.GAMEPLAY]: GameplayScreen,
   [AppState.STORY_MODE]: StoryModeScreen,
   [AppState.COLLECTION]: CollectionScreen,
+  [AppState.GAMEBOARDS]: GameboardsScreen,
   [AppState.ACHIEVEMENTS]: AchievementsScreen,
   [AppState.SETTINGS]: SettingsScreen,
   [AppState.STATISTICS]: StatisticsScreen,

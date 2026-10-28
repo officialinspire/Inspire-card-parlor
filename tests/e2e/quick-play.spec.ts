@@ -1,0 +1,120 @@
+import { expect, test } from '@playwright/test';
+import {
+  CURRENT,
+  clickNav,
+  enterParlor,
+  expectNoOverflow,
+  expectScreen,
+  playGame,
+  seed,
+  clickInPager,
+} from './helpers';
+
+const GAMES = ['klondike', 'spider', 'freecell', 'war', 'go-fish'];
+
+test('lists all five games with thumbnail, description, difficulty, stats and a Play button', async ({ page }) => {
+  await enterParlor(page);
+  await clickNav(page, 'GAME_SELECTION');
+  const seen = new Set<string>();
+  for (let guard = 0; guard < 10 && seen.size < GAMES.length; guard++) {
+    const cards = page.locator(`${CURRENT} .game-card`);
+    for (const card of await cards.all()) {
+      const id = (await card.getAttribute('data-game'))!;
+      seen.add(id);
+      await expect(card.locator('.ill-thumb')).toBeVisible();
+      await expect(card.locator('.game-name')).not.toBeEmpty();
+      await expect(card.locator('.difficulty')).toBeVisible();
+      await expect(card.locator('.game-stats .stat-item')).toHaveCount(3);
+      await expect(card.locator(`[data-play="${id}"]`)).toBeVisible();
+    }
+    await expectNoOverflow(page, `${CURRENT} .game-play, ${CURRENT} .pager-nav button`);
+    const next = page.locator(`${CURRENT} [data-pager="next"]`);
+    if ((await next.isVisible()) && (await next.isEnabled())) await next.click();
+  }
+  expect([...seen].sort()).toEqual([...GAMES].sort());
+});
+
+test('Play → deck → board → table, then leave with a confirmation', async ({ page }) => {
+  await enterParlor(page);
+  await clickNav(page, 'GAME_SELECTION');
+  await playGame(page, 'klondike');
+  await expect(page.locator(`${CURRENT} .nav-steps li.current`)).toHaveText('Deck');
+  await clickNav(page, 'BOARD_SELECTION');
+  await expect(page.locator(`${CURRENT} .nav-steps li.current`)).toHaveText('Board');
+  await clickNav(page, 'GAMEPLAY');
+  await expect(page.locator(`${CURRENT} .screen-title`)).toHaveText('Klondike');
+
+  // Back asks first; cancelling keeps you at the table.
+  await page.locator(`${CURRENT} [data-nav="back"]`).click();
+  await expect(page.getByRole('alertdialog')).toBeVisible();
+  await page.locator('[data-dialog-action="false"]').click();
+  await expectScreen(page, 'GAMEPLAY');
+
+  // Home → confirm → main menu.
+  await page.locator(`${CURRENT} [data-nav="home"]`).click();
+  await page.locator('[data-dialog-action="true"]').click();
+  await expectScreen(page, 'MAIN_MENU');
+});
+
+test('table buttons work: change board and main menu', async ({ page }) => {
+  await enterParlor(page);
+  await clickNav(page, 'GAME_SELECTION');
+  await playGame(page, 'war');
+  await clickNav(page, 'BOARD_SELECTION');
+  await clickNav(page, 'GAMEPLAY');
+  await page.locator(`${CURRENT} .placard-actions [data-nav="BOARD_SELECTION"]`).click();
+  await expectScreen(page, 'BOARD_SELECTION');
+  await clickNav(page, 'GAMEPLAY');
+  await page.locator(`${CURRENT} .placard-actions [data-nav="MAIN_MENU"]`).click();
+  await expectScreen(page, 'MAIN_MENU');
+});
+
+test('locked decks explain how to unlock them', async ({ page }) => {
+  await enterParlor(page);
+  await clickNav(page, 'GAME_SELECTION');
+  await playGame(page, 'spider');
+  await clickInPager(page, '[data-deck="midnight-jazz"]');
+  await expect(page.locator('.toast')).toContainText('Reach level 3');
+  await expect(page.locator(`${CURRENT} [data-deck="inspire-classic"]`)).toHaveAttribute('aria-pressed', 'true');
+});
+
+test('remembers deck and board per game across reloads', async ({ page }) => {
+  await seed(page, { profile: { level: 6 } });
+  await enterParlor(page);
+
+  // Spider with Midnight Jazz on Oxblood Lounge.
+  await clickNav(page, 'GAME_SELECTION');
+  await playGame(page, 'spider');
+  await clickInPager(page, '[data-deck="midnight-jazz"]');
+  await clickNav(page, 'BOARD_SELECTION');
+  await clickInPager(page, '[data-board="oxblood-lounge"]');
+  await clickNav(page, 'GAMEPLAY');
+  await page.locator(`${CURRENT} .placard-actions [data-nav="MAIN_MENU"]`).click();
+  await expectScreen(page, 'MAIN_MENU');
+  await expect(page.locator(`${CURRENT} [data-value="deck"]`)).toHaveText('Midnight Jazz');
+  await expect(page.locator(`${CURRENT} [data-value="board"]`)).toHaveText('Oxblood Lounge');
+
+  // Klondike with the classic deck on Midnight Blue.
+  await clickNav(page, 'GAME_SELECTION');
+  await playGame(page, 'klondike');
+  await clickInPager(page, '[data-deck="inspire-classic"]');
+  await clickNav(page, 'BOARD_SELECTION');
+  await clickInPager(page, '[data-board="midnight-blue"]');
+  await clickNav(page, 'GAMEPLAY');
+
+  await page.waitForTimeout(400); // let the debounced save land
+  await page.reload();
+  await page.getByRole('button', { name: 'Enter Parlor' }).click();
+  await expectScreen(page, 'MAIN_MENU');
+  await expect(page.locator(`${CURRENT} [data-value="board"]`)).toHaveText('Midnight Blue');
+
+  // Quick Play opens on the last game played.
+  await clickNav(page, 'GAME_SELECTION');
+  await expect(page.locator(`${CURRENT} .game-card.last`)).toHaveAttribute('data-game', 'klondike');
+
+  // Picking Spider again restores its own deck and board.
+  await playGame(page, 'spider');
+  await expect(page.locator(`${CURRENT} [data-deck="midnight-jazz"]`)).toHaveAttribute('aria-pressed', 'true');
+  await clickNav(page, 'BOARD_SELECTION');
+  await expect(page.locator(`${CURRENT} [data-board="oxblood-lounge"]`)).toHaveAttribute('aria-pressed', 'true');
+});

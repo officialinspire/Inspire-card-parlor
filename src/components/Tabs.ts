@@ -24,6 +24,7 @@ export function tabs(defs: TabDef[], opts: { initial?: string; onChange?: (id: s
         class: 'tab',
         role: 'tab',
         id: `tab-${d.id}`,
+        'data-tab': d.id,
         onclick: () => {
           if (d.id === active) return;
           audio.play('tap');

@@ -1,42 +1,22 @@
-/* INSPIRE CARD PARLOR — design tokens.
- * Warm espresso wood, brass/gold accents, cream card stock. */
+/*
+ * INSPIRE CARD PARLOR — design tokens.
+ *
+ * Identity: a neighborhood corner parlor drawn in flat, ink-outlined
+ * illustration. Warm paper, terracotta, sage and mustard by day; dusk blue
+ * and lamplight by night. Surfaces sit on a thick lower edge, like a
+ * well-worn game tile, so everything reads as something you can pick up.
+ */
 :root {
-  --font-display: 'Cinzel', 'Times New Roman', Georgia, serif;
+  --font-display: 'Fraunces', 'Iowan Old Style', Georgia, serif;
   --font-body: 'Nunito', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
-  --bg-0: #0d0907;
-  --bg-1: #160f0b;
-  --bg-2: #22170f;
-  --panel: rgba(42, 28, 19, 0.78);
-  --panel-strong: rgba(54, 36, 24, 0.94);
-  --panel-border: rgba(226, 184, 102, 0.22);
-
-  --gold-1: #f6dc9a;
-  --gold-2: #e2b866;
-  --gold-3: #b8883a;
-  --gold-grad: linear-gradient(180deg, var(--gold-1), var(--gold-2) 45%, var(--gold-3));
-
-  --cream: #f3e9d6;
-  --text: #f3e9d6;
-  --text-dim: rgba(243, 233, 214, 0.66);
-  --text-faint: rgba(243, 233, 214, 0.4);
-  --oxblood: #7d2a33;
-  --danger: #e0654f;
-  --success: #7cc79a;
-
-  --rarity-common: #c9c2b4;
-  --rarity-rare: #6fb2e4;
-  --rarity-epic: #c88df0;
-  --rarity-legendary: #ffcd5c;
-
-  --radius-s: 8px;
-  --radius-m: 14px;
-  --radius-l: 22px;
-  --shadow-1: 0 2px 6px rgba(0, 0, 0, 0.35);
-  --shadow-2: 0 10px 30px rgba(0, 0, 0, 0.45);
-  --glow: 0 0 0 2px var(--gold-2), 0 0 22px rgba(226, 184, 102, 0.45);
+  --radius-s: 10px;
+  --radius-m: 16px;
+  --radius-l: 24px;
+  --radius-pill: 999px;
 
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --dur-fast: 140ms;
   --dur: 280ms;
   --dur-slow: 520ms;
@@ -48,18 +28,154 @@
   --vh: 1vh;
   --app-h: calc(var(--vh) * 100);
 
-  --gutter: clamp(12px, 3.2vmin, 28px);
+  --gutter: clamp(12px, 3vmin, 28px);
   --tap: 44px;
+  --edge-size: 4px;
   --card-w: clamp(54px, 13vmin, 110px);
-  --card-ratio: 1.4;
-
-  color-scheme: dark;
 }
 
 @supports (height: 100dvh) {
   :root {
     --app-h: 100dvh;
   }
+}
+
+/* ---------- Day: afternoon light through the front window ---------- */
+:root,
+[data-theme='day'] {
+  color-scheme: light;
+  --bg: #efe4cf;
+  --bg-deep: #e3d3b6;
+  --bg-dots: rgba(70, 50, 30, 0.07);
+
+  --surface: #fbf6ec;
+  --surface-2: #f4ead9;
+  --surface-sunk: #e9dcc4;
+  --edge: #d6c3a1;
+  --border: rgba(47, 42, 36, 0.16);
+  --overlay: rgba(47, 38, 28, 0.42);
+
+  --ink: #2f2a24;
+  --ink-soft: #6a5f53;
+  --ink-faint: #9a8e80;
+
+  --accent: #c8643f; /* terracotta */
+  --accent-edge: #9c4527;
+  --accent-ink: #fff8ee;
+  --accent-soft: rgba(200, 100, 63, 0.14);
+  --sage: #5f8a6e;
+  --sage-soft: rgba(95, 138, 110, 0.16);
+  --mustard: #e0a93a;
+  --sky: #6f8fae;
+  --danger: #b8432f;
+  --danger-edge: #8b2e1e;
+  --success: #4f8a5f;
+
+  --rarity-common: #8a8073;
+  --rarity-rare: #4f7fa6;
+  --rarity-epic: #8a5aa8;
+  --rarity-legendary: #c08b17;
+
+  --shadow-soft: 0 10px 24px rgba(80, 55, 30, 0.12);
+  --shadow-pop: 0 18px 40px rgba(80, 55, 30, 0.22);
+
+  /* Illustration palette */
+  --ill-line: #2f2a24;
+  --ill-wall: #f1e2c5;
+  --ill-wallpaper: rgba(200, 100, 63, 0.08);
+  --ill-frame: #8a5a3c;
+  --ill-sky: #bcdbe2;
+  --ill-orb: #f6c65b;
+  --ill-town: #a9c1ab;
+  --ill-lights: transparent;
+  --ill-sill: #a26a45;
+  --ill-lamp: #c8643f;
+  --ill-glow: rgba(246, 198, 91, 0);
+  --ill-pot: #c8643f;
+  --ill-leaf: #5f8a6e;
+  --ill-table: #b07a52;
+  --ill-table-edge: #8a5a3c;
+  --ill-card: #fffaf0;
+  --ill-card-back: #c8643f;
+  --ill-card-back-inner: #e8956f;
+  --ill-suit-red: #c0453a;
+  --ill-suit-ink: #2f2a24;
+  --ill-cup: #f7f2e7;
+  --ill-cat: #3b342d;
+  --ill-cat-eye: #f6c65b;
+  --ill-felt: #7fa58a;
+  --ill-slot: rgba(255, 255, 255, 0.22);
+  --ill-water: #8fb7c9;
+  --ill-fish: #e0a93a;
+  --ill-fish-alt: #c8643f;
+}
+
+/* ---------- Night: lamplight, dusk-blue walls, the town asleep ---------- */
+[data-theme='night'] {
+  color-scheme: dark;
+  --bg: #1f2431;
+  --bg-deep: #171b25;
+  --bg-dots: rgba(255, 240, 210, 0.04);
+
+  --surface: #2c3242;
+  --surface-2: #343b4d;
+  --surface-sunk: #232837;
+  --edge: #141822;
+  --border: rgba(243, 234, 216, 0.12);
+  --overlay: rgba(8, 10, 16, 0.6);
+
+  --ink: #f3ead8;
+  --ink-soft: #c2b8a6;
+  --ink-faint: #8a8697;
+
+  --accent: #e07a52;
+  --accent-edge: #a8502f;
+  --accent-ink: #1f1a16;
+  --accent-soft: rgba(224, 122, 82, 0.16);
+  --sage: #86b597;
+  --sage-soft: rgba(134, 181, 151, 0.16);
+  --mustard: #f0bd52;
+  --sky: #8eaed0;
+  --danger: #e0654f;
+  --danger-edge: #9d3a28;
+  --success: #86b597;
+
+  --rarity-common: #b9b1a4;
+  --rarity-rare: #7fb2de;
+  --rarity-epic: #c39ae6;
+  --rarity-legendary: #f0bd52;
+
+  --shadow-soft: 0 10px 24px rgba(0, 0, 0, 0.3);
+  --shadow-pop: 0 18px 40px rgba(0, 0, 0, 0.45);
+
+  --ill-line: #10131b;
+  --ill-wall: #2a3040;
+  --ill-wallpaper: rgba(240, 189, 82, 0.05);
+  --ill-frame: #5a3f2e;
+  --ill-sky: #26324d;
+  --ill-orb: #f3e6c4;
+  --ill-town: #18202f;
+  --ill-lights: #f0bd52;
+  --ill-sill: #6a4a35;
+  --ill-lamp: #e07a52;
+  --ill-glow: rgba(240, 189, 82, 0.28);
+  --ill-pot: #b8603e;
+  --ill-leaf: #4f7a60;
+  --ill-table: #5c4030;
+  --ill-table-edge: #43301f;
+  --ill-card: #f3ead8;
+  --ill-card-back: #b8603e;
+  --ill-card-back-inner: #d27f5d;
+  --ill-suit-red: #c0453a;
+  --ill-suit-ink: #2a2622;
+  --ill-cup: #e8dfcd;
+  --ill-cat: #10131b;
+  --ill-cat-eye: #f0bd52;
+  --ill-felt: #3f6650;
+  --ill-slot: rgba(255, 255, 255, 0.12);
+  --ill-water: #3a5a72;
+  --ill-fish: #f0bd52;
+  --ill-fish-alt: #e07a52;
 }
 
 .reduced-motion {

@@ -4,6 +4,7 @@ import { navigate } from '@/core/store';
 import { CHAPTERS, getCharacter } from '@/story/chapters';
 import { getGame } from '@/games/registry';
 import { audio } from '@/audio';
+import { notify } from '../Notifications';
 import { paginator } from '../Paginator';
 import { badge, screenFrame } from '../ui';
 import type { ScreenFactory } from '../Screen';
@@ -14,6 +15,7 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
     items: CHAPTERS,
     minTileWidth: 280,
     minTileHeight: 120,
+    maxTileHeight: 170,
     maxColumns: 2,
     label: 'Chapters',
     initialIndex: Math.min(reached, CHAPTERS.length - 1),
@@ -28,8 +30,10 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
           type: 'button',
           class: `tile chapter-tile${unlocked ? '' : ' locked'}${done ? ' done' : ''}`,
           'aria-disabled': String(!unlocked),
+          'data-chapter': ch.id,
           onclick: () => {
-            if (!unlocked) return audio.play('error');
+            if (!unlocked)
+              return void notify('Finish the previous chapter to unlock this one.', { kind: 'warning', icon: 'lock' });
             audio.play('tap');
             store.dispatch({ type: 'SELECT_STORY_CHAPTER', chapterId: ch.id });
             store.dispatch({ type: 'SELECT_GAME', gameId: ch.gameId });
@@ -38,7 +42,7 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
         },
         h(
           'span',
-          { class: 'chapter-portrait', style: { background: host?.color ?? '#888' }, 'aria-hidden': 'true' },
+          { class: 'portrait', style: { background: host?.color ?? '#888' }, 'aria-hidden': 'true' },
           host?.name[0] ?? '?',
         ),
         h(
@@ -51,7 +55,7 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
             'span',
             { class: 'tile-meta' },
             game ? badge(game.name) : null,
-            badge(`◉ ${ch.reward.coins}`),
+            badge(`${ch.reward.credits} credits`),
             done ? badge('Complete', 'badge-done') : null,
           ),
         ),

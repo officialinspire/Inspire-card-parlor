@@ -25,6 +25,7 @@ export const AchievementsScreen: ScreenFactory = ({ store }) => {
           items: ACHIEVEMENTS.filter(g.match),
           minTileWidth: 300,
           minTileHeight: 84,
+          maxTileHeight: 120,
           label: `${g.label} achievements`,
           render: (a) => {
             const got = unlocked.has(a.id);
