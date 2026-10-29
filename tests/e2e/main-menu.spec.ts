@@ -38,6 +38,7 @@ test('fits the viewport without scrolling', async ({ page }) => {
 });
 
 test('every menu entry opens its screen, and back/home return to the menu', async ({ page }) => {
+  test.slow(); // fourteen animated screen transitions after the boot sequence
   for (const [state] of MENU) {
     await page.locator(`${CURRENT} :is(.menu-grid > *, .menu-play)[data-nav="${state}"]`).click();
     await expectScreen(page, state);
