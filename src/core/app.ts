@@ -26,9 +26,8 @@ export async function startApp(mount: HTMLElement): Promise<void> {
   store.dispatch({ type: 'SET_ONLINE', online: navigator.onLine });
   addEventListener('online', () => store.dispatch({ type: 'SET_ONLINE', online: true }));
   addEventListener('offline', () => store.dispatch({ type: 'SET_ONLINE', online: false }));
-  document.addEventListener('fullscreenchange', () =>
-    store.dispatch({ type: 'SET_FULLSCREEN', fullscreen: fullscreen.active() }),
-  );
+  for (const type of ['fullscreenchange', 'webkitfullscreenchange'])
+    document.addEventListener(type, () => store.dispatch({ type: 'SET_FULLSCREEN', fullscreen: fullscreen.active() }));
 
   const stage = h('main', { class: 'stage' });
   mount.replaceChildren(stage);

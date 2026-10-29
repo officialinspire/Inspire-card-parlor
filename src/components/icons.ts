@@ -32,6 +32,16 @@ const PATHS = {
   warning: '<path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17h.01"/>',
   sun: '<circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6L7 7M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4"/>',
   moon: '<path d="M19 14.5A7.5 7.5 0 0 1 9.5 5 7.5 7.5 0 1 0 19 14.5z"/>',
+  pause: '<path d="M9 6v12M15 6v12"/>',
+  undo: '<path d="M9 7L5 11l4 4"/><path d="M5 11h9a5 5 0 0 1 0 10h-2"/>',
+  hint: '<path d="M9 17h6M10 20h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.4 1 1.1 1 1.8V16h5v-.3c0-.7.4-1.4 1-1.8A6 6 0 0 0 12 3z"/>',
+  deal: '<rect x="4" y="6" width="10" height="14" rx="2"/><path d="M10 4.5l7.6 1.6a2 2 0 0 1 1.5 2.4l-2.2 10"/><path d="M9 10v6M6 13h6"/>',
+  restart: '<path d="M5 12a7 7 0 1 0 2.1-5"/><path d="M5 4v4h4"/>',
+  more: '<circle cx="5.5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="18.5" cy="12" r="1.3"/>',
+  musicOff: '<path d="M9 18V6l10-2v8"/><circle cx="6.5" cy="18" r="2.5"/><path d="M4 4l16 16"/>',
+  focus:
+    '<path d="M4 9V5a1 1 0 0 1 1-1h4M15 4h4a1 1 0 0 1 1 1v4M20 15v4a1 1 0 0 1-1 1h-4M9 20H5a1 1 0 0 1-1-1v-4"/><circle cx="12" cy="12" r="2.5"/>',
+  speed: '<path d="M5 17a8 8 0 1 1 14 0"/><path d="M12 13l4-4"/>',
 } as const;
 
 export type IconName = keyof typeof PATHS;

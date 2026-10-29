@@ -89,6 +89,7 @@ export class CardRenderer {
     this.#paint(el, opts.cover ? { kind: 'fallback' } : describeFace(code, this.#art(theme)), () =>
       this.#fallbackFace(el, theme, code),
     );
+    this.#addIndex(el, code);
     return el;
   }
 
@@ -131,6 +132,25 @@ export class CardRenderer {
     el.replaceChildren(img);
   }
 
+  /**
+   * A crisp rank-and-suit chip in the corner of artwork faces. Hidden at normal
+   * sizes; CSS shows it when the card is drawn small (tight Spider columns,
+   * tableau overlaps) where the printed index would be too fine to read.
+   */
+  #addIndex(el: HTMLElement, code: CardCode): void {
+    if (el.dataset.art === 'fallback' || el.dataset.cover) return;
+    const { rank, suit } = parseCardCode(code)!;
+    const red = suit === 'hearts' || suit === 'diamonds';
+    (el.querySelector('.card-art-img') ?? el).appendChild(
+      h(
+        'span',
+        { class: `card-index ${red ? 'is-red' : 'is-black'}`, 'aria-hidden': 'true' },
+        RANK_CODE[rank],
+        h('i', null, SUIT_SYMBOL[suit]),
+      ),
+    );
+  }
+
   #fallbackFace(el: HTMLElement, theme: DeckTheme, code: CardCode): void {
     const { rank, suit } = parseCardCode(code)!;
     const red = suit === 'hearts' || suit === 'diamonds';
@@ -164,6 +184,7 @@ export class CardRenderer {
       if (visual.kind === 'fallback') continue;
       el.classList.remove('card-fallback', ...[...el.classList].filter((c) => c.startsWith('pattern-')));
       this.#paint(el, visual, () => undefined);
+      if (el.dataset.side === 'face') this.#addIndex(el, el.dataset.code as CardCode);
     }
   }
 }

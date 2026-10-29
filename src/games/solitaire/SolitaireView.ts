@@ -4,8 +4,10 @@ import type { GameId } from '@/core/types';
 import { cardRenderer } from '@/decks';
 import type { DeckTheme } from '@/decks/DeckThemeManager';
 import type { Card, Pile } from '@/engine';
-import { audio } from '@/audio';
+import { audio, gameSound } from '@/audio';
+import { victoryShower } from '@/components/celebration';
 import { button } from '@/components/ui';
+import { moreItem, setTool, toolButton, type GameToolbar } from '@/components/gameToolbar';
 import { confirmDialog, openDialog } from '@/components/Dialog';
 import { celebrate as announceUnlock, notify } from '@/components/Notifications';
 import { ACHIEVEMENTS } from '@/achievements/registry';
@@ -20,6 +22,7 @@ export interface SolitaireViewContext {
   store: Store;
   surface: HTMLElement;
   hud: HTMLElement;
+  tools: GameToolbar;
   theme: DeckTheme;
   game: SolitaireGame;
   onNewGame: () => void;
@@ -81,6 +84,8 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
   let busy = false;
   let finished = false;
   let selection: { pile: string; index: number } | null = null;
+  /** True while the opening deal plays (visual only; the deal is already in the game state). */
+  let dealing = false;
   let metrics: Metrics | null = null;
 
   // ----- DOM -----
@@ -101,47 +106,18 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
   );
   board.appendChild(pauseOverlay);
 
-  const undoBtn = button('Undo', () => doUndo(), {
-    variant: 'secondary',
-    size: 'sm',
-    attrs: { 'data-action': 'undo' },
-  });
-  const hintBtn = button('Hint', () => showHint(), {
-    variant: 'secondary',
-    size: 'sm',
-    attrs: { 'data-action': 'hint' },
-  });
-  const pauseBtn = button('Pause', () => setPaused(!paused), {
-    variant: 'secondary',
-    size: 'sm',
-    attrs: { 'data-action': 'pause' },
-  });
-  const restartBtn = button('Restart', () => void restart(), {
-    variant: 'ghost',
-    size: 'sm',
-    attrs: { 'data-action': 'restart' },
-  });
-  const newBtn = button('New', () => void newGame(), {
-    variant: 'ghost',
-    size: 'sm',
-    attrs: { 'data-action': 'new-game' },
-  });
-  const finishBtn = button('Auto-finish', () => void autoFinish(), {
-    size: 'sm',
-    attrs: { 'data-action': 'auto-finish' },
-  });
+  // Primary actions live in the table toolbar; Restart sits in its More panel.
+  const undoBtn = toolButton('undo', 'Undo', () => doUndo(), { action: 'undo', sfx: null });
+  const hintBtn = toolButton('hint', 'Hint', () => showHint(), { action: 'hint', sfx: null });
+  const pauseBtn = toolButton('pause', 'Pause', () => setPaused(!paused), { action: 'pause' });
+  const newBtn = toolButton('deal', 'New Game', () => void newGame(), { action: 'new-game' });
+  const finishBtn = toolButton('play', 'Finish', () => void autoFinish(), { action: 'auto-finish' });
+  finishBtn.classList.add('tool-accent');
   finishBtn.hidden = true;
-  const controls = h(
-    'div',
-    { class: 'sol-controls', role: 'toolbar', 'aria-label': 'Game controls' },
-    newBtn,
-    restartBtn,
-    undoBtn,
-    hintBtn,
-    pauseBtn,
-    finishBtn,
-  );
-  const el = h('div', { class: 'solitaire' }, board, controls);
+  ctx.tools.primary.append(pauseBtn, undoBtn, hintBtn, newBtn, finishBtn);
+  ctx.tools.more.append(moreItem('restart', 'Restart this deal', () => void restart(), 'restart'));
+
+  const el = h('div', { class: 'solitaire' }, board);
   ctx.surface.replaceChildren(el);
   ctx.surface.classList.add('table-surface-game');
 
@@ -157,7 +133,8 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
     const H = board.clientHeight;
     if (!W || !H) return;
     const cols = game.tableau.length;
-    const gap = Math.max(4, Math.min(12, W * 0.012));
+    // Ten Spider columns on a phone need every pixel: tighter gutters there.
+    const gap = cols > 8 ? Math.max(2.5, Math.min(10, W * 0.008)) : Math.max(4, Math.min(12, W * 0.012));
     const byWidth = (W - gap * (cols + 1)) / cols;
     // Leave room for the top row plus a reasonable column below it.
     const byHeight = (H - gap * 3) / (1.4 * 2 + 1.5);
@@ -197,8 +174,9 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
       const offsets = p.all.slice(0, -1).map((c) => (c.faceUp ? fu : fd));
       const total = offsets.reduce((a, b) => a + b, 0);
       const avail = m.height - m.tableauY - m.cardH - m.gap;
-      // Shrink overlap to fit; spread out (up to 1.6×) when there is spare room.
-      const scale = total > 0 ? Math.min(1.6, avail / total) : 1;
+      // Shrink overlap to fit; on tall screens spread out (up to 2.5×, showing
+      // about 70% of each face-up card) so columns use the room and read clearly.
+      const scale = total > 0 ? Math.min(2.5, avail / total) : 1;
       let y = o.y;
       return p.all.map((_, i) => {
         const pos = { x: o.x, y };
@@ -226,9 +204,15 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
     return k;
   }
 
+  // Where each card was last drawn, to tell moves and flips apart.
+  const lastPile = new Map<string, string>();
+  const foundationSize = new Map<string, number>();
+
   function render(): void {
     if (!metrics) return;
     const seen = new Set<string>();
+    const motion = !store.state.settings.reducedMotion;
+    let flipped = false;
     where.clear();
     let z = 1;
     for (const p of game.table.piles.values()) {
@@ -249,7 +233,10 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
           next.dataset.key = key;
           if (entry) {
             next.style.transform = entry.el.style.transform;
-            if (card.faceUp) next.classList.add('sol-flip');
+            if (card.faceUp) {
+              if (motion) next.classList.add('sol-flip');
+              flipped = true;
+            }
             entry.el.replaceWith(next);
           } else board.insertBefore(next, pauseOverlay);
           entry = { el: next, faceUp: card.faceUp };
@@ -257,6 +244,14 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
         }
         const pos = positions[i]!;
         const e = entry.el;
+        // A card that changed piles lifts while it travels and settles where it lands.
+        const prev = lastPile.get(key);
+        if (motion && prev && prev !== p.id && !dealing) {
+          e.classList.remove('sol-land');
+          void e.offsetWidth;
+          e.classList.add('sol-land');
+        }
+        lastPile.set(key, p.id);
         e.dataset.pile = p.id;
         e.dataset.index = String(i);
         e.style.zIndex = String(z++);
@@ -269,8 +264,24 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
       if (!seen.has(key)) {
         entry.el.remove();
         els.delete(key);
+        lastPile.delete(key);
       }
     }
+    // A foundation that has just been completed (Ace to King) glows.
+    for (const p of game.table.piles.values()) {
+      if (p.kind !== 'foundation') continue;
+      const before = foundationSize.get(p.id);
+      foundationSize.set(p.id, p.size);
+      if (before !== undefined && before < 13 && p.size === 13 && motion) {
+        const slot = slots.get(p.id)!;
+        slot.classList.remove('sol-complete');
+        void slot.offsetWidth;
+        slot.classList.add('sol-complete');
+        const top = p.top && els.get(keyOf(p.top))?.el;
+        top?.classList.add('sol-crown');
+      }
+    }
+    if (flipped && !dealing) gameSound('card_flip');
     renderHud();
   }
 
@@ -289,23 +300,28 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
     }
     undoBtn.disabled = !game.canUndo || paused || busy;
     hintBtn.disabled = paused || game.data.won;
-    pauseBtn.textContent = paused ? 'Resume' : 'Pause';
-    pauseBtn.setAttribute('aria-pressed', String(paused));
+    if (pauseBtn.getAttribute('aria-pressed') !== String(paused)) {
+      setTool(pauseBtn, paused ? 'play' : 'pause', paused ? 'Resume' : 'Pause');
+      pauseBtn.setAttribute('aria-pressed', String(paused));
+    }
     finishBtn.hidden = !klondike?.canAutoFinish;
+    // Once the game can finish itself, Finish takes Hint's place on the toolbar.
+    hintBtn.hidden = !finishBtn.hidden;
   }
 
   // ----- Actions -----
   async function afterAction(ok: boolean, rejectEl?: Element | null): Promise<void> {
     selection = null;
     if (ok) {
-      audio.play('flip');
+      gameSound('card_move');
+      gameSound('valid_move');
       render();
       if (game.data.won) await finish();
       else void saves.save(game.table);
     } else {
       render();
       if (rejectEl) shake(rejectEl);
-      audio.play('error');
+      gameSound('invalid_move');
     }
   }
 
@@ -324,6 +340,7 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
   function stockTap(): void {
     if (freecell) return;
     const ok = game.stockAction();
+    if (ok && spider) dealSounds(10, 45);
     if (!ok && spider?.lastDealBlock === 'empty-column')
       notify('Fill every column before dealing.', { kind: 'warning' });
     else if (!ok && spider?.lastDealBlock === 'empty-stock') notify('No deals left.', { kind: 'info' });
@@ -334,7 +351,7 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
     if (paused || busy) return;
     selection = null;
     if (game.undo()) {
-      audio.play('back');
+      gameSound('card_move');
       render();
       void saves.save(game.table);
     }
@@ -383,7 +400,7 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
     busy = true;
     render();
     while (!destroyed && klondike.autoFinishStep()) {
-      audio.play('flip');
+      gameSound('card_move');
       render();
       await sleep(store.state.settings.reducedMotion ? 0 : 90);
     }
@@ -431,7 +448,7 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
       announceUnlock('Achievement unlocked', ACHIEVEMENTS.find((a) => a.id === id)?.name ?? id);
     }
     celebrate();
-    audio.play('chime');
+    gameSound('victory');
     await sleep(store.state.settings.reducedMotion ? 100 : 1000);
     if (destroyed) return;
     const stat = (label: string, value: string | number) =>
@@ -467,12 +484,14 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
     else ctx.onExit();
   }
 
+  /** Victory: the foundations bounce in a wave and a shower of gold suits falls over the table. */
   function celebrate(): void {
     if (store.state.settings.reducedMotion) return;
     for (const [i, entry] of [...els.values()].entries()) {
       entry.el.style.setProperty('--i', String(i % 26));
       entry.el.classList.add('sol-dance');
     }
+    board.appendChild(victoryShower());
   }
 
   // ----- Input: drag-and-drop, tap-to-select, double-tap -----
@@ -513,6 +532,7 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
   }
 
   board.addEventListener('pointerdown', (e) => {
+    if (dealing) endDeal(true);
     if (paused || busy || game.data.won || !e.isPrimary) return;
     const loc = locate(e.target);
     if (!loc) return;
@@ -634,9 +654,72 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
   };
   document.addEventListener('visibilitychange', onVisibility);
 
+  // ----- Opening: shuffle, then deal the layout out from the stock -----
+  function dealSounds(n: number, every: number): void {
+    for (let i = 0; i < n; i++) setTimeout(() => !destroyed && gameSound('card_deal'), i * every);
+  }
+
+  function dealIntro(): void {
+    const fresh = game.data.moves === 0 && game.data.elapsedMs < 2000 && !game.data.won;
+    if (!fresh || store.state.settings.reducedMotion || !metrics) return;
+    const source = game.table.piles.has('stock')
+      ? pileOrigin(game.pile('stock'))
+      : { x: board.clientWidth / 2 - metrics.cardW / 2, y: -metrics.cardH };
+    const dealt = [...els.values()].map((e) => e.el).filter((e) => e.dataset.pile !== 'stock');
+    const step = Math.max(12, Math.min(34, 900 / Math.max(1, dealt.length)));
+    dealing = true;
+    busy = true;
+    // Everything starts stacked on the stock, face down in feel (a quick riffle first).
+    for (const e of dealt) {
+      e.style.transition = 'none';
+      e.dataset.final = e.style.transform;
+      e.style.transform = `translate(${source.x}px, ${source.y}px)`;
+      e.style.opacity = '0';
+    }
+    slots.get('stock')?.classList.add('sol-shuffling');
+    gameSound('card_shuffle');
+    void board.offsetWidth;
+    const start = 360;
+    dealt.forEach((e, i) => {
+      e.style.transition = '';
+      e.style.transitionDelay = `${start + i * step}ms`;
+      e.style.transitionProperty = 'transform, opacity';
+      e.style.transitionDuration = '380ms';
+      e.style.transform = e.dataset.final!;
+      e.style.opacity = '';
+      delete e.dataset.final;
+    });
+    setTimeout(() => dealSounds(Math.min(dealt.length, 30), step * (dealt.length / Math.min(dealt.length, 30))), start);
+    // Ends once the last card has landed: its delay plus the full flight (380ms) and a margin.
+    const done = setTimeout(() => endDeal(), start + (dealt.length - 1) * step + 380 + 80);
+    // A tap during the deal skips straight to the dealt table.
+    endDeal = (skip = false) => {
+      clearTimeout(done);
+      for (const e of dealt) {
+        if (skip) e.style.transition = 'none';
+        e.style.transitionDelay = '';
+        e.style.transitionProperty = '';
+        e.style.transitionDuration = '';
+      }
+      slots.get('stock')?.classList.remove('sol-shuffling');
+      dealing = false;
+      busy = false;
+      board.removeAttribute('data-dealing');
+      if (!destroyed) render();
+      if (skip) {
+        void board.offsetWidth;
+        for (const e of dealt) e.style.transition = '';
+      }
+      endDeal = () => undefined;
+    };
+    board.dataset.dealing = '';
+  }
+  let endDeal: (skip?: boolean) => void = () => undefined;
+
   const ro = new ResizeObserver(() => measure());
   ro.observe(board);
   measure();
+  dealIntro();
 
   return {
     get game() {

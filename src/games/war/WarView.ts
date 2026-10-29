@@ -4,13 +4,15 @@ import { cardRenderer } from '@/decks';
 import type { DeckTheme } from '@/decks/DeckThemeManager';
 import { CardAnimator } from '@/engine/CardAnimator';
 import type { Card } from '@/engine';
-import { audio } from '@/audio';
+import { gameSound } from '@/audio';
+import { victoryShower } from '@/components/celebration';
 import { getPersonality, pickLine } from '../cpu/personalities';
 import { saves, sleep } from '../session';
 import { recordGameResult } from '@/progression/results';
 import { avatar } from '@/components/Avatar';
 import { say } from '@/components/SpeechBubble';
 import { button } from '@/components/ui';
+import { pauseVeil, setTool, toolButton, type GameToolbar } from '@/components/gameToolbar';
 import { confirmDialog, openDialog } from '@/components/Dialog';
 import { celebrate as announceUnlock } from '@/components/Notifications';
 import { ACHIEVEMENTS } from '@/achievements/registry';
@@ -25,6 +27,7 @@ export interface WarViewContext {
   store: Store;
   surface: HTMLElement;
   hud: HTMLElement;
+  tools: GameToolbar;
   theme: DeckTheme;
   game: WarGame;
   onNewGame: () => void;
@@ -40,6 +43,7 @@ export function mountWar(ctx: WarViewContext) {
   let auto = false;
   let busy = false;
   let destroyed = false;
+  let paused = false;
 
   const animator = new CardAnimator({
     speed: () => (speed === 'slow' ? 'slow' : speed === 'fast' ? 'fast' : 'normal'),
@@ -64,6 +68,7 @@ export function mountWar(ctx: WarViewContext) {
   const oppSlot = h('div', { class: 'war-slot', 'data-slot': 'cpu' });
   const youSlot = h('div', { class: 'war-slot', 'data-slot': 'player' });
   const banner = h('div', { class: 'war-banner', 'aria-live': 'polite', 'data-banner': '' });
+  const field = h('section', { class: 'war-field', 'aria-label': 'Battle' }, oppSlot, banner, youSlot);
   const oppAnchor = h('div', { class: 'war-who' }, avatar(cpu), h('span', { class: 'war-name' }, cpu.name));
   const youAnchor = h('div', { class: 'war-who war-who-you' }, h('span', { class: 'war-name' }, 'You'));
 
@@ -72,27 +77,21 @@ export function mountWar(ctx: WarViewContext) {
     attrs: { 'data-action': 'play-round' },
   });
   const autoBtn = button('Auto Play', () => toggleAuto(), { variant: 'secondary', attrs: { 'data-action': 'auto' } });
-  const speedBtn = button('', () => cycleSpeed(), {
-    variant: 'secondary',
-    attrs: { 'data-action': 'speed' },
-    title: 'Change speed',
-  });
-  const restartBtn = button('Restart', () => void restart(), { variant: 'ghost', attrs: { 'data-action': 'restart' } });
+  // Table toolbar: Pause, Speed, New Game.
+  const pauseBtn = toolButton('pause', 'Pause', () => setPaused(!paused), { action: 'pause' });
+  const speedBtn = toolButton('speed', 'Speed', () => cycleSpeed(), { action: 'speed' });
+  const newBtn = toolButton('deal', 'New Game', () => void restart(), { action: 'new-game' });
+  ctx.tools.primary.append(pauseBtn, speedBtn, newBtn);
+  const veil = pauseVeil(() => setPaused(false));
 
   const el = h(
     'div',
     { class: 'war' },
     h('section', { class: 'war-side war-side-cpu', 'aria-label': `${cpu.name}'s pile` }, oppAnchor, oppPile, oppCount),
-    h('section', { class: 'war-field', 'aria-label': 'Battle' }, oppSlot, banner, youSlot),
+    field,
     h('section', { class: 'war-side war-side-player', 'aria-label': 'Your pile' }, youAnchor, youPile, youCount),
-    h(
-      'div',
-      { class: 'war-controls', role: 'toolbar', 'aria-label': 'War controls' },
-      playBtn,
-      autoBtn,
-      speedBtn,
-      restartBtn,
-    ),
+    h('div', { class: 'war-controls', role: 'toolbar', 'aria-label': 'War controls' }, playBtn, autoBtn),
+    veil,
   );
   ctx.surface.replaceChildren(el);
   ctx.surface.classList.add('table-surface-game');
@@ -108,12 +107,18 @@ export function mountWar(ctx: WarViewContext) {
     youPile.classList.toggle('empty', game.count('player') === 0);
     hudRound.textContent = `Round ${game.data.round}`;
     hudWars.textContent = `Wars ${game.data.wars}`;
-    speedBtn.replaceChildren(h('span', { class: 'btn-label' }, `Speed ${SPEED_LABEL[speed]}`));
+    setTool(speedBtn, 'speed', `Speed ${SPEED_LABEL[speed]}`);
     speedBtn.dataset.speed = speed;
+    if (pauseBtn.getAttribute('aria-pressed') !== String(paused)) {
+      setTool(pauseBtn, paused ? 'play' : 'pause', paused ? 'Resume' : 'Pause');
+      pauseBtn.setAttribute('aria-pressed', String(paused));
+    }
+    veil.hidden = !paused;
     autoBtn.replaceChildren(h('span', { class: 'btn-label' }, auto ? 'Pause' : 'Auto Play'));
     autoBtn.setAttribute('aria-pressed', String(auto));
-    playBtn.disabled = game.isOver || auto;
-    autoBtn.disabled = game.isOver;
+    playBtn.disabled = game.isOver || auto || paused;
+    autoBtn.disabled = game.isOver || paused;
+    pauseBtn.disabled = game.isOver;
   }
 
   // ----- Round -----
@@ -131,7 +136,13 @@ export function mountWar(ctx: WarViewContext) {
       if (i > 0) {
         banner.textContent = 'WAR!';
         banner.classList.add('is-war');
-        audio.play('shuffle');
+        gameSound('card_shuffle');
+        // The field jolts as the war is declared.
+        if (!instant) {
+          field.classList.remove('war-clash');
+          void field.offsetWidth;
+          field.classList.add('war-clash');
+        }
         if (i === 1 && !instant) void say(oppAnchor, pickLine(cpu.lines.warStart), { duration: 1400 * factor() + 400 });
         await pause(500);
         // Face-down cards fan out behind.
@@ -143,7 +154,10 @@ export function mountWar(ctx: WarViewContext) {
             slot.appendChild(d);
             return d;
           });
-          if (!instant) void animator.deal(downs, center(side === 'cpu' ? oppPile : youPile), { stagger: 60 });
+          if (!instant) {
+            void animator.deal(downs, center(side === 'cpu' ? oppPile : youPile), { stagger: 60 });
+            downs.forEach((_, j) => setTimeout(() => gameSound('card_deal'), j * 60 * factor()));
+          }
         }
         await pause(450);
       }
@@ -159,13 +173,15 @@ export function mountWar(ctx: WarViewContext) {
           return;
         }
         await animator.deal([back], center(side === 'cpu' ? oppPile : youPile), { ms: 280, stagger: 0 });
-        audio.play('flip');
-        await animator.flip(back, () => {
-          const face = faceUpEl(card);
-          face.classList.add('war-faceup');
-          back.replaceWith(face);
-          return face;
+        gameSound('card_flip');
+        const face = await animator.flip(back, () => {
+          const f = faceUpEl(card);
+          f.classList.add('war-faceup');
+          back.replaceWith(f);
+          return f;
         });
+        // The reveal lands with a little slam.
+        face.classList.add('war-reveal');
       });
       await Promise.all(flips);
       await pause(380);
@@ -183,7 +199,7 @@ export function mountWar(ctx: WarViewContext) {
     else banner.textContent = 'Both out of cards — a draw!';
     banner.classList.add(round.winner === 'player' ? 'is-win' : round.winner === 'cpu' ? 'is-loss' : 'is-draw');
     banner.dataset.winner = round.winner ?? 'draw';
-    audio.play(round.winner === 'player' ? 'chime' : 'tap');
+    gameSound(round.winner === 'player' ? 'valid_move' : 'card_move');
     if (!instant && (round.battles.length > 1 || Math.random() < 0.15)) {
       void say(oppAnchor, pickLine(round.winner === 'cpu' ? cpu.lines.roundWin : cpu.lines.roundLose), {
         duration: 1300 * factor() + 300,
@@ -221,8 +237,16 @@ export function mountWar(ctx: WarViewContext) {
     return { x: r.left, y: r.top };
   }
 
+  /** Pausing stops Auto Play and holds the table until Resume. */
+  function setPaused(p: boolean): void {
+    if (game.isOver) return;
+    paused = p;
+    if (p) auto = false;
+    renderStatic();
+  }
+
   async function playRound(): Promise<void> {
-    if (busy || game.isOver || destroyed) return;
+    if (busy || game.isOver || destroyed || paused) return;
     busy = true;
     playBtn.disabled = true;
     try {
@@ -257,7 +281,7 @@ export function mountWar(ctx: WarViewContext) {
   }
 
   function toggleAuto(): void {
-    if (game.isOver) return;
+    if (game.isOver || paused) return;
     auto = !auto;
     renderStatic();
     if (auto) void runAuto();
@@ -303,7 +327,10 @@ export function mountWar(ctx: WarViewContext) {
     for (const id of summary.achievements) {
       announceUnlock('Achievement unlocked', ACHIEVEMENTS.find((a) => a.id === id)?.name ?? id);
     }
-    if (outcome === 'win') celebrate();
+    if (outcome === 'win') {
+      celebrate();
+      gameSound('victory');
+    }
     void say(oppAnchor, pickLine(outcome === 'win' ? cpu.lines.lose : cpu.lines.win), { duration: 2600 });
     await sleep(outcome === 'win' && !store.state.settings.reducedMotion ? 900 : 200);
     if (destroyed) return;
@@ -354,6 +381,7 @@ export function mountWar(ctx: WarViewContext) {
       burst.appendChild(c);
     }
     el.appendChild(burst);
+    el.appendChild(victoryShower());
     setTimeout(() => burst.remove(), 2200);
   }
 
@@ -372,7 +400,8 @@ export function mountWar(ctx: WarViewContext) {
     if ((e.key === ' ' || e.key === 'Enter') && !onButton) {
       e.preventDefault();
       void playRound();
-    } else if (e.key === 'a' || e.key === 'A') toggleAuto();
+    } else if (e.key === 'p' || e.key === 'P') setPaused(!paused);
+    else if (e.key === 'a' || e.key === 'A') toggleAuto();
     else if (e.key === 's' || e.key === 'S') cycleSpeed();
     else if (e.key === 'r' || e.key === 'R') void restart();
   };

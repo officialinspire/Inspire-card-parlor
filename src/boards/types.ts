@@ -35,5 +35,22 @@ export interface BoardDefinition {
   };
   /** Text drawn directly on the board (counters, labels) uses this colour. */
   ink: string;
+  /** How painted artwork is laid out. */
+  art?: BoardArtLayout;
   ambient: AmbientKind;
+}
+
+export interface BoardArtLayout {
+  /**
+   * Point of the painting to keep in view when the screen crops it (CSS
+   * background-position). Portrait screens crop the sides of these 4:3
+   * paintings; wide screens crop the top and bottom.
+   */
+  focus?: { portrait: string; landscape: string };
+  /**
+   * Darkening laid over the painting so cards stand out (0–1). 0 where the
+   * art already contrasts with cream card stock (dark felt); a little on
+   * light, busy surfaces (woven mat, sunlit planks).
+   */
+  scrim?: number;
 }

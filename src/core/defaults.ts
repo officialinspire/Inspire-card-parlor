@@ -11,6 +11,7 @@ export const DEFAULT_SETTINGS: Settings = {
   musicVolume: 0.5,
   sfxVolume: 0.7,
   muted: false,
+  musicMuted: false,
   musicTrack: DEFAULT_TRACK,
   theme: 'auto',
   reducedMotion: false,

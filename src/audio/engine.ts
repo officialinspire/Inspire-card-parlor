@@ -1,7 +1,7 @@
 import type { Settings } from '@/core/types';
 import { TRACKS, type MusicTrack } from './tracks';
 
-export type Sfx = 'tap' | 'back' | 'flip' | 'shuffle' | 'chime' | 'error';
+export type Sfx = 'tap' | 'back' | 'flip' | 'shuffle' | 'chime' | 'error' | 'deal' | 'slide' | 'place' | 'victory';
 
 /**
  * Web Audio engine. Everything is synthesized for now so the parlor has
@@ -13,11 +13,12 @@ class AudioEngine {
   #master!: GainNode;
   #music!: GainNode;
   #sfx!: GainNode;
-  #settings: Pick<Settings, 'masterVolume' | 'musicVolume' | 'sfxVolume' | 'muted'> = {
+  #settings: Pick<Settings, 'masterVolume' | 'musicVolume' | 'sfxVolume' | 'muted' | 'musicMuted'> = {
     masterVolume: 0.8,
     musicVolume: 0.5,
     sfxVolume: 0.7,
     muted: false,
+    musicMuted: false,
   };
   #musicTimer: ReturnType<typeof setTimeout> | null = null;
   #noise: AudioBuffer | null = null;
@@ -55,7 +56,7 @@ class AudioEngine {
     const t = this.#ctx.currentTime;
     const s = this.#settings;
     this.#master.gain.setTargetAtTime(s.muted ? 0 : s.masterVolume, t, 0.05);
-    this.#music.gain.setTargetAtTime(s.musicVolume * 0.35, t, 0.1);
+    this.#music.gain.setTargetAtTime(s.musicMuted ? 0 : s.musicVolume * 0.35, t, 0.1);
     this.#sfx.gain.setTargetAtTime(s.sfxVolume, t, 0.02);
   }
 
@@ -118,6 +119,24 @@ class AudioEngine {
         break;
       case 'error':
         this.#tone(196, t, 0.18, 'sawtooth', 0.08, this.#sfx);
+        break;
+      case 'deal':
+        // A light card snap: short, high and soft so a full deal patters.
+        this.#swish(t, 0.045, 2800, 0.2);
+        break;
+      case 'slide':
+        this.#swish(t, 0.11, 1700, 0.16);
+        break;
+      case 'place':
+        // Card set down: a soft low knock under a tiny swish.
+        this.#tone(170, t, 0.07, 'triangle', 0.2, this.#sfx);
+        this.#swish(t, 0.04, 2400, 0.16);
+        break;
+      case 'victory':
+        [523.25, 659.25, 783.99, 1046.5, 1318.5].forEach((f, i) =>
+          this.#tone(f, t + i * 0.09, 0.9, 'sine', 0.13, this.#sfx),
+        );
+        for (let i = 0; i < 6; i++) this.#swish(t + 0.45 + i * 0.05, 0.05, 3000 + i * 300, 0.1);
         break;
     }
   }

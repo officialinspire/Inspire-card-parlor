@@ -24,7 +24,8 @@ import { fmtTime, winRate } from './GameSelection';
 import { confirmDialog, openDialog } from '../Dialog';
 import { segmented } from '../controls';
 import { avatar } from '../Avatar';
-import { iconButton, navHeader } from '../ui';
+import { iconButton } from '../ui';
+import { gameToolbar } from '../gameToolbar';
 import { Disposer } from '../Screen';
 import { applyBoard } from '@/boards/BoardRenderer';
 import { tableCustomizer } from '../customize';
@@ -54,15 +55,13 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
 
   const hud = h('span', { class: 'hud-stats', 'data-hud': '' });
   const rules = gameId ? RULES[gameId] : undefined;
-  const rulesBtn = rules
-    ? iconButton('info', 'How to play', () => void showRules(), { attrs: { 'data-action': 'rules' } })
-    : null;
-  const settingsBtn = playable
-    ? iconButton('settings', 'Game settings', () => void showSettings(), { attrs: { 'data-action': 'game-settings' } })
-    : null;
-  const statsBtn = playable
-    ? iconButton('stats', 'Statistics', () => void showStats(), { attrs: { 'data-action': 'game-stats' } })
-    : null;
+  const toolbar = gameToolbar(store, {
+    onSettings: () => void showSettings(),
+    onRules: rules ? () => void showRules() : undefined,
+    onStats: playable ? () => void showStats() : undefined,
+    onHome: () => void leave(() => navigate(AppState.MAIN_MENU)),
+  });
+  d.add(toolbar.destroy);
 
   const surface = h('div', { class: 'table-surface' });
   const stage = h('div', { class: 'table-stage' }, surface);
@@ -70,19 +69,23 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
     'section',
     { class: 'table' },
     h(
-      'div',
+      'header',
       { class: 'table-hud' },
-      navHeader({
-        title: game?.name ?? 'Table',
-        subtitle: chapter ? `Story · ${chapter.title}` : `${deck.name} · ${board.name}`,
-        back: () => void leave(goBack),
-        home: () => void leave(() => navigate(AppState.MAIN_MENU)),
-        showCredits: false,
-        actions: [rulesBtn, settingsBtn, statsBtn],
+      iconButton('back', 'Back', () => void leave(goBack), {
+        sfx: 'back',
+        class: 'btn-back',
+        attrs: { 'data-nav': 'back' },
       }),
+      h(
+        'div',
+        { class: 'table-titles' },
+        h('h1', { class: 'screen-title', tabindex: '-1' }, game?.name ?? 'Table'),
+        h('p', { class: 'screen-subtitle' }, chapter ? `Story · ${chapter.title}` : `${deck.name} · ${board.name}`),
+      ),
       hud,
     ),
     stage,
+    toolbar.el,
   );
 
   // ----- Board & deck customisation (live, never touching game state) -----
@@ -357,10 +360,14 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
     view?.destroy();
     currentTable = table;
     surface.className = 'table-surface';
+    toolbar.primary.replaceChildren();
+    toolbar.more.replaceChildren();
+    toolbar.closeMore();
     const common = {
       store,
       surface,
       hud,
+      tools: toolbar,
       theme,
       onNewGame: () => void newGame(false),
       onExit: () => {

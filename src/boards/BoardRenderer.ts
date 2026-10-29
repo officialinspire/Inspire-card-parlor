@@ -54,6 +54,9 @@ export function applyBoard(table: HTMLElement, surface: HTMLElement, board: Boar
   table.style.setProperty('--rim', board.surface.rim);
   table.style.setProperty('--board-ink', board.ink);
   table.style.setProperty('--board-base', board.surface.base);
+  table.style.setProperty('--board-focus-p', board.art?.focus?.portrait ?? '50% 50%');
+  table.style.setProperty('--board-focus-l', board.art?.focus?.landscape ?? '50% 50%');
+  table.style.setProperty('--board-scrim', String(board.art?.scrim ?? 0.12));
   table.style.removeProperty('--board-art');
   // The CSS surface shows until (and unless) the artwork has loaded.
   table.dataset.boardArt = 'fallback';

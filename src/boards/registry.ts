@@ -37,6 +37,7 @@ const registry: BoardDefinition[] = [
     },
     ink: DEEP_INK,
     ambient: 'breeze',
+    art: { focus: { portrait: '50% 50%', landscape: '50% 46%' }, scrim: 0.06 },
   },
   {
     id: 'backroom_card_table',
@@ -53,6 +54,7 @@ const registry: BoardDefinition[] = [
     },
     ink: LIGHT_INK,
     ambient: 'dust',
+    art: { focus: { portrait: '50% 48%', landscape: '50% 42%' }, scrim: 0 },
   },
   {
     id: 'downtown_cafe',
@@ -85,6 +87,7 @@ const registry: BoardDefinition[] = [
     },
     ink: DARK_INK,
     ambient: 'river',
+    art: { focus: { portrait: '50% 50%', landscape: '50% 50%' }, scrim: 0.14 },
   },
   {
     id: 'woodland_clearing',

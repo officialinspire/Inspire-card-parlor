@@ -4,7 +4,7 @@ A cozy collection of classic playing-card games featuring collectible illustrate
 
 **Developer:** OFFICIAL INSPIRE · [www.inspireclothing.art](https://www.inspireclothing.art)
 
-> **Status: v0.8.0 — the parlor, redesigned.** A cinematic title screen, a painted day/night main menu over the Fredericksburg riverfront, and a gold-trimmed design system across every screen. Eight illustrated decks play in all five games.
+> **Status: v0.9.0 — immersive tables.** Painted gameboards, a compact in-game toolbar, card animations from shuffle to victory, sound hooks, and per-game layouts tuned for phones, tablets and desktops. Eight illustrated decks play in all five games.
 
 ## Games
 
@@ -219,6 +219,29 @@ Tokens live in `src/themes/tokens.css` and every component reads them:
 - **Layouts:** portrait puts the painting above a glass panel; landscape and desktop put the panel on the left with the painting beside it. Safe areas are respected and nothing scrolls.
 
 **Logos:** `Inspire Card Parlor Transparent Logo.png` is the in-game logo. The near-identical `inspire-card-parlor.png` is used for the app icons and the social link preview (`assets/branding/social-card.jpg`), so two logos never appear together.
+
+### At the table (v0.9)
+
+- **Painted gameboards:** _Emerald Felt_ (Backroom Card Table), _Picnic Tabletop_ and _Woven River Mat_ (Rappahannock Riverside). Each painting is cover-fitted around its own focal point, with separate settings for portrait and landscape crops. A readability scrim is added only where the art needs it: none on dark felt, a little on sunlit planks, more on the light woven mat.
+- **Gameboard gallery:** painted thumbnails, ambience, unlock state, a **Select** button on every tile, a detail view and an **Ambience** switch. The choice is saved and remembered for each game.
+- **Toolbar:** a compact bar under the table, or a side rail on short landscape screens.
+  - Game actions: **Pause**, **Undo** and **Hint** where the game has them, and **New Game**. War swaps Undo and Hint for **Speed**, and Go Fish has no Undo.
+  - Always present: **Music**, **Settings** and **More**.
+  - **More** holds How to play, Statistics, Restart, full screen and the way home. It closes on Escape or a tap elsewhere.
+- **Full screen** where the browser allows it, including the prefixed WebKit API. On iPhone Safari a **Focus mode** folds the header away instead and suggests adding the app to the Home Screen. Full screen is never needed to play.
+- **Animations:**
+  - **Solitaire:** the stock riffles and deals the layout (a tap skips it); cards squash-flip, lift while moving and settle as they land; a completed foundation glows gold; victory brings a cascade and a shower of suits.
+  - **War:** the field jolts with a ring around _WAR!_, revealed cards slam down, and the winner's card glows.
+  - **Go Fish:** the asker leans in while the player asked lights up, the pond ripples, and books glow.
+
+  Everything runs on `transform`, `scale`, `rotate`, `translate`, `opacity` and `filter`, so nothing triggers layout. Animations only decorate what the game state already says, so they can never desynchronise it.
+
+- **Legibility:** Spider's ten columns and other small cards show a crisp rank-and-suit chip in the corner, added by a container query only when the printed index is too small to read. Columns spread out to use tall screens. FreeCell's free cells are dark wells marked _FREE_, while foundations are gold frames.
+- **Touch:** tap a card, then tap where it should go, as an alternative to dragging. Double-tap sends a card to its best spot.
+- **Sound hooks:** `gameSound()` in `src/audio/gameSounds.ts` handles `card_flip`, `card_deal`, `card_move`, `card_shuffle`, `valid_move`, `invalid_move` and `victory`.
+  - Events from the same action are merged, so a move plays one sound.
+  - Fast repeats are spaced out, so a deal patters.
+  - Every event is also dispatched as an `icp:sound` DOM event for future recorded sounds.
 
 ### Production artwork pipeline
 

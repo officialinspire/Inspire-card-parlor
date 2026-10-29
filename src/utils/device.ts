@@ -9,15 +9,27 @@ export const isStandalone = () =>
   matchMedia('(display-mode: fullscreen)').matches ||
   (navigator as Navigator & { standalone?: boolean }).standalone === true;
 
+/** Older WebKit (iPad Safari) only has the prefixed API. */
+interface WebkitFullscreen {
+  webkitRequestFullscreen?: () => Promise<void> | void;
+  webkitExitFullscreen?: () => Promise<void> | void;
+  webkitFullscreenElement?: Element | null;
+}
+const doc = () => document as Document & WebkitFullscreen;
+const root = () => document.documentElement as HTMLElement & WebkitFullscreen;
+
 export const fullscreen = {
-  supported: () => !!document.documentElement.requestFullscreen,
-  active: () => !!document.fullscreenElement,
+  supported: () => !!(root().requestFullscreen || root().webkitRequestFullscreen),
+  active: () => !!(document.fullscreenElement || doc().webkitFullscreenElement),
   async toggle(): Promise<void> {
     try {
-      if (document.fullscreenElement) await document.exitFullscreen();
-      else await document.documentElement.requestFullscreen({ navigationUI: 'hide' });
+      if (fullscreen.active()) {
+        if (document.exitFullscreen) await document.exitFullscreen();
+        else await doc().webkitExitFullscreen?.();
+      } else if (root().requestFullscreen) await root().requestFullscreen({ navigationUI: 'hide' });
+      else await root().webkitRequestFullscreen?.();
     } catch {
-      /* denied or unsupported (e.g. iOS Safari) */
+      /* denied, or not allowed here (iPhone Safari): the game never depends on it */
     }
   },
 };

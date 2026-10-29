@@ -1446,24 +1446,295 @@
 .table {
   padding: 0;
 }
+/* ----- Table chrome: a slim header, the playing area, a compact toolbar ----- */
 .table-hud {
-  padding: calc(var(--safe-t) + 8px) calc(var(--safe-r) + var(--gutter)) 8px calc(var(--safe-l) + var(--gutter));
-  background: var(--surface);
-  border-bottom: 1.5px solid var(--border);
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: calc(var(--safe-t) + 6px) calc(var(--safe-r) + var(--gutter)) 6px calc(var(--safe-l) + var(--gutter));
+  background: var(--glass-strong);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--gold-line);
   flex: none;
-  z-index: 1;
+  z-index: 2;
+}
+.table-hud .btn-back {
+  width: 40px;
+  height: 40px;
+}
+.table-titles {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.table-hud .screen-title {
+  font-size: clamp(1.02rem, 1.4vmin + 0.75rem, 1.35rem);
+}
+.table-hud .screen-subtitle {
+  font-size: 0.74em;
 }
 .hud-stats {
   display: flex;
-  justify-content: center;
-  gap: 16px;
-  margin-top: 4px;
-  font-size: 0.85em;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 2px 12px;
+  font-size: 0.8em;
   font-weight: 800;
   color: var(--ink-soft);
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 .hud-stats:empty {
+  display: none;
+}
+@media (max-width: 420px) {
+  .hud-stats {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0;
+    font-size: 0.72em;
+    line-height: 1.25;
+  }
+}
+.game-toolbar {
+  position: relative;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  padding: 4px calc(var(--safe-r) + var(--gutter) * 0.5) calc(var(--safe-b) + 4px)
+    calc(var(--safe-l) + var(--gutter) * 0.5);
+  background: var(--glass-strong);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--gold-line);
+  z-index: 3;
+}
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.toolbar-system {
+  padding-left: 6px;
+  border-left: 1px solid var(--border);
+}
+.tool-btn {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-width: 50px;
+  min-height: 48px;
+  padding: 4px 6px;
+  border: 0;
+  border-radius: var(--radius-s);
+  background: none;
+  color: var(--ink-soft);
+  font-size: 0.66em;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition:
+    background var(--dur-fast),
+    color var(--dur-fast),
+    transform var(--dur-fast) var(--ease-press);
+}
+.tool-btn .icon {
+  width: 22px;
+  height: 22px;
+}
+@media (hover: hover) {
+  .tool-btn:hover:not(:disabled) {
+    background: var(--gold-soft);
+    color: var(--ink);
+  }
+}
+.tool-btn:active:not(:disabled) {
+  transform: scale(0.92);
+  transition-duration: 60ms;
+}
+.tool-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.tool-btn[aria-pressed='true'],
+.tool-btn[aria-expanded='true'] {
+  color: var(--accent);
+}
+.tool-btn[data-action='music'][aria-pressed='true'] {
+  color: var(--ink-soft);
+}
+.tool-btn.tool-accent {
+  background: var(--gold-metal);
+  color: var(--gold-ink);
+  box-shadow: inset 0 1px 0 rgba(255, 250, 230, 0.7);
+}
+.tool-label {
+  white-space: nowrap;
+}
+/* Phones: buttons share the width evenly so seven always fit. */
+@media (max-width: 440px) {
+  .game-toolbar {
+    gap: 0;
+    padding-inline: calc(var(--safe-l) + 2px) calc(var(--safe-r) + 2px);
+  }
+  .toolbar-group {
+    gap: 0;
+    min-width: 0;
+  }
+  .toolbar-system {
+    padding-left: 2px;
+  }
+  .tool-btn {
+    min-width: 44px;
+    padding-inline: 2px;
+    font-size: 0.62em;
+  }
+}
+/* More: a small card of secondary actions that pops up from the toolbar. */
+.more-panel {
+  position: absolute;
+  right: calc(var(--safe-r) + var(--gutter) * 0.5);
+  bottom: calc(100% + 8px);
+  min-width: 230px;
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  border-radius: var(--radius-m);
+  background: var(--glass-strong);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--glass-border);
+  box-shadow:
+    inset 0 0 0 1px var(--gold-soft),
+    var(--elev-3);
+  transform-origin: 100% 100%;
+  animation: more-in var(--dur) var(--ease-spring);
+}
+@keyframes more-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.94);
+  }
+}
+.more-group {
+  display: flex;
+  flex-direction: column;
+}
+.more-group:not(:empty) {
+  margin: 2px 0;
+  padding: 2px 0;
+  border-block: 1px solid var(--border);
+}
+.more-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: var(--radius-s);
+  background: none;
+  color: var(--ink);
+  font-weight: 800;
+  text-align: left;
+  cursor: pointer;
+}
+.more-item .icon {
+  width: 20px;
+  height: 20px;
+  color: var(--gold-deep);
+}
+[data-theme='night'] .more-item .icon {
+  color: var(--gold);
+}
+.more-item:hover,
+.more-item:focus-visible {
+  background: var(--gold-soft);
+}
+.more-item[aria-pressed='true'] {
+  color: var(--accent);
+}
+/* Paused: the table rests under a veil. */
+.table-pause {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 14px;
+  background: rgba(12, 10, 8, 0.45);
+  backdrop-filter: blur(4px);
+  color: #fff8ee;
+  font-family: var(--font-display);
+  font-size: 1.6em;
+  font-weight: 800;
+  animation: fade-in var(--dur) var(--ease);
+}
+.table-pause .btn {
+  font-family: var(--font-body);
+  font-size: 1rem;
+}
+/* Short landscape screens: the toolbar becomes a slim rail on the right. */
+@media (orientation: landscape) and (max-height: 540px) {
+  .table {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-areas: 'hud hud' 'stage tools';
+  }
+  .table-hud {
+    grid-area: hud;
+    padding-top: calc(var(--safe-t) + 3px);
+    padding-bottom: 3px;
+  }
+  .table-hud .btn-back {
+    width: 34px;
+    height: 34px;
+  }
+  .table-hud .screen-subtitle {
+    display: none;
+  }
+  .table-stage {
+    grid-area: stage;
+  }
+  .game-toolbar {
+    grid-area: tools;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 4px calc(var(--safe-r) + 4px) calc(var(--safe-b) + 4px) 4px;
+    border-top: 0;
+    border-left: 1px solid var(--gold-line);
+  }
+  .toolbar-group {
+    flex-direction: column;
+  }
+  .toolbar-system {
+    padding: 4px 0 0;
+    border-left: 0;
+    border-top: 1px solid var(--border);
+  }
+  .tool-btn {
+    min-height: 0;
+    min-width: 48px;
+    padding: 3px;
+    font-size: 0.6em;
+  }
+  .tool-btn .icon {
+    width: 19px;
+    height: 19px;
+  }
+  .more-panel {
+    right: calc(100% + 8px);
+    bottom: 4px;
+    transform-origin: 100% 100%;
+  }
+}
+/* Focus mode (where real full screen isn't available): the header folds away. */
+.focus-mode .table-hud {
   display: none;
 }
 .table-stage {
@@ -1473,12 +1744,19 @@
   display: flex;
   /* Uploaded art is cover-fitted (never stretched); the CSS surface shows beneath it. */
   background:
-    var(--board-art, none) center / cover no-repeat,
+    var(--board-art, none) var(--board-focus-l, center) / cover no-repeat,
     var(--felt);
   border: clamp(6px, 1.4vmin, 14px) solid var(--rim);
   border-top: 0;
   box-shadow: inset 0 0 70px rgba(0, 0, 0, 0.4);
   overflow: hidden;
+}
+@media (orientation: portrait) {
+  .table-stage {
+    background-position:
+      var(--board-focus-p, center),
+      0 0;
+  }
 }
 /* Readability scrim: keeps cards and text legible on busy or bright artwork. */
 .table-stage::before {
@@ -1489,7 +1767,8 @@
   background: radial-gradient(120% 90% at 50% 45%, transparent 40%, rgba(0, 0, 0, 0.18));
 }
 .table[data-board-art='image'] .table-stage::before {
-  background: rgba(0, 0, 0, 0.12);
+  /* Only as much as the painting needs (0 on dark felt). */
+  background: rgba(0, 0, 0, var(--board-scrim, 0.12));
 }
 .table.high-contrast .table-stage::before {
   background: rgba(0, 0, 0, 0.42);
@@ -1766,6 +2045,15 @@
 .war-pile.empty .card {
   opacity: 0.15;
 }
+/* Artwork backs draw their own outline: the pile depth follows the card's shape. */
+.war-pile:has(.card-art)::before,
+.war-pile:has(.card-art)::after {
+  display: none;
+}
+.war-pile .card-art {
+  --card-art-shadow: drop-shadow(2px 2px 0 rgba(0, 0, 0, 0.3)) drop-shadow(3px 3px 0 rgba(0, 0, 0, 0.2))
+    drop-shadow(0 6px 8px rgba(0, 0, 0, 0.3));
+}
 .war-count {
   min-width: 3ch;
   padding: 4px 10px;
@@ -1808,6 +2096,51 @@
     0 0 0 3px var(--mustard),
     0 0 24px color-mix(in srgb, var(--mustard) 70%, transparent);
   transform: translateY(-4px) scale(1.04);
+}
+.war-slot .war-faceup.win.card-art {
+  box-shadow: none;
+  --card-art-shadow: drop-shadow(0 0 2px var(--gold-bright)) drop-shadow(0 0 12px var(--gold));
+}
+/* Reveal: the turned card lands with a slam (scale only, no layout). */
+.war-reveal {
+  animation: war-reveal 0.36s var(--ease-spring);
+}
+@keyframes war-reveal {
+  0% {
+    scale: 1.22;
+  }
+  55% {
+    scale: 0.96;
+  }
+}
+/* WAR!: the field jolts. */
+.war-clash {
+  animation: war-clash 0.45s ease-out;
+}
+@keyframes war-clash {
+  15% {
+    translate: -7px 2px;
+  }
+  35% {
+    translate: 6px -2px;
+  }
+  55% {
+    translate: -4px 1px;
+  }
+  75% {
+    translate: 2px 0;
+  }
+}
+.war-banner.is-war {
+  box-shadow: 0 0 0 0 rgba(224, 101, 79, 0.6);
+  animation:
+    pop 0.4s var(--ease-spring),
+    war-ring 0.9s ease-out 0.1s;
+}
+@keyframes war-ring {
+  to {
+    box-shadow: 0 0 0 22px rgba(224, 101, 79, 0);
+  }
 }
 .war-slot.settled {
   opacity: 0.45;
@@ -1858,7 +2191,10 @@
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) minmax(0, 1fr);
     grid-template-rows: minmax(0, 1fr) auto;
     grid-template-areas: 'cpu field player' 'controls controls controls';
-    --card-w: clamp(56px, 22vh, 120px);
+    --card-w: clamp(56px, 24vh, 156px);
+  }
+  .war-pile {
+    --card-w: clamp(44px, 15vh, 108px);
   }
   .war-side {
     flex-direction: column;
@@ -1940,18 +2276,78 @@
   gap: 4px 8px;
   padding: 8px;
   border-radius: var(--radius-m);
-  background: rgba(0, 0, 0, 0.18);
-  color: var(--board-ink, #fff8ee);
+  /* Each opponent has a seat: a glass card over the board, portrait in a gold ring. */
+  background: var(--glass);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--elev-2);
+  color: var(--ink);
   min-width: 0;
   transition: box-shadow var(--dur);
 }
 .gf-opp .avatar {
   grid-area: avatar;
   --size: clamp(32px, 6vmin, 48px);
+  box-shadow:
+    0 0 0 2px var(--surface),
+    0 0 0 3.5px var(--gold),
+    var(--elev-1);
 }
 .gf-opp.is-turn,
 .gf-you.is-turn {
-  box-shadow: 0 0 0 3px var(--mustard);
+  box-shadow:
+    0 0 0 2px var(--gold),
+    0 0 18px color-mix(in srgb, var(--gold) 45%, transparent),
+    var(--elev-2);
+}
+/* A request: the asker leans in, the one asked lights up, a finished book glows. */
+.gf-asking {
+  animation: gf-lean 0.5s var(--ease-spring);
+}
+@keyframes gf-lean {
+  40% {
+    translate: 0 -4px;
+    scale: 1.03;
+  }
+}
+.gf-asked {
+  animation: gf-asked 1.1s var(--ease);
+}
+@keyframes gf-asked {
+  0% {
+    box-shadow:
+      0 0 0 2px var(--accent),
+      0 0 0 0 color-mix(in srgb, var(--accent) 70%, transparent);
+  }
+  70% {
+    box-shadow:
+      0 0 0 2px var(--accent),
+      0 0 0 14px color-mix(in srgb, var(--accent) 0%, transparent);
+  }
+}
+.gf-booked {
+  animation: gf-booked 1s var(--ease);
+}
+@keyframes gf-booked {
+  35% {
+    box-shadow:
+      0 0 0 3px var(--gold-bright),
+      0 0 26px var(--gold);
+  }
+}
+/* Fishing: the pond ripples. */
+.gf-ripple {
+  animation: gf-ripple 0.7s var(--ease);
+}
+@keyframes gf-ripple {
+  30% {
+    scale: 1.08;
+    rotate: -3deg;
+  }
+  60% {
+    scale: 0.97;
+    rotate: 2deg;
+  }
 }
 .gf-opp.is-empty .gf-fan {
   opacity: 0.3;
@@ -2023,13 +2419,17 @@
   box-shadow: 0 2px 0 var(--edge);
 }
 .gf-status {
-  max-width: 90%;
-  min-height: 2.6em;
-  padding: 6px 12px;
-  border-radius: 12px;
-  background: rgba(0, 0, 0, 0.22);
-  color: var(--board-ink, #fff8ee);
+  max-width: min(90%, 420px);
+  min-height: 2.2em;
+  padding: 5px 14px;
+  border-radius: var(--radius-pill);
+  background: var(--glass);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--elev-1);
+  color: var(--ink);
   font-weight: 700;
+  font-size: 0.9em;
   text-align: center;
 }
 .gf-status:empty {
@@ -2042,7 +2442,9 @@
   gap: 6px;
   padding: 8px;
   border-radius: var(--radius-m);
-  background: rgba(0, 0, 0, 0.12);
+  background: color-mix(in srgb, var(--glass) 70%, transparent);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border);
   transition: box-shadow var(--dur);
 }
 .gf-you > .bubble {
@@ -2346,6 +2748,13 @@
     align-items: center;
     max-width: 100%;
   }
+  /* Long names wrap onto two lines instead of being cut off. */
+  .gf-opponents[data-count-players='3'] .gf-opp-name {
+    white-space: normal;
+    font-size: 0.88em;
+    line-height: 1.1;
+    overflow-wrap: anywhere;
+  }
 }
 @media (orientation: landscape) and (max-height: 540px) {
   .lineup-item small {
@@ -2424,8 +2833,26 @@
   background: rgba(0, 0, 0, 0.06);
 }
 .sol-slot-cell {
+  /* Free cells: dark recessed wells, clearly not foundations. */
   border-style: solid;
-  border-color: rgba(255, 248, 238, 0.28);
+  border-color: rgba(255, 248, 238, 0.3);
+  background: rgba(0, 0, 0, 0.32);
+  box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.45);
+}
+.sol-slot-cell::after {
+  content: 'FREE';
+  font-family: var(--font-body);
+  font-size: max(8px, calc(var(--card-w) * 0.15));
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  color: rgba(255, 248, 238, 0.55);
+}
+/* Foundations: gold frames that build Ace to King. */
+.sol-slot-foundation {
+  border: 2px solid color-mix(in srgb, var(--gold-bright) 75%, transparent);
+  background: color-mix(in srgb, var(--gold) 16%, rgba(0, 0, 0, 0.12));
+  color: color-mix(in srgb, var(--gold-bright) 85%, transparent);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
 }
 .sol-slot-stock {
   cursor: pointer;
@@ -2495,12 +2922,112 @@
     filter: brightness(1.12);
   }
 }
+.sol-card {
+  /* Every motion below uses individual transform properties (scale, rotate,
+     translate) or filter, so they layer over the positioning transform and
+     never trigger layout. */
+  --card-art-shadow: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.28)) drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2));
+}
+/* Turning a card over: it squashes edge-on and opens on its new face. */
 .sol-flip {
-  animation: sol-flip 0.26s var(--ease);
+  animation: sol-flip 0.28s var(--ease);
 }
 @keyframes sol-flip {
   from {
-    clip-path: inset(0 50%);
+    scale: 0.04 1;
+    filter: brightness(0.75);
+  }
+  60% {
+    scale: 1.06 1;
+  }
+}
+/* Moving: lifted while it travels, then a small settle as it lands on the stack. */
+.sol-land {
+  animation: sol-land 0.42s var(--ease);
+}
+@keyframes sol-land {
+  0% {
+    scale: 1.07;
+    filter: drop-shadow(0 12px 14px rgba(0, 0, 0, 0.32));
+  }
+  55% {
+    scale: 1.04;
+    filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.28));
+  }
+  80% {
+    scale: 0.985;
+  }
+}
+/* Shuffle: the stock riffles before the deal. */
+.sol-shuffling {
+  animation: sol-riffle 0.36s ease-in-out;
+}
+@keyframes sol-riffle {
+  25% {
+    rotate: -5deg;
+    translate: -3px 0;
+  }
+  50% {
+    rotate: 4deg;
+    translate: 3px -2px;
+  }
+  75% {
+    rotate: -2deg;
+  }
+}
+/* Foundation complete (Ace to King): a gold ring pulses and the King gleams. */
+.sol-slot.sol-complete {
+  animation: sol-complete 1.1s var(--ease);
+}
+@keyframes sol-complete {
+  0% {
+    box-shadow: 0 0 0 0 rgba(230, 195, 106, 0.95);
+  }
+  60% {
+    box-shadow: 0 0 0 14px rgba(230, 195, 106, 0);
+  }
+}
+.sol-crown {
+  animation: sol-crown 0.9s var(--ease-spring);
+}
+@keyframes sol-crown {
+  40% {
+    scale: 1.12;
+    filter: drop-shadow(0 0 10px var(--gold-bright)) brightness(1.08);
+  }
+}
+/* Victory shower: gold and red suits drift down over the table. */
+.victory-shower {
+  position: absolute;
+  inset: 0;
+  z-index: 1500;
+  pointer-events: none;
+  overflow: hidden;
+}
+.victory-shower span {
+  position: absolute;
+  left: var(--x);
+  top: -30px;
+  font-size: var(--size);
+  line-height: 1;
+  color: var(--gold-bright);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  animation: shower var(--dur) cubic-bezier(0.3, 0.2, 0.6, 1) var(--delay) forwards;
+}
+.victory-shower span.is-red {
+  color: #e2504a;
+}
+@keyframes shower {
+  8% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(var(--drift), calc(100vh), 0) rotate(var(--spin));
   }
 }
 .sol-shake {
@@ -2545,25 +3072,9 @@
   font-weight: 800;
   backdrop-filter: blur(2px);
 }
-.sol-controls {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 6px;
-  flex: none;
-  padding-bottom: var(--edge-size);
-}
-.sol-controls .btn {
-  min-width: 0;
-  padding-inline: 0.9em;
-}
-.sol-controls .btn-ghost {
-  color: var(--board-ink, #fff8ee);
-  border-color: color-mix(in srgb, var(--board-ink, #fff8ee) 45%, transparent);
-}
 /* Over painted boards, outline buttons get a solid backing so busy artwork
    (wood grain, logos) never runs through their labels. */
-.table[data-board-art='image'] :is(.sol-controls, .war-controls, .gf-actions) .btn-ghost {
+.table[data-board-art='image'] :is(.war-controls, .gf-actions) .btn-ghost {
   background: color-mix(in srgb, var(--board-base) 82%, transparent);
   backdrop-filter: blur(3px);
 }
@@ -2573,43 +3084,9 @@
 .reduced-motion .sol-card {
   transition: none;
 }
-@media (orientation: landscape) and (max-height: 540px) {
-  .solitaire {
-    flex-direction: row;
-  }
-  .sol-controls {
-    flex-direction: column;
-    flex-wrap: nowrap;
-    justify-content: center;
-  }
-  .sol-controls .btn {
-    min-height: 34px;
-  }
-}
-/* Narrow phones: compact table header so the game name fits beside its buttons. */
-@media (max-width: 480px) {
-  .table-hud .nav-actions {
-    gap: 4px;
-  }
-  .table-hud .nav-actions .btn-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 11px;
-  }
-  .table-hud .nav-actions .btn-icon .icon {
-    width: 18px;
-    height: 18px;
-  }
-  .table-hud .screen-title {
-    font-size: 1.1rem;
-  }
-}
-
 /* ===================== Gameboards: readability ===================== */
 /* Light boards: panels on the table turn pale so dark ink stays readable. */
-.table[data-board-tone='light'] :is(.gf-opp, .gf-status, .gf-you) {
-  background: rgba(255, 255, 255, 0.55);
-}
+
 .table[data-board-tone='light'] :is(.war-who, .war-banner, .gf-opp) {
   text-shadow: none;
 }
@@ -3144,5 +3621,85 @@
   }
   50% {
     transform: perspective(800px) rotateY(9deg) rotateZ(1deg);
+  }
+}
+
+/* ===================== Gameboard gallery ===================== */
+.board-tile {
+  flex-direction: column;
+  align-items: stretch;
+  padding: 0;
+  gap: 0;
+}
+.board-tile .tile-main {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  padding: 10px 10px 4px;
+  text-align: left;
+}
+.board-tile .board-swatch {
+  flex: 1;
+  min-height: 70px;
+}
+.board-tile-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  font-size: 0.74em;
+  font-weight: 700;
+  color: var(--ink-faint);
+}
+.board-ambience::before {
+  content: '✦ ';
+  color: var(--gold);
+}
+.board-tile-foot {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-height: 44px;
+  padding: 0 10px 8px;
+}
+.board-select {
+  min-width: 96px;
+}
+.board-selected {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82em;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+}
+[data-theme='night'] .board-selected {
+  color: var(--gold);
+}
+.board-selected .icon {
+  width: 16px;
+  height: 16px;
+}
+.board-ambience-toggle {
+  flex: none;
+}
+.board-ambience-toggle .control {
+  min-height: 0;
+  padding: 6px 12px;
+}
+@media (orientation: landscape) and (max-height: 540px) {
+  .board-ambience-toggle .control small {
+    display: none;
+  }
+  .board-tile .tile-main {
+    padding: 6px 8px 2px;
+  }
+  .board-tile-foot {
+    min-height: 38px;
+    padding-bottom: 4px;
   }
 }

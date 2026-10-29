@@ -4,6 +4,7 @@ import { getTrack } from './tracks';
 
 export { audio } from './engine';
 export type { Sfx } from './engine';
+export { gameSound, onGameSound, type GameSound } from './gameSounds';
 export { TRACKS, getTrack, nextTrackId } from './tracks';
 
 /** Keeps the audio engine in sync with settings and page visibility. */

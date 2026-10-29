@@ -360,3 +360,22 @@ describe('adult-only content', () => {
     ).toBe(false);
   });
 });
+
+describe('painted gameboards', () => {
+  it('keep each painting focused per orientation and darken it only where needed', () => {
+    const table = document.createElement('section');
+    const stage = document.createElement('div');
+    for (const id of ['backroom_card_table', 'picnic_table', 'rappahannock_riverside']) {
+      const b = getBoard(id);
+      expect(b.assets.status, id).toBe('ready');
+      expect(b.art?.focus?.portrait, id).toMatch(/^\d+% \d+%$/);
+      expect(b.art?.focus?.landscape, id).toMatch(/^\d+% \d+%$/);
+      applyBoard(table, stage, b, { ambient: false, highContrast: false });
+      expect(table.style.getPropertyValue('--board-focus-p')).toBe(b.art!.focus!.portrait);
+      expect(Number(table.style.getPropertyValue('--board-scrim'))).toBe(b.art!.scrim);
+    }
+    // Dark felt needs no darkening; the light woven mat gets the most.
+    expect(getBoard('backroom_card_table').art!.scrim).toBe(0);
+    expect(getBoard('rappahannock_riverside').art!.scrim!).toBeGreaterThan(getBoard('picnic_table').art!.scrim!);
+  });
+});

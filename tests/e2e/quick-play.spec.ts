@@ -54,7 +54,7 @@ test('Play → deck → board → table; leaving keeps the game to resume', asyn
   await page.locator('[data-dialog-action="resume"]').click();
 
   // Home goes straight to the main menu.
-  await page.locator(`${CURRENT} [data-nav="home"]`).click();
+  await clickNav(page, 'home', 'MAIN_MENU');
   await expectScreen(page, 'MAIN_MENU');
 });
 

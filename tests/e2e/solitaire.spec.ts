@@ -1,5 +1,5 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
-import { CURRENT, clickNav, enterParlor, expectScreen, playGame, seed } from './helpers';
+import { CURRENT, clickNav, enterParlor, expectScreen, playGame, seed, tableAction } from './helpers';
 
 test.describe.configure({ timeout: 90_000 });
 
@@ -145,7 +145,7 @@ for (const [gameId, total] of GAMES) {
         }
       } else await page.locator(`${CURRENT} .sol-card[data-pile="stock"]`).last().click();
       await expect.poll(() => moves(page)).toBeGreaterThan(0);
-      await page.locator(`${CURRENT} [data-action="restart"]`).click();
+      await tableAction(page, 'restart');
       await page.locator('[data-dialog-action="true"]').click();
       await expect.poll(() => moves(page)).toBe(0);
       expect(
@@ -162,11 +162,11 @@ for (const [gameId, total] of GAMES) {
     test('rules, settings and statistics dialogs', async ({ page }) => {
       await open(page, gameId);
       const dialog = page.getByRole('dialog');
-      await page.locator(`${CURRENT} [data-action="rules"]`).click();
+      await tableAction(page, 'rules');
       await expect(dialog).toContainText('How to play');
       await page.keyboard.press('Escape');
       await expect(dialog).toHaveCount(0);
-      await page.locator(`${CURRENT} [data-action="game-stats"]`).click();
+      await tableAction(page, 'game-stats');
       await expect(page.locator(`[data-stats="${gameId}"] .stat-item`)).toHaveCount(6);
       await page.keyboard.press('Escape');
       await expect(dialog).toHaveCount(0);

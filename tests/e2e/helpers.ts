@@ -63,9 +63,24 @@ export async function enterParlor(page: Page): Promise<void> {
 
 export const nav = (page: Page, target: string) => page.locator(`${CURRENT} [data-nav="${target}"]`).first();
 
+/** At a game table, secondary actions live in the toolbar's More panel: open it when needed. */
+async function revealInMore(page: Page, target: ReturnType<Page['locator']>): Promise<void> {
+  if (await target.isVisible()) return;
+  const more = page.locator(`${CURRENT} [data-action="more"]`);
+  if (await more.isVisible()) await more.click();
+}
+
 export async function clickNav(page: Page, target: string, expected = target): Promise<void> {
+  await revealInMore(page, nav(page, target));
   await nav(page, target).click();
   await expectScreen(page, expected);
+}
+
+/** Clicks a table toolbar action, opening the More panel first if it lives there. */
+export async function tableAction(page: Page, action: string): Promise<void> {
+  const target = page.locator(`${CURRENT} [data-action="${action}"]`).first();
+  await revealInMore(page, target);
+  await target.click();
 }
 
 /** Asserts nothing on the current screen spills outside the viewport and the page itself cannot scroll. */

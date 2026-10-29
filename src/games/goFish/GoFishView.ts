@@ -3,10 +3,12 @@ import type { Store } from '@/core/store';
 import { cardRenderer } from '@/decks';
 import type { DeckTheme } from '@/decks/DeckThemeManager';
 import { RANK_CODE, RANKS, type Rank } from '@/engine';
-import { audio } from '@/audio';
+import { audio, gameSound } from '@/audio';
+import { victoryShower } from '@/components/celebration';
 import { avatar } from '@/components/Avatar';
 import { say } from '@/components/SpeechBubble';
 import { button } from '@/components/ui';
+import { pauseVeil, setTool, toolButton, type GameToolbar } from '@/components/gameToolbar';
 import { confirmDialog, openDialog } from '@/components/Dialog';
 import { celebrate as announceUnlock } from '@/components/Notifications';
 import { ACHIEVEMENTS } from '@/achievements/registry';
@@ -21,6 +23,7 @@ export interface GoFishViewContext {
   store: Store;
   surface: HTMLElement;
   hud: HTMLElement;
+  tools: GameToolbar;
   theme: DeckTheme;
   game: GoFishGame;
   onNewGame: () => void;
@@ -58,9 +61,14 @@ export function mountGoFish(ctx: GoFishViewContext) {
   const human = game.players[0]!;
   let destroyed = false;
   let busy = false;
+  let paused = false;
 
   const f = () => (store.state.settings.reducedMotion ? 0.08 : SPEED[store.state.settings.cardAnimationSpeed]);
-  const pause = (ms: number) => sleep(ms * f());
+  /** Waits between steps, and holds the table (CPU turns included) while paused. */
+  const pause = async (ms: number) => {
+    await sleep(ms * f());
+    while (paused && !destroyed) await sleep(120);
+  };
   const rand = () => game.table.random.next();
 
   // ----- DOM -----
@@ -98,15 +106,20 @@ export function mountGoFish(ctx: GoFishViewContext) {
   const myBooks = h('div', { class: 'gf-books', 'aria-label': 'Your books' });
   const hand = h('div', { class: 'gf-hand', role: 'group', 'aria-label': 'Your hand' });
   const askBtn = button('Ask', () => void humanTurn(), { icon: 'play', attrs: { 'data-action': 'ask' } });
-  const newBtn = button('New game', () => void restart(), { variant: 'ghost', attrs: { 'data-action': 'restart' } });
+  // Table toolbar: Pause, Hint, New Game.
+  const pauseBtn = toolButton('pause', 'Pause', () => setPaused(!paused), { action: 'pause' });
+  const hintBtn = toolButton('hint', 'Hint', () => showHint(), { action: 'hint' });
+  const newBtn = toolButton('deal', 'New Game', () => void restart(), { action: 'new-game' });
+  ctx.tools.primary.append(pauseBtn, hintBtn, newBtn);
+  const veil = pauseVeil(() => setPaused(false));
   const you = h(
     'section',
     { class: 'gf-you', 'data-player': human.id, 'aria-label': 'You' },
     myBooks,
     hand,
-    h('div', { class: 'gf-actions' }, newBtn, askBtn),
+    h('div', { class: 'gf-actions' }, askBtn),
   );
-  const el = h('div', { class: 'gofish' }, opponents, h('div', { class: 'gf-center' }, pond, status), you);
+  const el = h('div', { class: 'gofish' }, opponents, h('div', { class: 'gf-center' }, pond, status), you, veil);
   ctx.surface.replaceChildren(el);
   ctx.surface.classList.add('table-surface-game');
 
@@ -169,6 +182,13 @@ export function mountGoFish(ctx: GoFishViewContext) {
     hand.dataset.size = String(cards.length);
 
     askBtn.disabled = !myTurn;
+    hintBtn.disabled = !myTurn;
+    if (pauseBtn.getAttribute('aria-pressed') !== String(paused)) {
+      setTool(pauseBtn, paused ? 'play' : 'pause', paused ? 'Resume' : 'Pause');
+      pauseBtn.setAttribute('aria-pressed', String(paused));
+    }
+    pauseBtn.disabled = game.isOver;
+    veil.hidden = !paused;
     you.classList.toggle('is-turn', myTurn);
     hudTurn.textContent = game.isOver
       ? 'Game over'
@@ -188,7 +208,27 @@ export function mountGoFish(ctx: GoFishViewContext) {
   const ro = new ResizeObserver(fitHand);
   ro.observe(hand);
 
-  const isMyTurn = () => !busy && !game.isOver && game.current.id === human.id && game.awaitingAsk;
+  const isMyTurn = () => !busy && !paused && !game.isOver && game.current.id === human.id && game.awaitingAsk;
+
+  function setPaused(p: boolean): void {
+    if (game.isOver) return;
+    paused = p;
+    render();
+  }
+
+  /** Suggests the rank you hold most of: the ask most likely to complete a book. */
+  function showHint(): void {
+    if (!isMyTurn()) return;
+    const ranks = game.askableRanks(human.id);
+    if (!ranks.length) return;
+    const best = ranks.reduce((a, b) => (game.hand(human.id).countRank(b) > game.hand(human.id).countRank(a) ? b : a));
+    for (const c of hand.querySelectorAll<HTMLElement>('.gf-card')) {
+      if (c.dataset.rank === RANK_CODE[best]) c.dataset.hint = 'source';
+      else delete c.dataset.hint;
+    }
+    setStatus(`Try asking for ${rankPlural(best)} — you hold ${game.hand(human.id).countRank(best)}.`);
+    setTimeout(() => hand.querySelectorAll<HTMLElement>('[data-hint]').forEach((c) => delete c.dataset.hint), 2400);
+  }
   const setStatus = (text: string) => (status.textContent = text);
 
   // ----- Animation -----
@@ -219,6 +259,23 @@ export function mountGoFish(ctx: GoFishViewContext) {
     );
   }
 
+  /** Restarts a short highlight animation on a player's area (visual only). */
+  function spotlight(playerId: string, cls: string): void {
+    if (f() < 0.2) return;
+    const a = anchor(playerId);
+    a.classList.remove(cls);
+    void a.offsetWidth;
+    a.classList.add(cls);
+    setTimeout(() => a.classList.remove(cls), 1400 * f() + 400);
+  }
+
+  function ripple(target: HTMLElement): void {
+    if (f() < 0.2) return;
+    target.classList.remove('gf-ripple');
+    void target.offsetWidth;
+    target.classList.add('gf-ripple');
+  }
+
   // ----- Playing a request -----
   async function perform(askerId: string, targetId: string, rank: Rank): Promise<void> {
     const asker = game.players.find((p) => p.id === askerId)!;
@@ -228,6 +285,9 @@ export function mountGoFish(ctx: GoFishViewContext) {
       : `${target.name}, any ${rankPlural(rank)}?`;
     void say(anchor(askerId), askText, { tone: 'ask', duration: 1500 * f() + 300 });
     setStatus(`${asker.name} asked ${target.id === human.id ? 'you' : target.name} for ${rankPlural(rank)}.`);
+    // The request: the asker leans in and the one being asked lights up.
+    spotlight(askerId, 'gf-asking');
+    spotlight(targetId, 'gf-asked');
     await pause(900);
 
     const result = game.ask(askerId, targetId, rank);
@@ -248,7 +308,7 @@ export function mountGoFish(ctx: GoFishViewContext) {
           ? `Here — ${countLabel(e.count, e.rank)}.`
           : `Here you go: ${countLabel(e.count, e.rank)}.`;
         void say(anchor(e.from), line, { duration: 1300 * f() + 300 });
-        audio.play('flip');
+        gameSound('card_move');
         await fly(anchor(e.from), anchor(e.to), e.count);
         const receiver = game.players.find((p) => p.id === e.to)!;
         if (receiver.cpu && rand() < 0.5)
@@ -263,7 +323,8 @@ export function mountGoFish(ctx: GoFishViewContext) {
         if (targetPlayer) void say(anchor(targetPlayer.id), line, { duration: 1300 * f() + 300 });
         await pause(500);
         if (e.drew) {
-          audio.play('flip');
+          gameSound('card_deal');
+          ripple(pond);
           await fly(pond, anchor(e.p), 1);
           if (e.p !== human.id) setStatus(`${nameOf(e.p)} went fishing.`);
         } else setStatus('The pond is empty.');
@@ -281,7 +342,8 @@ export function mountGoFish(ctx: GoFishViewContext) {
       }
       case 'book': {
         const p = game.players.find((x) => x.id === e.p)!;
-        audio.play('chime');
+        gameSound('valid_move');
+        spotlight(e.p, 'gf-booked');
         if (p.cpu) void say(anchor(e.p), pickLine(personaOf(p).lines.book), { duration: 1300 * f() + 300 });
         setStatus(`${p.id === human.id ? 'You' : p.name} laid down a book of ${rankPlural(e.rank)}.`);
         render();
@@ -481,6 +543,10 @@ export function mountGoFish(ctx: GoFishViewContext) {
     });
     for (const id of summary.achievements) {
       announceUnlock('Achievement unlocked', ACHIEVEMENTS.find((a) => a.id === id)?.name ?? id);
+    }
+    if (outcome === 'win') {
+      gameSound('victory');
+      if (!store.state.settings.reducedMotion) el.appendChild(victoryShower());
     }
     for (const p of game.players.slice(1)) {
       void say(anchor(p.id), pickLine(winners.includes(p.id) ? personaOf(p).lines.win : personaOf(p).lines.lose), {

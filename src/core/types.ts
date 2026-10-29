@@ -9,6 +9,8 @@ export interface Settings {
   musicVolume: number;
   sfxVolume: number;
   muted: boolean;
+  /** Music off (sound effects stay on); the table toolbar's Music button. */
+  musicMuted: boolean;
   musicTrack: string;
   theme: ThemeMode;
   reducedMotion: boolean;

@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { CURRENT, clickNav, enterParlor, expectScreen, playGame, seed } from './helpers';
+import { CURRENT, clickNav, enterParlor, expectScreen, playGame, seed, tableAction } from './helpers';
 
 test.describe.configure({ timeout: 120_000 });
 
@@ -79,7 +79,7 @@ test.describe('War', () => {
     await page.waitForTimeout(400);
     expect(await hudRound(page)).toBe(paused);
 
-    await page.locator(`${CURRENT} [data-action="restart"]`).click();
+    await tableAction(page, 'new-game');
     await page.locator('[data-dialog-action="true"]').click();
     await expect(page.locator(`${CURRENT} [data-hud="round"]`)).toHaveText('Round 0');
     expect(await count(page, 'player')).toBe(26);
@@ -261,7 +261,7 @@ test.describe('Go Fish', () => {
     ).toEqual(hand);
     expect(await count(page, 'pond')).toBe(pond);
 
-    await page.locator(`${CURRENT} [data-action="rules"]`).click();
+    await tableAction(page, 'rules');
     await expect(page.getByRole('dialog')).toContainText('Go fish');
     await expect(page.getByRole('dialog')).toContainText('Empty pond');
   });
