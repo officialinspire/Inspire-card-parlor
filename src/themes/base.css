@@ -82,7 +82,7 @@ button {
   outline: none;
 }
 :focus-visible {
-  outline: 3px solid var(--sky);
+  outline: 2px solid var(--gold);
   outline-offset: 3px;
   border-radius: var(--radius-s);
 }
@@ -119,22 +119,28 @@ button {
     transform var(--dur) var(--ease);
 }
 
+/* Screens come and go like dealt cards: a short slide with a slight turn,
+   pivoting from the bottom edge. Quick enough never to hold up a tap. */
 .screen.enter-forward {
   opacity: 0;
-  transform: translateX(5%);
+  transform: translate3d(6%, 1.5%, 0) rotate(1.4deg) scale(0.985);
+  transform-origin: 50% 120%;
 }
 .screen.enter-back {
   opacity: 0;
-  transform: translateX(-5%);
+  transform: translate3d(-6%, 1.5%, 0) rotate(-1.4deg) scale(0.985);
+  transform-origin: 50% 120%;
 }
 .screen.leave-forward {
   opacity: 0;
-  transform: translateX(-3%);
+  transform: translate3d(-4%, 0, 0) rotate(-0.8deg) scale(0.99);
+  transform-origin: 50% 120%;
   pointer-events: none;
 }
 .screen.leave-back {
   opacity: 0;
-  transform: translateX(3%);
+  transform: translate3d(4%, 0, 0) rotate(0.8deg) scale(0.99);
+  transform-origin: 50% 120%;
   pointer-events: none;
 }
 
@@ -167,5 +173,11 @@ button {
   from {
     opacity: 0;
     transform: translateX(-28px);
+  }
+}
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
   }
 }

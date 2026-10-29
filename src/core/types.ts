@@ -82,13 +82,16 @@ export interface Selection extends TableChoice {
   cardBack: string | null;
 }
 
-export type NotificationKind = 'info' | 'success' | 'warning' | 'error';
+/** `celebrate` is the gold toast for achievements and collection unlocks. */
+export type NotificationKind = 'info' | 'success' | 'warning' | 'error' | 'celebrate';
 
 export interface Notification {
   id: number;
   message: string;
   kind: NotificationKind;
   icon?: string;
+  /** Small caps line above the message (celebrations: "Achievement unlocked"). */
+  title?: string;
   /** ms before auto-dismiss; 0 keeps it until dismissed. */
   duration: number;
 }

@@ -12,7 +12,7 @@ import { avatar } from '@/components/Avatar';
 import { say } from '@/components/SpeechBubble';
 import { button } from '@/components/ui';
 import { confirmDialog, openDialog } from '@/components/Dialog';
-import { notify } from '@/components/Notifications';
+import { celebrate as announceUnlock } from '@/components/Notifications';
 import { ACHIEVEMENTS } from '@/achievements/registry';
 import { WarGame, type WarRound, type WarSide } from './WarGame';
 
@@ -301,10 +301,7 @@ export function mountWar(ctx: WarViewContext) {
       details: { warsLost: game.data.warsLost },
     });
     for (const id of summary.achievements) {
-      notify(`Achievement unlocked: ${ACHIEVEMENTS.find((a) => a.id === id)?.name ?? id}`, {
-        kind: 'success',
-        icon: 'trophy',
-      });
+      announceUnlock('Achievement unlocked', ACHIEVEMENTS.find((a) => a.id === id)?.name ?? id);
     }
     if (outcome === 'win') celebrate();
     void say(oppAnchor, pickLine(outcome === 'win' ? cpu.lines.lose : cpu.lines.win), { duration: 2600 });

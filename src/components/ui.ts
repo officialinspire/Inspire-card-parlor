@@ -6,7 +6,7 @@ import { fullscreen } from '@/utils/device';
 import { icon, type IconName } from './icons';
 import { live } from './live';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'icon' | 'plain' | 'danger';
+export type ButtonVariant = 'primary' | 'gold' | 'secondary' | 'ghost' | 'icon' | 'plain' | 'danger';
 
 export interface ButtonOptions {
   variant?: ButtonVariant;

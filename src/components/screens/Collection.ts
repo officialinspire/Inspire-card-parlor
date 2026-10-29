@@ -9,7 +9,7 @@ import { audio } from '@/audio';
 import { cardBack, cardFace, RANK_LABELS, SUITS } from '../Card';
 import { confirmDialog, openDialog } from '../Dialog';
 import { icon } from '../icons';
-import { notify } from '../Notifications';
+import { celebrate, notify } from '../Notifications';
 import { paginatorPanel } from '../Paginator';
 import { segmented } from '../controls';
 import { tabs } from '../Tabs';
@@ -125,7 +125,7 @@ export const CollectionScreen: ScreenFactory = ({ store }) => {
     });
     if (!ok) return;
     store.dispatch({ type: 'OWN_VARIANT', key: `${deck.id}@${v.id}`, cost });
-    notify(`${v.name} added to your collection.`, { kind: 'success' });
+    celebrate('Artwork unlocked', `${v.name} added to your collection.`, 'star');
     refresh();
   }
 
@@ -384,7 +384,7 @@ export const CollectionScreen: ScreenFactory = ({ store }) => {
   ]);
 
   return {
-    el: screenFrame({ title: 'Card Collection', body: h('div', { class: 'stack' }, summary, t.el) }),
+    el: screenFrame({ title: 'Deck Collection', body: h('div', { class: 'stack' }, summary, t.el) }),
     unmount: t.destroy,
   };
 };

@@ -6,8 +6,10 @@ import { deckThemes, getDeck } from '@/decks';
 import { audio, getTrack } from '@/audio';
 import { track } from '@/analytics/analytics';
 import { cardBack } from '../Card';
-import { brandLogo, parlorScene } from '../illustrations';
-import { progressBar, button } from '../ui';
+import { brandLogo } from '../illustrations';
+import { button } from '../ui';
+import { environment } from '../environment';
+import { cssUrl } from '@/boards/BoardRenderer';
 import { Disposer, type ScreenFactory } from '../Screen';
 
 export const InitializationScreen: ScreenFactory = ({ store }) => {
@@ -24,7 +26,15 @@ export const InitializationScreen: ScreenFactory = ({ store }) => {
     }),
   );
 
-  const bar = h('div', { class: 'boot-bar' });
+  // A thin gold line that fills as the parlor opens (updated in place so it glides).
+  const fill = h('span', { class: 'boot-fill' });
+  const pct = h('span', { class: 'boot-pct' });
+  const bar = h(
+    'div',
+    { class: 'boot-bar', role: 'progressbar', 'aria-label': 'Loading', 'aria-valuemin': '0', 'aria-valuemax': '100' },
+    h('span', { class: 'boot-track' }, fill),
+    pct,
+  );
   const label = h('p', { class: 'boot-label' });
   const enter = button(
     'Enter Parlor',
@@ -42,41 +52,59 @@ export const InitializationScreen: ScreenFactory = ({ store }) => {
       }
       navigate(AppState.MAIN_MENU);
     },
-    { sfx: null, size: 'lg', class: 'btn-enter', attrs: { 'data-nav': AppState.MAIN_MENU } },
+    { sfx: null, size: 'lg', variant: 'gold', class: 'btn-enter', attrs: { 'data-nav': AppState.MAIN_MENU } },
   );
   enter.hidden = true;
 
   const renderBoot = () => {
     const { progress, label: text, ready } = store.state.boot;
-    bar.replaceChildren(progressBar(progress, 'Loading'));
+    const value = Math.round(Math.max(0, Math.min(1, progress)) * 100);
+    fill.style.transform = `scaleX(${value / 100})`;
+    pct.textContent = `${value}%`;
+    bar.setAttribute('aria-valuenow', String(value));
     label.textContent = ready ? 'The parlor is open.' : text;
     enter.hidden = !ready;
     el.classList.toggle('ready', ready);
     if (ready) requestAnimationFrame(() => enter.focus());
   };
 
+  const env = environment(store, { variant: 'splash' });
+  d.add(env.destroy);
+
+  // The gold shine that sweeps across the logo is masked by the logo itself.
+  const logoUrl = `${import.meta.env.BASE_URL}assets/branding/logo.webp`;
+  const shine = h('span', { class: 'logo-shine', 'aria-hidden': 'true', style: { '--logo-mask': cssUrl(logoUrl) } });
+
   const el = h(
     'section',
     { class: 'init' },
-    parlorScene('init-scene'),
+    env.el,
+    h(
+      'div',
+      { class: 'init-dust', 'aria-hidden': 'true' },
+      ...Array.from({ length: 14 }, (_, i) =>
+        h('span', {
+          style: { '--x': `${(i * 71) % 100}%`, '--d': `${7 + (i % 5) * 1.6}s`, '--delay': `${(i * 0.9) % 6}s` },
+        }),
+      ),
+    ),
     h(
       'div',
       { class: 'init-content' },
-      h(
-        'div',
-        { class: 'init-brand' },
-        h('span', { class: 'brand-mark' }, 'INSPIRE'),
-        h('span', { class: 'brand-sub' }, `${APP.developer} presents`),
-      ),
-      h('div', { class: 'init-stage' }, shuffle),
+      h('p', { class: 'init-presents' }, `${APP.developer} presents`),
       h(
         'div',
         { class: 'init-title' },
-        h('h1', { class: 'game-title screen-title', tabindex: '-1' }, brandLogo('init-logo')),
+        h(
+          'h1',
+          { class: 'game-title screen-title', tabindex: '-1' },
+          h('span', { class: 'logo-wrap' }, brandLogo('init-logo'), shine),
+        ),
         h('p', { class: 'game-tagline' }, 'Classic card games · Collectible decks · Cozy nights'),
       ),
+      h('div', { class: 'init-stage' }, shuffle),
       h('div', { class: 'init-loader' }, bar, label, enter),
-      h('p', { class: 'init-version' }, `v${APP.version}`),
+      h('p', { class: 'init-version' }, `Version ${APP.version}`),
     ),
   );
 

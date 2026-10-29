@@ -78,6 +78,19 @@ def main() -> None:
     webp(fit(logo, 960), PUBLIC / 'branding' / 'logo.webp', 88)
 
     mark = trim(Image.open(SRC / ICON_SOURCE).convert('RGBA'))
+
+    # Link preview (Open Graph / social): the secondary logo over the midnight riverfront.
+    night = Image.open(SRC / MENU['night']).convert('RGB')
+    w, h = 1200, 630
+    scale = max(w / night.width, h / night.height)
+    bg = night.resize((round(night.width * scale), round(night.height * scale)), Image.LANCZOS)
+    bg = bg.crop(((bg.width - w) // 2, (bg.height - h) // 2, (bg.width - w) // 2 + w, (bg.height - h) // 2 + h))
+    card = Image.blend(bg, Image.new('RGB', (w, h), (10, 12, 20)), 0.35).convert('RGBA')
+    promo = fit(mark, 820, 470)
+    card.alpha_composite(promo, ((w - promo.width) // 2, (h - promo.height) // 2))
+    (PUBLIC / 'branding').mkdir(parents=True, exist_ok=True)
+    card.convert('RGB').save(PUBLIC / 'branding' / 'social-card.jpg', quality=86, optimize=True, progressive=True)
+    print('public/assets/branding/social-card.jpg')
     out = PUBLIC / 'icons'
     out.mkdir(parents=True, exist_ok=True)
     for size, safe, file in [

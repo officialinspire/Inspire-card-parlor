@@ -8,7 +8,7 @@ import { avatar } from '@/components/Avatar';
 import { say } from '@/components/SpeechBubble';
 import { button } from '@/components/ui';
 import { confirmDialog, openDialog } from '@/components/Dialog';
-import { notify } from '@/components/Notifications';
+import { celebrate as announceUnlock } from '@/components/Notifications';
 import { ACHIEVEMENTS } from '@/achievements/registry';
 import { recordGameResult } from '@/progression/results';
 import { getPersonality, pickLine, rankPlural, rankSingular } from '../cpu/personalities';
@@ -480,10 +480,7 @@ export function mountGoFish(ctx: GoFishViewContext) {
       details: { books: mine },
     });
     for (const id of summary.achievements) {
-      notify(`Achievement unlocked: ${ACHIEVEMENTS.find((a) => a.id === id)?.name ?? id}`, {
-        kind: 'success',
-        icon: 'trophy',
-      });
+      announceUnlock('Achievement unlocked', ACHIEVEMENTS.find((a) => a.id === id)?.name ?? id);
     }
     for (const p of game.players.slice(1)) {
       void say(anchor(p.id), pickLine(winners.includes(p.id) ? personaOf(p).lines.win : personaOf(p).lines.lose), {

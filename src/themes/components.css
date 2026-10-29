@@ -1,10 +1,13 @@
-/* ===================== Buttons ===================== */
+/* ===================== Buttons =====================
+   Every button sits on a slim lower edge and presses down into it; a soft top
+   highlight gives the face a printed, card-stock feel. */
 .btn {
   --btn-bg: var(--surface);
   --btn-ink: var(--ink);
   --btn-edge: var(--edge);
+  --btn-glint: rgba(255, 255, 255, 0.55);
   position: relative;
-  border: 1.5px solid var(--border);
+  border: 1px solid var(--border);
   cursor: pointer;
   min-height: var(--tap);
   display: inline-flex;
@@ -12,38 +15,63 @@
   justify-content: center;
   gap: 0.5em;
   padding: 0.55em 1.3em;
-  border-radius: var(--radius-m);
+  border-radius: var(--radius-s);
   background: var(--btn-bg);
   color: var(--btn-ink);
   font-weight: 800;
   letter-spacing: 0.01em;
-  box-shadow: 0 var(--edge-size) 0 var(--btn-edge);
+  box-shadow:
+    inset 0 1px 0 var(--btn-glint),
+    0 var(--edge-size) 0 var(--btn-edge),
+    var(--elev-1);
   transform: translateY(0);
   transition:
-    transform var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease-press),
     box-shadow var(--dur-fast) var(--ease),
     background var(--dur-fast),
     filter var(--dur-fast);
 }
-.btn:hover:not(:disabled) {
-  filter: brightness(1.04);
-  transform: translateY(-1px);
-  box-shadow: 0 calc(var(--edge-size) + 1px) 0 var(--btn-edge);
+@media (hover: hover) {
+  .btn:hover:not(:disabled) {
+    filter: brightness(1.05);
+    transform: translateY(-1px);
+    box-shadow:
+      inset 0 1px 0 var(--btn-glint),
+      0 calc(var(--edge-size) + 1px) 0 var(--btn-edge),
+      var(--elev-2);
+  }
 }
 .btn:active:not(:disabled) {
-  transform: translateY(calc(var(--edge-size) - 1px));
-  box-shadow: 0 1px 0 var(--btn-edge);
+  transform: translateY(var(--edge-size)) scale(0.985);
+  box-shadow:
+    inset 0 1px 0 var(--btn-glint),
+    0 0 0 var(--btn-edge);
+  transition-duration: 60ms;
 }
 .btn:disabled {
   opacity: 0.4;
   cursor: default;
+}
+.btn:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
 }
 
 .btn-primary {
   --btn-bg: var(--accent);
   --btn-ink: var(--accent-ink);
   --btn-edge: var(--accent-edge);
+  --btn-glint: rgba(255, 255, 255, 0.28);
   border-color: transparent;
+}
+/* Gold: the parlor's headline actions (Enter Parlor, Quick Play). */
+.btn-gold {
+  --btn-bg: var(--gold-metal);
+  --btn-ink: var(--gold-ink);
+  --btn-edge: var(--gold-deep);
+  --btn-glint: rgba(255, 250, 230, 0.7);
+  border-color: rgba(120, 85, 20, 0.35);
+  text-shadow: 0 1px 0 rgba(255, 245, 210, 0.6);
 }
 .btn-secondary {
   --btn-bg: var(--surface-2);
@@ -52,16 +80,20 @@
   --btn-bg: var(--danger);
   --btn-ink: #fff8ee;
   --btn-edge: var(--danger-edge);
+  --btn-glint: rgba(255, 255, 255, 0.25);
   border-color: transparent;
 }
 .btn-ghost {
   --btn-bg: transparent;
   --btn-edge: transparent;
+  --btn-glint: transparent;
   box-shadow: none;
 }
-.btn-ghost:hover:not(:disabled) {
-  --btn-bg: var(--accent-soft);
-  box-shadow: none;
+@media (hover: hover) {
+  .btn-ghost:hover:not(:disabled) {
+    --btn-bg: var(--accent-soft);
+    box-shadow: none;
+  }
 }
 .btn-ghost:active:not(:disabled) {
   transform: scale(0.97);
@@ -71,7 +103,7 @@
   width: var(--tap);
   height: var(--tap);
   padding: 0;
-  border-radius: 14px;
+  border-radius: var(--radius-s);
 }
 .btn-icon .icon {
   width: 22px;
@@ -84,6 +116,9 @@
   padding: 0;
   font-weight: inherit;
 }
+.btn-plain:active:not(:disabled) {
+  box-shadow: none;
+}
 .btn-sm {
   min-height: 34px;
   font-size: 0.88em;
@@ -91,7 +126,7 @@
 .btn-icon.btn-sm {
   width: 34px;
   height: 34px;
-  border-radius: 10px;
+  border-radius: var(--radius-xs);
 }
 .btn-icon.btn-sm .icon {
   width: 18px;
@@ -101,7 +136,7 @@
   min-height: 56px;
   font-size: 1.1em;
   padding: 0.6em 1.8em;
-  border-radius: var(--radius-l);
+  border-radius: var(--radius-m);
 }
 
 /* ===================== Pills ===================== */
@@ -113,8 +148,10 @@
   padding: 0 12px 0 8px;
   border-radius: var(--radius-pill);
   background: var(--surface);
-  border: 1.5px solid var(--border);
-  box-shadow: 0 2px 0 var(--edge);
+  border: 1px solid var(--border);
+  box-shadow:
+    inset 0 0 0 1px var(--gold-soft),
+    var(--elev-1);
   font-weight: 800;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -265,10 +302,11 @@
 }
 .tabs-strip {
   display: flex;
-  gap: 4px;
+  gap: 2px;
   padding: 4px;
-  border-radius: var(--radius-m);
+  border-radius: var(--radius-pill);
   background: var(--surface-sunk);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
   overflow-x: auto;
   scrollbar-width: none;
   flex: none;
@@ -279,13 +317,14 @@
   display: none;
 }
 .tab {
+  position: relative;
   flex: none;
   border: 0;
   background: transparent;
   color: var(--ink-soft);
-  padding: 0 1em;
+  padding: 0 1.1em;
   min-height: 38px;
-  border-radius: 12px;
+  border-radius: var(--radius-pill);
   cursor: pointer;
   font-weight: 800;
   display: inline-flex;
@@ -295,15 +334,21 @@
   transition:
     background var(--dur-fast),
     color var(--dur-fast),
-    box-shadow var(--dur-fast);
+    box-shadow var(--dur-fast),
+    transform var(--dur-fast) var(--ease-press);
 }
 .tab:hover {
   color: var(--ink);
 }
+.tab:active {
+  transform: scale(0.97);
+}
 .tab.active {
   background: var(--surface);
   color: var(--accent);
-  box-shadow: 0 2px 0 var(--edge);
+  box-shadow:
+    inset 0 0 0 1px var(--gold-line),
+    var(--elev-1);
 }
 @media (max-width: 480px) {
   .tab-icon {
@@ -315,7 +360,7 @@
   min-height: 0;
   display: flex;
   flex-direction: column;
-  animation: fade-in var(--dur) var(--ease);
+  animation: rise-in var(--dur) var(--ease);
 }
 
 /* ===================== Paginator ===================== */
@@ -372,21 +417,23 @@
 }
 .pager-dot::after {
   content: '';
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
+  width: 7px;
+  height: 7px;
+  border-radius: 1.5px;
   background: var(--ink-faint);
-  opacity: 0.5;
+  opacity: 0.45;
+  transform: rotate(45deg);
   transition:
-    width var(--dur) var(--ease),
+    transform var(--dur) var(--ease-spring),
     background var(--dur-fast),
     opacity var(--dur-fast);
 }
+/* Pips are little diamonds, like the suit; the current page grows and turns gold. */
 .pager-dot.active::after {
-  width: 18px;
-  border-radius: 4px;
-  background: var(--accent);
+  background: var(--gold);
   opacity: 1;
+  transform: rotate(45deg) scale(1.45);
+  box-shadow: 0 0 0 2px var(--gold-soft);
 }
 
 /* ===================== Tiles ===================== */
@@ -399,8 +446,11 @@
   text-align: left;
   border-radius: var(--radius-m);
   background: var(--surface);
-  border: 1.5px solid var(--border);
-  box-shadow: 0 var(--edge-size) 0 var(--edge);
+  border: 1px solid var(--border);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 var(--edge-size) 0 var(--edge),
+    var(--elev-1);
   color: var(--ink);
   min-height: 0;
   min-width: 0;
@@ -413,19 +463,28 @@
 button.tile {
   cursor: pointer;
 }
-button.tile:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 calc(var(--edge-size) + 2px) 0 var(--edge);
+@media (hover: hover) {
+  button.tile:hover,
+  .tile:has(> .tile-main:hover) {
+    transform: translateY(-2px);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.35),
+      0 calc(var(--edge-size) + 2px) 0 var(--edge),
+      var(--elev-2);
+  }
 }
 button.tile:active {
-  transform: translateY(calc(var(--edge-size) - 1px));
+  transform: translateY(calc(var(--edge-size) - 1px)) scale(0.99);
   box-shadow: 0 1px 0 var(--edge);
+  transition-duration: 60ms;
 }
 .tile.selected {
-  border-color: var(--accent);
+  border-color: var(--gold);
   box-shadow:
-    0 var(--edge-size) 0 var(--accent-edge),
-    0 0 0 3px var(--accent-soft);
+    inset 0 0 0 1px var(--gold-line),
+    0 var(--edge-size) 0 var(--gold-deep),
+    0 0 0 3px var(--gold-soft),
+    var(--elev-2);
 }
 .tile.locked > :not(.tile-lock):not(.tile-title):not(.tile-sub) {
   filter: grayscale(0.85);
@@ -440,8 +499,10 @@ button.tile:active {
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: var(--accent);
-  color: var(--accent-ink);
+  background: var(--gold-metal);
+  color: var(--gold-ink);
+  box-shadow: var(--elev-1);
+  animation: pop-in var(--dur) var(--ease-spring);
   z-index: 1;
 }
 .tile-check .icon {
@@ -456,11 +517,14 @@ button.tile:active {
   flex: 1;
 }
 .tile-kicker {
-  font-size: 0.72em;
+  font-size: 0.7em;
   font-weight: 800;
-  color: var(--accent);
-  letter-spacing: 0.08em;
+  color: var(--gold-deep);
+  letter-spacing: var(--label-track);
   text-transform: uppercase;
+}
+[data-theme='night'] .tile-kicker {
+  color: var(--gold);
 }
 .tile-title {
   font-family: var(--font-display);
@@ -546,14 +610,38 @@ button.tile:active {
   height: 8px;
   border-radius: var(--radius-pill);
   background: var(--surface-sunk);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.12);
   overflow: hidden;
   width: 100%;
 }
 .progress-fill {
+  position: relative;
   height: 100%;
-  background: var(--sage);
+  background: var(
+    --progress-fill,
+    linear-gradient(90deg, var(--sage), color-mix(in srgb, var(--sage) 60%, var(--gold-bright)))
+  );
   border-radius: inherit;
   transition: width var(--dur-slow) var(--ease);
+  overflow: hidden;
+}
+/* A slow glint travels along filled bars. */
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, 0.45) 50%, transparent 70%);
+  transform: translateX(-100%);
+  animation: glint 3.2s var(--ease) 0.6s infinite;
+}
+.progress-gold {
+  --progress-fill: var(--gold-metal);
+}
+@keyframes glint {
+  60%,
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 .difficulty {
@@ -596,10 +684,10 @@ button.tile:active {
   font-variant-numeric: tabular-nums;
 }
 .stat-label {
-  font-size: 0.7em;
+  font-size: 0.68em;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: var(--label-track);
   color: var(--ink-faint);
   white-space: nowrap;
 }
@@ -626,11 +714,15 @@ button.tile:active {
   align-items: center;
   gap: 12px;
   padding: 10px 14px;
-  border-radius: var(--radius-m);
+  border-radius: var(--radius-s);
   background: var(--surface);
-  border: 1.5px solid var(--border);
-  box-shadow: 0 2px 0 var(--edge);
+  border: 1px solid var(--border);
+  box-shadow: var(--elev-1);
   min-height: 54px;
+  transition: border-color var(--dur-fast);
+}
+.control:hover {
+  border-color: var(--gold-line);
 }
 .control-text {
   display: flex;
@@ -686,7 +778,7 @@ button.tile:active {
   height: 22px;
   border-radius: 50%;
   background: var(--surface);
-  box-shadow: 0 2px 0 var(--edge);
+  box-shadow: var(--elev-1);
   transition: transform var(--dur-fast) var(--ease-spring);
 }
 .control-toggle input:checked + .switch {
@@ -696,7 +788,7 @@ button.tile:active {
   transform: translateX(20px);
 }
 .control-toggle input:focus-visible + .switch {
-  outline: 3px solid var(--sky);
+  outline: 2px solid var(--gold);
   outline-offset: 2px;
 }
 .control-segmented {
@@ -706,22 +798,32 @@ button.tile:active {
 .segmented {
   display: flex;
   background: var(--surface-sunk);
-  border-radius: 12px;
+  border-radius: var(--radius-pill);
   padding: 3px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
 }
 .segmented button {
   border: 0;
   background: none;
   padding: 6px 14px;
-  border-radius: 9px;
+  border-radius: var(--radius-pill);
   cursor: pointer;
   color: var(--ink-soft);
   font-weight: 800;
+  transition:
+    background var(--dur-fast),
+    color var(--dur-fast),
+    transform var(--dur-fast) var(--ease-press);
+}
+.segmented button:active {
+  transform: scale(0.96);
 }
 .segmented button.active {
   background: var(--surface);
   color: var(--accent);
-  box-shadow: 0 2px 0 var(--edge);
+  box-shadow:
+    inset 0 0 0 1px var(--gold-line),
+    var(--elev-1);
 }
 .control-tracks {
   flex-direction: column;
@@ -785,12 +887,15 @@ button.tile:active {
   padding: calc(var(--safe-t) + var(--gutter)) calc(var(--safe-r) + var(--gutter)) calc(var(--safe-b) + var(--gutter))
     calc(var(--safe-l) + var(--gutter));
   background: var(--overlay);
+  backdrop-filter: blur(3px) saturate(0.9);
   opacity: 0;
   transition: opacity var(--dur) var(--ease);
+  perspective: 1200px;
 }
 .dialog-backdrop.open {
   opacity: 1;
 }
+/* Dialogs are cards laid on the table: they tip up into place, trimmed in gold. */
 .dialog {
   width: min(420px, 100%);
   max-height: 100%;
@@ -800,12 +905,15 @@ button.tile:active {
   padding: 20px;
   border-radius: var(--radius-l);
   background: var(--surface);
-  border: 1.5px solid var(--border);
+  border: 1px solid var(--border);
   box-shadow:
-    0 6px 0 var(--edge),
-    var(--shadow-pop);
-  transform: translateY(16px) scale(0.97);
-  transition: transform var(--dur) var(--ease-spring);
+    inset 0 0 0 1px var(--surface),
+    inset 0 0 0 2.5px var(--gold-line),
+    0 var(--edge-size) 0 var(--edge),
+    var(--elev-3);
+  transform-origin: 50% 100%;
+  transform: translateY(18px) rotateX(9deg) scale(0.96);
+  transition: transform var(--dur-slow) var(--ease-spring);
   overflow: hidden;
 }
 .dialog-wide {
@@ -818,16 +926,22 @@ button.tile:active {
   display: flex;
   align-items: center;
   gap: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--gold-line);
 }
 .dialog-icon {
   display: grid;
   place-items: center;
   width: 36px;
   height: 36px;
-  border-radius: 12px;
-  background: var(--accent-soft);
-  color: var(--accent);
+  border-radius: 50%;
+  background: var(--gold-soft);
+  color: var(--gold-deep);
+  box-shadow: inset 0 0 0 1px var(--gold-line);
   flex: none;
+}
+[data-theme='night'] .dialog-icon {
+  color: var(--gold);
 }
 .dialog-danger .dialog-icon {
   background: rgba(184, 67, 47, 0.14);
@@ -837,6 +951,7 @@ button.tile:active {
   flex: 1;
   font-size: 1.3em;
 }
+
 .dialog-close {
   margin: -6px -6px 0 0;
 }
@@ -869,36 +984,117 @@ button.tile:active {
 }
 .toast {
   pointer-events: auto;
+  position: relative;
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 14px;
-  border-radius: var(--radius-m);
-  border: 1.5px solid var(--border);
-  background: var(--surface);
+  padding: 10px 14px 10px 12px;
+  border-radius: var(--radius-s);
+  border: 1px solid var(--border);
+  background: var(--glass-strong);
+  backdrop-filter: blur(10px);
   color: var(--ink);
   box-shadow:
-    0 3px 0 var(--edge),
-    var(--shadow-soft);
+    inset 3px 0 0 var(--toast-accent, var(--sky)),
+    var(--elev-3);
   font-weight: 700;
   text-align: left;
   cursor: pointer;
-  animation: toast-in var(--dur) var(--ease-spring);
+  animation: toast-in var(--dur-slow) var(--ease-spring);
   transition:
     opacity var(--dur),
     transform var(--dur) var(--ease);
 }
 .toast .icon {
-  color: var(--sky);
+  color: var(--toast-accent, var(--sky));
 }
-.toast-success .icon {
-  color: var(--success);
+.toast-success {
+  --toast-accent: var(--success);
 }
-.toast-warning .icon {
-  color: var(--mustard);
+.toast-warning {
+  --toast-accent: var(--mustard);
 }
-.toast-error .icon {
-  color: var(--danger);
+.toast-error {
+  --toast-accent: var(--danger);
+}
+/* Achievements and unlocks: a gold card with a little burst of suits. */
+.toast-celebrate {
+  --toast-accent: var(--gold);
+  background: linear-gradient(var(--gold-soft), var(--gold-soft)), var(--glass-strong);
+  border-color: var(--gold-line);
+  box-shadow:
+    inset 0 0 0 1px var(--gold-line),
+    0 0 0 3px var(--gold-soft),
+    var(--elev-3);
+  overflow: visible;
+}
+.toast-celebrate .toast-medal {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--gold-metal);
+  color: var(--gold-ink);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 250, 230, 0.8),
+    var(--elev-1);
+  animation: medal-in 700ms var(--ease-spring);
+}
+.toast-celebrate .toast-medal .icon {
+  color: inherit;
+  width: 18px;
+  height: 18px;
+}
+.toast-celebrate .toast-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+.toast-celebrate .toast-text small {
+  font-size: 0.68em;
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  color: var(--gold-deep);
+}
+[data-theme='night'] .toast-celebrate .toast-text small {
+  color: var(--gold);
+}
+.toast-burst {
+  position: absolute;
+  left: 29px;
+  top: 50%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.toast-burst span {
+  position: absolute;
+  font-size: 13px;
+  line-height: 1;
+  color: var(--gold);
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  animation: burst 900ms var(--ease) forwards;
+  animation-delay: calc(var(--i) * 25ms);
+}
+.toast-burst span:nth-child(even) {
+  color: var(--accent);
+}
+@keyframes burst {
+  20% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) rotate(var(--rot)) scale(0.6);
+  }
+}
+@keyframes medal-in {
+  from {
+    transform: scale(0.2) rotate(-40deg);
+  }
 }
 .toast.leaving {
   opacity: 0;

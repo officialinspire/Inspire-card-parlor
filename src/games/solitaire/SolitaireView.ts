@@ -7,7 +7,7 @@ import type { Card, Pile } from '@/engine';
 import { audio } from '@/audio';
 import { button } from '@/components/ui';
 import { confirmDialog, openDialog } from '@/components/Dialog';
-import { notify } from '@/components/Notifications';
+import { celebrate as announceUnlock, notify } from '@/components/Notifications';
 import { ACHIEVEMENTS } from '@/achievements/registry';
 import { recordGameResult } from '@/progression/results';
 import { saves, sleep } from '../session';
@@ -428,10 +428,7 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
       details: { ...(spider ? { suits: spider.suits } : {}), ...(freecell ? { usedCell: !!game.data.usedCell } : {}) },
     });
     for (const id of summary.achievements) {
-      notify(`Achievement unlocked: ${ACHIEVEMENTS.find((a) => a.id === id)?.name ?? id}`, {
-        kind: 'success',
-        icon: 'trophy',
-      });
+      announceUnlock('Achievement unlocked', ACHIEVEMENTS.find((a) => a.id === id)?.name ?? id);
     }
     celebrate();
     audio.play('chime');

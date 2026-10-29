@@ -3,16 +3,19 @@ import { APP } from '@/core/config';
 import { AppState } from '@/core/states';
 import { navigate, store } from '@/core/store';
 import { deckThemes, getDeck } from '@/decks';
-import { getBoard } from '@/boards/registry';
+import { allBoards, getBoard } from '@/boards/registry';
+import { boardSwatch } from '@/boards/BoardRenderer';
 import { audio, getTrack, nextTrackId } from '@/audio';
 import { levelProgress } from '@/progression/levels';
+import { collectionProgress } from '@/progression/collection';
+import { resolveTheme } from '@/themes/theme';
 import { icon, type IconName } from '../icons';
-import { brandLogo, parlorScene } from '../illustrations';
-import { cssUrl } from '@/boards/BoardRenderer';
+import { brandLogo } from '../illustrations';
+import { environment } from '../environment';
 import { live } from '../live';
 import { cardBack } from '../Card';
-import { button, creditsPill, fullscreenButton, iconButton, progressBar } from '../ui';
-import type { ScreenFactory } from '../Screen';
+import { button, creditsPill, fullscreenButton, iconButton } from '../ui';
+import { Disposer, type ScreenFactory } from '../Screen';
 
 interface MenuEntry {
   state: AppState;
@@ -21,96 +24,156 @@ interface MenuEntry {
   hint: string;
 }
 
+/** Secondary destinations, in menu order (Quick Play is the headline button above them). */
 export const MENU_ENTRIES: readonly MenuEntry[] = [
   { state: AppState.STORY_MODE, label: 'Story Mode', icon: 'story', hint: 'The parlor’s tale' },
-  { state: AppState.COLLECTION, label: 'Card Collection', icon: 'cards', hint: 'Decks & cards' },
+  { state: AppState.COLLECTION, label: 'Deck Collection', icon: 'cards', hint: 'Decks, backs & art' },
   { state: AppState.GAMEBOARDS, label: 'Gameboards', icon: 'board', hint: 'Tables & felts' },
   { state: AppState.ACHIEVEMENTS, label: 'Achievements', icon: 'trophy', hint: 'Trophies' },
   { state: AppState.STATISTICS, label: 'Statistics', icon: 'stats', hint: 'Your records' },
   { state: AppState.SETTINGS, label: 'Settings', icon: 'settings', hint: 'Sound & display' },
 ];
 
-/** Level badge with XP progress; tapping opens Statistics. */
-function levelCard(): HTMLElement {
-  const el = h('button', {
-    type: 'button',
-    class: 'menu-level',
-    'data-nav': AppState.STATISTICS,
-    'data-status': 'level',
-    onclick: () => {
-      audio.play('tap');
-      navigate(AppState.STATISTICS);
-    },
-  });
-  return live(
-    el,
+const go = (state: AppState) => () => {
+  audio.play('tap');
+  navigate(state);
+};
+
+/** A small ring that fills with progress (level XP, collection). */
+function ring(ratio: number, inner: Node | string): HTMLElement {
+  return h(
+    'span',
+    { class: 'ring', style: { '--p': String(Math.max(0, Math.min(1, ratio))) } },
+    h('span', { class: 'ring-inner' }, inner),
+  );
+}
+
+/** Level, credits and collection progress. */
+function playerStatus(): HTMLElement {
+  const level = live(
+    h('button', {
+      type: 'button',
+      class: 'status-pill status-level',
+      'data-nav': AppState.STATISTICS,
+      'data-status': 'level',
+      onclick: go(AppState.STATISTICS),
+    }),
     (s) => s.profile,
-    (node, p) => {
+    (el, p) => {
       const lp = levelProgress(p);
-      node.title = `Level ${lp.level} — ${lp.current} / ${lp.needed} XP`;
-      node.setAttribute('aria-label', `Player level ${lp.level}, ${lp.current} of ${lp.needed} XP`);
-      node.replaceChildren(
-        h('span', { class: 'menu-level-num' }, String(lp.level)),
-        h('span', { class: 'menu-level-meta' }, h('span', null, `Level ${lp.level}`), progressBar(lp.ratio)),
-      );
+      el.title = `Level ${lp.level} — ${lp.current} / ${lp.needed} XP`;
+      el.setAttribute('aria-label', `Player level ${lp.level}, ${lp.current} of ${lp.needed} XP`);
+      el.replaceChildren(ring(lp.ratio, String(lp.level)), h('span', { class: 'status-caption' }, 'Level'));
+    },
+  );
+  const collection = live(
+    h('button', {
+      type: 'button',
+      class: 'status-pill status-collection',
+      'data-nav': AppState.COLLECTION,
+      'data-status': 'collection',
+      onclick: go(AppState.COLLECTION),
+    }),
+    (s) => s.profile,
+    (el, p) => {
+      const c = collectionProgress(p, deckThemes.list(), allBoards());
+      el.title = `Collection ${c.percent}% complete`;
+      el.setAttribute('aria-label', `Collection ${c.percent}% complete — open Deck Collection`);
+      el.dataset.value = String(c.percent);
+      el.replaceChildren(ring(c.percent / 100, icon('cards')), h('span', { class: 'status-caption' }, `${c.percent}%`));
+    },
+  );
+  return h('div', { class: 'menu-status', role: 'group', 'aria-label': 'Player' }, level, creditsPill(), collection);
+}
+
+/** Day / Night: the riverfront by sunlight or by lamplight (also sets the parlor's palette). */
+function environmentToggle(): HTMLElement {
+  const choice = (kind: 'day' | 'night', label: string, ic: IconName) =>
+    h(
+      'button',
+      {
+        type: 'button',
+        role: 'radio',
+        'data-env-choice': kind,
+        title: label,
+        onclick: () => {
+          audio.play('tap');
+          store.dispatch({ type: 'UPDATE_SETTINGS', patch: { theme: kind } });
+        },
+      },
+      icon(ic),
+      h('span', null, label),
+    );
+  const group = h(
+    'div',
+    { class: 'env-toggle', role: 'radiogroup', 'aria-label': 'Menu scene' },
+    choice('day', 'Day', 'sun'),
+    choice('night', 'Night', 'moon'),
+  );
+  return live(
+    group,
+    (s) => s.settings.theme,
+    (el, mode) => {
+      const active = resolveTheme(mode);
+      el.dataset.active = active;
+      for (const b of el.querySelectorAll<HTMLElement>('[data-env-choice]'))
+        b.setAttribute('aria-checked', String(b.dataset.envChoice === active));
     },
   );
 }
 
-/** A tappable chip in the status strip (selected deck / board / music). */
-function statusChip(kind: string, label: string, onClick: () => void): HTMLButtonElement {
-  return h('button', {
-    type: 'button',
-    class: `status-chip status-${kind}`,
-    'data-status': kind,
-    'aria-label': label,
-    onclick: () => {
-      audio.play('tap');
-      onClick();
-    },
-  });
-}
-
-function statusStrip(): HTMLElement {
+/** The table you'll sit down at: selected deck and gameboard. */
+function setupChips(): HTMLElement {
   const deck = live(
-    statusChip('deck', 'Selected deck — open Card Collection', () => navigate(AppState.COLLECTION)),
+    h('button', {
+      type: 'button',
+      class: 'setup-chip',
+      'data-status': 'deck',
+      'data-nav': AppState.COLLECTION,
+      'aria-label': 'Selected deck — open Deck Collection',
+      onclick: go(AppState.COLLECTION),
+    }),
     (s) => s.selection.deckId,
     (el, id) => {
       const d = getDeck(deckThemes.safeDeckId(id));
-      el.dataset.nav = AppState.COLLECTION;
       el.replaceChildren(
-        h('span', { class: 'status-visual' }, cardBack(d, 'chip-card')),
-        h('span', { class: 'status-text' }, h('small', null, 'Deck'), h('span', { 'data-value': 'deck' }, d.name)),
+        h('span', { class: 'setup-visual' }, cardBack(d, 'chip-card')),
+        h('span', { class: 'setup-text' }, h('small', null, 'Deck'), h('span', { 'data-value': 'deck' }, d.name)),
       );
     },
   );
   const board = live(
-    statusChip('board', 'Selected gameboard — open Gameboards', () => navigate(AppState.GAMEBOARDS)),
+    h('button', {
+      type: 'button',
+      class: 'setup-chip',
+      'data-status': 'board',
+      'data-nav': AppState.GAMEBOARDS,
+      'aria-label': 'Selected gameboard — open Gameboards',
+      onclick: go(AppState.GAMEBOARDS),
+    }),
     (s) => s.selection.boardId,
     (el, id) => {
       const b = getBoard(id);
-      el.dataset.nav = AppState.GAMEBOARDS;
       el.replaceChildren(
-        h('span', {
-          class: 'status-visual chip-felt',
-          style: { background: b.surface.felt, borderColor: b.surface.rim },
-        }),
-        h('span', { class: 'status-text' }, h('small', null, 'Board'), h('span', { 'data-value': 'board' }, b.name)),
+        h('span', { class: 'setup-visual' }, boardSwatch(b, { className: 'chip-board' })),
+        h('span', { class: 'setup-text' }, h('small', null, 'Board'), h('span', { 'data-value': 'board' }, b.name)),
       );
     },
   );
-  const music = live(
-    h('div', { class: 'status-chip status-music', 'data-status': 'music' }),
+  return h('div', { class: 'menu-setup', 'aria-label': 'Your table' }, deck, board);
+}
+
+function nowPlaying(): HTMLElement {
+  return live(
+    h('div', { class: 'menu-music', 'data-status': 'music' }),
     (s) => s.settings.musicTrack,
     (el, id) => {
-      const t = getTrack(id);
       el.replaceChildren(
-        h('span', { class: 'status-visual music-visual' }, icon('music')),
+        icon('music'),
         h(
           'span',
-          { class: 'status-text', 'aria-live': 'polite' },
-          h('small', null, 'Now playing'),
-          h('span', { 'data-value': 'music' }, t.title),
+          { class: 'menu-music-title', 'aria-live': 'polite' },
+          h('span', { 'data-value': 'music' }, getTrack(id).title),
         ),
         iconButton(
           'next',
@@ -120,87 +183,104 @@ function statusStrip(): HTMLElement {
               .unlock()
               .then(() => store.dispatch({ type: 'UPDATE_SETTINGS', patch: { musicTrack: nextTrackId(id) } }));
           },
-          { size: 'sm', sfx: null, class: 'status-next', attrs: { 'data-action': 'next-track' } },
+          { size: 'sm', sfx: null, variant: 'ghost', class: 'status-next', attrs: { 'data-action': 'next-track' } },
         ),
       );
     },
   );
-  return h('div', { class: 'menu-status', 'aria-label': 'Current setup' }, deck, board, music);
 }
 
-export const MainMenuScreen: ScreenFactory = () => {
-  const quickPlay = button(
+function quickPlay(): HTMLElement {
+  // A small fan of the selected deck rides on the button and opens on hover.
+  const fan = live(
+    h('span', { class: 'play-fan', 'aria-hidden': 'true' }),
+    (s) => s.selection.deckId,
+    (el, id) => {
+      const d = getDeck(deckThemes.safeDeckId(id));
+      el.replaceChildren(
+        ...[0, 1, 2].map((i) => {
+          const c = cardBack(d, 'play-fan-card');
+          c.style.setProperty('--i', String(i));
+          return c;
+        }),
+      );
+    },
+  );
+  const btn = button(
     h(
       'span',
-      { class: 'quickplay-text' },
-      h('span', { class: 'quickplay-label' }, 'Quick Play'),
-      h('span', { class: 'quickplay-hint' }, 'Five classic card games'),
+      { class: 'play-text' },
+      h('span', { class: 'play-label' }, 'Quick Play'),
+      h('span', { class: 'play-hint' }, 'Five classic card games'),
     ),
     () => navigate(AppState.GAME_SELECTION),
     {
-      variant: 'primary',
+      variant: 'gold',
       size: 'lg',
       icon: 'play',
-      class: 'quickplay',
+      class: 'menu-play',
       attrs: { 'data-nav': AppState.GAME_SELECTION },
     },
   );
+  btn.append(fan);
+  return btn;
+}
 
-  const artUrl = (path: string) => cssUrl(`${import.meta.env.BASE_URL}assets/${path}`);
+export const MainMenuScreen: ScreenFactory = () => {
+  const d = new Disposer();
+  const env = environment(store, { variant: 'menu' });
+  d.add(env.destroy);
 
   const el = h(
     'section',
     { class: 'menu' },
-    h(
-      'header',
-      { class: 'menu-header' },
-      h(
-        'div',
-        { class: 'menu-brand' },
-        h('h1', { class: 'menu-title screen-title', tabindex: '-1' }, brandLogo('menu-logo')),
-      ),
-      h('div', { class: 'menu-header-right' }, levelCard(), creditsPill(), fullscreenButton()),
-    ),
+    env.el,
     h(
       'div',
-      { class: 'menu-hero' },
-      // The illustrated scene stays underneath as the fallback while the riverfront painting loads.
-      parlorScene('menu-scene'),
-      h('div', {
-        class: 'menu-hero-art',
-        'aria-hidden': 'true',
-        style: {
-          '--menu-day': artUrl('backgrounds/menu/day.webp'),
-          '--menu-night': artUrl('backgrounds/menu/night.webp'),
-        },
-      }),
-      quickPlay,
-    ),
-    statusStrip(),
-    h(
-      'nav',
-      { class: 'menu-grid', 'aria-label': 'Main menu' },
-      ...MENU_ENTRIES.map((e) =>
-        button(
-          h(
-            'span',
-            { class: 'menu-tile-content' },
-            h('span', { class: 'menu-tile-icon' }, icon(e.icon)),
-            h('span', { class: 'menu-tile-label' }, e.label),
-            h('span', { class: 'menu-tile-hint' }, e.hint),
+      { class: 'menu-layout' },
+      h('h1', { class: 'menu-title screen-title', tabindex: '-1' }, brandLogo('menu-logo')),
+      h('div', { class: 'menu-top' }, playerStatus(), fullscreenButton()),
+      h('div', { class: 'menu-stage' }, environmentToggle()),
+      h(
+        'div',
+        { class: 'menu-panel' },
+        quickPlay(),
+        setupChips(),
+        h(
+          'nav',
+          { class: 'menu-grid', 'aria-label': 'Main menu' },
+          ...MENU_ENTRIES.map((e, i) =>
+            button(
+              h(
+                'span',
+                { class: 'menu-tile-content' },
+                h('span', { class: 'menu-tile-icon' }, icon(e.icon)),
+                h(
+                  'span',
+                  { class: 'menu-tile-text' },
+                  h('span', { class: 'menu-tile-label' }, e.label),
+                  h('span', { class: 'menu-tile-hint' }, e.hint),
+                ),
+              ),
+              () => navigate(e.state),
+              { variant: 'plain', class: 'menu-tile', attrs: { 'data-nav': e.state, style: `--i:${i}` } },
+            ),
           ),
-          () => navigate(e.state),
-          { variant: 'plain', class: 'menu-tile', attrs: { 'data-nav': e.state } },
+        ),
+      ),
+      h(
+        'footer',
+        { class: 'menu-footer' },
+        nowPlaying(),
+        h(
+          'span',
+          { class: 'menu-footer-meta' },
+          h('span', null, `v${APP.version}`),
+          h('a', { href: APP.website, target: '_blank', rel: 'noopener' }, APP.websiteLabel),
         ),
       ),
     ),
-    h(
-      'footer',
-      { class: 'menu-footer' },
-      h('span', null, `v${APP.version}`),
-      h('a', { href: APP.website, target: '_blank', rel: 'noopener' }, APP.websiteLabel),
-    ),
   );
 
-  return { el };
+  return { el, unmount: () => d.dispose() };
 };

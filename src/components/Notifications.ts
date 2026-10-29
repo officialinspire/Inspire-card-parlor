@@ -11,23 +11,40 @@ const KIND_ICON: Record<NotificationKind, IconName> = {
   success: 'check',
   warning: 'warning',
   error: 'warning',
+  celebrate: 'trophy',
 };
+
+/** Suits thrown out by the celebration burst. */
+const BURST = ['♠', '♥', '♦', '♣', '★', '♠', '♥', '♦', '♣', '★'];
 
 /** Shows a toast. Returns its id so callers can dismiss it early. */
 export function notify(
   message: string,
-  opts: { kind?: NotificationKind; icon?: IconName; duration?: number; sound?: boolean } = {},
+  opts: { kind?: NotificationKind; icon?: IconName; duration?: number; sound?: boolean; title?: string } = {},
 ): number {
   const id = ++seq;
   const kind = opts.kind ?? 'info';
   if (opts.sound !== false)
-    audio.play(kind === 'error' || kind === 'warning' ? 'error' : kind === 'success' ? 'chime' : 'tap');
+    audio.play(
+      kind === 'error' || kind === 'warning' ? 'error' : kind === 'success' || kind === 'celebrate' ? 'chime' : 'tap',
+    );
   store.dispatch({
     type: 'NOTIFY',
-    notification: { id, message, kind, icon: opts.icon ?? KIND_ICON[kind], duration: opts.duration ?? 2800 },
+    notification: {
+      id,
+      message,
+      kind,
+      icon: opts.icon ?? KIND_ICON[kind],
+      title: opts.title,
+      duration: opts.duration ?? 2800,
+    },
   });
   return id;
 }
+
+/** Gold toast for achievements and unlocks, with a small burst of suits. */
+export const celebrate = (title: string, message: string, iconName: IconName = 'trophy') =>
+  notify(message, { kind: 'celebrate', icon: iconName, title, duration: 4200 });
 
 export const dismissNotification = (id: number) => store.dispatch({ type: 'DISMISS_NOTIFICATION', id });
 
@@ -55,8 +72,36 @@ export function attachNotifications(root: HTMLElement, s: Store): void {
           title: 'Dismiss',
           onclick: () => s.dispatch({ type: 'DISMISS_NOTIFICATION', id: n.id }),
         },
-        icon((n.icon as IconName | undefined) ?? KIND_ICON[n.kind]),
-        h('span', null, n.message),
+        ...(n.kind === 'celebrate'
+          ? [
+              h(
+                'span',
+                { class: 'toast-burst', 'aria-hidden': 'true' },
+                ...BURST.map((suit, i) => {
+                  const angle = (i / BURST.length) * Math.PI * 2;
+                  return h(
+                    'span',
+                    {
+                      style: {
+                        '--i': String(i),
+                        '--dx': `${Math.round(Math.cos(angle) * 46)}px`,
+                        '--dy': `${Math.round(Math.sin(angle) * 34)}px`,
+                        '--rot': `${(i % 2 ? 1 : -1) * 90}deg`,
+                      },
+                    },
+                    suit,
+                  );
+                }),
+              ),
+              h('span', { class: 'toast-medal' }, icon((n.icon as IconName | undefined) ?? 'trophy')),
+              h(
+                'span',
+                { class: 'toast-text' },
+                n.title ? h('small', null, n.title) : null,
+                h('span', null, n.message),
+              ),
+            ]
+          : [icon((n.icon as IconName | undefined) ?? KIND_ICON[n.kind]), h('span', null, n.message)]),
       );
       rendered.set(n.id, el);
       region.appendChild(el);

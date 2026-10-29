@@ -1,32 +1,182 @@
-/* ===================== Brand ===================== */
-.brand-mark {
-  font-family: var(--font-body);
-  font-weight: 800;
-  letter-spacing: 0.4em;
-  padding-left: 0.4em;
-  font-size: 0.72rem;
-  color: var(--accent);
+/* ===================== Painted environment (title + menu) ===================== */
+.env {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+  background: var(--bg-deep);
+  --art-h: 100%;
 }
-.brand-sub {
-  font-size: 0.7em;
-  font-weight: 700;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
+.env-parallax {
+  position: absolute;
+  inset: -2.5%;
+  transform: translate3d(calc(var(--px, 0) * -14px), calc(var(--py, 0) * -8px), 0);
+  transition: transform 900ms var(--ease);
+}
+.env-scene {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 700ms var(--ease);
+}
+.env-scene.active.loaded {
+  opacity: 1;
+}
+/* A blurred copy fills whatever the painting itself doesn't cover. */
+.env-fill {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(24px) saturate(1.05);
+  transform: scale(1.15);
+}
+.env-art {
+  position: absolute;
+  inset: 0 0 auto;
+  width: 100%;
+  height: var(--art-h);
+  object-fit: cover;
+  /* Keep the skyline (steeples, clock tower) in view when the sides are cropped. */
+  object-position: 50% 58%;
+}
+.env-scrim {
+  position: absolute;
+  inset: 0;
+}
+
+/* Ambient life, only on capable devices (data-motion="rich"). */
+.env-ambient {
+  position: absolute;
+  inset: 0 0 auto;
+  height: var(--art-h);
+  display: none;
+}
+.env[data-motion='rich'] .env-ambient {
+  display: block;
+}
+.env-stars,
+.env-glow {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 900ms var(--ease);
+}
+.env[data-env='night'] :is(.env-stars, .env-glow) {
+  opacity: 1;
+}
+.env-star {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: #fff6dc;
+  box-shadow: 0 0 4px rgba(255, 240, 200, 0.9);
+  animation: twinkle var(--d) ease-in-out var(--delay) infinite;
+}
+@keyframes twinkle {
+  50% {
+    opacity: 0.15;
+    transform: scale(0.6);
+  }
+}
+/* Lamplight along the waterfront breathes very slowly. */
+.env-glow {
+  background: radial-gradient(60% 14% at 50% 52%, rgba(255, 190, 90, 0.22), transparent 70%);
+  mix-blend-mode: screen;
+  animation: breathe 6s ease-in-out infinite;
+}
+@keyframes breathe {
+  50% {
+    opacity: 0.55;
+  }
+}
+/* Light moving on the river. */
+.env-shimmer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 62%;
+  bottom: 4%;
+  background: repeating-linear-gradient(
+    180deg,
+    transparent 0 9px,
+    rgba(255, 255, 255, 0.16) 9px 10px,
+    transparent 10px 17px
+  );
+  mask-image: linear-gradient(90deg, transparent, #000 20%, #000 80%, transparent);
+  mix-blend-mode: soft-light;
+  animation: shimmer 7s linear infinite;
+  opacity: 0.8;
+}
+.env[data-env='night'] .env-shimmer {
+  background: repeating-linear-gradient(
+    180deg,
+    transparent 0 9px,
+    rgba(255, 205, 120, 0.22) 9px 10px,
+    transparent 10px 17px
+  );
+  mix-blend-mode: screen;
+  opacity: 0.55;
+}
+@keyframes shimmer {
+  to {
+    background-position: 0 34px;
+  }
 }
 
 /* ===================== Initialization ===================== */
 .init {
   padding: 0;
+  isolation: isolate;
 }
-.init-scene {
+.env-splash .env-scene {
+  filter: blur(5px) saturate(0.95);
+}
+.env-splash .env-scrim {
+  background:
+    radial-gradient(90% 70% at 50% 40%, transparent 0%, rgba(60, 40, 20, 0.18) 75%, rgba(60, 40, 20, 0.35) 100%),
+    color-mix(in srgb, var(--bg) 62%, transparent);
+}
+[data-theme='night'] .env-splash .env-scrim {
+  background:
+    radial-gradient(90% 70% at 50% 42%, transparent 0%, rgba(4, 6, 12, 0.45) 70%, rgba(4, 6, 12, 0.75) 100%),
+    rgba(14, 17, 26, 0.45);
+}
+/* Gold motes drifting up through the lamplight. */
+.init-dust {
   position: absolute;
-  left: 50%;
-  bottom: 0;
-  transform: translateX(-50%);
-  width: min(100%, 760px);
-  height: min(22%, 200px);
-  mask-image: linear-gradient(180deg, transparent, #000 40%);
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.init-dust span {
+  position: absolute;
+  left: var(--x);
+  bottom: -10px;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--gold-bright);
+  box-shadow: 0 0 6px var(--gold);
+  opacity: 0;
+  animation: mote var(--d) linear var(--delay) infinite;
+}
+@keyframes mote {
+  10% {
+    opacity: 0.8;
+  }
+  80% {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(24px, -90vh, 0);
+  }
 }
 .init-content {
   position: relative;
@@ -37,25 +187,95 @@
   align-items: center;
   justify-content: space-between;
   text-align: center;
-  gap: clamp(8px, 2.5vmin, 24px);
-  padding: calc(var(--safe-t) + var(--gutter)) var(--gutter) calc(var(--safe-b) + var(--gutter) + min(14vh, 130px));
+  gap: clamp(6px, 2vmin, 20px);
+  padding: calc(var(--safe-t) + var(--gutter) * 1.4) calc(var(--safe-r) + var(--gutter))
+    calc(var(--safe-b) + var(--gutter)) calc(var(--safe-l) + var(--gutter));
 }
-.init-brand {
+.init-presents {
+  font-size: clamp(0.66rem, 1vmin + 0.45rem, 0.85rem);
+  font-weight: 800;
+  letter-spacing: 0.32em;
+  padding-left: 0.32em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  animation: fade-in 1200ms var(--ease) 200ms both;
+}
+[data-theme='night'] .init-presents {
+  color: var(--gold);
+}
+.init-title {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  animation: fade-in 900ms var(--ease) both;
+  align-items: center;
+  margin-top: auto;
 }
-.init-brand .brand-mark {
-  font-size: clamp(0.9rem, 2vmin + 0.4rem, 1.3rem);
+.game-title {
+  display: flex;
+  justify-content: center;
+  white-space: normal;
+  line-height: 1;
+}
+.logo-wrap {
+  position: relative;
+  display: inline-block;
+  animation: logo-in 1100ms var(--ease) 150ms both;
+}
+.init-logo {
+  display: block;
+  width: min(86vw, 600px);
+  height: auto;
+  max-height: 36vh;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.35));
+}
+@keyframes logo-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.94);
+    filter: blur(6px);
+  }
+}
+.logo-shine {
+  position: absolute;
+  inset: 0;
+  mask: var(--logo-mask) center / contain no-repeat;
+  -webkit-mask: var(--logo-mask) center / contain no-repeat;
+  background: linear-gradient(105deg, transparent 42%, rgba(255, 244, 210, 0.75) 50%, transparent 58%) no-repeat;
+  background-size: 260% 100%;
+  background-position: 150% 0;
+  mix-blend-mode: screen;
+  animation: logo-shine 5s var(--ease) 1.4s infinite;
+  pointer-events: none;
+}
+@keyframes logo-shine {
+  0% {
+    background-position: 150% 0;
+  }
+  35%,
+  100% {
+    background-position: -50% 0;
+  }
+}
+.game-tagline {
+  margin-top: 6px;
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 0.86em;
+  letter-spacing: 0.02em;
+  animation: fade-in 1000ms var(--ease) 700ms both;
+}
+[data-theme='night'] .game-tagline {
+  color: var(--ink);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
 }
 .init-stage {
   flex: 1;
   min-height: 0;
+  max-height: 30vh;
   width: 100%;
   display: grid;
   place-items: center;
-  --card-w: clamp(70px, 20vmin, 140px);
+  --card-w: clamp(54px, 13vmin, 104px);
 }
 .shuffle {
   position: relative;
@@ -67,14 +287,16 @@
   position: absolute;
   inset: 0;
   width: 100%;
-  animation: shuffle 2.4s var(--ease) infinite;
-  animation-delay: calc(var(--i) * 0.12s);
+  animation: shuffle 2.2s var(--ease) infinite;
+  animation-delay: calc(var(--i) * 0.1s);
   transform: translateY(calc(var(--i) * -1.5px));
+  filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.3));
 }
+/* Ready: the deck fans open, like a dealer's flourish. */
 .init.ready .shuffle-card {
   transform-origin: 50% 120%;
-  animation: fan-out 900ms var(--ease-spring) forwards;
-  animation-delay: calc(var(--i) * 60ms);
+  animation: fan-out 800ms var(--ease-spring) forwards;
+  animation-delay: calc(var(--i) * 50ms);
 }
 @keyframes shuffle {
   0%,
@@ -83,40 +305,16 @@
     transform: translate(0, calc(var(--i) * -1.5px)) rotate(0deg);
   }
   25% {
-    transform: translate(-70%, -4%) rotate(-12deg);
+    transform: translate(-62%, -4%) rotate(-11deg);
   }
   75% {
-    transform: translate(70%, -4%) rotate(12deg);
+    transform: translate(62%, -4%) rotate(11deg);
   }
 }
 @keyframes fan-out {
   to {
-    transform: rotate(calc((var(--i) - 3) * 9deg)) translateY(-8%);
+    transform: rotate(calc((var(--i) - 3) * 9deg)) translateY(-6%);
   }
-}
-.game-title {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size: clamp(2rem, 7vmin + 0.4rem, 4rem);
-  font-weight: 800;
-  white-space: normal;
-  line-height: 1;
-}
-.game-title-top {
-  font-family: var(--font-body);
-  font-size: 0.32em;
-  font-weight: 800;
-  letter-spacing: 0.42em;
-  padding-left: 0.42em;
-  color: var(--accent);
-  margin-bottom: 0.3em;
-}
-.game-tagline {
-  color: var(--ink-soft);
-  margin-top: 8px;
-  font-weight: 700;
-  font-size: 0.9em;
 }
 .init-loader {
   width: min(340px, 86%);
@@ -124,171 +322,170 @@
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  min-height: 96px;
+  min-height: 92px;
 }
 .boot-bar {
   width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.boot-track {
+  position: relative;
+  flex: 1;
+  height: 3px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--ink) 14%, transparent);
+  overflow: hidden;
+}
+.boot-fill {
+  position: absolute;
+  inset: 0;
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+  background: var(--gold-metal);
+  box-shadow: 0 0 10px var(--gold);
+  transition: transform 420ms var(--ease);
+}
+.boot-pct {
+  width: 3.2em;
+  text-align: right;
+  font-size: 0.78em;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--gold-deep);
+}
+[data-theme='night'] .boot-pct {
+  color: var(--gold);
 }
 .boot-label {
   color: var(--ink-soft);
   font-weight: 700;
-  font-size: 0.88em;
+  font-size: 0.86em;
   min-height: 1.4em;
+  letter-spacing: 0.02em;
+}
+[data-theme='night'] .boot-label {
+  color: var(--ink);
 }
 .init.ready .boot-bar {
   display: none;
 }
 .btn-enter {
-  animation: rise-in 500ms var(--ease) both;
+  min-width: min(280px, 100%);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-size: 1rem;
+  animation: enter-in 600ms var(--ease-spring) both;
+}
+@keyframes enter-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.92);
+  }
 }
 .init-version {
   color: var(--ink-faint);
-  font-size: 0.75em;
+  font-size: 0.72em;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+[data-theme='night'] .init-version {
+  color: var(--ink-soft);
 }
 @media (orientation: landscape) and (max-height: 540px) {
   .init-content {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto 1fr auto auto;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    grid-template-rows: auto 1fr auto;
     grid-template-areas:
-      'brand stage'
+      'presents stage'
       'title stage'
-      'loader stage'
-      'version stage';
+      'version loader';
     align-items: center;
+    justify-items: center;
+    padding-top: calc(var(--safe-t) + var(--gutter));
   }
-  .init-brand {
-    grid-area: brand;
+  .init-presents {
+    grid-area: presents;
   }
   .init-title {
     grid-area: title;
   }
-  .init-loader {
-    grid-area: loader;
-    justify-self: center;
+  .init-title {
+    margin-top: 0;
   }
-  .init-version {
-    grid-area: version;
+  .init-logo {
+    width: auto;
+    height: clamp(100px, 46vh, 240px);
+    max-width: 100%;
+    max-height: none;
+  }
+  .init-stage {
+    max-height: none;
   }
   .init-stage {
     grid-area: stage;
     height: 100%;
   }
-  .init-scene {
-    display: none;
+  .init-loader {
+    grid-area: loader;
+    min-height: 0;
   }
-  .init-content {
-    padding-bottom: calc(var(--safe-b) + var(--gutter));
+  .init-version {
+    grid-area: version;
   }
 }
 
-/* ===================== Main menu ===================== */
+/* ===================== Main menu =====================
+   The riverfront painting fills the screen; the menu is a glass panel laid
+   over it. Portrait: painting above, panel below. Landscape and desktop:
+   panel on the left, painting on the right. */
 .menu {
+  padding: 0;
+  isolation: isolate;
+}
+.env-menu {
+  --art-h: 100%;
+}
+.env-menu .env-scrim {
+  background:
+    linear-gradient(180deg, rgba(20, 14, 8, 0.35), transparent 18%),
+    linear-gradient(0deg, var(--bg) 0%, color-mix(in srgb, var(--bg) 70%, transparent) 30%, transparent 55%);
+}
+@media (orientation: portrait) {
+  /* Portrait: the painting sits at the top, its skyline whole, fading into the parlor below. */
+  .env-menu {
+    --art-h: 62%;
+  }
+  .env-menu .env-art {
+    mask-image: linear-gradient(180deg, #000 72%, transparent);
+  }
+  .env-menu .env-shimmer {
+    top: 60%;
+    bottom: 8%;
+  }
+}
+.menu-layout {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  min-height: 0;
   display: grid;
-  gap: clamp(8px, 1.6vmin, 14px);
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: auto minmax(0, 1fr) auto auto auto;
-  grid-template-areas: 'header' 'hero' 'status' 'grid' 'footer';
-  max-width: 1280px;
-  margin: 0 auto;
-}
-.menu-header {
-  grid-area: header;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  min-width: 0;
-}
-.menu-brand {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  grid-template-areas: 'logo top' 'stage stage' 'panel panel' 'foot foot';
+  gap: clamp(6px, 1.4vmin, 12px) 10px;
+  padding: calc(var(--safe-t) + var(--gutter) * 0.6) calc(var(--safe-r) + var(--gutter))
+    calc(var(--safe-b) + var(--gutter) * 0.5) calc(var(--safe-l) + var(--gutter));
+  width: 100%;
 }
 .menu-title {
-  font-size: clamp(1.4rem, 3.4vmin + 0.5rem, 2.4rem);
-  font-weight: 800;
+  grid-area: logo;
+  align-self: center;
   line-height: 0;
-}
-.menu-header-right {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.menu-level {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  height: 40px;
-  padding: 0 12px 0 4px;
-  border-radius: var(--radius-pill);
-  background: var(--surface);
-  border: 1.5px solid var(--border);
-  box-shadow: 0 2px 0 var(--edge);
-  cursor: pointer;
-  font-weight: 800;
-}
-.menu-level-num {
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: var(--sage);
-  color: var(--surface);
-  font-family: var(--font-display);
-  font-weight: 800;
-  flex: none;
-}
-.menu-level-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  width: clamp(56px, 14vw, 110px);
-  font-size: 0.78em;
-  line-height: 1;
-}
-.menu-level-meta .progress {
-  height: 5px;
-}
-
-.menu-hero {
-  grid-area: hero;
-  position: relative;
-  min-height: 120px;
-  border-radius: var(--radius-l);
-  overflow: hidden;
-  border: 1.5px solid var(--border);
-  box-shadow: 0 var(--edge-size) 0 var(--edge);
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding: clamp(10px, 2.5vmin, 22px);
-}
-.menu-scene {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-/* The Rappahannock riverfront by day, Fredericksburg's lit waterfront by night (cover-fit, never stretched). */
-.menu-hero-art {
-  position: absolute;
-  inset: 0;
-  background: var(--menu-day) center 62% / cover no-repeat;
-}
-[data-theme='night'] .menu-hero-art {
-  background-image: var(--menu-night);
-}
-/* A soft foot so the Quick Play button reads against the water. */
-.menu-hero-art::after {
-  content: '';
-  position: absolute;
-  inset: 45% 0 0;
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.35));
+  overflow: visible;
 }
 .brand-logo {
   display: block;
@@ -296,257 +493,580 @@
   object-fit: contain;
 }
 .menu-logo {
-  height: clamp(40px, 7vmin, 64px);
   width: auto;
+  height: clamp(40px, 6.4vmin, 58px);
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.35));
+  animation: rise-in 600ms var(--ease) both;
 }
-.init-logo {
-  width: auto;
-  height: clamp(110px, 30vmin, 260px);
-  max-width: 100%;
-  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.25));
+.menu-top {
+  grid-area: top;
+  justify-self: end;
+  align-self: center;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
 }
-.quickplay {
+.menu-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 10px 0 3px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow:
+    inset 0 0 0 1px var(--gold-soft),
+    var(--elev-1);
+  color: var(--ink);
+  font-weight: 800;
+  cursor: pointer;
+  font-variant-numeric: tabular-nums;
+  transition: transform var(--dur-fast) var(--ease-press);
+}
+.status-pill:active {
+  transform: scale(0.96);
+}
+.status-caption {
+  font-size: 0.82em;
+}
+.menu-status .pill-credits {
+  height: 40px;
+}
+/* Progress ring: gold arc on a quiet track. */
+.ring {
+  --size: 32px;
+  display: grid;
+  place-items: center;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  background: conic-gradient(var(--gold) calc(var(--p) * 360deg), var(--surface-sunk) 0);
+  flex: none;
+}
+.ring-inner {
+  display: grid;
+  place-items: center;
+  width: calc(var(--size) - 6px);
+  height: calc(var(--size) - 6px);
+  border-radius: 50%;
+  background: var(--surface);
+  font-size: 0.8em;
+  font-weight: 900;
+  color: var(--ink);
+}
+.ring-inner .icon {
+  width: 15px;
+  height: 15px;
+  color: var(--gold-deep);
+}
+[data-theme='night'] .ring-inner .icon {
+  color: var(--gold);
+}
+@media (max-width: 400px) {
+  .status-level .status-caption {
+    display: none;
+  }
+  .status-level {
+    padding-right: 3px;
+  }
+}
+
+/* The stage is the open painting; the scene toggle floats on it. */
+.menu-stage {
+  grid-area: stage;
   position: relative;
-  width: min(100%, 420px);
+  min-height: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+.env-toggle {
+  display: flex;
+  padding: 3px;
+  gap: 2px;
+  border-radius: var(--radius-pill);
+  background: var(--glass);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--elev-2);
+}
+.env-toggle button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: none;
+  color: var(--ink-soft);
+  font-weight: 800;
+  font-size: 0.8em;
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background var(--dur),
+    color var(--dur),
+    transform var(--dur-fast) var(--ease-press);
+}
+.env-toggle button:active {
+  transform: scale(0.95);
+}
+.env-toggle button .icon {
+  width: 16px;
+  height: 16px;
+}
+.env-toggle button[aria-checked='true'] {
+  background: var(--gold-metal);
+  color: var(--gold-ink);
+  box-shadow: inset 0 1px 0 rgba(255, 250, 230, 0.7);
+}
+
+/* Glass panel: Quick Play, your table, and the six destinations. */
+.menu-panel {
+  grid-area: panel;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 1.4vmin, 12px);
+  padding: clamp(10px, 1.8vmin, 16px);
+  border-radius: var(--radius-l);
+  background: var(--glass);
+  backdrop-filter: blur(14px) saturate(1.1);
+  border: 1px solid var(--glass-border);
+  box-shadow:
+    inset 0 0 0 1px var(--gold-soft),
+    var(--elev-3);
+  animation: panel-in 520ms var(--ease) both;
+}
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+.menu-play {
+  position: relative;
   justify-content: flex-start;
   gap: 14px;
-  padding: 10px 20px 10px 12px;
-  min-height: clamp(56px, 9vmin, 76px);
+  min-height: clamp(58px, 9vmin, 76px);
+  padding-left: 12px;
+  padding-right: 96px;
+  border-radius: var(--radius-m);
+  overflow: visible;
 }
-.quickplay > .icon {
-  width: clamp(36px, 6vmin, 48px);
-  height: clamp(36px, 6vmin, 48px);
-  padding: 8px;
+.menu-play > .icon {
+  width: clamp(38px, 6vmin, 48px);
+  height: clamp(38px, 6vmin, 48px);
+  padding: 10px 9px 10px 11px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
-  fill: currentColor;
+  background: rgba(60, 40, 8, 0.85);
+  color: var(--gold-bright);
+  box-shadow: inset 0 0 0 2px rgba(255, 230, 160, 0.35);
 }
-.quickplay-text {
+.play-text {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   line-height: 1.1;
 }
-.quickplay-label {
+.play-label {
   font-family: var(--font-display);
   font-variation-settings: 'SOFT' 100;
-  font-size: clamp(1.3rem, 2.4vmin + 0.7rem, 1.9rem);
-  font-weight: 800;
+  font-size: clamp(1.25rem, 2.4vmin + 0.6rem, 1.7rem);
+  letter-spacing: 0.04em;
 }
-.quickplay-hint {
-  font-size: 0.78em;
-  font-weight: 700;
-  opacity: 0.85;
+.play-hint {
+  font-size: 0.72em;
+  font-weight: 800;
+  white-space: nowrap;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+/* The selected deck rides on the button and fans open on hover. */
+.play-fan {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  width: 48px;
+  height: 0;
+  --card-w: 34px;
+  pointer-events: none;
+}
+.card.play-fan-card {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 50% 110%;
+  transform: translateY(-50%) rotate(calc((var(--i) - 1) * 8deg)) translateX(calc((var(--i) - 1) * 6px));
+  transition: transform var(--dur-slow) var(--ease-spring);
+  box-shadow: var(--elev-2);
+}
+@media (hover: hover) {
+  .menu-play:hover .play-fan-card {
+    transform: translateY(-58%) rotate(calc((var(--i) - 1) * 16deg)) translateX(calc((var(--i) - 1) * 12px));
+  }
+}
+.card.chip-card .card-back-mark {
+  display: none;
 }
 
-.menu-status {
-  grid-area: status;
+.menu-setup {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
 }
-.status-chip {
+.setup-chip {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   min-width: 0;
-  min-height: 48px;
-  padding: 6px 10px 6px 6px;
-  border-radius: var(--radius-m);
-  background: var(--surface);
-  border: 1.5px solid var(--border);
-  box-shadow: 0 2px 0 var(--edge);
+  min-height: 44px;
+  padding: 5px 10px 5px 6px;
+  border-radius: var(--radius-s);
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+  color: var(--ink);
   text-align: left;
-}
-button.status-chip {
   cursor: pointer;
+  transition:
+    border-color var(--dur-fast),
+    transform var(--dur-fast) var(--ease-press);
 }
-button.status-chip:hover {
-  border-color: var(--accent);
+.setup-chip:hover {
+  border-color: var(--gold-line);
 }
-.status-music {
-  grid-column: 1 / -1;
+.setup-chip:active {
+  transform: scale(0.98);
 }
-.status-visual {
+.setup-visual {
   flex: none;
   display: grid;
   place-items: center;
   width: 34px;
   height: 34px;
-  --card-w: 24px;
+  --card-w: 22px;
 }
-.chip-felt {
-  border-radius: 8px;
-  border: 3px solid;
+.board-swatch.chip-board {
+  width: 34px;
+  height: 26px;
+  min-height: 0;
+  border-width: 3px;
+  border-radius: 6px;
 }
-.music-visual {
-  border-radius: 10px;
-  background: var(--accent-soft);
-  color: var(--accent);
-}
-.card.chip-card .card-back-mark {
-  display: none;
-}
-.status-text {
+.setup-text {
   display: flex;
   flex-direction: column;
   min-width: 0;
-  flex: 1;
-  line-height: 1.15;
+  line-height: 1.2;
 }
-.status-text small {
-  font-size: 0.68em;
+.setup-text small {
+  font-size: 0.66em;
   font-weight: 800;
+  letter-spacing: var(--label-track);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
   color: var(--ink-faint);
 }
-.status-text span {
+.setup-text span {
   font-weight: 800;
+  font-size: 0.88em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.status-next {
-  flex: none;
-}
 
 .menu-grid {
-  grid-area: grid;
   display: grid;
-  gap: 8px;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  grid-auto-rows: clamp(64px, 11vh, 108px);
+  gap: 8px;
 }
 .menu-tile {
-  display: flex;
+  min-height: clamp(62px, 9.5vmin, 88px);
   border-radius: var(--radius-m);
-  background: var(--surface);
-  border: 1.5px solid var(--border);
-  box-shadow: 0 var(--edge-size) 0 var(--edge);
-  min-height: 0;
-  overflow: hidden;
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
+  border: 1px solid var(--border);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 2px 0 var(--edge),
+    var(--elev-1);
+  color: var(--ink);
+  animation: deal-in 420ms var(--ease) both;
+  animation-delay: calc(120ms + var(--i, 0) * 45ms);
+  transition:
+    transform var(--dur-fast) var(--ease-press),
+    box-shadow var(--dur) var(--ease),
+    border-color var(--dur);
 }
-.menu-tile:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 calc(var(--edge-size) + 2px) 0 var(--edge);
+@keyframes deal-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) rotate(-2deg);
+  }
+}
+@media (hover: hover) {
+  .menu-tile:hover {
+    transform: translateY(-2px);
+    border-color: var(--gold-line);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.35),
+      0 3px 0 var(--edge),
+      var(--elev-2);
+  }
+  .menu-tile:hover .menu-tile-icon {
+    transform: rotate(-8deg) scale(1.06);
+  }
 }
 .menu-tile:active {
-  transform: translateY(calc(var(--edge-size) - 1px));
-  box-shadow: 0 1px 0 var(--edge);
+  transform: translateY(2px) scale(0.98);
+  box-shadow: 0 0 0 var(--edge);
+  transition-duration: 60ms;
 }
 .menu-tile-content {
-  flex: 1;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
-  padding: 6px;
+  gap: 5px;
+  padding: 6px 4px;
   text-align: center;
-  min-width: 0;
 }
 .menu-tile-icon {
   display: grid;
   place-items: center;
-  width: clamp(30px, 5vmin, 44px);
-  height: clamp(30px, 5vmin, 44px);
-  border-radius: 12px;
-  background: var(--accent-soft);
-  color: var(--accent);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--gold-soft);
+  color: var(--gold-deep);
+  box-shadow: inset 0 0 0 1px var(--gold-line);
+  transition: transform var(--dur) var(--ease-spring);
 }
-.menu-tile:nth-child(3n + 2) .menu-tile-icon {
-  background: var(--sage-soft);
-  color: var(--sage);
+[data-theme='night'] .menu-tile-icon {
+  color: var(--gold);
 }
-.menu-tile:nth-child(3n) .menu-tile-icon {
-  background: color-mix(in srgb, var(--mustard) 18%, transparent);
-  color: color-mix(in srgb, var(--mustard) 70%, var(--ink));
+.menu-tile-icon .icon {
+  width: 19px;
+  height: 19px;
+}
+.menu-tile-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 }
 .menu-tile-label {
-  font-weight: 800;
-  font-size: clamp(0.78rem, 1vmin + 0.55rem, 1rem);
-  line-height: 1.1;
+  font-size: 0.72em;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1.15;
 }
 .menu-tile-hint {
-  font-size: 0.72em;
+  display: none;
+  font-size: 0.8em;
   color: var(--ink-faint);
-  font-weight: 700;
 }
+
 .menu-footer {
-  grid-area: footer;
+  grid-area: foot;
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  color: var(--ink-faint);
-  font-size: 0.75em;
+  gap: 10px;
+  min-width: 0;
+  font-size: 0.78em;
   font-weight: 700;
+  color: var(--ink-faint);
+}
+.menu-music {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  color: var(--ink-soft);
+}
+.menu-music > .icon {
+  width: 15px;
+  height: 15px;
+  color: var(--gold-deep);
+  flex: none;
+}
+[data-theme='night'] .menu-music > .icon {
+  color: var(--gold);
+}
+.menu-music-title {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.menu-footer-meta {
+  display: flex;
+  gap: 10px;
+  flex: none;
 }
 
-/* Short portrait phones: trim secondary text so nothing scrolls. */
-@media (max-height: 740px) {
-  .menu-tile-hint {
-    display: none;
+/* Short screens (small phones): tighten the panel. */
+@media (orientation: portrait) and (max-height: 700px) {
+  .menu-tile-icon {
+    width: 28px;
+    height: 28px;
   }
-}
-@media (max-height: 640px) {
-  .menu-footer {
-    display: none;
+  .menu-tile-icon .icon {
+    width: 16px;
+    height: 16px;
   }
-  .menu-grid {
-    grid-auto-rows: 60px;
+  .menu-tile {
+    min-height: 56px;
   }
-}
-@media (max-width: 440px) {
-  .menu-level-meta {
-    display: none;
-  }
-  .menu-level {
-    padding-right: 4px;
+  .menu-tile-content {
+    gap: 3px;
   }
 }
 
-/* Landscape: compact horizontal layout — hero + menu side by side. */
+/* Landscape and desktop: panel on the left, painting on the right. */
 @media (orientation: landscape) {
-  .menu {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
-    grid-template-rows: auto minmax(0, 1fr) auto auto;
-    grid-template-areas:
-      'header header'
-      'hero grid'
-      'status status'
-      'footer footer';
+  .menu-layout {
+    grid-template-columns: minmax(0, min(46%, 460px)) minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    grid-template-areas: 'logo top' 'panel stage' 'foot stage';
+  }
+  .menu-title {
+    justify-self: start;
+  }
+  .menu-stage {
+    align-items: flex-end;
+  }
+  .env-menu .env-scrim {
+    background:
+      linear-gradient(180deg, rgba(20, 14, 8, 0.4), transparent 22%),
+      linear-gradient(90deg, color-mix(in srgb, var(--bg) 55%, transparent) 0%, transparent 52%);
+  }
+  /* Over the painting the footer needs its own backing to stay legible. */
+  .menu-footer {
+    justify-self: start;
+    max-width: 100%;
+    padding: 4px 6px 4px 12px;
+    border-radius: var(--radius-pill);
+    background: var(--glass);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+  }
+  .menu-panel {
+    align-self: start;
+    max-height: 100%;
+  }
+}
+@media (orientation: landscape) and (max-height: 540px) {
+  .menu-layout {
+    gap: 6px 10px;
+    padding-top: calc(var(--safe-t) + 8px);
+    padding-bottom: calc(var(--safe-b) + 6px);
+  }
+  .menu-logo {
+    height: 38px;
+  }
+  .menu-panel {
+    padding: 8px;
+    gap: 7px;
+  }
+  .menu-play {
+    min-height: 52px;
+  }
+  .menu-play > .icon {
+    width: 34px;
+    height: 34px;
+    padding: 8px 7px 8px 9px;
+  }
+  .setup-chip {
+    min-height: 38px;
+    padding-block: 3px;
+  }
+  .menu-tile {
+    min-height: 0;
   }
   .menu-grid {
-    grid-auto-rows: minmax(0, 1fr);
-    grid-template-rows: repeat(2, minmax(0, 1fr));
+    flex: 1;
+    min-height: 0;
+    gap: 6px;
   }
-  .menu-status {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  .menu-tile-content {
+    gap: 2px;
+    padding: 4px;
   }
-  .status-music {
-    grid-column: auto;
+  .menu-tile-icon {
+    width: 26px;
+    height: 26px;
+  }
+  .menu-tile-icon .icon {
+    width: 15px;
+    height: 15px;
+  }
+  .status-pill,
+  .menu-status .pill-credits {
+    height: 36px;
+  }
+  .ring {
+    --size: 28px;
+  }
+}
+/* Desktop: an elegant column on the left, the painting given room to breathe. */
+@media (orientation: landscape) and (min-width: 1000px) and (min-height: 600px) {
+  .menu-layout {
+    grid-template-columns: minmax(0, 420px) minmax(0, 1fr);
+    padding-top: calc(var(--safe-t) + 24px);
+    padding-bottom: calc(var(--safe-b) + 18px);
+    gap: 16px 28px;
+  }
+  .menu-logo {
+    height: 108px;
+  }
+  .menu-panel {
+    padding: 18px;
+    gap: 14px;
+  }
+  .menu-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+  }
+  .menu-tile {
+    min-height: 54px;
+    animation-name: deal-in-side;
+  }
+  .menu-tile-content {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 14px;
+    padding: 8px 14px;
+    text-align: left;
+  }
+  .menu-tile-label {
+    font-size: 0.82em;
   }
   .menu-tile-hint {
     display: block;
   }
+  @media (hover: hover) {
+    .menu-tile:hover {
+      transform: translateX(4px);
+    }
+  }
 }
-@media (orientation: landscape) and (max-height: 540px) {
-  .menu {
-    grid-template-rows: auto minmax(0, 1fr) auto;
-    grid-template-areas:
-      'header header'
-      'hero grid'
-      'status status';
-  }
-  .menu-footer,
-  .menu-tile-hint {
-    display: none;
-  }
-  .menu-hero {
-    min-height: 0;
-  }
-  .status-chip {
-    min-height: 42px;
+@keyframes deal-in-side {
+  from {
+    opacity: 0;
+    transform: translateX(-18px);
   }
 }
 
@@ -678,9 +1198,27 @@ button.status-chip:hover {
   position: relative;
   display: flex;
   justify-content: center;
+  flex: none;
   --card-w: clamp(50px, 10vmin, 80px);
   height: calc(var(--card-w) * 1.4 + 6px);
   width: calc(var(--card-w) * 1.8);
+}
+/* In catalog tiles the preview takes a share of the tile's own height, so a
+   short tile shrinks the card instead of letting it run into the name. */
+.deck-tile {
+  container-type: size;
+}
+.deck-tile .deck-preview {
+  --card-w: clamp(30px, min(30cqh, 34cqw), 80px);
+}
+/* Deck previews turn a little toward you on hover, like a card being picked up. */
+.deck-tile .deck-preview .card {
+  transition: transform var(--dur-slow) var(--ease-spring);
+}
+@media (hover: hover) {
+  .deck-tile:hover .deck-preview .preview-back.solo {
+    transform: perspective(500px) rotateY(-14deg) rotateZ(-3deg) translateY(-3px);
+  }
 }
 .preview-back,
 .preview-face {
@@ -2591,4 +3129,20 @@ button.status-chip:hover {
 }
 .pick .card .card-back-mark {
   font-size: 10px;
+}
+
+/* Deck details: the preview turns slowly, as if held up to the light. */
+.deck-fan,
+.deck-preview-img {
+  transform-origin: 50% 80%;
+  animation: preview-turn 8s ease-in-out infinite;
+}
+@keyframes preview-turn {
+  0%,
+  100% {
+    transform: perspective(800px) rotateY(-9deg) rotateZ(-1deg);
+  }
+  50% {
+    transform: perspective(800px) rotateY(9deg) rotateZ(1deg);
+  }
 }

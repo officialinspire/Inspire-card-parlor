@@ -4,7 +4,7 @@ A cozy collection of classic playing-card games featuring collectible illustrate
 
 **Developer:** OFFICIAL INSPIRE · [www.inspireclothing.art](https://www.inspireclothing.art)
 
-> **Status: v0.7.0 — illustrated decks.** Eight decks drawn from the uploaded artwork are playable in all five games, alongside illustrated gameboards, menu backgrounds and the INSPIRE Card Parlor logo.
+> **Status: v0.8.0 — the parlor, redesigned.** A cinematic title screen, a painted day/night main menu over the Fredericksburg riverfront, and a gold-trimmed design system across every screen. Eight illustrated decks play in all five games.
 
 ## Games
 
@@ -79,19 +79,19 @@ npm install
 npm run dev
 ```
 
-| Script                        | What it does                                             |
-| ----------------------------- | -------------------------------------------------------- |
-| `npm run dev`                 | Start the dev server (LAN-accessible for phone testing)  |
-| `npm run build`               | Type-check, then build to `dist/`                        |
-| `npm run preview`             | Serve the production build locally                       |
-| `npm run typecheck`           | Run `tsc --noEmit`                                       |
-| `npm run format`              | Format with Prettier                                     |
-| `npm run format:check`        | Check formatting                                         |
-| `npm test`                    | Unit tests (Vitest + happy-dom)                          |
-| `npm run test:e2e`            | End-to-end tests (Playwright, 4 viewports + adult build) |
-| `npm run test:all`            | Type-check, unit and end-to-end tests                    |
-| `npm run validate:decks`      | Check every deck's definition and required card assets   |
-| `npm run assets:placeholders` | Regenerate the placeholder template and per-deck READMEs |
+| Script                        | What it does                                                               |
+| ----------------------------- | -------------------------------------------------------------------------- |
+| `npm run dev`                 | Start the dev server (LAN-accessible for phone testing)                    |
+| `npm run build`               | Type-check, then build to `dist/`                                          |
+| `npm run preview`             | Serve the production build locally                                         |
+| `npm run typecheck`           | Run `tsc --noEmit`                                                         |
+| `npm run format`              | Format with Prettier                                                       |
+| `npm run format:check`        | Check formatting                                                           |
+| `npm test`                    | Unit tests (Vitest + happy-dom)                                            |
+| `npm run test:e2e`            | End-to-end tests (Playwright: 4 viewports, adult build, GitHub Pages path) |
+| `npm run test:all`            | Type-check, unit and end-to-end tests                                      |
+| `npm run validate:decks`      | Check every deck's definition and required card assets                     |
+| `npm run assets:placeholders` | Regenerate the placeholder template and per-deck READMEs                   |
 
 ## Testing
 
@@ -198,6 +198,27 @@ public/
 - **Readability**: each board declares a text colour checked for WCAG AA contrast against its surface. A scrim layer sits between artwork and cards, dark boards add a light ring around cards, and there is an optional **High-contrast tables** setting.
 - **Uploaded artwork**: drop files into `public/assets/cards/<deck>/` or `public/assets/backgrounds/<board>/` and either edit the registry or add `public/assets/artwork.json` (validated at start-up). Art keeps its aspect ratio (cards are letterboxed, boards use `cover`), sprite sheets are used for card faces, and nothing is ever modified.
 - **Credits**: artist credits appear on deck and board details and in **Settings → Data → Artwork credits**.
+
+### Design system (v0.8)
+
+Tokens live in `src/themes/tokens.css` and every component reads them:
+
+- **Palette:** warm card-stock paper, terracotta and sage, with **gold** taken from the logo's filigree (`--gold`, `--gold-line`, `--gold-metal`) for trims, focus rings, pager pips, progress and headline buttons. Every token has a day and a night value.
+- **Shape and depth:** radii 8 / 12 / 18 / 26; three elevations (`--elev-1..3`); surfaces sit on a slim 3px lower edge and press into it. Glass panels (`--glass`) are used over paintings.
+- **Type:** Fraunces for titles, Nunito for text, and tracked small caps (`--label-track`) for kickers and navigation.
+- **Motion:** screens come and go like dealt cards; dialogs tip up into place; buttons press with a short spring; deck previews turn slowly; achievements and unlocks get a gold toast with a burst of suits (`celebrate()` in `Notifications.ts`). Everything is short (120–440ms) and is switched off by **Reduced motion**.
+
+**Title screen:** the logo is centred over a softened riverfront painting with drifting gold motes. Below it, a gentle shuffle, a thin gold progress line with percentage, the version, and a gold **ENTER PARLOR** button.
+
+**Main menu** (`src/components/screens/MainMenu.ts`, `src/components/environment.ts`):
+
+- **Scene:** the _Sunlit Rappahannock Riverfront_ or _Fredericksburg Riverfront at Midnight_ painting fills the screen. The **Day / Night** toggle also switches the palette, and the choice is remembered. The paintings are cover-fitted around the skyline and never altered.
+- **Ambient effects:** stars, water shimmer, lamplight and pointer parallax run only on capable devices, and never with reduced motion or data saver.
+- **Status:** level ring, credits and collection-progress ring.
+- **Navigation:** **QUICK PLAY** (with a fan of your deck), your deck and board, then **Story Mode, Deck Collection, Gameboards, Achievements, Statistics, Settings**.
+- **Layouts:** portrait puts the painting above a glass panel; landscape and desktop put the panel on the left with the painting beside it. Safe areas are respected and nothing scrolls.
+
+**Logos:** `Inspire Card Parlor Transparent Logo.png` is the in-game logo. The near-identical `inspire-card-parlor.png` is used for the app icons and the social link preview (`assets/branding/social-card.jpg`), so two logos never appear together.
 
 ### Production artwork pipeline
 

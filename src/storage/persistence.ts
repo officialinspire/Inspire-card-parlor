@@ -34,15 +34,25 @@ export function attachPersistence(store: Store): void {
     },
   });
 
-  const saveSettings = debounce(() => local.set(SETTINGS_KEY, store.state.settings), 250);
-  const saveProfile = debounce(() => local.set(PROFILE_KEY, store.state.profile), 250);
-  const saveSelection = debounce(() => {
+  const writeSettings = () => local.set(SETTINGS_KEY, store.state.settings);
+  const writeProfile = () => local.set(PROFILE_KEY, store.state.profile);
+  const writeSelection = () => {
     const { gameId, deckId, boardId, byGame, artVariants, cardBack } = store.state.selection;
     local.set(SELECTION_KEY, { gameId, deckId, boardId, byGame, artVariants, cardBack });
-  }, 250);
-  store.select((s) => s.settings, saveSettings);
-  store.select((s) => s.profile, saveProfile);
-  store.select((s) => s.selection, saveSelection);
+  };
+  store.select((s) => s.settings, debounce(writeSettings, 250));
+  store.select((s) => s.profile, debounce(writeProfile, 250));
+  store.select((s) => s.selection, debounce(writeSelection, 250));
+  // Saves are batched; write everything at once if the page is hidden or closed mid-batch.
+  if (typeof addEventListener === 'function') {
+    const flush = () => {
+      writeSettings();
+      writeProfile();
+      writeSelection();
+    };
+    addEventListener('pagehide', flush);
+    addEventListener('visibilitychange', () => document.visibilityState === 'hidden' && flush());
+  }
 }
 
 export async function resetAllData(): Promise<void> {
