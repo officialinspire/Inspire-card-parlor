@@ -2,6 +2,8 @@ import type { Store } from '@/core/store';
 import type { GameId, GameStats, Profile } from '@/core/types';
 import { ACHIEVEMENTS } from '@/achievements/registry';
 import { grantXp } from './levels';
+import { applyStoryResult, type StoryOutcome } from '@/story/progress';
+import { activeStoryLevel, setLastStoryOutcome } from '@/story/session';
 
 export interface GameResult {
   gameId: GameId;
@@ -20,6 +22,8 @@ export interface ResultSummary {
   achievements: string[];
   levelUp: boolean;
   stats: GameStats;
+  /** Set when the game was a story challenge. */
+  story?: StoryOutcome;
 }
 
 const REWARDS = { win: { xp: 50, credits: 30 }, draw: { xp: 25, credits: 10 }, loss: { xp: 15, credits: 5 } };
@@ -79,5 +83,20 @@ export function recordGameResult(store: Store, r: GameResult): ResultSummary {
       unlockedAchievements: [...profile.unlockedAchievements, ...achievements],
     },
   });
-  return { xp, credits: base.credits, achievements, levelUp: levelled.level > profile.level, stats: stats[r.gameId] };
+  const summary: ResultSummary = {
+    xp,
+    credits: base.credits,
+    achievements,
+    levelUp: levelled.level > profile.level,
+    stats: stats[r.gameId],
+  };
+  // A story challenge: score it against its objective and pay its rewards (once).
+  const levelId = activeStoryLevel();
+  if (levelId) {
+    const { patch, outcome } = applyStoryResult(store.state.profile, levelId, r);
+    store.dispatch({ type: 'UPDATE_PROFILE', patch });
+    setLastStoryOutcome(outcome);
+    summary.story = outcome;
+  }
+  return summary;
 }

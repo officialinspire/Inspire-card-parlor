@@ -28,6 +28,8 @@ export interface GoFishViewContext {
   game: GoFishGame;
   onNewGame: () => void;
   onExit: () => void;
+  /** Result-dialog buttons (Story Mode: "Play again" / "Story map"). */
+  labels?: { again: string; exit: string };
 }
 
 const SPEED = { slow: 1.4, normal: 1, fast: 0.55 } as const;
@@ -588,8 +590,8 @@ export function mountGoFish(ctx: GoFishViewContext) {
       ),
       dismissValue: 'menu',
       actions: [
-        { label: 'Main menu', value: 'menu', variant: 'ghost' },
-        { label: 'Play again', value: 'again', icon: 'play' },
+        { label: ctx.labels?.exit ?? 'Main menu', value: 'menu', variant: 'ghost' },
+        { label: ctx.labels?.again ?? 'Play again', value: 'again', icon: 'play' },
       ],
     });
     if (choice === 'again') ctx.onNewGame();

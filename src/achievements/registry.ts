@@ -12,6 +12,30 @@ export interface AchievementDefinition {
 
 export const ACHIEVEMENTS: readonly AchievementDefinition[] = [
   {
+    id: 'passport-first',
+    name: 'First Stamp',
+    description: 'Finish The Hometown and earn your first passport stamp.',
+    icon: '✦',
+    category: 'story',
+    xp: 50,
+  },
+  {
+    id: 'halfway-home',
+    name: 'Halfway Home',
+    description: 'Finish four chapters of The Card Parlor Chronicles.',
+    icon: '✧',
+    category: 'story',
+    xp: 100,
+  },
+  {
+    id: 'chronicles-complete',
+    name: 'The Card Parlor Chronicles',
+    description: 'Finish all seven chapters of the story.',
+    icon: '♛',
+    category: 'story',
+    xp: 250,
+  },
+  {
     id: 'first-visit',
     name: 'Doors Open',
     description: 'Enter the parlor for the first time.',

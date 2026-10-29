@@ -12,6 +12,7 @@ import { SCREENS } from '@/components/screens';
 import { AppState } from './states';
 import { goBack, navigate, store } from './store';
 import { runBoot } from './boot';
+import { ALL_LEVELS } from '@/story/campaign';
 import { APP } from './config';
 
 /** BOOT: wire every subsystem to the store, build the shell, then start loading. */
@@ -61,5 +62,18 @@ export async function startApp(mount: HTMLElement): Promise<void> {
   }
 
   // Expose the store for debugging and end-to-end tests.
-  Object.assign(window, { __ICP__: { store, navigate } });
+  Object.assign(window, {
+    __ICP__: {
+      store,
+      navigate,
+      // The campaign's challenges, so tests can launch each one.
+      story: ALL_LEVELS.map((l) => ({
+        id: l.id,
+        game: l.game,
+        deck: l.setup.deckId,
+        board: l.setup.boardId,
+        seeded: l.setup.seed !== undefined,
+      })),
+    },
+  });
 }

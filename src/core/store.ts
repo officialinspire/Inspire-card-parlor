@@ -11,6 +11,7 @@ export type Action =
   | { type: 'SELECT_DECK'; deckId: string }
   | { type: 'SELECT_BOARD'; boardId: string }
   | { type: 'SELECT_STORY_CHAPTER'; chapterId: string | null }
+  | { type: 'SELECT_STORY_LEVEL'; levelId: string | null; chapterId: string | null }
   | { type: 'START_GAME' }
   | { type: 'SELECT_ART_VARIANT'; deckId: string; variantId: string | null }
   | { type: 'REPLACE_DECKS'; unavailable: string[]; known: string[]; fallback: string }
@@ -86,6 +87,11 @@ export function reduce(state: RootState, action: Action): RootState {
       return { ...state, selection: { ...state.selection, boardId: action.boardId } };
     case 'SELECT_STORY_CHAPTER':
       return { ...state, selection: { ...state.selection, storyChapterId: action.chapterId } };
+    case 'SELECT_STORY_LEVEL':
+      return {
+        ...state,
+        selection: { ...state.selection, storyLevelId: action.levelId, storyChapterId: action.chapterId },
+      };
     case 'START_GAME': {
       const { gameId, deckId, boardId } = state.selection;
       if (!gameId) return state;
@@ -152,6 +158,8 @@ export function reduce(state: RootState, action: Action): RootState {
           ...state.profile,
           ...action.profile,
           stats: { ...state.profile.stats, ...action.profile?.stats },
+          // Saves from before the campaign have no story progress yet.
+          story: { ...state.profile.story, ...action.profile?.story },
         },
         selection: {
           ...state.selection,
@@ -160,6 +168,7 @@ export function reduce(state: RootState, action: Action): RootState {
           artVariants: { ...state.selection.artVariants, ...action.selection?.artVariants },
           cardBack: action.selection?.cardBack !== undefined ? action.selection.cardBack : state.selection.cardBack,
           storyChapterId: null,
+          storyLevelId: null,
         },
       };
     case 'MODAL_OPENED':

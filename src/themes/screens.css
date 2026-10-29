@@ -3703,3 +3703,404 @@
     padding-bottom: 4px;
   }
 }
+
+/* ===================== Story: The Card Parlor Chronicles ===================== */
+.story-root {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.story-stack {
+  gap: 10px;
+}
+/* Passport: seven stamps, one per chapter. */
+.passport {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  border: 1px solid var(--gold-line);
+  box-shadow: var(--elev-1);
+  align-self: center;
+  max-width: 100%;
+}
+.passport-label {
+  font-size: 0.68em;
+  font-weight: 900;
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  margin-right: 4px;
+}
+[data-theme='night'] .passport-label {
+  color: var(--gold);
+}
+.stamp {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1.5px dashed var(--gold-line);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.8em;
+  color: var(--gold-ink);
+}
+.stamp.earned {
+  border: 0;
+  background: var(--gold-metal);
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 250, 230, 0.6),
+    var(--elev-1);
+  transform: rotate(-8deg);
+}
+.stamp.big {
+  width: 76px;
+  height: 76px;
+  font-size: 2rem;
+  margin: 4px auto 8px;
+  animation: stamp-down 0.7s var(--ease-spring);
+}
+@keyframes stamp-down {
+  0% {
+    transform: scale(2.4) rotate(-30deg);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(0.92) rotate(-6deg);
+    opacity: 1;
+  }
+}
+@media (max-width: 380px) {
+  .passport-label {
+    display: none;
+  }
+  .stamp {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+/* Chapter cards: the chapter's painting, its real deck art, title and progress. */
+.chapter-card {
+  flex-direction: column;
+  align-items: stretch;
+  padding: 0;
+  gap: 0;
+  text-align: left;
+}
+.chapter-card.done {
+  border-color: var(--gold-line);
+}
+.chapter-card.locked .story-art {
+  filter: grayscale(0.9) brightness(0.8);
+}
+.story-art {
+  position: relative;
+  flex: 1;
+  min-height: 90px;
+  display: block;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, transparent 30%, color-mix(in srgb, var(--tint) 80%, transparent)),
+    var(--backdrop, none) center / cover no-repeat,
+    var(--tint);
+  border-bottom: 1px solid var(--border);
+}
+.story-art.large {
+  min-height: 0;
+  height: 100%;
+  border-radius: var(--radius-m);
+  border: 1px solid var(--border);
+}
+.story-art-decks {
+  position: absolute;
+  inset: 8% 0 6%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.story-art-decks img {
+  height: 100%;
+  max-width: 70%;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.45));
+  transform: rotate(calc((var(--i) - 0.5) * 8deg)) translateX(calc((var(--i) - 0.5) * 18%));
+  transition: transform var(--dur-slow) var(--ease-spring);
+}
+.story-art-decks img:only-child {
+  transform: none;
+}
+@media (hover: hover) {
+  .chapter-card:not(.locked):hover .story-art-decks img {
+    transform: rotate(calc((var(--i) - 0.5) * 14deg)) translateX(calc((var(--i) - 0.5) * 26%)) translateY(-4px);
+  }
+}
+/* Builders: clearly labelled until its artwork is supplied. */
+.story-art.placeholder {
+  background: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.05) 0 10px, transparent 10px 20px), var(--tint);
+}
+.story-art-label {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff8ee;
+  font-size: 0.68em;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+.chapter-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 8px 12px 10px;
+}
+.chapter-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.story-pips {
+  display: inline-flex;
+  gap: 4px;
+}
+.story-pips i {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  transform: rotate(45deg);
+  background: var(--surface-sunk);
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+.story-pips i.on {
+  background: var(--gold);
+  box-shadow: 0 0 0 1px var(--gold-deep);
+}
+
+/* Chapter view: a compact hero, then the five challenges. */
+.chapter-hero {
+  flex: none;
+  display: grid;
+  grid-template-columns: minmax(110px, 34%) minmax(0, 1fr);
+  gap: 12px;
+  height: clamp(118px, 22vh, 190px);
+}
+.chapter-hero-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  min-width: 0;
+  font-size: 0.9em;
+  color: var(--ink-soft);
+}
+.chapter-hero-text p {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.chapter-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  font-weight: 800;
+  font-size: 0.85em;
+  color: var(--ink);
+}
+.chapter-progress .progress {
+  --progress-fill: var(--gold-metal);
+}
+.chapter-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.chapter-hero-actions .btn {
+  min-height: 32px;
+  padding-inline: 0.7em;
+}
+.level-tile {
+  align-items: center;
+}
+.level-tile.finale {
+  border-color: var(--gold-line);
+  background: linear-gradient(135deg, var(--gold-soft), transparent 60%), var(--surface);
+}
+.level-num {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--surface-sunk);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.1em;
+}
+.level-tile.done .level-num {
+  background: var(--gold-metal);
+  color: var(--gold-ink);
+}
+.level-num .icon {
+  width: 18px;
+  height: 18px;
+}
+.level-objective {
+  font-size: 0.84em;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+
+/* Dialogue: a portrait and a speech bubble, one line at a time. */
+.dialog-story {
+  width: min(460px, 100%);
+}
+.story-dialogue {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.story-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  animation: rise-in var(--dur) var(--ease);
+}
+.story-portrait {
+  flex: none;
+  --size: 46px;
+}
+.story-portrait.monogram {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--who);
+  color: #fff8ee;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.3em;
+  box-shadow:
+    0 0 0 2px var(--surface),
+    0 0 0 3.5px var(--gold);
+}
+.story-bubble {
+  position: relative;
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 4px var(--radius-m) var(--radius-m) var(--radius-m);
+  background: var(--surface-2);
+  color: var(--ink);
+}
+.story-bubble strong {
+  display: block;
+  font-size: 0.72em;
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  color: var(--gold-deep);
+}
+[data-theme='night'] .story-bubble strong {
+  color: var(--gold);
+}
+.story-dialogue-nav {
+  display: flex;
+  justify-content: flex-end;
+  min-height: 0;
+}
+.story-dialogue-nav:has(.story-next[hidden]) {
+  display: none;
+}
+.story-brief {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+.story-objective {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 800;
+  color: var(--ink);
+}
+.story-objective .icon {
+  width: 18px;
+  height: 18px;
+  color: var(--gold);
+}
+.story-setup {
+  font-size: 0.82em;
+  color: var(--ink-faint);
+}
+.story-rewards small {
+  font-size: 0.68em;
+  font-weight: 900;
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.story-rewards ul {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+}
+.story-rewards li {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  background: var(--gold-soft);
+  border: 1px solid var(--gold-line);
+  font-size: 0.82em;
+  font-weight: 800;
+  color: var(--ink);
+}
+.story-rewards li .icon {
+  width: 14px;
+  height: 14px;
+  color: var(--gold-deep);
+}
+.story-result,
+.chapter-complete {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: center;
+}
+.chapter-complete .story-rewards ul {
+  justify-content: center;
+}
+@media (orientation: landscape) and (max-height: 540px) {
+  .chapter-hero {
+    height: 92px;
+  }
+  .chapter-hero-text p {
+    -webkit-line-clamp: 2;
+  }
+  .passport {
+    padding: 3px 10px;
+  }
+  .stamp {
+    width: 20px;
+    height: 20px;
+  }
+}

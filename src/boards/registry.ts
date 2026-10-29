@@ -78,7 +78,7 @@ const registry: BoardDefinition[] = [
     description: 'A woven game mat spread on the mossy bank of the Rappahannock.',
     artist: studioCredit(),
     rarity: 'rare',
-    unlock: { type: 'story', value: 'chapter-2' },
+    unlock: { type: 'story', value: 'chapter-1' },
     assets: assets('rappahannock_riverside', 'ready'),
     surface: {
       base: '#daac73',

@@ -8,7 +8,7 @@ export const EasternWoodlandsDeck: DeckDefinition = {
   artist: studioCredit(),
   rarity: 'rare',
   contentRating: 'general',
-  unlock: { type: 'story', value: 'chapter-2' },
+  unlock: { type: 'story', value: 'chapter-4' },
   assets: extractedAssets('assets/cards/eastern_woodlands/'),
   fallback: {
     back: { base: '#33452d', accent: '#d9c48f', pattern: 'diamond', mark: 'E' },

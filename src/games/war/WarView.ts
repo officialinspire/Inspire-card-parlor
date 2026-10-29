@@ -32,6 +32,8 @@ export interface WarViewContext {
   game: WarGame;
   onNewGame: () => void;
   onExit: () => void;
+  /** Result-dialog buttons (Story Mode: "Play again" / "Story map"). */
+  labels?: { again: string; exit: string };
 }
 
 /** War table: piles, battle field, controls, animations and results. */
@@ -362,8 +364,8 @@ export function mountWar(ctx: WarViewContext) {
       ),
       dismissValue: 'menu',
       actions: [
-        { label: 'Main menu', value: 'menu', variant: 'ghost' },
-        { label: 'Play again', value: 'again', icon: 'play' },
+        { label: ctx.labels?.exit ?? 'Main menu', value: 'menu', variant: 'ghost' },
+        { label: ctx.labels?.again ?? 'Play again', value: 'again', icon: 'play' },
       ],
     });
     if (choice === 'again') ctx.onNewGame();

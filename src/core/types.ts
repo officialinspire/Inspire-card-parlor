@@ -58,13 +58,29 @@ export interface Profile {
   unlockedDecks: string[];
   unlockedBoards: string[];
   unlockedAchievements: string[];
+  /** Story chapters completed (kept for older unlock rules; never lowered). */
   storyChapter: number;
+  /** The Card Parlor Chronicles: completed challenges, rewards paid out, passport stamps. */
+  story: StoryProgress;
   /** Starred decks (shown first and under the Favorites filter). */
   favoriteDecks: string[];
   /** Collected alternate artwork, as "deckId@variantId". */
   ownedVariants: string[];
   stats: Record<GameId, GameStats>;
   createdAt: number;
+}
+
+export interface StoryProgress {
+  /** Completed challenge ids ("chapter-1-3"). */
+  completed: string[];
+  /** Reward grants already paid ("level:chapter-1-3", "chapter:chapter-1"), so nothing pays twice. */
+  rewarded: string[];
+  /** Passport stamps earned. */
+  stamps: string[];
+  /** Chapters whose introduction has been shown. */
+  introsSeen: string[];
+  /** Tries per challenge. */
+  attempts: Record<string, number>;
 }
 
 export interface TableChoice {
@@ -76,6 +92,8 @@ export interface Selection extends TableChoice {
   gameId: GameId | null;
   /** Set when gameplay was launched from Story Mode. */
   storyChapterId: string | null;
+  /** The story challenge being played (not saved between sessions). */
+  storyLevelId: string | null;
   /** Last deck/board used for each game, restored when that game is picked again. */
   byGame: Partial<Record<GameId, TableChoice>>;
   /** Chosen alternate artwork per deck (deck id → variant id). Purely cosmetic. */

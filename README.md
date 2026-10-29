@@ -4,7 +4,7 @@ A cozy collection of classic playing-card games featuring collectible illustrate
 
 **Developer:** OFFICIAL INSPIRE · [www.inspireclothing.art](https://www.inspireclothing.art)
 
-> **Status: v0.9.0 — immersive tables.** Painted gameboards, a compact in-game toolbar, card animations from shuffle to victory, sound hooks, and per-game layouts tuned for phones, tablets and desktops. Eight illustrated decks play in all five games.
+> **Status: v0.10.0 — The Card Parlor Chronicles.** A seven-chapter story campaign with 35 challenges across all five games, verified-winnable deals, passport stamps and one-time collectible rewards. Painted gameboards, a compact in-game toolbar, card animations and per-game layouts for phones, tablets and desktops carry over from v0.9.
 
 ## Games
 
@@ -57,6 +57,29 @@ Character portraits go in `public/assets/characters/<id>.webp|png`. Until one is
 ### Saves and statistics
 
 Games save after every round or turn (IndexedDB) and offer **Resume** when you come back. Finished games update per-game statistics (played, wins, streaks, best time, best score), award XP, credits and achievements, and clear the save.
+
+## Story Mode: The Card Parlor Chronicles
+
+Seven chapters of five challenges each, played with the regular game engines (a challenge only picks the game, its options, deck and table; it never changes a rule):
+
+| #   | Chapter           | Setting                   | Chapter reward                                                        |
+| --- | ----------------- | ------------------------- | --------------------------------------------------------------------- |
+| 1   | The Hometown      | Downtown Fredericksburg   | Downtown Fredericksburg Collector deck, Rappahannock Riverside board  |
+| 2   | Jak Gold's Casino | BlackJak universe         | BlackJak Jak Gold deck, Jak Gold's Casino board                       |
+| 3   | Dante's World     | Neon Monster art          | Dante's World deck                                                    |
+| 4   | The Woodlands     | Eastern Woodland Virginia | Eastern Woodlands deck, Turtle Back card art, Woodland Clearing board |
+| 5   | The Safehouse     | Spycraft                  | Spycraft deck, Safehouse board                                        |
+| 6   | The Builders      | Freemasonry               | Masonic Study board (deck art pending)                                |
+| 7   | Artist's Alley    | Artist collaborations     | Artist's Studio board                                                 |
+
+Every chapter also stamps the **passport**; chapters 1, 4 and 7 award story achievements. Each challenge pays credits and XP the first time it is completed.
+
+- **Data-driven.** Chapters live in `src/story/campaign.ts` (`id`, `title`, `description`, `artwork`, `levels`, objectives, `rewards`, `unlockRequirements`). Progress rules are pure functions in `src/story/progress.ts`.
+- **Always winnable.** Seeded Klondike, Spider and FreeCell deals are proven solvable by `src/games/solitaire/solver.ts`, which searches with the game's own move rules and replays the winning line. War seeds are simulated to a player win. Go Fish challenges are unseeded on the Easy table and are checked for a reachable win rate. `tests/unit/story.test.ts` re-verifies every seed; `scripts/story/find-seeds.ts` finds new ones.
+- **Retry any time.** A failed challenge stays open with a **Try again** button; seeded deals repeat exactly.
+- **Rewards once.** Payouts are keyed in `profile.story.rewarded`, so replays never pay twice, and unlocks already owned are skipped.
+- **Saves.** Older saves keep everything (`profile.storyChapter` is never lowered). Story games use their own save slot, so they never overwrite a Quick Play game.
+- **Artwork.** Chapter art reuses the decks' and tables' own images. The Builders chapter shows a labelled "Freemasonry artwork coming soon" placeholder until that art is supplied. No artwork is attributed to an artist beyond the credits already on file.
 
 ## Tech stack
 

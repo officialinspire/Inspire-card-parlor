@@ -62,9 +62,11 @@ describe('progression', () => {
 
   it('unlocks story rewards by chapter', () => {
     const p = createDefaultProfile();
-    expect(isDeckUnlocked('eastern_woodlands', { ...p, storyChapter: 2 })).toBe(true);
-    expect(isBoardUnlocked('rappahannock_riverside', { ...p, storyChapter: 1 })).toBe(false);
-    expect(isBoardUnlocked('rappahannock_riverside', { ...p, storyChapter: 2 })).toBe(true);
+    // Chapter 4 (The Woodlands) awards the Eastern Woodlands deck; Chapter 1 the riverside board.
+    expect(isDeckUnlocked('eastern_woodlands', { ...p, storyChapter: 3 })).toBe(false);
+    expect(isDeckUnlocked('eastern_woodlands', { ...p, storyChapter: 4 })).toBe(true);
+    expect(isBoardUnlocked('rappahannock_riverside', { ...p, storyChapter: 0 })).toBe(false);
+    expect(isBoardUnlocked('rappahannock_riverside', { ...p, storyChapter: 1 })).toBe(true);
   });
 });
 

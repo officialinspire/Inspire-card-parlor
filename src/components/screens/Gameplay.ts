@@ -6,8 +6,11 @@ import { getBoard } from '@/boards/registry';
 import { deckThemes, getDeck } from '@/decks';
 import { getGame } from '@/games/registry';
 import { CHAPTERS } from '@/story/chapters';
+import { getLevel, type StoryLevel } from '@/story/campaign';
+import { setActiveStoryLevel, setLastStoryOutcome } from '@/story/session';
+import { goFishPlayers } from '@/story/players';
 import { RULES } from '@/games/rules';
-import { nextSeed, saves } from '@/games/session';
+import { nextSeed, saves, useStorySlot } from '@/games/session';
 import { PERSONALITIES, getPersonality } from '@/games/cpu/personalities';
 import { WarGame } from '@/games/war/WarGame';
 import { mountWar } from '@/games/war/WarView';
@@ -40,15 +43,35 @@ const SOLITAIRE: GameId[] = ['klondike', 'spider', 'freecell'];
  * saved as they go and offer to resume.
  */
 export const GameplayScreen: ScreenFactory = ({ store }) => {
-  const { gameId, deckId, boardId, storyChapterId } = store.state.selection;
+  const { deckId, boardId, storyChapterId, storyLevelId } = store.state.selection;
+  // A story challenge brings its own game, deck, board and deal.
+  const story = storyLevelId ? getLevel(storyLevelId) : undefined;
+  const gameId = story ? story.game : store.state.selection.gameId;
   const game = getGame(gameId);
-  let deck = getDeck(deckThemes.safeDeckId(deckId));
+  const deckIdOf = () => story?.setup.deckId ?? store.state.selection.deckId;
+  const boardIdOf = () => story?.setup.boardId ?? store.state.selection.boardId;
+  let deck = getDeck(story ? story.setup.deckId : deckThemes.safeDeckId(deckId));
   let theme = deckThemes.resolve(deck.id);
-  let board = getBoard(boardId);
+  let board = getBoard(story ? story.setup.boardId : boardId);
   const d = new Disposer();
   const chapter = CHAPTERS.find((c) => c.id === storyChapterId);
+  if (story) {
+    useStorySlot(true);
+    setActiveStoryLevel(story.id);
+    d.add(() => {
+      useStorySlot(false);
+      setActiveStoryLevel(null);
+      // Leaving the table ends the challenge; Quick Play never inherits it.
+      store.dispatch({ type: 'SELECT_STORY_LEVEL', levelId: null, chapterId: null });
+    });
+  }
   const playable = !!gameId && PLAYABLE.includes(gameId);
   let view: { destroy(): void } | null = null;
+
+  function subtitle(): string {
+    if (story) return `${chapter ? `Ch. ${chapter.index} · ` : ''}${story.title} — ${story.objectiveText}`;
+    return `${deck.name} · ${board.name}`;
+  }
 
   // Progress is saved after every round/turn, so leaving never loses it.
   const leave = (then: () => void) => then();
@@ -80,7 +103,7 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
         'div',
         { class: 'table-titles' },
         h('h1', { class: 'screen-title', tabindex: '-1' }, game?.name ?? 'Table'),
-        h('p', { class: 'screen-subtitle' }, chapter ? `Story · ${chapter.title}` : `${deck.name} · ${board.name}`),
+        h('p', { class: 'screen-subtitle' }, subtitle()),
       ),
       hud,
     ),
@@ -89,10 +112,9 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
   );
 
   // ----- Board & deck customisation (live, never touching game state) -----
-  const subtitle = () => (chapter ? `Story · ${chapter.title}` : `${deck.name} · ${board.name}`);
   const paintBoard = () => {
     const st = store.state.settings;
-    board = getBoard(store.state.selection.boardId);
+    board = getBoard(boardIdOf());
     applyBoard(el, stage, board, {
       ambient: st.ambientAnimations && !st.reducedMotion,
       highContrast: st.highContrastTable,
@@ -114,7 +136,7 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
       (st) =>
         `${st.selection.deckId}|${st.selection.cardBack}|${JSON.stringify(st.selection.artVariants)}|${st.profile.ownedVariants.length}`,
       () => {
-        deck = getDeck(deckThemes.safeDeckId(store.state.selection.deckId));
+        deck = getDeck(story ? deckIdOf() : deckThemes.safeDeckId(deckIdOf()));
         theme = deckThemes.resolve(deck.id);
         paintBoard();
         if (currentTable) mount(currentTable);
@@ -140,6 +162,7 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
   /** Option controls for the current game (shared by the new-game and settings dialogs). */
   function optionControls(): { body: HTMLElement; hasOptions: boolean } {
     const s = store.state.settings;
+    if (story) return { hasOptions: false, body: h('p', { class: 'story-objective' }, story.objectiveText) };
     if (gameId === 'klondike') {
       return {
         hasOptions: true,
@@ -208,9 +231,13 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
         { class: 'options-body' },
         body,
         hasOptions ? h('p', { class: 'ask-hint' }, 'Game options apply to your next game.') : null,
-        h('h3', { class: 'options-heading' }, 'Table'),
-        tableCustomizer(store),
-        h('p', { class: 'ask-hint' }, 'Deck, card back and table change right away; your game is untouched.'),
+        ...(story
+          ? [h('p', { class: 'ask-hint' }, 'Story challenges use their own deck and table.')]
+          : [
+              h('h3', { class: 'options-heading' }, 'Table'),
+              tableCustomizer(store),
+              h('p', { class: 'ask-hint' }, 'Deck, card back and table change right away; your game is untouched.'),
+            ]),
       ),
       dismissValue: 'close',
       actions: hasOptions
@@ -331,7 +358,28 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
     return h('div', { class: 'options-body', 'data-options': gameId! }, lineup, ...controls);
   }
 
+  /** A story challenge: always its own verified deal and options. */
+  function createStoryGame(level: StoryLevel): Table {
+    const o = level.setup.options ?? {};
+    const seed = level.setup.seed !== undefined ? { seed: level.setup.seed } : {};
+    let table: Table;
+    if (level.game === 'klondike') table = KlondikeGame.create({ ...seed, draw: o.draw ?? 1 }).table;
+    else if (level.game === 'spider') table = SpiderGame.create({ ...seed, suits: o.suits ?? 1 }).table;
+    else if (level.game === 'freecell') table = FreeCellGame.create(seed).table;
+    else if (level.game === 'war') table = WarGame.create({ opponentId: o.opponent ?? 'jak_gold', ...seed }).table;
+    else
+      table = GoFishGame.create({
+        players: goFishPlayers(o.opponents ?? ['friendly_local']),
+        difficulty: o.difficulty ?? 'easy',
+        ...seed,
+      }).table;
+    table.data.storyLevel = level.id;
+    setLastStoryOutcome(null);
+    return table;
+  }
+
   function createGame(sameDealAs?: Table): Table {
+    if (story) return createStoryGame(story);
     const s = store.state.settings;
     const seed = sameDealAs ? (sameDealAs.data as SolitaireData).seed : nextSeed();
     const seedOpt = seed !== undefined ? { seed } : {};
@@ -371,8 +419,9 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
       theme,
       onNewGame: () => void newGame(false),
       onExit: () => {
-        navigate(AppState.MAIN_MENU);
+        navigate(story ? AppState.STORY_MODE : AppState.MAIN_MENU);
       },
+      labels: story ? { again: 'Play again', exit: 'Story map' } : undefined,
     };
     if (gameId === 'war') view = mountWar({ ...common, game: WarGame.restore(table) });
     else if (gameId === 'go-fish') view = mountGoFish({ ...common, game: GoFishGame.restore(table) });
@@ -396,7 +445,7 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
   }
 
   async function newGame(askOptions: boolean): Promise<void> {
-    if (askOptions && !(await chooseOptions())) {
+    if (askOptions && !story && !(await chooseOptions())) {
       goBack();
       return;
     }
@@ -406,7 +455,12 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
   }
 
   async function start(): Promise<void> {
-    const saved = await saves.load(gameId!);
+    let saved = await saves.load(gameId!);
+    // The story slot only resumes the same challenge.
+    if (saved && story && saved.data.storyLevel !== story.id) {
+      await saves.delete(gameId!);
+      saved = null;
+    }
     if (saved) {
       const sd = saved.data as SolitaireData;
       const detail =

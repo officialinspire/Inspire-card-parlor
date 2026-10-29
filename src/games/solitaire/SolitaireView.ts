@@ -28,6 +28,8 @@ export interface SolitaireViewContext {
   onNewGame: () => void;
   onRestart: () => void;
   onExit: () => void;
+  /** Result-dialog buttons (Story Mode: "Play again" / "Story map"). */
+  labels?: { again: string; exit: string };
 }
 
 interface Pos {
@@ -476,8 +478,8 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
       ),
       dismissValue: 'menu',
       actions: [
-        { label: 'Main menu', value: 'menu', variant: 'ghost' },
-        { label: 'New game', value: 'again', icon: 'play' },
+        { label: ctx.labels?.exit ?? 'Main menu', value: 'menu', variant: 'ghost' },
+        { label: ctx.labels?.again ?? 'New game', value: 'again', icon: 'play' },
       ],
     });
     if (choice === 'again') ctx.onNewGame();

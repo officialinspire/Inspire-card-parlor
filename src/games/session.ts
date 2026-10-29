@@ -1,7 +1,24 @@
 import { SaveStore } from '@/engine';
 
-/** Saved games for the table screens (IndexedDB). */
-export const saves = new SaveStore();
+const store = new SaveStore();
+let slot = 'current';
+
+/**
+ * Saved games for the table screens (IndexedDB). Story challenges play in
+ * their own slot, so a story game never overwrites (or deletes) the game in
+ * progress in Quick Play.
+ */
+export const saves = {
+  save: (table: Parameters<SaveStore['save']>[0]) => store.save(table, slot),
+  load: (gameId: string) => store.load(gameId, slot),
+  delete: (gameId: string) => store.delete(gameId, slot),
+  has: (gameId: string) => store.has(gameId, slot),
+};
+
+/** Switches saving to the story slot (or back to Quick Play with null). */
+export function useStorySlot(on: boolean): void {
+  slot = on ? 'story' : 'current';
+}
 
 /** End-to-end tests can pin the next deal with `window.__ICP_TEST_SEED__`. */
 export function nextSeed(): number | undefined {
