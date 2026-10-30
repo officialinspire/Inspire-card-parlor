@@ -571,7 +571,7 @@
   font-size: max(10px, 0.78em);
 }
 /* Narrow portrait screens: one page at a time, turned with the tabs. */
-@media (max-aspect-ratio: 4/5), (max-width: 560px) {
+@media (max-aspect-ratio: 4/5) and (max-width: 700px), (max-width: 560px) {
   .passport-turn {
     display: flex;
   }

@@ -4,7 +4,7 @@ A cozy collection of classic playing-card games featuring collectible illustrate
 
 **Developer:** OFFICIAL INSPIRE · [www.inspireclothing.art](https://www.inspireclothing.art)
 
-> **Status: v0.11.0 — Audio, achievements and the Passport.** A full music player with six playlists, tactile sound effects with optional haptics, 150 achievements with drawn medals, the Card Parlor Passport, and a card binder for every deck. The seven-chapter story campaign (v0.10) and painted gameboards (v0.9) carry over.
+> **Status: v1.0.0 — first production release.** Five complete card games, eight original illustrated decks, painted gameboards, recorded and generative music, 150 achievements, the Card Parlor Passport and The Card Parlor Chronicles story campaign. Installable and playable offline. **Play:** https://officialinspire.github.io/Inspire-card-parlor/
 
 ## Games
 
@@ -156,7 +156,17 @@ The end-to-end suite runs every flow on a 390×844 phone, a 360×640 small phone
 
 ## Deployment
 
-Pushing to `main` runs `.github/workflows/deploy.yml`, which builds and publishes `dist/` to GitHub Pages. In the repository settings, set **Pages → Source** to **GitHub Actions**. The build uses a relative base path, so it works on both `https://<user>.github.io/<repo>/` and a custom domain.
+Pushing to `main` runs `.github/workflows/deploy.yml`, which type-checks, unit-tests, builds and publishes `dist/` to GitHub Pages at **https://officialinspire.github.io/Inspire-card-parlor/**. In the repository settings, set **Pages → Source** to **GitHub Actions**. Work happens on feature branches, where `.github/workflows/ci.yml` runs the full suite (format, typecheck, unit, deck validation and the Playwright matrix); `main` is the release branch. The build uses a relative base path, so it works on a project site and on a custom domain.
+
+### Offline and updates
+
+The service worker (`public/sw.js`) is stamped at build time with the version and a hash of the built files, and precaches the app plus the artwork a first visit needs (logo, menu paintings, the default deck and table). After one visit the parlor opens and plays offline; other decks, boards and music are cached as they are used. Each release installs a fresh cache and removes the old one. Saves live in `localStorage` and IndexedDB and are never touched by updates (older saves are migrated; see _Reward integrity and saves_).
+
+### Analytics
+
+Anonymous product analytics go to PostHog under the suite id `inspire_card_parlor`: `game_opened`, `game_started`, `game_paused`, `game_resumed`, `game_completed`, `game_over`, `round_started`, `round_completed` (capped per game), `achievement_unlocked`, `high_score_achieved`, `difficulty_selected`, `pwa_installed`, `audio_enabled` and `error_encountered`. Each carries `brand`, `game`, `game_version`, `mode`, `difficulty`, `score`, `duration_seconds`, `achievement`, `source` and `referrer` (host only) where they apply. The only identifier is a random anonymous id; IP geolocation is off; nothing is sent when the player switches _Anonymous usage statistics_ off or the browser sends Do Not Track. Events queue while offline and are retried; analytics never throws into the game.
+
+Set the PostHog project key as the repository variable `POSTHOG_KEY` (and optionally `POSTHOG_HOST`, default `https://us.i.posthog.com`); the deploy workflow passes them to the build as `VITE_POSTHOG_KEY` / `VITE_POSTHOG_HOST`. Without a key, nothing leaves the device.
 
 ## Architecture
 
@@ -180,7 +190,7 @@ Allowed transitions are declared in `src/core/states.ts`; the store rejects anyt
 - `ScreenManager` swaps screens with directional transitions
 - `attachPersistence` hydrates and saves settings/profile
 - `attachAudio` keeps volumes in sync and pauses audio when the tab is hidden
-- `attachAnalytics` logs screen views locally (never sent off-device)
+- `attachAnalytics` logs screen views locally; `attachProductAnalytics` sends anonymous product events to PostHog (see _Analytics_)
 - `attachTheme` reflects settings and orientation onto `<html>` for CSS
 
 ### Directory layout

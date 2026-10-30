@@ -11,6 +11,7 @@ const executablePath = process.env.PW_CHROMIUM_PATH || undefined;
 /** Adult-content edition tests run against a separate build with the edition flag on. */
 const MATURE_SPECS = /\.mature\.spec\.ts$/;
 const PAGES_SPECS = /\.pages\.spec\.ts$/;
+const TABLET_SPECS = /(main-menu|screens|progression|toolbar|solitaire|games|story)\.spec\.ts$/;
 
 export default defineConfig({
   testDir: 'tests/e2e',
@@ -43,6 +44,17 @@ export default defineConfig({
       name: 'desktop',
       testIgnore: [MATURE_SPECS, PAGES_SPECS],
       use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } },
+    },
+    // Tablets: the layout-focused specs (menus, screens, tables, toolbar, progression).
+    {
+      name: 'tablet-portrait',
+      testMatch: TABLET_SPECS,
+      use: { ...devices['Desktop Chrome'], viewport: { width: 820, height: 1180 }, hasTouch: true },
+    },
+    {
+      name: 'tablet-landscape',
+      testMatch: TABLET_SPECS,
+      use: { ...devices['Desktop Chrome'], viewport: { width: 1180, height: 820 }, hasTouch: true },
     },
     {
       name: 'mature-edition',
