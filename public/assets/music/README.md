@@ -1,7 +1,8 @@
 # Recorded music
 
-This folder is for recorded music. None has been uploaded yet; the parlor plays
-its generative (synthesized) tracks until files arrive.
+Recorded music for the parlor's player. The five tracks here were uploaded by
+OFFICIAL INSPIRE (MP3 audio in an MP4 container, hence `.m4a`). Playlists with no
+recording yet are filled by the generative (synthesized) tracks.
 
 To add a track:
 

@@ -4,7 +4,7 @@ export const GAME_IDS: readonly GameId[] = ['klondike', 'spider', 'freecell', 'w
 
 export const DEFAULT_DECK = 'classic';
 export const DEFAULT_BOARD = 'backroom_card_table';
-export const DEFAULT_TRACK = 'lamplight';
+export const DEFAULT_TRACK = 'parlor-menu';
 
 /** Bump when the saved profile's shape changes; `migrateProfile` upgrades older saves. */
 export const PROFILE_SCHEMA = 2;

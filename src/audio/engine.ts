@@ -1,5 +1,5 @@
 import type { Settings } from '@/core/types';
-import { TRACKS, type MusicTrack, type SynthTrack, type Texture } from './tracks';
+import { ALL_TRACKS, type MusicTrack, type SynthTrack, type Texture } from './tracks';
 
 export type Sfx =
   | 'tap'
@@ -52,13 +52,14 @@ class AudioEngine {
   #sfx!: GainNode;
   #settings: VolumeSettings = { masterVolume: 0.8, musicVolume: 0.5, sfxVolume: 0.7, muted: false, musicMuted: false };
   #noise: AudioBuffer | null = null;
-  #track: MusicTrack = TRACKS[0]!;
+  #track: MusicTrack = ALL_TRACKS[0]!;
   #voice: Voice | null = null;
   /** Seconds of the current track already played (before the current run). */
   #elapsedBefore = 0;
   #startedAt = 0;
   #endTimer: ReturnType<typeof setTimeout> | null = null;
   #onEnded: (() => void) | null = null;
+  #onFailed: ((track: MusicTrack) => void) | null = null;
 
   get unlocked(): boolean {
     return this.#ctx?.state === 'running';
@@ -235,6 +236,11 @@ class AudioEngine {
     this.#onEnded = fn;
   }
 
+  /** Called when a recorded track can't be played. */
+  onTrackFailed(fn: ((track: MusicTrack) => void) | null): void {
+    this.#onFailed = fn;
+  }
+
   get track(): MusicTrack {
     return this.#track;
   }
@@ -294,15 +300,22 @@ class AudioEngine {
     this.#startedAt = ctx.currentTime;
     this.#clearEndTimer();
     if (track.kind === 'file') {
-      const el = new Audio(track.src);
+      const el = new Audio(`${import.meta.env.BASE_URL}${track.src}`);
       el.crossOrigin = 'anonymous';
+      el.preload = 'auto';
       el.currentTime = this.#elapsedBefore;
       const src = ctx.createMediaElementSource(el);
       src.connect(gain);
       voice.element = el;
       voice.nodes.push(src);
       el.addEventListener('ended', () => this.#voice === voice && this.#onEnded?.());
-      void el.play().catch(() => undefined);
+      // Missing file or a format this browser can't decode: hand over to the controller.
+      el.addEventListener('error', () => this.#voice === voice && this.#onFailed?.(track));
+      void el.play().catch((e: unknown) => {
+        // Autoplay refusals are retried on the next gesture; real decode errors fire 'error'.
+        if (e instanceof DOMException && e.name === 'NotSupportedError' && this.#voice === voice)
+          this.#onFailed?.(track);
+      });
     } else {
       this.#texture(voice, track.texture ?? 'none');
       this.#schedule(voice, track);

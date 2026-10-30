@@ -1,14 +1,18 @@
 import type { Store } from '@/core/store';
 import type { Settings } from '@/core/types';
 import { audio } from './engine';
-import { getTrack, type MusicCategoryId } from './tracks';
+import { getTrack, markUnavailable, type MusicCategoryId, type MusicTrack } from './tracks';
+
+const DEFAULT_SYNTH = 'lamplight';
 import { nextInPlaylist, previousInPlaylist, type PlaylistState } from './playlist';
 
 export { audio } from './engine';
 export type { Sfx } from './engine';
 export { gameSound, onGameSound, type GameSound } from './gameSounds';
 export {
-  TRACKS,
+  ALL_TRACKS,
+  playableTracks,
+  markUnavailable,
   MUSIC_CATEGORIES,
   RECORDED_TRACKS,
   getTrack,
@@ -87,11 +91,22 @@ function onTrackEnd(): void {
   setSettings({ musicTrack: id });
 }
 
+/** A recorded track that can't play leaves the library for this session; the music moves on. */
+function onTrackFailed(track: MusicTrack): void {
+  if (!bound) return;
+  markUnavailable(track.id);
+  const s = bound.state.settings;
+  if (s.musicTrack !== track.id) return;
+  const id = nextInPlaylist(track.id, playlistState(s), { manual: true, recent: history });
+  setSettings({ musicTrack: id && id !== track.id ? id : getTrack(DEFAULT_SYNTH).id });
+}
+
 /** Keeps the audio engine in sync with settings and page visibility. */
 export function attachAudio(store: Store): void {
   bound = store;
   audio.configure(store.state.settings);
   audio.onTrackEnd(onTrackEnd);
+  audio.onTrackFailed(onTrackFailed);
   store.select(
     (s) => s.settings,
     (settings) => audio.configure(settings),

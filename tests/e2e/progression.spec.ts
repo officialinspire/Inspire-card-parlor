@@ -27,7 +27,7 @@ test('music player: play/pause, next/previous, shuffle, repeat, playlists, volum
   await clickNav(page, 'SETTINGS');
   await page.locator(`${CURRENT} [data-tab="music"]`).click();
   const player = page.locator(`${CURRENT} [data-music-player]`);
-  await expect(player.locator('[data-value="track-title"]')).toHaveText('Lamplight Shuffle');
+  await expect(player.locator('[data-value="track-title"]')).toHaveText('Inspire Card Parlor Menu Track');
 
   const toggle = player.locator('[data-action="music-toggle"]');
   await expect(toggle).toHaveAttribute('data-state', 'playing');
@@ -38,9 +38,9 @@ test('music player: play/pause, next/previous, shuffle, repeat, playlists, volum
   await expect(toggle).toHaveAttribute('data-state', 'playing');
 
   await player.locator('[data-action="music-next"]').click();
-  await expect(player.locator('[data-value="track-title"]')).toHaveText('Corner Café');
+  await expect(player.locator('[data-value="track-title"]')).toHaveText('Downtown FXBG Saturday Walk');
   await player.locator('[data-action="music-prev"]').click();
-  await expect(player.locator('[data-value="track-title"]')).toHaveText('Lamplight Shuffle');
+  await expect(player.locator('[data-value="track-title"]')).toHaveText('Inspire Card Parlor Menu Track');
 
   const shuffle = player.locator('[data-action="music-shuffle"]');
   await shuffle.click();
@@ -73,7 +73,7 @@ test('music keeps playing from the menus into a game, and a pause is remembered'
   await seed(page, { settings: { warSpeed: 'instant' } });
   await enterParlor(page);
   await page.locator(`${CURRENT} [data-action="next-track"]`).click();
-  await expect(page.locator(`${CURRENT} [data-value="music"]`)).toHaveText('Corner Café');
+  await expect(page.locator(`${CURRENT} [data-value="music"]`)).toHaveText('Downtown FXBG Saturday Walk');
   await page.evaluate(() => {
     const s = (window as unknown as { __ICP__: { store: { dispatch(a: unknown): void } } }).__ICP__.store;
     s.dispatch({ type: 'SELECT_GAME', gameId: 'war' });
@@ -82,12 +82,12 @@ test('music keeps playing from the menus into a game, and a pause is remembered'
   });
   await expectScreen(page, 'GAMEPLAY');
   await page.locator('[data-dialog-action="deal"]').click();
-  expect((await state(page)).settings).toMatchObject({ musicTrack: 'corner-cafe', musicPaused: false });
+  expect((await state(page)).settings).toMatchObject({ musicTrack: 'fxbg-saturday-walk', musicPaused: false });
   // The table's More panel opens the same player.
   await page.locator(`${CURRENT} [data-action="more"]`).click();
   await page.locator(`${CURRENT} [data-action="music-player"]`).click();
   const dialog = page.locator('.dialog-music');
-  await expect(dialog.locator('[data-value="track-title"]')).toHaveText('Corner Café');
+  await expect(dialog.locator('[data-value="track-title"]')).toHaveText('Downtown FXBG Saturday Walk');
   await dialog.locator('[data-action="music-toggle"]').click();
   await page.locator('[data-dialog-action]').last().click();
   await page.waitForTimeout(400);

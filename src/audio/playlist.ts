@@ -1,4 +1,4 @@
-import { TRACKS, tracksIn, type MusicCategoryId } from './tracks';
+import { playableTracks, tracksIn, type MusicCategoryId } from './tracks';
 
 /**
  * Pure playlist rules for the music player: which track comes next or
@@ -15,7 +15,7 @@ export interface PlaylistState {
 
 export function playlist(category: PlaylistState['category']): string[] {
   const ids = tracksIn(category).map((t) => t.id);
-  return ids.length ? ids : TRACKS.map((t) => t.id);
+  return ids.length ? ids : playableTracks().map((t) => t.id);
 }
 
 /**

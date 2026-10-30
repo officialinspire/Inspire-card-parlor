@@ -285,23 +285,88 @@ export const SYNTH_TRACKS: readonly SynthTrack[] = [
 ];
 
 /**
- * Recorded music. Add an entry for each uploaded file, e.g.
- *   { kind: 'file', id: 'downtown-1', title: '…', mood: '…', category: 'downtown-jazz',
- *     duration: 0, src: 'assets/music/downtown-1.mp3', artist: '…' }
- * Leave this empty until real files exist — the player never lists a missing file.
+ * Recorded music, uploaded by OFFICIAL INSPIRE (each file's own artist tag reads
+ * "officialinspire"). To add more, put the file in public/assets/music and add
+ * an entry here; the player never lists a file that isn't there. A file the
+ * browser can't play is dropped from the library for the session and the
+ * player moves on.
  */
-export const RECORDED_TRACKS: readonly FileTrack[] = [];
+export const RECORDED_TRACKS: readonly FileTrack[] = [
+  {
+    kind: 'file',
+    id: 'parlor-menu',
+    title: 'Inspire Card Parlor Menu Track',
+    mood: 'The parlor theme',
+    category: 'lofi-card-table',
+    duration: 181,
+    src: 'assets/music/inspire-card-parlor-menu-track.m4a',
+    artist: 'OFFICIAL INSPIRE',
+  },
+  {
+    kind: 'file',
+    id: 'fxbg-saturday-walk',
+    title: 'Downtown FXBG Saturday Walk',
+    mood: 'A stroll down Caroline Street',
+    category: 'downtown-jazz',
+    duration: 170,
+    src: 'assets/music/downtown-fxbg-saturday-walk.m4a',
+    artist: 'OFFICIAL INSPIRE',
+  },
+  {
+    kind: 'file',
+    id: 'fxbg-after-dark',
+    title: 'Downtown Fredericksburg After Dark',
+    mood: 'Lamplit streets',
+    category: 'downtown-jazz',
+    duration: 179,
+    src: 'assets/music/downtown-fredericksburg-after-dark.m4a',
+    artist: 'OFFICIAL INSPIRE',
+  },
+  {
+    kind: 'file',
+    id: 'silent-study-hours',
+    title: 'Silent Study Hours',
+    mood: 'Quiet & focused',
+    category: 'lofi-card-table',
+    duration: 173,
+    src: 'assets/music/silent-study-hours.m4a',
+    artist: 'OFFICIAL INSPIRE',
+  },
+  {
+    kind: 'file',
+    id: 'shadows-of-the-occult',
+    title: 'Shadows of the Occult',
+    mood: 'Dark & mysterious',
+    category: 'midnight-solitaire',
+    duration: 178,
+    src: 'assets/music/shadows-of-the-occult.m4a',
+    artist: 'OFFICIAL INSPIRE',
+  },
+];
 
-export const TRACKS: readonly MusicTrack[] = [...RECORDED_TRACKS, ...SYNTH_TRACKS];
+/** Recorded tracks that failed to load this session (unsupported format, missing file, offline). */
+const unavailable = new Set<string>();
+export const markUnavailable = (id: string) => void unavailable.add(id);
 
-export const getTrack = (id: string): MusicTrack => TRACKS.find((t) => t.id === id) ?? TRACKS[0]!;
+/** Every track in the library, recorded first. */
+export const ALL_TRACKS: readonly MusicTrack[] = [...RECORDED_TRACKS, ...SYNTH_TRACKS];
+
+/** The playable library: every track except recorded ones that failed to load this session. */
+export const playableTracks = (): MusicTrack[] => ALL_TRACKS.filter((t) => !unavailable.has(t.id));
+
+/** Looks a track up; unknown or unplayable ids fall back to the first playable track. */
+export const getTrack = (id: string): MusicTrack => {
+  const list = playableTracks();
+  return list.find((t) => t.id === id) ?? list[0]!;
+};
 
 export const getCategory = (id: string): MusicCategory | undefined => MUSIC_CATEGORIES.find((c) => c.id === id);
 
 export const tracksIn = (category: MusicCategoryId | 'all'): MusicTrack[] =>
-  category === 'all' ? [...TRACKS] : TRACKS.filter((t) => t.category === category);
+  category === 'all' ? playableTracks() : playableTracks().filter((t) => t.category === category);
 
 export function nextTrackId(id: string, step = 1): string {
-  const i = TRACKS.findIndex((t) => t.id === id);
-  return TRACKS[(i + step + TRACKS.length) % TRACKS.length]!.id;
+  const list = playableTracks();
+  const i = list.findIndex((t) => t.id === id);
+  return list[(i + step + list.length) % list.length]!.id;
 }

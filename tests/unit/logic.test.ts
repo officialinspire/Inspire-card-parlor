@@ -3,7 +3,7 @@ import { computeGrid } from '@/components/Paginator';
 import { grantXp, isDeckUnlocked, isBoardUnlocked, xpForLevel } from '@/progression/levels';
 import { createDefaultProfile } from '@/core/defaults';
 import { resolveTheme } from '@/themes/theme';
-import { getTrack, nextTrackId, TRACKS } from '@/audio/tracks';
+import { getTrack, nextTrackId, ALL_TRACKS as TRACKS } from '@/audio/tracks';
 import { migrateProfile, attachPersistence } from '@/storage/persistence';
 import { Store } from '@/core/store';
 import { GAMES } from '@/games/registry';

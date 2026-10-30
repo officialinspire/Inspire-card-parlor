@@ -1,5 +1,15 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { MUSIC_CATEGORIES, RECORDED_TRACKS, TRACKS, getTrack, tracksIn } from '@/audio/tracks';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+import {
+  ALL_TRACKS as TRACKS,
+  MUSIC_CATEGORIES,
+  RECORDED_TRACKS,
+  getTrack,
+  markUnavailable,
+  playableTracks,
+  tracksIn,
+} from '@/audio/tracks';
 import { nextInPlaylist, nextRepeat, playlist, previousInPlaylist } from '@/audio/playlist';
 import { store } from '@/core/store';
 import { AppState } from '@/core/states';
@@ -19,10 +29,22 @@ describe('music library', () => {
     expect(new Set(TRACKS.map((t) => t.id)).size).toBe(TRACKS.length);
   });
 
-  it('keeps the original track ids (saved settings) and lists no recorded file that was not uploaded', () => {
+  it('keeps the original track ids (saved settings) and lists only recorded files that exist', () => {
     for (const id of ['lamplight', 'window-rain', 'corner-cafe', 'midnight-tea']) expect(getTrack(id).id).toBe(id);
-    expect(RECORDED_TRACKS).toEqual([]);
+    expect(RECORDED_TRACKS.length).toBe(5);
+    for (const t of RECORDED_TRACKS) {
+      expect(existsSync(join('public', t.src)), t.src).toBe(true);
+      expect(t.artist).toBe('OFFICIAL INSPIRE');
+    }
     expect(getTrack('no-such-track').id).toBe(TRACKS[0]!.id);
+  });
+
+  it('drops a recorded track that cannot play, falling back to playable music', () => {
+    expect(playableTracks().some((t) => t.id === 'shadows-of-the-occult')).toBe(true);
+    markUnavailable('shadows-of-the-occult');
+    expect(playableTracks().some((t) => t.id === 'shadows-of-the-occult')).toBe(false);
+    expect(tracksIn('midnight-solitaire').map((t) => t.id)).toEqual(['midnight-tea', 'last-hand']);
+    expect(getTrack('shadows-of-the-occult').id).toBe(TRACKS[0]!.id);
   });
 });
 

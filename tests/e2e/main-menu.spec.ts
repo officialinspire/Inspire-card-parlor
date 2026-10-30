@@ -30,7 +30,7 @@ test('shows every menu entry and the player status', async ({ page }) => {
   await expect(page.locator(`${CURRENT} h1 img.brand-logo`)).toHaveAttribute('alt', 'INSPIRE Card Parlor');
   await expect(page.locator(`${CURRENT} [data-value="deck"]`)).toHaveText('BlackJak Standard');
   await expect(page.locator(`${CURRENT} [data-value="board"]`)).toHaveText('Backroom Card Table');
-  await expect(page.locator(`${CURRENT} [data-value="music"]`)).toHaveText('Lamplight Shuffle');
+  await expect(page.locator(`${CURRENT} [data-value="music"]`)).toHaveText('Inspire Card Parlor Menu Track');
 });
 
 test('fits the viewport without scrolling', async ({ page }) => {
@@ -65,9 +65,9 @@ test('status chips open the collection and gameboards', async ({ page }) => {
 test('the next-track button changes the music shown', async ({ page }) => {
   const label = page.locator(`${CURRENT} [data-value="music"]`);
   await page.locator(`${CURRENT} [data-action="next-track"]`).click();
-  await expect(label).toHaveText('Corner Café');
+  await expect(label).toHaveText('Downtown FXBG Saturday Walk');
   await page.locator(`${CURRENT} [data-action="next-track"]`).click();
-  await expect(label).toHaveText('River at Dawn');
+  await expect(label).toHaveText('Downtown Fredericksburg After Dark');
 });
 
 test('Escape goes back from inner screens', async ({ page }) => {
