@@ -141,6 +141,7 @@ test('achievements: 150 with medals, rarity, progress and dates; secrets stay hi
 });
 
 test('an achievement earned at the table waits for the hand to end, then toasts', async ({ page }) => {
+  test.slow(); // plays a whole game of War
   await seed(page, { settings: { warSpeed: 'instant' } });
   await enterParlor(page);
   await page.evaluate(() => {
