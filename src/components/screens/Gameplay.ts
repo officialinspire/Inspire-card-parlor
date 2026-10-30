@@ -12,6 +12,7 @@ import { goFishPlayers } from '@/story/players';
 import { RULES } from '@/games/rules';
 import { nextSeed, saves, setTableInfo, useStorySlot } from '@/games/session';
 import { setPlayInProgress } from '@/progression/announcer';
+import { gameEvent } from '@/analytics/productEvents';
 import { PERSONALITIES, getPersonality } from '@/games/cpu/personalities';
 import { WarGame } from '@/games/war/WarGame';
 import { mountWar } from '@/games/war/WarView';
@@ -445,6 +446,7 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
   async function restartDeal(): Promise<void> {
     if (!currentTable) return;
     const table = createGame(currentTable);
+    gameEvent('game_started', { start: 'restart' });
     await saves.save(table);
     mount(table);
   }
@@ -455,6 +457,7 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
       return;
     }
     const table = createGame();
+    gameEvent('game_started', { start: 'new' });
     await saves.save(table);
     mount(table);
   }
@@ -484,7 +487,10 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
           { label: 'Resume', value: 'resume', icon: 'play' },
         ],
       });
-      if (choice === 'resume') return mount(saved);
+      if (choice === 'resume') {
+        gameEvent('game_resumed', { start: 'saved_game' });
+        return mount(saved);
+      }
       if (SOLITAIRE.includes(gameId!) && sd.moves > 0 && !sd.won) {
         recordGameResult(store, { gameId: gameId!, outcome: 'loss', score: sd.score, durationMs: sd.elapsedMs });
       }
@@ -496,6 +502,7 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
   return {
     el,
     mount() {
+      if (playable) gameEvent('game_opened');
       if (playable) void start();
       else goBack();
     },

@@ -7,6 +7,8 @@ import { createDefaultProfile, createDefaultSelection, DEFAULT_SETTINGS } from '
 import { resetAllData } from '@/storage/persistence';
 import { fullscreen } from '@/utils/device';
 import { haptic, hapticsSupported } from '@/utils/haptics';
+import { analyticsConfigured } from '@/analytics/posthog';
+import { canInstall, promptInstall } from '@/utils/install';
 import { audio } from '@/audio';
 import { musicPlayer } from '../musicPlayer';
 import { segmented, slider, toggle } from '../controls';
@@ -210,12 +212,27 @@ export const SettingsScreen: ScreenFactory = ({ store }) => {
       label: 'Data',
       render: () =>
         panel(
-          toggle(
-            'On-device analytics',
-            s().analyticsEnabled,
-            (v) => set({ analyticsEnabled: v }),
-            'Stored locally only, never sent anywhere',
+          tagged(
+            toggle(
+              'Anonymous usage statistics',
+              s().analyticsEnabled,
+              (v) => set({ analyticsEnabled: v }),
+              analyticsConfigured()
+                ? 'Anonymous game events (no names or personal data) help improve the parlor.'
+                : 'Kept on this device only.',
+            ),
+            'analyticsEnabled',
           ),
+          canInstall()
+            ? button(
+                'Install the parlor',
+                async (e) => {
+                  const btn = e.currentTarget as HTMLElement;
+                  if (await promptInstall()) btn.remove();
+                },
+                { variant: 'secondary', icon: 'expand', attrs: { 'data-action': 'install' } },
+              )
+            : null,
           button(
             'Reset all progress',
             async () => {

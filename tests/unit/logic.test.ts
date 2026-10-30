@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { computeGrid } from '@/components/Paginator';
+import { computeGrid, dotWindow } from '@/components/Paginator';
 import { grantXp, isDeckUnlocked, isBoardUnlocked, xpForLevel } from '@/progression/levels';
 import { createDefaultProfile } from '@/core/defaults';
 import { resolveTheme } from '@/themes/theme';
@@ -7,6 +7,14 @@ import { getTrack, nextTrackId, ALL_TRACKS as TRACKS } from '@/audio/tracks';
 import { migrateProfile, attachPersistence } from '@/storage/persistence';
 import { Store } from '@/core/store';
 import { GAMES } from '@/games/registry';
+
+describe('dotWindow', () => {
+  it('keeps the first and last pages and five around the current one', () => {
+    expect(dotWindow(0, 25)).toEqual([0, 1, 2, 3, 4, 24]);
+    expect(dotWindow(12, 25)).toEqual([0, 10, 11, 12, 13, 14, 24]);
+    expect(dotWindow(24, 25)).toEqual([0, 20, 21, 22, 23, 24]);
+  });
+});
 
 describe('computeGrid', () => {
   const tile = { minTileWidth: 150, minTileHeight: 200, gap: 10 };

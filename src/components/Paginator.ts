@@ -23,6 +23,16 @@ export interface PaginatorOptions<T> {
   onPageChange?: (page: number, pages: number) => void;
 }
 
+const MAX_DOTS = 9;
+
+/** Page dots to show when there are too many for one row: ends plus the current neighbourhood. */
+export function dotWindow(page: number, pages: number): number[] {
+  const set = new Set([0, pages - 1]);
+  const from = clamp(page - 2, 0, pages - 5);
+  for (let i = from; i < from + 5; i++) set.add(i);
+  return [...set].filter((i) => i >= 0 && i < pages).sort((a, b) => a - b);
+}
+
 export interface GridLayout {
   cols: number;
   rows: number;
@@ -122,21 +132,30 @@ export function paginator<T>(opts: PaginatorOptions<T>) {
     prev.disabled = page === 0;
     next.disabled = page >= pages - 1;
     status.textContent = `Page ${page + 1} of ${pages}`;
+    // Many pages: the first, the last and the current neighbourhood, so the row never overflows.
+    const shown = pages <= MAX_DOTS ? Array.from({ length: pages }, (_, i) => i) : dotWindow(page, pages);
     dots.replaceChildren(
-      ...Array.from({ length: pages }, (_, i) =>
-        h('button', {
-          type: 'button',
-          class: `pager-dot${i === page ? ' active' : ''}`,
-          'aria-current': i === page ? 'page' : null,
-          'aria-label': `Page ${i + 1} of ${pages}`,
-          'data-pager': `dot-${i}`,
-          onclick: () => {
-            audio.play('flip');
-            go(i);
-          },
-        }),
-      ),
+      ...shown
+        .map((i, k) =>
+          i - (shown[k - 1] ?? i - 1) > 1
+            ? [h('span', { class: 'pager-gap', 'aria-hidden': 'true' }, '…'), dotButton(i)]
+            : [dotButton(i)],
+        )
+        .flat(),
     );
+    function dotButton(i: number) {
+      return h('button', {
+        type: 'button',
+        class: `pager-dot${i === page ? ' active' : ''}`,
+        'aria-current': i === page ? 'page' : null,
+        'aria-label': `Page ${i + 1} of ${pages}`,
+        'data-pager': `dot-${i}`,
+        onclick: () => {
+          audio.play('flip');
+          go(i);
+        },
+      });
+    }
     opts.onPageChange?.(page, pages);
   }
 

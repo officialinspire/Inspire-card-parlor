@@ -1,3 +1,4 @@
+import { gameEvent } from '@/analytics/productEvents';
 import { h } from '@/utils/dom';
 import type { Store } from '@/core/store';
 import { cardRenderer } from '@/decks';
@@ -212,6 +213,7 @@ export function mountGoFish(ctx: GoFishViewContext) {
 
   function setPaused(p: boolean): void {
     if (game.isOver) return;
+    if (p !== paused) gameEvent(p ? 'game_paused' : 'game_resumed');
     paused = p;
     render();
   }
@@ -487,11 +489,13 @@ export function mountGoFish(ctx: GoFishViewContext) {
     if (!pick || destroyed || !isMyTurn()) return;
     busy = true;
     render();
+    gameEvent('round_started', { round: game.data.turns + 1 });
     try {
       await perform(human.id, pick.target, pick.rank);
     } finally {
       busy = false;
     }
+    gameEvent('round_completed', { round: game.data.turns });
     await continuePlay();
   }
 

@@ -212,7 +212,7 @@
   padding: 0;
   display: flex;
   gap: 4px;
-  font-size: 0.78em;
+  font-size: max(10px, 0.78em);
   font-weight: 800;
   color: var(--ink-faint);
   counter-reset: step;
@@ -517,7 +517,7 @@ button.tile:active {
   flex: 1;
 }
 .tile-kicker {
-  font-size: 0.7em;
+  font-size: max(10px, 0.7em);
   font-weight: 800;
   color: var(--gold-deep);
   letter-spacing: var(--label-track);
@@ -569,7 +569,7 @@ button.tile:active {
   align-items: center;
   padding: 2px 9px;
   border-radius: var(--radius-pill);
-  font-size: 0.72em;
+  font-size: max(10px, 0.72em);
   font-weight: 800;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -684,7 +684,7 @@ button.tile:active {
   font-variant-numeric: tabular-nums;
 }
 .stat-label {
-  font-size: 0.68em;
+  font-size: max(10px, 0.68em);
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: var(--label-track);
@@ -1056,7 +1056,7 @@ button.tile:active {
   line-height: 1.25;
 }
 .toast-celebrate .toast-text small {
-  font-size: 0.68em;
+  font-size: max(10px, 0.68em);
   letter-spacing: var(--label-track);
   text-transform: uppercase;
   color: var(--gold-deep);
@@ -1442,4 +1442,20 @@ button.tile:active {
   50% {
     transform: rotate(12deg);
   }
+}
+.pager-gap {
+  align-self: center;
+  color: var(--ink-faint);
+  font-weight: 800;
+  padding: 0 2px;
+}
+/* A tab strip wider than the screen fades out where more tabs continue. */
+.tabs-strip[data-more-end='true'] {
+  mask-image: linear-gradient(90deg, #000 calc(100% - 36px), transparent);
+}
+.tabs-strip[data-more-start='true'] {
+  mask-image: linear-gradient(90deg, transparent, #000 36px);
+}
+.tabs-strip[data-more-start='true'][data-more-end='true'] {
+  mask-image: linear-gradient(90deg, transparent, #000 36px, #000 calc(100% - 36px), transparent);
 }

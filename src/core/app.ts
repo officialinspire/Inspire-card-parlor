@@ -8,6 +8,9 @@ import { attachAudio } from '@/audio';
 import { setGameHaptics } from '@/audio/gameSounds';
 import { haptic } from '@/utils/haptics';
 import { attachAnalytics, track } from '@/analytics/analytics';
+import { attachProductAnalytics } from '@/analytics/productEvents';
+import { recentEvents } from '@/analytics/posthog';
+import { attachInstallPrompt } from '@/utils/install';
 import { attachTheme } from '@/themes/theme';
 import { attachDeckThemes } from '@/decks';
 import { ScreenManager } from '@/components/ScreenManager';
@@ -34,6 +37,8 @@ export async function startApp(mount: HTMLElement): Promise<void> {
   attachAudio(store);
   setGameHaptics((kind) => haptic(kind));
   attachAnalytics(store);
+  attachProductAnalytics(store);
+  attachInstallPrompt();
 
   trackViewport(() => store.dispatch({ type: 'SET_ORIENTATION', orientation: getOrientation() }));
   store.dispatch({ type: 'SET_ONLINE', online: navigator.onLine });
@@ -78,6 +83,8 @@ export async function startApp(mount: HTMLElement): Promise<void> {
     __ICP__: {
       store,
       navigate,
+      // Product events captured this session (what would be sent to PostHog).
+      analytics: recentEvents,
       // The campaign's challenges, so tests can launch each one.
       story: ALL_LEVELS.map((l) => ({
         id: l.id,

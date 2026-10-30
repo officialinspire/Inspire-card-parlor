@@ -60,6 +60,7 @@ class AudioEngine {
   #endTimer: ReturnType<typeof setTimeout> | null = null;
   #onEnded: (() => void) | null = null;
   #onFailed: ((track: MusicTrack) => void) | null = null;
+  #unlockListener: (() => void) | null = null;
 
   get unlocked(): boolean {
     return this.#ctx?.state === 'running';
@@ -87,6 +88,17 @@ class AudioEngine {
       this.#applyVolumes();
     }
     if (this.#ctx.state === 'suspended') await this.#ctx.resume().catch(() => undefined);
+    if (this.unlocked && this.#unlockListener) {
+      const fn = this.#unlockListener;
+      this.#unlockListener = null;
+      fn();
+    }
+  }
+
+  /** Called once, the first time sound is allowed to play. */
+  onUnlock(fn: () => void): void {
+    if (this.unlocked) fn();
+    else this.#unlockListener = fn;
   }
 
   configure(settings: VolumeSettings): void {

@@ -1,5 +1,7 @@
 {
+  "id": "./",
   "name": "INSPIRE CARD PARLOR",
+  "lang": "en",
   "short_name": "Card Parlor",
   "description": "A cozy collection of classic playing-card games by OFFICIAL INSPIRE.",
   "start_url": "./",

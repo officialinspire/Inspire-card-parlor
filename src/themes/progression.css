@@ -312,7 +312,7 @@
 }
 .achievement-bar small,
 .achievement-date {
-  font-size: 0.75em;
+  font-size: max(10px, 0.75em);
   color: var(--ink-faint);
   white-space: nowrap;
   font-weight: 800;
@@ -467,7 +467,7 @@
   font-size: clamp(1.4em, 4.5vmin, 2em);
 }
 .passport-seal small {
-  font-size: 0.65em;
+  font-size: max(10px, 0.65em);
   letter-spacing: var(--label-track);
   text-transform: uppercase;
   font-weight: 800;
@@ -482,7 +482,7 @@
 .passport-name > small:first-child {
   letter-spacing: var(--label-track);
   text-transform: uppercase;
-  font-size: 0.68em;
+  font-size: max(10px, 0.68em);
   font-weight: 800;
   color: #5f8a6e;
 }
@@ -568,7 +568,7 @@
 }
 .passport-latest small {
   color: #6a5f53;
-  font-size: 0.78em;
+  font-size: max(10px, 0.78em);
 }
 /* Narrow portrait screens: one page at a time, turned with the tabs. */
 @media (max-aspect-ratio: 4/5), (max-width: 560px) {
@@ -627,7 +627,7 @@
   border-radius: 8px;
 }
 .tile-extras {
-  font-size: 0.72em;
+  font-size: max(10px, 0.72em);
   color: var(--accent);
   font-weight: 800;
 }

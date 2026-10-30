@@ -1,3 +1,4 @@
+import { gameEvent } from '@/analytics/productEvents';
 import { h } from '@/utils/dom';
 import type { Store } from '@/core/store';
 import type { GameId } from '@/core/types';
@@ -390,6 +391,7 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
 
   function setPaused(p: boolean): void {
     if (game.data.won) return;
+    if (p !== paused) gameEvent(p ? 'game_paused' : 'game_resumed');
     paused = p;
     selection = null;
     board.classList.toggle('paused', p);

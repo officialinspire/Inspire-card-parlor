@@ -1,3 +1,4 @@
+import { gameEvent } from '@/analytics/productEvents';
 import { h } from '@/utils/dom';
 import type { Store } from '@/core/store';
 import { cardRenderer } from '@/decks';
@@ -240,6 +241,7 @@ export function mountWar(ctx: WarViewContext) {
   /** Pausing stops Auto Play and holds the table until Resume. */
   function setPaused(p: boolean): void {
     if (game.isOver) return;
+    if (p !== paused) gameEvent(p ? 'game_paused' : 'game_resumed');
     paused = p;
     if (p) auto = false;
     renderStatic();
@@ -250,6 +252,7 @@ export function mountWar(ctx: WarViewContext) {
     busy = true;
     playBtn.disabled = true;
     try {
+      gameEvent('round_started', { round: game.data.round + 1 });
       const round = game.playRound();
       renderStatic();
       await showBattle(round);
@@ -260,6 +263,7 @@ export function mountWar(ctx: WarViewContext) {
         youSlot.classList.add('settled');
       }
       renderStatic();
+      gameEvent('round_completed', { round: game.data.round, winner: round.winner ?? 'draw' });
       if (game.isOver) await finish();
       else await saves.save(game.table);
     } finally {

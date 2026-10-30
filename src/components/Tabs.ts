@@ -58,9 +58,35 @@ export function tabs(defs: TabDef[], opts: { initial?: string; onChange?: (id: s
     cleanup = (content as HTMLElement & { destroy?: () => void }).destroy ?? null;
     panel.setAttribute('aria-labelledby', `tab-${id}`);
     panel.replaceChildren(content);
+    // Keep the chosen tab in view when the strip scrolls sideways.
+    const btn = buttons[defs.findIndex((d) => d.id === id)]!;
+    requestAnimationFrame(() => {
+      if (strip.scrollWidth <= strip.clientWidth) return;
+      const left = btn.offsetLeft - strip.offsetLeft;
+      if (left < strip.scrollLeft || left + btn.offsetWidth > strip.scrollLeft + strip.clientWidth)
+        strip.scrollTo({ left: left - (strip.clientWidth - btn.offsetWidth) / 2 });
+      edges();
+    });
     opts.onChange?.(id);
   }
 
+  /** Fades the strip's edges where more tabs continue off screen. */
+  function edges(): void {
+    const more = strip.scrollWidth - strip.clientWidth;
+    strip.dataset.moreStart = String(more > 1 && strip.scrollLeft > 1);
+    strip.dataset.moreEnd = String(more > 1 && strip.scrollLeft < more - 1);
+  }
+  strip.addEventListener('scroll', edges, { passive: true });
+  const ro = typeof ResizeObserver === 'function' ? new ResizeObserver(edges) : null;
+  ro?.observe(strip);
+
   select(active);
-  return { el, select, destroy: () => cleanup?.() };
+  return {
+    el,
+    select,
+    destroy: () => {
+      ro?.disconnect();
+      cleanup?.();
+    },
+  };
 }

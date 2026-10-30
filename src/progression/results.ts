@@ -5,6 +5,7 @@ import { evaluateAchievements } from '@/achievements/engine';
 import { gamesToday, journalForGame, localDay, type GameRecord } from '@/achievements/journal';
 import { tableInfo } from '@/games/session';
 import { setPlayInProgress } from './announcer';
+import { gameEvent } from '@/analytics/productEvents';
 import { grantXp } from './levels';
 import { applyStoryResult, type StoryOutcome } from '@/story/progress';
 import { activeStoryLevel, setLastStoryOutcome } from '@/story/session';
@@ -103,6 +104,19 @@ export function recordGameResult(store: Store, r: GameResult): ResultSummary {
   summary.achievements = evaluateAchievements(store);
   summary.xp += summary.achievements.reduce((n, id) => n + (getAchievement(id)?.xp ?? 0), 0);
   summary.levelUp = store.state.profile.level > levelBefore;
+  // Product analytics: the outcome, and a new personal best.
+  const before = profile.stats[r.gameId];
+  const after = stats[r.gameId];
+  const props = {
+    score: r.score,
+    duration_seconds: Math.round(r.durationMs / 1000),
+    outcome: r.outcome,
+  };
+  gameEvent(r.outcome === 'win' ? 'game_completed' : 'game_over', props);
+  const betterScore = r.score != null && before.bestScore != null && after.bestScore! > before.bestScore;
+  const betterTime = r.outcome === 'win' && before.bestTimeMs != null && after.bestTimeMs! < before.bestTimeMs;
+  if (betterScore || betterTime)
+    gameEvent('high_score_achieved', { ...props, record: betterScore ? 'best_score' : 'best_time' });
   // The hand is over: held toasts may show now.
   setPlayInProgress(false);
   return summary;
