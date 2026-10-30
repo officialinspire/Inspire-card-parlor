@@ -178,7 +178,10 @@ def extras(
         # A blob as tall as a face card but several cards wide is touching
         # cards. A landscape-printed back is wide too, but much shorter.
         card_w, card_h = card
-        k = round(w / card_w) if h > card_h * 0.85 and w > card_w * 1.6 else 1
+        # Jokers and backs may be printed larger than the faces, so judge how many
+        # cards a blob holds from a card of the blob's own height, not a face's width.
+        own_w = card_w * (h / card_h)
+        k = round(w / own_w) if h > card_h * 0.85 and w > own_w * 1.6 else 1
         if k > 1:
             cuts = column_cuts(fg[top:], int(y), int(y + h), k, int(x), int(x + w))
             found += [(cuts[j], int(y) + top, cuts[j + 1], int(y + h) + top) for j in range(k)]

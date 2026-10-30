@@ -6,7 +6,7 @@
  *   npm run validate:decks -- --strict  # treat missing art as an error
  *   npm run validate:decks -- --json
  */
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { allDecks } from '../src/decks/registry';
 import { validateDeckFiles, validateRegistry } from '../src/decks/validation';
@@ -42,6 +42,21 @@ for (const r of reports) {
   for (const p of checkAtlasReport(report, size)) {
     r.issues.push({ level: 'error', code: `atlas.${p.code}`, message: p.message });
     r.ok = false;
+  }
+  // Backs are cut from the same sheets: each must be a whole, upright card
+  // (a sliver or a half card means the cut went wrong).
+  const dir = join(publicDir, deck.assets.basePath);
+  for (const file of readdirSync(dir).filter((f) => /^back(_.+)?\.webp$/.test(f))) {
+    const { width, height } = webpSize(readFileSync(join(dir, file)));
+    const ratio = width / height;
+    if (ratio < 0.55 || ratio > 0.85) {
+      r.issues.push({
+        level: 'error',
+        code: 'atlas.back-shape',
+        message: `${file} is ${width}×${height} (ratio ${ratio.toFixed(2)}); a card back should be about 5:7.`,
+      });
+      r.ok = false;
+    }
   }
   r.atlas = {
     verifiedFaces: Object.keys(report.frames).length,
