@@ -5,7 +5,8 @@ import { navigate, store } from '@/core/store';
 import { deckThemes, getDeck } from '@/decks';
 import { allBoards, getBoard } from '@/boards/registry';
 import { boardSwatch } from '@/boards/BoardRenderer';
-import { audio, getTrack, nextTrackId } from '@/audio';
+import { audio, getTrack, music } from '@/audio';
+import { openMusicPlayer } from '../musicPlayer';
 import { levelProgress } from '@/progression/levels';
 import { collectionProgress } from '@/progression/collection';
 import { resolveTheme } from '@/themes/theme';
@@ -54,15 +55,15 @@ function playerStatus(): HTMLElement {
     h('button', {
       type: 'button',
       class: 'status-pill status-level',
-      'data-nav': AppState.STATISTICS,
+      'data-nav': AppState.PASSPORT,
       'data-status': 'level',
-      onclick: go(AppState.STATISTICS),
+      onclick: go(AppState.PASSPORT),
     }),
     (s) => s.profile,
     (el, p) => {
       const lp = levelProgress(p);
       el.title = `Level ${lp.level} — ${lp.current} / ${lp.needed} XP`;
-      el.setAttribute('aria-label', `Player level ${lp.level}, ${lp.current} of ${lp.needed} XP`);
+      el.setAttribute('aria-label', `Player level ${lp.level}, ${lp.current} of ${lp.needed} XP — open your Passport`);
       el.replaceChildren(ring(lp.ratio, String(lp.level)), h('span', { class: 'status-caption' }, 'Level'));
     },
   );
@@ -166,25 +167,39 @@ function setupChips(): HTMLElement {
 function nowPlaying(): HTMLElement {
   return live(
     h('div', { class: 'menu-music', 'data-status': 'music' }),
-    (s) => s.settings.musicTrack,
-    (el, id) => {
+    (s) => `${s.settings.musicTrack}|${s.settings.musicPaused}`,
+    (el) => {
+      const { musicTrack: id, musicPaused: paused } = store.state.settings;
       el.replaceChildren(
-        icon('music'),
+        iconButton(paused ? 'play' : 'pause', paused ? 'Play music' : 'Pause music', () => music.toggle(), {
+          size: 'sm',
+          sfx: null,
+          variant: 'ghost',
+          class: 'status-play',
+          attrs: { 'data-action': 'music-toggle' },
+        }),
         h(
-          'span',
-          { class: 'menu-music-title', 'aria-live': 'polite' },
+          'button',
+          {
+            type: 'button',
+            class: 'menu-music-title',
+            'aria-live': 'polite',
+            title: 'Open the music player',
+            'data-action': 'music-player',
+            onclick: () => {
+              audio.play('tap');
+              void openMusicPlayer();
+            },
+          },
           h('span', { 'data-value': 'music' }, getTrack(id).title),
         ),
-        iconButton(
-          'next',
-          'Next track',
-          () => {
-            void audio
-              .unlock()
-              .then(() => store.dispatch({ type: 'UPDATE_SETTINGS', patch: { musicTrack: nextTrackId(id) } }));
-          },
-          { size: 'sm', sfx: null, variant: 'ghost', class: 'status-next', attrs: { 'data-action': 'next-track' } },
-        ),
+        iconButton('next', 'Next track', () => music.next(), {
+          size: 'sm',
+          sfx: null,
+          variant: 'ghost',
+          class: 'status-next',
+          attrs: { 'data-action': 'next-track' },
+        }),
       );
     },
   );
@@ -238,7 +253,16 @@ export const MainMenuScreen: ScreenFactory = () => {
     h(
       'div',
       { class: 'menu-layout' },
-      h('h1', { class: 'menu-title screen-title', tabindex: '-1' }, brandLogo('menu-logo')),
+      h(
+        'h1',
+        {
+          class: 'menu-title screen-title',
+          tabindex: '-1',
+          // A little secret: knock on the sign.
+          onclick: () => store.dispatch({ type: 'JOURNAL', update: { add: { 'logo.taps': 1 } } }),
+        },
+        brandLogo('menu-logo'),
+      ),
       h('div', { class: 'menu-top' }, playerStatus(), fullscreenButton()),
       h('div', { class: 'menu-stage' }, environmentToggle()),
       h(

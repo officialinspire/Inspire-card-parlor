@@ -77,7 +77,8 @@ export function grantRewards(
   rewards: readonly StoryReward[],
 ): { patch: Partial<Profile>; granted: StoryReward[] } {
   const story = storyOf(profile);
-  let { credits, unlockedDecks, unlockedBoards, ownedVariants, unlockedAchievements } = profile;
+  let { credits, unlockedDecks, unlockedBoards, ownedVariants } = profile;
+  const { unlockedAchievements } = profile;
   let stamps = story.stamps;
   let xp = 0;
   const granted: StoryReward[] = [];
@@ -104,11 +105,9 @@ export function grantRewards(
         if (!stamps.includes(r.id)) ((stamps = [...stamps, r.id]), granted.push(r));
         break;
       case 'achievement':
-        if (!unlockedAchievements.includes(r.id) && ACHIEVEMENTS.some((a) => a.id === r.id)) {
-          unlockedAchievements = [...unlockedAchievements, r.id];
-          xp += ACHIEVEMENTS.find((a) => a.id === r.id)!.xp;
-          granted.push(r);
-        }
+        // Listed for the reward screen only: the achievement engine unlocks it (with its date
+        // and XP) as soon as its condition — finishing the chapter — is met, exactly once.
+        if (!unlockedAchievements.includes(r.id) && ACHIEVEMENTS.some((a) => a.id === r.id)) granted.push(r);
         break;
     }
   }
@@ -119,7 +118,6 @@ export function grantRewards(
       unlockedDecks,
       unlockedBoards,
       ownedVariants,
-      unlockedAchievements,
       ...levelled,
       story: { ...story, stamps },
     },

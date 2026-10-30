@@ -104,8 +104,27 @@ describe('music tracks', () => {
 
 describe('persistence', () => {
   it('migrates legacy coins to credits', () => {
-    expect(migrateProfile({ coins: 40 })).toEqual({ credits: 40 });
-    expect(migrateProfile({ coins: 40, credits: 7 })).toEqual({ credits: 7 });
+    expect(migrateProfile({ coins: 40 })).toMatchObject({ credits: 40 });
+    expect(migrateProfile({ coins: 40, credits: 7 })).toMatchObject({ credits: 7 });
+    expect(migrateProfile({ coins: 40 })).not.toHaveProperty('coins');
+  });
+
+  it('upgrades older saves safely: de-duplicated lists, version stamp, journal', () => {
+    const m = migrateProfile({
+      credits: 10,
+      unlockedDecks: ['classic', 'inspire', 'classic'],
+      unlockedAchievements: ['first-win', 'first-win', 42 as unknown as string],
+      favoriteDecks: 'oops' as unknown as string[],
+    });
+    expect(m.unlockedDecks).toEqual(['classic', 'inspire']);
+    expect(m.unlockedAchievements).toEqual(['first-win']);
+    expect(m).not.toHaveProperty('favoriteDecks');
+    expect(m.schemaVersion).toBe(2);
+    expect(m.journal?.counters.visits).toBe(1);
+    // A current save passes through unchanged (and an empty one stays empty of progress).
+    const current = migrateProfile({ schemaVersion: 2, credits: 5, journal: { counters: { games: 3 }, seen: {} } });
+    expect(current.journal).toEqual({ counters: { games: 3 }, seen: {} });
+    expect(migrateProfile({}).journal).toBeUndefined();
   });
 
   it('restores and saves the last selections', () => {

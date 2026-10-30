@@ -1,6 +1,10 @@
 import type { Store } from '@/core/store';
-import type { GameId, GameStats, Profile } from '@/core/types';
-import { ACHIEVEMENTS } from '@/achievements/registry';
+import type { GameId, GameStats } from '@/core/types';
+import { getAchievement } from '@/achievements/registry';
+import { evaluateAchievements } from '@/achievements/engine';
+import { gamesToday, journalForGame, localDay, type GameRecord } from '@/achievements/journal';
+import { tableInfo } from '@/games/session';
+import { setPlayInProgress } from './announcer';
 import { grantXp } from './levels';
 import { applyStoryResult, type StoryOutcome } from '@/story/progress';
 import { activeStoryLevel, setLastStoryOutcome } from '@/story/session';
@@ -12,8 +16,11 @@ export interface GameResult {
   score?: number;
   durationMs: number;
   /** Extra facts for achievements. */
-  details?: { warsLost?: number; books?: number; suits?: number; usedCell?: boolean };
+  details?: GameRecord['details'];
   at?: Date;
+  /** Deck and board used (defaults to the table in play, then the player's selection). */
+  deckId?: string;
+  boardId?: string;
 }
 
 export interface ResultSummary {
@@ -42,52 +49,46 @@ export function applyResult(stats: GameStats, r: GameResult): GameStats {
   };
 }
 
-/** Pure: achievements newly earned by this result. */
-export function earnedAchievements(profile: Profile, stats: Record<GameId, GameStats>, r: GameResult): string[] {
-  const has = new Set(profile.unlockedAchievements);
-  const out: string[] = [];
-  const earn = (id: string, cond: boolean) =>
-    cond && !has.has(id) && ACHIEVEMENTS.some((a) => a.id === id) && out.push(id);
-  const won = r.outcome === 'win';
-  const totalWins = Object.values(stats).reduce((n, s) => n + s.won, 0);
-  earn('first-win', won && totalWins >= 1);
-  earn(
-    'win-streak-5',
-    Object.values(stats).some((s) => s.currentStreak >= 5),
-  );
-  earn('klondike-10', stats.klondike.won >= 10);
-  earn('war-flawless', won && r.gameId === 'war' && (r.details?.warsLost ?? 0) === 0);
-  earn('gofish-sweep', r.gameId === 'go-fish' && (r.details?.books ?? 0) >= 7);
-  earn('spider-4suit', won && r.gameId === 'spider' && r.details?.suits === 4);
-  earn('freecell-nocell', won && r.gameId === 'freecell' && r.details?.usedCell === false);
-  const hour = (r.at ?? new Date()).getHours();
-  earn('night-owl', hour < 4);
-  return out;
-}
-
 /** Records a finished game: statistics, XP, credits and achievements. */
 export function recordGameResult(store: Store, r: GameResult): ResultSummary {
   const profile = store.state.profile;
+  const at = r.at ?? new Date();
   const stats = { ...profile.stats, [r.gameId]: applyResult(profile.stats[r.gameId], r) };
-  const achievements = earnedAchievements(profile, stats, r);
-  const bonusXp = achievements.reduce((n, id) => n + (ACHIEVEMENTS.find((a) => a.id === id)?.xp ?? 0), 0);
   const base = REWARDS[r.outcome];
-  const xp = base.xp + bonusXp + (r.gameId === 'go-fish' ? (r.score ?? 0) * 2 : 0);
-  const levelled = grantXp(profile, xp);
+  const xp = base.xp + (r.gameId === 'go-fish' ? (r.score ?? 0) * 2 : 0);
+  const levelBefore = profile.level;
   store.dispatch({
     type: 'UPDATE_PROFILE',
-    patch: {
-      stats,
-      ...levelled,
-      credits: profile.credits + base.credits,
-      unlockedAchievements: [...profile.unlockedAchievements, ...achievements],
-    },
+    patch: { stats, ...grantXp(profile, xp), credits: profile.credits + base.credits },
   });
+
+  // The journal: everything about this game that achievements care about.
+  const { settings, selection } = store.state;
+  const table = tableInfo();
+  store.dispatch({
+    type: 'JOURNAL',
+    update: journalForGame({
+      gameId: r.gameId,
+      outcome: r.outcome,
+      durationMs: r.durationMs,
+      at,
+      deckId: r.deckId ?? table?.deckId ?? selection.deckId,
+      boardId: r.boardId ?? table?.boardId ?? selection.boardId,
+      story: !!activeStoryLevel(),
+      silent: settings.muted || settings.masterVolume === 0,
+      leftHanded: settings.leftHanded,
+      details: r.details ?? {},
+      lossStreak: profile.journal?.counters['streak.loss'] ?? 0,
+      gamesToday: gamesToday(profile.journal, at),
+      today: localDay(at),
+    }),
+  });
+
   const summary: ResultSummary = {
     xp,
     credits: base.credits,
-    achievements,
-    levelUp: levelled.level > profile.level,
+    achievements: [],
+    levelUp: false,
     stats: stats[r.gameId],
   };
   // A story challenge: score it against its objective and pay its rewards (once).
@@ -98,5 +99,11 @@ export function recordGameResult(store: Store, r: GameResult): ResultSummary {
     setLastStoryOutcome(outcome);
     summary.story = outcome;
   }
+  // Achievements (each unlocks once; their XP is paid when they unlock).
+  summary.achievements = evaluateAchievements(store);
+  summary.xp += summary.achievements.reduce((n, id) => n + (getAchievement(id)?.xp ?? 0), 0);
+  summary.levelUp = store.state.profile.level > levelBefore;
+  // The hand is over: held toasts may show now.
+  setPlayInProgress(false);
   return summary;
 }

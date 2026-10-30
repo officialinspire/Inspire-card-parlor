@@ -983,7 +983,7 @@ button.tile:active {
   pointer-events: none;
 }
 .toast {
-  pointer-events: auto;
+  pointer-events: none;
   position: relative;
   display: flex;
   align-items: center;
@@ -999,11 +999,14 @@ button.tile:active {
     var(--elev-3);
   font-weight: 700;
   text-align: left;
-  cursor: pointer;
   animation: toast-in var(--dur-slow) var(--ease-spring);
   transition:
     opacity var(--dur),
     transform var(--dur) var(--ease);
+}
+.toast-sticky {
+  pointer-events: auto;
+  cursor: pointer;
 }
 .toast .icon {
   color: var(--toast-accent, var(--sky));

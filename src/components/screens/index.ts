@@ -12,6 +12,7 @@ import { GameboardsScreen } from './Gameboards';
 import { AchievementsScreen } from './Achievements';
 import { SettingsScreen } from './Settings';
 import { StatisticsScreen } from './Statistics';
+import { PassportScreen } from './Passport';
 
 /** BOOT has no screen: it runs before the stage exists, then hands off to INITIALIZATION. */
 export const SCREENS: ScreenRegistry = {
@@ -27,4 +28,5 @@ export const SCREENS: ScreenRegistry = {
   [AppState.ACHIEVEMENTS]: AchievementsScreen,
   [AppState.SETTINGS]: SettingsScreen,
   [AppState.STATISTICS]: StatisticsScreen,
+  [AppState.PASSPORT]: PassportScreen,
 };

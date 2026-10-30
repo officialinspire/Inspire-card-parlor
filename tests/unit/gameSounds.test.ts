@@ -24,13 +24,15 @@ describe('game sound hooks', () => {
       'card_shuffle',
       'valid_move',
       'invalid_move',
+      'war_battle',
+      'go_fish_ask',
       'victory',
     ] as const) {
       now += 5000;
       gameSound(e);
       flush();
     }
-    expect(played).toEqual(['flip', 'deal', 'slide', 'shuffle', 'place', 'error', 'victory']);
+    expect(played).toEqual(['flip', 'deal', 'slide', 'shuffle', 'valid', 'error', 'war', 'ask', 'victory']);
   });
 
   it('plays one sound for one move even when several hooks fire', () => {
@@ -38,14 +40,14 @@ describe('game sound hooks', () => {
     gameSound('valid_move');
     gameSound('valid_move');
     flush();
-    expect(played).toEqual(['place']);
+    expect(played).toEqual(['valid']);
   });
 
   it('keeps distinct sounds of the same action (a move that turns a card)', () => {
     gameSound('valid_move');
     gameSound('card_flip');
     flush();
-    expect(played).toEqual(['place', 'flip']);
+    expect(played).toEqual(['valid', 'flip']);
   });
 
   it('lets an invalid move or a victory speak for the whole action', () => {
@@ -76,7 +78,7 @@ describe('game sound hooks', () => {
     gameSound('valid_move');
     expect(played).toEqual([]);
     await Promise.resolve();
-    expect(played).toEqual(['place']);
+    expect(played).toEqual(['valid']);
   });
 
   it('reports every event to listeners, played or not', () => {

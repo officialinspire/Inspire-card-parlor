@@ -6,6 +6,9 @@ export const DEFAULT_DECK = 'classic';
 export const DEFAULT_BOARD = 'backroom_card_table';
 export const DEFAULT_TRACK = 'lamplight';
 
+/** Bump when the saved profile's shape changes; `migrateProfile` upgrades older saves. */
+export const PROFILE_SCHEMA = 2;
+
 export const DEFAULT_SETTINGS: Settings = {
   masterVolume: 0.8,
   musicVolume: 0.5,
@@ -13,6 +16,11 @@ export const DEFAULT_SETTINGS: Settings = {
   muted: false,
   musicMuted: false,
   musicTrack: DEFAULT_TRACK,
+  musicPaused: false,
+  musicShuffle: false,
+  musicRepeat: 'all',
+  musicCategory: 'all',
+  haptics: true,
   theme: 'auto',
   reducedMotion: false,
   leftHanded: false,
@@ -46,6 +54,9 @@ export function createDefaultProfile(): Profile {
     unlockedDecks: [DEFAULT_DECK, 'inspire'],
     unlockedBoards: [DEFAULT_BOARD, 'picnic_table'],
     unlockedAchievements: [],
+    achievementDates: {},
+    journal: { counters: {}, seen: {} },
+    schemaVersion: PROFILE_SCHEMA,
     storyChapter: 0,
     story: { completed: [], rewarded: [], stamps: [], introsSeen: [], attempts: {} },
     favoriteDecks: [],

@@ -1,7 +1,12 @@
 import { h } from '@/utils/dom';
 import { fullscreen, getOrientation, trackViewport } from '@/utils/device';
 import { attachPersistence } from '@/storage/persistence';
+import { attachAchievements, evaluateAchievements } from '@/achievements/engine';
+import { attachJournalTracking } from '@/achievements/tracking';
+import { attachAnnouncer } from '@/progression/announcer';
 import { attachAudio } from '@/audio';
+import { setGameHaptics } from '@/audio/gameSounds';
+import { haptic } from '@/utils/haptics';
 import { attachAnalytics, track } from '@/analytics/analytics';
 import { attachTheme } from '@/themes/theme';
 import { attachDeckThemes } from '@/decks';
@@ -18,9 +23,16 @@ import { APP } from './config';
 /** BOOT: wire every subsystem to the store, build the shell, then start loading. */
 export async function startApp(mount: HTMLElement): Promise<void> {
   attachPersistence(store);
+  // Progression: toasts, achievements and the journal. Progress earned before this
+  // version (or while offline) unlocks quietly, summarized in one toast.
+  attachAnnouncer(store);
+  attachAchievements(store);
+  attachJournalTracking(store);
+  evaluateAchievements(store, { silent: true });
   attachDeckThemes(store);
   attachTheme(store);
   attachAudio(store);
+  setGameHaptics((kind) => haptic(kind));
   attachAnalytics(store);
 
   trackViewport(() => store.dispatch({ type: 'SET_ORIENTATION', orientation: getOrientation() }));

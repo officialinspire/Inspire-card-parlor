@@ -4,7 +4,7 @@ A cozy collection of classic playing-card games featuring collectible illustrate
 
 **Developer:** OFFICIAL INSPIRE · [www.inspireclothing.art](https://www.inspireclothing.art)
 
-> **Status: v0.10.0 — The Card Parlor Chronicles.** A seven-chapter story campaign with 35 challenges across all five games, verified-winnable deals, passport stamps and one-time collectible rewards. Painted gameboards, a compact in-game toolbar, card animations and per-game layouts for phones, tablets and desktops carry over from v0.9.
+> **Status: v0.11.0 — Audio, achievements and the Passport.** A full music player with six playlists, tactile sound effects with optional haptics, 150 achievements with drawn medals, the Card Parlor Passport, and a card binder for every deck. The seven-chapter story campaign (v0.10) and painted gameboards (v0.9) carry over.
 
 ## Games
 
@@ -81,6 +81,28 @@ Every chapter also stamps the **passport**; chapters 1, 4 and 7 award story achi
 - **Saves.** Older saves keep everything (`profile.storyChapter` is never lowered). Story games use their own save slot, so they never overwrite a Quick Play game.
 - **Artwork.** Chapter art reuses the decks' and tables' own images. The Builders chapter shows a labelled "Freemasonry artwork coming soon" placeholder until that art is supplied. No artwork is attributed to an artist beyond the credits already on file.
 
+## Music, sound and haptics
+
+- **Music player** (Settings → Music, the main menu's now-playing strip, and **More → Music player** at a table): play/pause, next/previous, track selection, shuffle, repeat (playlist / track / off), volume and mute. Six playlists: **Downtown Jazz, Rappahannock Morning, Woodland Ambience, Casino Lounge, Lo-Fi Card Table, Midnight Solitaire**.
+- **The music is generative.** No recorded music has been uploaded yet, so every track is synthesized in the browser (chords, bells, a plucked bass and ambient textures such as rain, river water, wind and tape crackle). `src/audio/tracks.ts` is a ready registry: add an entry to `RECORDED_TRACKS` for each file placed in `public/assets/music` and it appears in the player. No file is listed until it exists.
+- **Transitions.** Tracks crossfade; pausing fades out. Music carries on from menus into games and back, and a pause is remembered (also across reloads). Sound starts only after the first tap or key, as browsers require.
+- **Sound effects** for button presses, card flips, shuffles, placements, valid and invalid moves, War battles, Go Fish requests, victories, achievements, deck unlocks and level-ups. Effects sit well above the music, and everything passes through a limiter so stacked sounds never clip.
+- **Haptics** (Settings → Audio → Haptic feedback): short vibrations for wins, wars and mistakes on devices that support them. On by default where available; never used while the page is hidden.
+
+## Achievements, progression and the Passport
+
+- **150 achievements** in ten categories: General, Klondike, Spider, FreeCell, War, Go Fish, Story, Collection, Exploration and Secrets. Each has a stable id, a name, its unlock condition, a drawn medal (vector art, no emoji) whose metal shows its **rarity** (common → legendary), a **progress** bar, its XP, and the **date** it was earned. Secrets stay hidden until found.
+- **How they unlock.** Achievements read the profile and a _journal_ of lifetime counters (`src/achievements/journal.ts`): wins per mode, wars won, books collected, decks and boards played on, screens visited, playlists heard and so on. The engine (`src/achievements/engine.ts`) unlocks anything whose condition is met, stamps the date and pays its XP, exactly once.
+- **Toasts never interrupt a game.** Unlocks earned during a hand wait until it ends (or the player leaves the table), then appear as small medal toasts with a sound and an optional vibration. A burst is summarized, and nothing is dropped.
+- **Deck and board unlocks** and **level-ups** are announced the same way.
+- **The Card Parlor Passport** (tap the level ring on the main menu): level, experience, credits, games played and won, favorite game and deck, story chapters completed, passport stamps and achievement progress by rarity. Phones show it one page at a time; wider screens show the open booklet.
+- **Collection.** Deck tiles show the uploaded preview artwork, the artist credit, unlock status, available card backs and alternate art, and a favorite star. The **Card Binder** pages through every card of any deck in nine-pocket sheets that turn like a binder's; tap a card to flip it over.
+
+### Reward integrity and saves
+
+- Achievements, decks, boards, artwork and story rewards are each keyed, so nothing is paid twice.
+- Saves carry a schema version. When an older save loads, a copy is kept (`icp:profile-backup-v1`), lists are de-duplicated, and malformed values fall back to defaults; nothing else is changed. Achievements a returning player already qualifies for unlock quietly, with one summary toast. Achievements earned before dates were recorded show "Earlier".
+
 ## Tech stack
 
 - [Vite](https://vite.dev) + TypeScript (strict), no UI framework
@@ -146,7 +168,7 @@ All navigation flows through a single centralized store (`src/core/store.ts`). T
 BOOT → INITIALIZATION → MAIN_MENU
 MAIN_MENU ⇄ GAME_SELECTION → DECK_SELECTION → BOARD_SELECTION → GAMEPLAY
 MAIN_MENU ⇄ STORY_MODE → GAMEPLAY
-MAIN_MENU ⇄ COLLECTION | GAMEBOARDS | ACHIEVEMENTS | SETTINGS | STATISTICS
+MAIN_MENU ⇄ COLLECTION | GAMEBOARDS | ACHIEVEMENTS | SETTINGS | STATISTICS | PASSPORT
 ```
 
 Allowed transitions are declared in `src/core/states.ts`; the store rejects anything else. A history stack powers "back" (button, Escape key), and returning to the main menu clears it.

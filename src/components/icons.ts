@@ -42,6 +42,21 @@ const PATHS = {
   focus:
     '<path d="M4 9V5a1 1 0 0 1 1-1h4M15 4h4a1 1 0 0 1 1 1v4M20 15v4a1 1 0 0 1-1 1h-4M9 20H5a1 1 0 0 1-1-1v-4"/><circle cx="12" cy="12" r="2.5"/>',
   speed: '<path d="M5 17a8 8 0 1 1 14 0"/><path d="M12 13l4-4"/>',
+  shuffle:
+    '<path d="M4 7h3c4 0 6 10 10 10h3M4 17h3c1.5 0 2.7-1.4 3.7-3.2M13.3 10.2C14.3 8.4 15.5 7 17 7h3"/><path d="M18 4.5L20.5 7 18 9.5M18 14.5l2.5 2.5-2.5 2.5"/>',
+  repeat:
+    '<path d="M5 11V9a2 2 0 0 1 2-2h11"/><path d="M15.5 4.5L18 7l-2.5 2.5"/><path d="M19 13v2a2 2 0 0 1-2 2H6"/><path d="M8.5 19.5L6 17l2.5-2.5"/>',
+  repeatOne:
+    '<path d="M5 11V9a2 2 0 0 1 2-2h11"/><path d="M15.5 4.5L18 7l-2.5 2.5"/><path d="M19 13v2a2 2 0 0 1-2 2H6"/><path d="M8.5 19.5L6 17l2.5-2.5"/><path d="M11.5 10.5l1-.5v4"/>',
+  volume: '<path d="M4 10v4h3.5L12 18V6L7.5 10z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/>',
+  mute: '<path d="M4 10v4h3.5L12 18V6L7.5 10z"/><path d="M16 9.5l5 5M21 9.5l-5 5"/>',
+  heart: '<path d="M12 19s-7-4.4-7-9.5A3.8 3.8 0 0 1 12 7.6a3.8 3.8 0 0 1 7 1.9C19 14.6 12 19 12 19z"/>',
+  passport:
+    '<rect x="5" y="3.5" width="14" height="17" rx="2"/><circle cx="12" cy="10.5" r="3.2"/><path d="M8.8 10.5h6.4M12 7.3c-1 1-1 5.4 0 6.4M12 7.3c1 1 1 5.4 0 6.4M9 17h6"/>',
+  binder:
+    '<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M12 4v16"/><rect x="6" y="7" width="4" height="5.5" rx=".6"/><rect x="14" y="7" width="4" height="5.5" rx=".6"/><path d="M6 15.5h4M14 15.5h4"/>',
+  vibrate: '<rect x="8" y="4" width="8" height="16" rx="1.6"/><path d="M5 8v8M19 8v8M2.5 10v4M21.5 10v4"/>',
+  list: '<path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r=".9"/><circle cx="4.5" cy="12" r=".9"/><circle cx="4.5" cy="18" r=".9"/>',
 } as const;
 
 export type IconName = keyof typeof PATHS;

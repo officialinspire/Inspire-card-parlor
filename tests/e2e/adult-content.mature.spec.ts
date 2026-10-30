@@ -34,7 +34,7 @@ test('adult decks stay off by default and refuse anyone who may be under age', a
   await expect(toggle.locator('input')).not.toBeChecked();
   await toggle.click();
   await answerAgeGate(page, 17);
-  await expect(page.locator('.toast')).toContainText('only available to adults');
+  await expect(page.locator('.toast', { hasText: 'only available to adults' })).toBeVisible();
   await expect(toggle.locator('input')).not.toBeChecked();
 
   // Locked for the rest of the session: no second chance at the question.

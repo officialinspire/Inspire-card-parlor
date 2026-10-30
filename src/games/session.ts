@@ -27,3 +27,10 @@ export function nextSeed(): number | undefined {
 }
 
 export const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, Math.max(0, ms)));
+
+/** The deck and board on the table right now (story challenges bring their own), for results and achievements. */
+let table: { deckId: string; boardId: string } | null = null;
+export const setTableInfo = (info: { deckId: string; boardId: string } | null) => {
+  table = info;
+};
+export const tableInfo = () => table;

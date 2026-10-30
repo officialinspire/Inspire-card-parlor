@@ -14,8 +14,6 @@ import { say } from '@/components/SpeechBubble';
 import { button } from '@/components/ui';
 import { pauseVeil, setTool, toolButton, type GameToolbar } from '@/components/gameToolbar';
 import { confirmDialog, openDialog } from '@/components/Dialog';
-import { celebrate as announceUnlock } from '@/components/Notifications';
-import { ACHIEVEMENTS } from '@/achievements/registry';
 import { WarGame, type WarRound, type WarSide } from './WarGame';
 
 export type WarSpeed = 'slow' | 'normal' | 'fast' | 'instant';
@@ -138,7 +136,7 @@ export function mountWar(ctx: WarViewContext) {
       if (i > 0) {
         banner.textContent = 'WAR!';
         banner.classList.add('is-war');
-        gameSound('card_shuffle');
+        gameSound('war_battle');
         // The field jolts as the war is declared.
         if (!instant) {
           field.classList.remove('war-clash');
@@ -324,11 +322,13 @@ export function mountWar(ctx: WarViewContext) {
       gameId: 'war',
       outcome,
       durationMs: Date.now() - game.data.startedAt,
-      details: { warsLost: game.data.warsLost },
+      details: {
+        warsLost: game.data.warsLost,
+        warsWon: game.data.warsWon ?? 0,
+        rounds: game.data.round,
+        opponent: game.data.opponentId,
+      },
     });
-    for (const id of summary.achievements) {
-      announceUnlock('Achievement unlocked', ACHIEVEMENTS.find((a) => a.id === id)?.name ?? id);
-    }
     if (outcome === 'win') {
       celebrate();
       gameSound('victory');

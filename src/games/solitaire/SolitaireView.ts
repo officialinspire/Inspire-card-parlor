@@ -9,8 +9,7 @@ import { victoryShower } from '@/components/celebration';
 import { button } from '@/components/ui';
 import { moreItem, setTool, toolButton, type GameToolbar } from '@/components/gameToolbar';
 import { confirmDialog, openDialog } from '@/components/Dialog';
-import { celebrate as announceUnlock, notify } from '@/components/Notifications';
-import { ACHIEVEMENTS } from '@/achievements/registry';
+import { notify } from '@/components/Notifications';
 import { recordGameResult } from '@/progression/results';
 import { saves, sleep } from '../session';
 import type { BoardMove, SolitaireGame } from './SolitaireGame';
@@ -353,6 +352,7 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
     if (paused || busy) return;
     selection = null;
     if (game.undo()) {
+      game.data.undos = Number(game.data.undos ?? 0) + 1;
       gameSound('card_move');
       render();
       void saves.save(game.table);
@@ -372,6 +372,7 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
       return;
     }
     audio.play('tap');
+    game.data.hints = Number(game.data.hints ?? 0) + 1;
     if (hnt.kind === 'stock') {
       slots.get('stock')!.dataset.hint = 'target';
       for (const e of board.querySelectorAll<HTMLElement>('.sol-card[data-pile="stock"]')) e.dataset.hint = 'target';
@@ -444,11 +445,15 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
       outcome: 'win',
       score: game.data.score,
       durationMs: game.data.elapsedMs,
-      details: { ...(spider ? { suits: spider.suits } : {}), ...(freecell ? { usedCell: !!game.data.usedCell } : {}) },
+      details: {
+        ...(spider ? { suits: spider.suits } : {}),
+        ...(freecell ? { usedCell: !!game.data.usedCell } : {}),
+        ...(gameId === 'klondike' ? { draw: Number(game.data.draw ?? 1) } : {}),
+        undos: Number(game.data.undos ?? 0),
+        hints: Number(game.data.hints ?? 0),
+        moves: game.data.moves,
+      },
     });
-    for (const id of summary.achievements) {
-      announceUnlock('Achievement unlocked', ACHIEVEMENTS.find((a) => a.id === id)?.name ?? id);
-    }
     celebrate();
     gameSound('victory');
     await sleep(store.state.settings.reducedMotion ? 100 : 1000);

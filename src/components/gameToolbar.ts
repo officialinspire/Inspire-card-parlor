@@ -4,6 +4,7 @@ import { audio, type Sfx } from '@/audio';
 import { fullscreen, isStandalone } from '@/utils/device';
 import { icon, type IconName } from './icons';
 import { live } from './live';
+import { openMusicPlayer } from './musicPlayer';
 import { notify } from './Notifications';
 
 /**
@@ -143,6 +144,15 @@ export function gameToolbar(store: Store, opts: GameToolbarOptions): GameToolbar
     { class: 'more-panel', role: 'menu', 'aria-label': 'More', hidden: true, 'data-more-panel': '' },
     opts.onRules ? moreItem('info', 'How to play', () => opts.onRules!(), 'rules') : null,
     opts.onStats ? moreItem('stats', 'Statistics', () => opts.onStats!(), 'game-stats') : null,
+    moreItem(
+      'music',
+      'Music player',
+      () => {
+        setOpen(false);
+        void openMusicPlayer();
+      },
+      'music-player',
+    ),
     gameMore,
     isStandalone() && !fullscreen.supported() ? null : screenItem(),
     (() => {

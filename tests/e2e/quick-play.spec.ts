@@ -63,7 +63,7 @@ test('locked decks explain how to unlock them', async ({ page }) => {
   await clickNav(page, 'GAME_SELECTION');
   await playGame(page, 'spider');
   await clickInPager(page, '[data-deck="fredericksburg"]');
-  await expect(page.locator('.toast')).toContainText('Reach level 3');
+  await expect(page.locator('.toast', { hasText: 'Reach level 3' })).toBeVisible();
   await expect(await revealInPager(page, '[data-deck="classic"]')).toHaveAttribute('aria-pressed', 'true');
 });
 

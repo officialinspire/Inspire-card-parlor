@@ -41,7 +41,8 @@ describe('game results', () => {
       details: { warsLost: 0 },
       at: noon,
     });
-    expect(r.achievements.sort()).toEqual(['first-win', 'war-flawless']);
+    expect(r.achievements).toEqual(expect.arrayContaining(['first-win', 'war-1', 'war-flawless']));
+    expect(store.state.profile.achievementDates['war-flawless']).toBeTypeOf('number');
     expect(store.state.profile.stats.war).toMatchObject({ played: 1, won: 1 });
     expect(store.state.profile.credits).toBe(credits + 30);
     expect(store.state.profile.unlockedAchievements).toContain('first-win');

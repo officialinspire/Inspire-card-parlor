@@ -9,7 +9,7 @@ test('collection: inspect a deck and equip it', async ({ page }) => {
   const dialog = page.getByRole('dialog');
   await expect(dialog).toContainText('Fredericksburg');
   await page.locator('[data-dialog-action="use"]').click();
-  await expect(page.locator('.toast')).toContainText('Fredericksburg');
+  await expect(page.locator('.toast', { hasText: 'Fredericksburg' })).toBeVisible();
   await clickNav(page, 'home', 'MAIN_MENU');
   await expect(page.locator(`${CURRENT} [data-value="deck"]`)).toHaveText('Fredericksburg Heritage');
 });
@@ -43,7 +43,7 @@ test('story: first chapter starts a game, later chapters are locked', async ({ p
   await enterParlor(page);
   await clickNav(page, 'STORY_MODE');
   await page.locator(`${CURRENT} [data-chapter="chapter-2"]`).click();
-  await expect(page.locator('.toast')).toContainText('Finish Chapter 1');
+  await expect(page.locator('.toast', { hasText: 'Finish Chapter 1' })).toBeVisible();
   await expectScreen(page, 'STORY_MODE');
   await page.locator(`${CURRENT} [data-chapter="chapter-1"]`).click();
   await page.locator('[data-dialog-action="skip"]').click();
@@ -61,6 +61,7 @@ test('settings: every tab renders and the music track can be picked', async ({ p
     await expect(page.locator(`${CURRENT} .settings-panel`)).toBeVisible();
   }
   await page.locator(`${CURRENT} [data-tab="music"]`).click();
+  await page.locator(`${CURRENT} [data-category="midnight-solitaire"]`).click();
   await page.locator(`${CURRENT} [data-track="midnight-tea"]`).click();
   await expect(page.locator(`${CURRENT} [data-track="midnight-tea"]`)).toHaveAttribute('aria-checked', 'true');
   await clickNav(page, 'home', 'MAIN_MENU');
@@ -91,7 +92,7 @@ test('settings: reset asks for confirmation', async ({ page }) => {
   await page.locator(`${CURRENT} [data-action="reset"]`).click();
   await page.locator('[data-dialog-action="true"]').click();
   await expectScreen(page, 'MAIN_MENU');
-  await expect(page.locator('.toast')).toContainText('swept clean');
+  await expect(page.locator('.toast', { hasText: 'swept clean' })).toBeVisible();
   await expect(page.locator(`${CURRENT} .pill-credits`)).toContainText('250');
 });
 
@@ -99,7 +100,7 @@ test('achievements and statistics tabs render', async ({ page }) => {
   await enterParlor(page);
   await clickNav(page, 'ACHIEVEMENTS');
   await expect(page.locator(`${CURRENT} .achievement-tile.earned`)).toHaveCount(1); // "Doors Open"
-  await page.locator(`${CURRENT} [data-tab="games"]`).click();
+  await page.locator(`${CURRENT} [data-tab="war"]`).click();
   await expect(page.locator(`${CURRENT} .achievement-tile`).first()).toBeVisible();
   await clickNav(page, 'home', 'MAIN_MENU');
   await page.locator(`${CURRENT} .menu-grid [data-nav="STATISTICS"]`).click();

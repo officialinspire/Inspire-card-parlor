@@ -10,8 +10,6 @@ import { say } from '@/components/SpeechBubble';
 import { button } from '@/components/ui';
 import { pauseVeil, setTool, toolButton, type GameToolbar } from '@/components/gameToolbar';
 import { confirmDialog, openDialog } from '@/components/Dialog';
-import { celebrate as announceUnlock } from '@/components/Notifications';
-import { ACHIEVEMENTS } from '@/achievements/registry';
 import { recordGameResult } from '@/progression/results';
 import { getPersonality, pickLine, rankPlural, rankSingular } from '../cpu/personalities';
 import { saves, sleep } from '../session';
@@ -286,6 +284,7 @@ export function mountGoFish(ctx: GoFishViewContext) {
       ? personaOf(asker).lines.ask(rank, target.id === human.id ? 'You' : target.name)
       : `${target.name}, any ${rankPlural(rank)}?`;
     void say(anchor(askerId), askText, { tone: 'ask', duration: 1500 * f() + 300 });
+    gameSound('go_fish_ask');
     setStatus(`${asker.name} asked ${target.id === human.id ? 'you' : target.name} for ${rankPlural(rank)}.`);
     // The request: the asker leans in and the one being asked lights up.
     spotlight(askerId, 'gf-asking');
@@ -541,11 +540,13 @@ export function mountGoFish(ctx: GoFishViewContext) {
       outcome,
       score: mine,
       durationMs: Date.now() - game.data.startedAt,
-      details: { books: mine },
+      details: {
+        books: mine,
+        asksOk: game.data.log.filter((e) => e.t === 'give' && e.to === human.id).length,
+        opponents: game.players.length - 1,
+        difficulty: game.data.difficulty,
+      },
     });
-    for (const id of summary.achievements) {
-      announceUnlock('Achievement unlocked', ACHIEVEMENTS.find((a) => a.id === id)?.name ?? id);
-    }
     if (outcome === 'win') {
       gameSound('victory');
       if (!store.state.settings.reducedMotion) el.appendChild(victoryShower());

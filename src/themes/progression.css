@@ -1,0 +1,729 @@
+/* ===================== Music player ===================== */
+.music-player {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  min-height: 0;
+  flex: 1;
+}
+.settings-music {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+.music-player > .control-slider {
+  min-height: 48px;
+  padding-block: 6px;
+}
+.mp-tracks {
+  flex: 1;
+  min-height: 0;
+}
+.mp-tracks .track {
+  height: 100%;
+}
+.dialog-music {
+  height: min(640px, 100%);
+}
+.dialog-music .dialog-body {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+.mp-now {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    'disc title time'
+    'disc bar bar';
+  align-items: center;
+  column-gap: 10px;
+  row-gap: 6px;
+  padding: 10px 12px;
+  border-radius: var(--radius-s);
+  background: var(--surface-sunk);
+}
+.mp-disc {
+  grid-area: disc;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  color: var(--gold-ink);
+  background:
+    radial-gradient(circle, var(--surface) 0 5px, transparent 6px),
+    repeating-radial-gradient(circle, #3a3129 0 2px, #2a231d 2px 4px);
+  box-shadow: inset 0 0 0 3px var(--gold);
+}
+.mp-disc .icon {
+  width: 16px;
+  height: 16px;
+  color: var(--gold-bright);
+}
+.mp-disc[data-spinning='true'] {
+  animation: mp-spin 6s linear infinite;
+}
+@keyframes mp-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.reduced-motion .mp-disc[data-spinning='true'] {
+  animation: none;
+}
+.mp-title {
+  grid-area: title;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.mp-title strong,
+.mp-title small {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mp-title small {
+  color: var(--ink-faint);
+  font-size: 0.82em;
+}
+.mp-time {
+  grid-area: time;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.8em;
+  color: var(--ink-soft);
+}
+.mp-progress {
+  grid-area: bar;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+  overflow: hidden;
+}
+.mp-progress-fill {
+  display: block;
+  height: 100%;
+  background: var(--gold);
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 500ms linear;
+}
+.mp-transport {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(2px, 1.5vw, 10px);
+}
+.mp-transport .btn[aria-pressed='true'] {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.mp-transport [data-repeat='one']::after {
+  content: '';
+}
+.mp-play.btn {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+}
+.mp-library {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  min-height: 0;
+  flex: 1;
+}
+.mp-main {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+/* Wide, short screens: controls beside the library. */
+@media (orientation: landscape) and (min-width: 700px) {
+  .music-player {
+    flex-direction: row;
+    align-items: stretch;
+  }
+  .mp-main {
+    flex: 1;
+    justify-content: center;
+  }
+  .mp-library {
+    flex: 1.25;
+  }
+  .dialog-music {
+    width: min(920px, 100%);
+  }
+}
+.mp-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.chip {
+  flex: none;
+  min-height: 30px;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--border);
+  background: var(--surface-2, var(--surface));
+  color: var(--ink-soft);
+  font-weight: 800;
+  font-size: 0.8em;
+  cursor: pointer;
+}
+.chip.active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.dialog-music .music-player {
+  width: min(520px, 100%);
+}
+.menu-music-title {
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  padding: 0;
+  min-width: 0;
+  cursor: pointer;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ===================== Medals ===================== */
+.medal {
+  flex: none;
+  display: block;
+  --medal-bg: #f6ead2;
+  --medal-line: rgba(0, 0, 0, 0.18);
+  color: rgba(40, 26, 10, 0.82);
+}
+.medal-common {
+  --medal-hi: #f1e7d6;
+  --medal-lo: #c9b79b;
+  --medal-rim: #8f7b5f;
+  --medal-rim-hi: #d9c6a6;
+}
+.medal-uncommon {
+  --medal-hi: #e6f1e6;
+  --medal-lo: #8fb79a;
+  --medal-rim: #4f7d5d;
+  --medal-rim-hi: #b7d6be;
+}
+.medal-rare {
+  --medal-hi: #e5effa;
+  --medal-lo: #86a8cc;
+  --medal-rim: #3d6690;
+  --medal-rim-hi: #b2cbe6;
+}
+.medal-epic {
+  --medal-hi: #f1e6f8;
+  --medal-lo: #ae8bc8;
+  --medal-rim: #6b4392;
+  --medal-rim-hi: #d3bce6;
+}
+.medal-legendary {
+  --medal-hi: #fff4cc;
+  --medal-lo: #e2b54a;
+  --medal-rim: #9a6c12;
+  --medal-rim-hi: #f7dc8c;
+}
+.medal.locked {
+  --medal-hi: #e7e2da;
+  --medal-lo: #b9b1a6;
+  --medal-rim: #8d857a;
+  --medal-rim-hi: #cfc8bd;
+  color: rgba(60, 54, 46, 0.45);
+  opacity: 0.8;
+}
+.medal-glyph {
+  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.45));
+}
+.toast-medal-art {
+  flex: none;
+  display: grid;
+  animation: medal-in 700ms var(--ease-spring);
+}
+.toast-achievement {
+  padding-block: 6px;
+}
+
+/* ===================== Achievements ===================== */
+.achievement-tile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+  border-left: 4px solid var(--rarity, var(--border));
+}
+.achievement-tile.rarity-common {
+  --rarity: #a39580;
+}
+.achievement-tile.rarity-uncommon {
+  --rarity: #5f8a6e;
+}
+.achievement-tile.rarity-rare {
+  --rarity: #4f7fa6;
+}
+.achievement-tile.rarity-epic {
+  --rarity: #8a5aa8;
+}
+.achievement-tile.rarity-legendary {
+  --rarity: #c08b17;
+}
+.achievement-tile:not(.earned) .tile-title {
+  color: var(--ink-soft);
+}
+.achievement-tile.earned {
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--rarity) 12%, transparent), transparent 70%), var(--surface);
+}
+.achievement-tile .tile-body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.achievement-tile .tile-sub {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.achievement-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.achievement-bar .progress {
+  flex: 1;
+  height: 6px;
+}
+.achievement-bar small,
+.achievement-date {
+  font-size: 0.75em;
+  color: var(--ink-faint);
+  white-space: nowrap;
+  font-weight: 800;
+}
+.achievement-date {
+  color: var(--rarity);
+}
+.achievement-detail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+.achievement-meta {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-weight: 800;
+}
+.achievement-progress {
+  width: min(280px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.rarity-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.8em;
+  font-weight: 800;
+  color: var(--ink-soft);
+}
+.rarity-chip i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--rarity);
+}
+.rarity-common {
+  --rarity: #a39580;
+}
+.rarity-uncommon {
+  --rarity: #5f8a6e;
+}
+.rarity-rare {
+  --rarity: #4f7fa6;
+}
+.rarity-epic {
+  --rarity: #8a5aa8;
+}
+.rarity-legendary {
+  --rarity: #c08b17;
+}
+
+/* ===================== Passport ===================== */
+.passport-wrap {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.passport-turn {
+  display: none;
+  align-self: center;
+  padding: 4px;
+  gap: 2px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-sunk);
+}
+.passport-turn button {
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 800;
+  color: var(--ink-soft);
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  min-height: 36px;
+}
+.passport-turn button[aria-selected='true'] {
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--elev-1);
+}
+.passport-book {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border-radius: var(--radius-m);
+  background: #2f4a3a;
+  padding: 8px;
+  box-shadow: var(--elev-2);
+}
+.passport-page {
+  min-height: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: clamp(10px, 2.2vmin, 20px);
+  background:
+    repeating-linear-gradient(0deg, transparent 0 22px, rgba(95, 138, 110, 0.07) 22px 23px),
+    radial-gradient(circle at 70% 30%, rgba(95, 138, 110, 0.12), transparent 60%), #f8f1e1;
+  color: #2f2a24;
+  /* Paper pages: the day palette, whatever the parlor lighting. */
+  --ink: #2f2a24;
+  --ink-soft: #6a5f53;
+  --ink-faint: #9a8e80;
+  --surface: #fffaf0;
+  --surface-sunk: #ede2cc;
+  --edge: #d6c3a1;
+  --border: rgba(47, 42, 36, 0.16);
+  overflow: hidden;
+}
+.passport-page:first-child {
+  border-radius: 12px 4px 4px 12px;
+  box-shadow: inset -10px 0 14px -10px rgba(0, 0, 0, 0.25);
+}
+.passport-page:last-child {
+  border-radius: 4px 12px 12px 4px;
+  box-shadow: inset 10px 0 14px -10px rgba(0, 0, 0, 0.25);
+}
+.passport-id {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.passport-seal {
+  flex: none;
+  width: clamp(60px, 13vmin, 84px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  background: var(--gold-metal);
+  color: var(--gold-ink);
+  box-shadow:
+    inset 0 0 0 3px rgba(255, 250, 230, 0.6),
+    0 0 0 3px var(--gold-line),
+    var(--elev-1);
+  line-height: 1;
+}
+.passport-seal strong {
+  font-family: var(--font-display);
+  font-size: clamp(1.4em, 4.5vmin, 2em);
+}
+.passport-seal small {
+  font-size: 0.65em;
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  font-weight: 800;
+}
+.passport-name {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.passport-name > small:first-child {
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  font-size: 0.68em;
+  font-weight: 800;
+  color: #5f8a6e;
+}
+.passport-name strong {
+  font-family: var(--font-display);
+  font-size: 1.35em;
+}
+.passport-name small {
+  color: #6a5f53;
+}
+.passport-stats {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+.passport-stats .stat-item {
+  padding: 6px 8px;
+  min-width: 0;
+  background: rgba(255, 255, 255, 0.55);
+}
+.passport-stats .stat-value {
+  display: block;
+  max-width: 100%;
+  font-size: 1.05em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.passport-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.05em;
+}
+.passport-heading span {
+  font-family: var(--font-body);
+  font-size: 0.85em;
+  color: #6a5f53;
+}
+.passport-page .passport {
+  flex-wrap: wrap;
+}
+.passport-achievements {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+}
+.passport-achievements .btn {
+  align-self: flex-start;
+}
+.rarity-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+}
+.passport-latest {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 0;
+  overflow: hidden;
+}
+.passport-latest li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.passport-latest li span {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.passport-latest strong {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.passport-latest small {
+  color: #6a5f53;
+  font-size: 0.78em;
+}
+/* Narrow portrait screens: one page at a time, turned with the tabs. */
+@media (max-aspect-ratio: 4/5), (max-width: 560px) {
+  .passport-turn {
+    display: flex;
+  }
+  .passport-book {
+    grid-template-columns: 1fr;
+  }
+  .passport-book[data-page='1'] [data-passport-page='2'],
+  .passport-book[data-page='2'] [data-passport-page='1'] {
+    display: none;
+  }
+  .passport-page {
+    border-radius: 12px !important;
+    box-shadow: none !important;
+    animation: page-turn 380ms var(--ease);
+  }
+}
+@media (max-height: 460px) {
+  .passport-id {
+    gap: 10px;
+  }
+  .passport-stats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .passport-stats .stat-value {
+    font-size: 0.88em;
+  }
+  .passport-page {
+    gap: 6px;
+  }
+  .passport-latest li:nth-child(n + 2) {
+    display: none;
+  }
+}
+@keyframes page-turn {
+  from {
+    transform: perspective(900px) rotateY(-14deg);
+    transform-origin: left center;
+    opacity: 0.4;
+  }
+}
+
+/* ===================== Collection: previews and the card binder ===================== */
+.deck-preview[data-preview='image'] {
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 10px;
+}
+.deck-preview-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+}
+.tile-extras {
+  font-size: 0.72em;
+  color: var(--accent);
+  font-weight: 800;
+}
+.binder .pager-viewport {
+  padding: 10px;
+  border-radius: var(--radius-m);
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.12) 0 6px, transparent 6px),
+    repeating-linear-gradient(90deg, transparent 0 22px, rgba(255, 255, 255, 0.03) 22px 23px), #3b2f27;
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.35);
+}
+.binder .pager-grid.page-in-right {
+  animation: binder-turn-right 420ms var(--ease);
+  transform-origin: left center;
+}
+.binder .pager-grid.page-in-left {
+  animation: binder-turn-left 420ms var(--ease);
+  transform-origin: right center;
+}
+@keyframes binder-turn-right {
+  from {
+    transform: perspective(1200px) rotateY(-28deg);
+    opacity: 0.2;
+  }
+}
+@keyframes binder-turn-left {
+  from {
+    transform: perspective(1200px) rotateY(28deg);
+    opacity: 0.2;
+  }
+}
+.reduced-motion .binder .pager-grid {
+  animation: none;
+}
+.binder-pocket {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+  padding: 4px;
+  border: 0;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.07);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  cursor: pointer;
+  perspective: 700px;
+}
+.binder-card {
+  position: relative;
+  display: grid;
+  transform-style: preserve-3d;
+  transition: transform 460ms var(--ease);
+}
+.binder-pocket[data-flipped='true'] .binder-card {
+  transform: rotateY(180deg);
+}
+.binder-front,
+.binder-back {
+  grid-area: 1 / 1;
+  backface-visibility: hidden;
+}
+.binder-back {
+  display: grid;
+  place-items: center;
+  container-type: size;
+  transform: rotateY(180deg);
+}
+.binder-back .card {
+  --card-w: min(100cqw, 71cqh);
+}
+.reduced-motion .binder-card {
+  transition: none;
+}
+.binder-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8em;
+  color: var(--ink-faint);
+}
+.binder-status.owned {
+  color: var(--sage);
+}
+.binder-status .icon {
+  width: 14px;
+  height: 14px;
+}
+.binder-artist {
+  margin-left: auto;
+  color: var(--ink-faint);
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.gallery-head {
+  flex-wrap: wrap;
+  row-gap: 4px;
+}

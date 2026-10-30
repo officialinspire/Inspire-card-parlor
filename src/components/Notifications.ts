@@ -3,6 +3,8 @@ import { store, type Store } from '@/core/store';
 import type { Notification, NotificationKind } from '@/core/types';
 import { audio } from '@/audio';
 import { icon, type IconName } from './icons';
+import { medal } from './medal';
+import { getAchievement } from '@/achievements/registry';
 
 let seq = 0;
 
@@ -20,7 +22,14 @@ const BURST = ['♠', '♥', '♦', '♣', '★', '♠', '♥', '♦', '♣', '�
 /** Shows a toast. Returns its id so callers can dismiss it early. */
 export function notify(
   message: string,
-  opts: { kind?: NotificationKind; icon?: IconName; duration?: number; sound?: boolean; title?: string } = {},
+  opts: {
+    kind?: NotificationKind;
+    icon?: IconName;
+    duration?: number;
+    sound?: boolean;
+    title?: string;
+    badge?: string;
+  } = {},
 ): number {
   const id = ++seq;
   const kind = opts.kind ?? 'info';
@@ -36,6 +45,7 @@ export function notify(
       kind,
       icon: opts.icon ?? KIND_ICON[kind],
       title: opts.title,
+      ...(opts.badge ? { badge: opts.badge } : {}),
       duration: opts.duration ?? 2800,
     },
   });
@@ -63,14 +73,22 @@ export function attachNotifications(root: HTMLElement, s: Store): void {
     }
     for (const n of list) {
       if (rendered.has(n.id)) continue;
+      // Timed toasts never block a tap: they are click-through and dismiss themselves.
+      // A sticky one (duration 0) is the exception: tap it to dismiss.
+      const sticky = n.duration <= 0;
       const el = h(
-        'button',
+        sticky ? 'button' : 'div',
         {
-          type: 'button',
-          class: `toast toast-${n.kind}`,
+          ...(sticky
+            ? {
+                type: 'button',
+                title: 'Dismiss',
+                onclick: () => s.dispatch({ type: 'DISMISS_NOTIFICATION', id: n.id }),
+              }
+            : {}),
+          class: `toast toast-${n.kind}${n.badge ? ' toast-achievement' : ''}${sticky ? ' toast-sticky' : ''}`,
+          ...(n.badge ? { 'data-achievement': n.badge } : {}),
           'data-toast': String(n.id),
-          title: 'Dismiss',
-          onclick: () => s.dispatch({ type: 'DISMISS_NOTIFICATION', id: n.id }),
         },
         ...(n.kind === 'celebrate'
           ? [
@@ -93,7 +111,13 @@ export function attachNotifications(root: HTMLElement, s: Store): void {
                   );
                 }),
               ),
-              h('span', { class: 'toast-medal' }, icon((n.icon as IconName | undefined) ?? 'trophy')),
+              n.badge && getAchievement(n.badge)
+                ? h(
+                    'span',
+                    { class: 'toast-medal toast-medal-art' },
+                    medal(getAchievement(n.badge)!, { earned: true, size: 40 }),
+                  )
+                : h('span', { class: 'toast-medal' }, icon((n.icon as IconName | undefined) ?? 'trophy')),
               h(
                 'span',
                 { class: 'toast-text' },

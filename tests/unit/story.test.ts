@@ -18,6 +18,7 @@ import { allDecks } from '@/decks/registry';
 import { allBoards } from '@/boards/registry';
 import { getDeck } from '@/decks/registry';
 import { ACHIEVEMENTS } from '@/achievements/registry';
+import { unlockEarned } from '@/achievements/engine';
 import { PERSONALITIES } from '@/games/cpu/personalities';
 import { CHARACTERS, getCharacter } from '@/story/chapters';
 import { recordGameResult, type GameResult } from '@/progression/results';
@@ -198,7 +199,11 @@ describe('rewards', () => {
     expect(p.unlockedDecks).toContain('fredericksburg_downtown');
     expect(p.unlockedBoards).toContain('rappahannock_riverside');
     expect(storyOf(p).stamps).toEqual(['hometown']);
+    // Story achievements are unlocked by the achievement engine (once, with a date).
+    expect(p.unlockedAchievements).not.toContain('passport-first');
+    p = { ...p, ...unlockEarned(p).patch };
     expect(p.unlockedAchievements).toContain('passport-first');
+    expect(p.unlockedAchievements.filter((a) => a === 'passport-first')).toHaveLength(1);
     expect(p.storyChapter).toBe(1);
     expect(isDeckUnlocked('fredericksburg_downtown', p)).toBe(true);
     const creditsAfter = p.credits;
@@ -213,6 +218,7 @@ describe('rewards', () => {
       expect(outcome.chapterRewards).toEqual([]);
     }
     expect(p.credits).toBe(creditsAfter);
+    expect(unlockEarned(p).earned).not.toContain('passport-first');
     expect(storyOf(p).stamps).toEqual(['hometown']);
     expect(p.unlockedDecks.filter((d) => d === 'fredericksburg_downtown')).toHaveLength(1);
   });
@@ -244,6 +250,7 @@ describe('rewards', () => {
     for (const level of ALL_LEVELS) p = { ...p, ...applyStoryResult(p, level.id, win(level)).patch };
     expect(storyOf(p).stamps).toHaveLength(7);
     expect(p.storyChapter).toBe(7);
+    p = { ...p, ...unlockEarned(p).patch };
     expect(p.unlockedAchievements).toEqual(
       expect.arrayContaining(['passport-first', 'halfway-home', 'chronicles-complete']),
     );

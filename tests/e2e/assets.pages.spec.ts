@@ -63,6 +63,9 @@ test('every asset loads from the GitHub Pages project path', async ({ page }) =>
   // Deck collection: previews and card art from the sprite sheets.
   await go(page, 'COLLECTION');
   await expectScreen(page, 'COLLECTION');
+  // Deck tiles show each deck's uploaded preview painting.
+  await expect(page.locator(`${CURRENT} .deck-preview[data-preview="image"] img`).first()).toBeVisible();
+  await page.locator(`${CURRENT} [data-tab="backs"]`).click();
   await expect(page.locator(`${CURRENT} .card-back[data-art="image"]`).first()).toBeVisible();
   await page.locator(`${CURRENT} [data-tab="gallery"]`).click();
   await expect(page.locator(`${CURRENT} .gallery-cell .card[data-art="atlas"]`).first()).toBeVisible();

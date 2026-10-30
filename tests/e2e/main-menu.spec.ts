@@ -59,15 +59,15 @@ test('status chips open the collection and gameboards', async ({ page }) => {
   await expectScreen(page, 'GAMEBOARDS');
   await clickNav(page, 'back', 'MAIN_MENU');
   await page.locator(`${CURRENT} [data-status="level"]`).click();
-  await expectScreen(page, 'STATISTICS');
+  await expectScreen(page, 'PASSPORT');
 });
 
 test('the next-track button changes the music shown', async ({ page }) => {
   const label = page.locator(`${CURRENT} [data-value="music"]`);
   await page.locator(`${CURRENT} [data-action="next-track"]`).click();
-  await expect(label).toHaveText('Rain on the Window');
-  await page.locator(`${CURRENT} [data-action="next-track"]`).click();
   await expect(label).toHaveText('Corner Café');
+  await page.locator(`${CURRENT} [data-action="next-track"]`).click();
+  await expect(label).toHaveText('River at Dawn');
 });
 
 test('Escape goes back from inner screens', async ({ page }) => {

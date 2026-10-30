@@ -40,6 +40,35 @@ export const deckBadges = (deck: DeckDefinition) => [
 
 type DeckFilter = 'all' | 'owned' | 'favorites';
 
+/**
+ * A deck's tile art: its uploaded preview painting when there is one (and it
+ * may be shown here), otherwise its card back.
+ */
+function deckPreview(d: DeckDefinition): HTMLElement {
+  const box = h('span', { class: 'deck-preview', 'data-preview': 'back' }, cardBack(d, 'preview-back solo'));
+  if (deckThemes.canShowArt(d.id, 'ordinary')) {
+    void assetManager.loadPreview(deckThemes.resolve(d.id)).then((img) => {
+      if (!img || !box.isConnected) return;
+      box.dataset.preview = 'image';
+      box.replaceChildren(h('img', { class: 'deck-preview-img', src: img.url, alt: '', loading: 'lazy' }));
+    });
+  }
+  return box;
+}
+
+/** "2 backs · 1 alternate art" for decks with extras. */
+function extrasLine(d: DeckDefinition): HTMLElement | null {
+  const variants = deckThemes.variants(d.id);
+  const backs = variants.filter((v) => v.assets.back).length;
+  const art = variants.length;
+  if (!art) return null;
+  return h(
+    'span',
+    { class: 'tile-extras', 'data-extras': String(art) },
+    [backs ? `${backs + 1} card backs` : '', `${art} alternate art`].filter(Boolean).join(' · '),
+  );
+}
+
 function favoriteButton(store: Store, deckId: string): HTMLButtonElement {
   const btn = h('button', { type: 'button', class: 'fav-btn', 'data-favorite': deckId });
   const draw = () => {
@@ -237,9 +266,10 @@ export const CollectionScreen: ScreenFactory = ({ store }) => {
                   'aria-label': `${d.name} details`,
                   onclick: () => void inspect(d),
                 },
-                h('span', { class: 'deck-preview' }, cardBack(d, 'preview-back solo')),
+                deckPreview(d),
                 h('span', { class: 'tile-title' }, d.name),
-                h('span', { class: 'tile-artist' }, artistLine(d.artist)),
+                h('span', { class: 'tile-artist', 'data-artist': d.artist.name ?? 'pending' }, artistLine(d.artist)),
+                extrasLine(d),
                 owned
                   ? h(
                       'span',
@@ -324,8 +354,14 @@ export const CollectionScreen: ScreenFactory = ({ store }) => {
     return panel;
   };
 
+  /**
+   * The card binder: every card of a deck in nine-pocket pages. Pages turn
+   * like a binder's; tapping a card flips it over to its back (and back).
+   * Decks not yet collected can be browsed, marked as such.
+   */
   const galleryPanel = () => {
     const deck = getDeck(galleryDeck);
+    const owned = isDeckUnlocked(deck.id, profile());
     const select = h(
       'select',
       {
@@ -340,6 +376,13 @@ export const CollectionScreen: ScreenFactory = ({ store }) => {
       ...decks.map((d) => h('option', { value: d.id, selected: d.id === deck.id }, d.name)),
     );
     const cards = SUITS.flatMap((suit) => RANK_LABELS.map((rank) => ({ rank, suit })));
+    const flip = (pocket: HTMLElement) => {
+      const over = pocket.dataset.flipped !== 'true';
+      pocket.dataset.flipped = String(over);
+      pocket.setAttribute('aria-pressed', String(over));
+      audio.play('flip');
+      store.dispatch({ type: 'JOURNAL', update: { add: { 'binder.flips': 1 } } });
+    };
     const pager = paginatorPanel({
       items: cards,
       minTileWidth: 64,
@@ -347,16 +390,52 @@ export const CollectionScreen: ScreenFactory = ({ store }) => {
       maxTileHeight: 130,
       gap: 10,
       label: `${deck.name} cards`,
-      render: ({ rank, suit }) => h('div', { class: 'gallery-cell' }, cardFace(deck, rank, suit, '', 'explicit')),
+      render: ({ rank, suit }) => {
+        const pocket = h(
+          'button',
+          {
+            type: 'button',
+            class: 'binder-pocket',
+            'aria-pressed': 'false',
+            'aria-label': `${rank} of ${suit} — tap to turn over`,
+            'data-flipped': 'false',
+            onclick: () => flip(pocket),
+          },
+          h(
+            'span',
+            { class: 'binder-card' },
+            h('span', { class: 'gallery-cell binder-front' }, cardFace(deck, rank, suit, '', 'explicit')),
+            h('span', { class: 'binder-back', 'aria-hidden': 'true' }, cardBack(deck, '', 'explicit')),
+          ),
+        );
+        return pocket;
+      },
     });
-    const panel = h('div', { class: 'stack' }, h('label', { class: 'gallery-head' }, 'Deck', select), pager);
+    pager.classList.add('binder');
+    const panel = h(
+      'div',
+      { class: 'stack binder-stack', 'data-binder': deck.id },
+      h(
+        'div',
+        { class: 'gallery-head' },
+        h('label', null, 'Deck', select),
+        h(
+          'span',
+          { class: `binder-status${owned ? ' owned' : ''}`, 'data-unlock': owned ? 'owned' : 'locked' },
+          icon(owned ? 'check' : 'lock'),
+          owned ? 'In your collection' : unlockHint(deck),
+        ),
+        h('small', { class: 'binder-artist' }, artistLine(deck.artist)),
+      ),
+      pager,
+    );
     return Object.assign(panel, { destroy: (pager as HTMLElement & { destroy?: () => void }).destroy });
   };
 
   const t = tabs([
     { id: 'decks', label: 'Decks', render: decksPanel },
     { id: 'backs', label: 'Card Backs', render: backsPanel },
-    { id: 'gallery', label: 'Card Gallery', render: galleryPanel },
+    { id: 'gallery', label: 'Card Binder', render: galleryPanel },
     {
       id: 'characters',
       label: 'Characters',

@@ -1,4 +1,5 @@
 import type { AppState } from './states';
+import type { Journal } from '@/achievements/journal';
 
 export type GameId = 'klondike' | 'spider' | 'freecell' | 'war' | 'go-fish';
 
@@ -12,6 +13,14 @@ export interface Settings {
   /** Music off (sound effects stay on); the table toolbar's Music button. */
   musicMuted: boolean;
   musicTrack: string;
+  /** The player's pause button (music stays paused across screens until resumed). */
+  musicPaused: boolean;
+  musicShuffle: boolean;
+  musicRepeat: 'all' | 'one' | 'off';
+  /** Playlist: one category or the whole library. */
+  musicCategory: string;
+  /** Vibration feedback on devices that support it. */
+  haptics: boolean;
   theme: ThemeMode;
   reducedMotion: boolean;
   leftHanded: boolean;
@@ -58,6 +67,12 @@ export interface Profile {
   unlockedDecks: string[];
   unlockedBoards: string[];
   unlockedAchievements: string[];
+  /** When each achievement was earned (ms since epoch). Older saves may lack a date. */
+  achievementDates: Record<string, number>;
+  /** Lifetime counters and "seen" sets that achievements read. */
+  journal: Journal;
+  /** Save format version, for safe migrations. */
+  schemaVersion: number;
   /** Story chapters completed (kept for older unlock rules; never lowered). */
   storyChapter: number;
   /** The Card Parlor Chronicles: completed challenges, rewards paid out, passport stamps. */
@@ -112,6 +127,8 @@ export interface Notification {
   icon?: string;
   /** Small caps line above the message (celebrations: "Achievement unlocked"). */
   title?: string;
+  /** Achievement id: the toast shows that achievement's medal instead of an icon. */
+  badge?: string;
   /** ms before auto-dismiss; 0 keeps it until dismissed. */
   duration: number;
 }

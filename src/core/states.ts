@@ -13,6 +13,7 @@ export const AppState = {
   ACHIEVEMENTS: 'ACHIEVEMENTS',
   SETTINGS: 'SETTINGS',
   STATISTICS: 'STATISTICS',
+  PASSPORT: 'PASSPORT',
 } as const;
 
 export type AppState = (typeof AppState)[keyof typeof AppState];
@@ -27,6 +28,7 @@ export const MENU_HUB: readonly AppState[] = [
   AppState.ACHIEVEMENTS,
   AppState.SETTINGS,
   AppState.STATISTICS,
+  AppState.PASSPORT,
 ];
 
 /**
@@ -47,6 +49,7 @@ export const TRANSITIONS: Record<AppState, readonly AppState[]> = {
   ACHIEVEMENTS: MENU_HUB,
   SETTINGS: MENU_HUB,
   STATISTICS: MENU_HUB,
+  PASSPORT: MENU_HUB,
 };
 
 export function canTransition(from: AppState, to: AppState): boolean {

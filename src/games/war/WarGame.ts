@@ -45,6 +45,8 @@ export interface WarData {
   round: number;
   wars: number;
   warsLost: number;
+  /** Wars (ties) the player went on to win. */
+  warsWon?: number;
   status: WarStatus;
   startedAt: number;
 }
@@ -140,6 +142,7 @@ export class WarGame {
     }
 
     if (battles.length > 1 && winner === 'cpu') d.warsLost += battles.length - 1;
+    if (battles.length > 1 && winner === 'player') d.warsWon = (d.warsWon ?? 0) + battles.length - 1;
 
     if (winner) {
       const winnings = fisherYates([...pot], this.table.random).map((card) => card.flip(false));

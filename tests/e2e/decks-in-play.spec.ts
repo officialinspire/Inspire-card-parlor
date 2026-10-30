@@ -79,7 +79,10 @@ for (const deck of DECKS) {
         if (game === 'war') {
           // War deals face down; play a round to turn two cards over.
           await page.locator(`${CURRENT} [data-action="play-round"]`).click();
-          await expect(page.locator(`${CURRENT} [data-banner]`)).toHaveAttribute('data-winner', /player|cpu/);
+          // A tied first round goes to war, which takes a few seconds to play out.
+          await expect(page.locator(`${CURRENT} [data-banner]`)).toHaveAttribute('data-winner', /player|cpu/, {
+            timeout: 15_000,
+          });
         }
         await expectArtwork(page, deck);
         await clickNav(page, 'home', 'MAIN_MENU');

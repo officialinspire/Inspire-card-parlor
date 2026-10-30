@@ -3,7 +3,7 @@ import { APP } from '@/core/config';
 import { AppState } from '@/core/states';
 import { navigate } from '@/core/store';
 import { deckThemes, getDeck } from '@/decks';
-import { audio, getTrack } from '@/audio';
+import { audio, startMusicFromGesture } from '@/audio';
 import { track } from '@/analytics/analytics';
 import { cardBack } from '../Card';
 import { brandLogo } from '../illustrations';
@@ -41,15 +41,9 @@ export const InitializationScreen: ScreenFactory = ({ store }) => {
     async () => {
       await audio.unlock();
       audio.play('chime');
-      audio.startMusic(getTrack(store.state.settings.musicTrack));
+      startMusicFromGesture(store);
       track('enter_parlor');
-      const p = store.state.profile;
-      if (!p.unlockedAchievements.includes('first-visit')) {
-        store.dispatch({
-          type: 'UPDATE_PROFILE',
-          patch: { unlockedAchievements: [...p.unlockedAchievements, 'first-visit'] },
-        });
-      }
+      store.dispatch({ type: 'JOURNAL', update: { add: { visits: 1 } } });
       navigate(AppState.MAIN_MENU);
     },
     { sfx: null, size: 'lg', variant: 'gold', class: 'btn-enter', attrs: { 'data-nav': AppState.MAIN_MENU } },

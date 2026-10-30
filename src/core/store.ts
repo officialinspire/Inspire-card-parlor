@@ -1,6 +1,7 @@
 import { AppState, canTransition } from './states';
 import type { GameId, ModalRef, Notification, Profile, RootState, Selection, Settings } from './types';
 import { createDefaultProfile, createDefaultSelection, DEFAULT_SETTINGS } from './defaults';
+import { applyJournal, mergeJournals, type JournalUpdate } from '@/achievements/journal';
 
 export type Action =
   | { type: 'NAVIGATE'; to: AppState; replace?: boolean }
@@ -21,6 +22,8 @@ export type Action =
   | { type: 'OWN_VARIANT'; key: string; cost: number }
   | { type: 'UPDATE_SETTINGS'; patch: Partial<Settings> }
   | { type: 'UPDATE_PROFILE'; patch: Partial<Profile> }
+  /** Lifetime counters and "seen" sets for achievements (only ever grow). */
+  | { type: 'JOURNAL'; update: JournalUpdate }
   | { type: 'HYDRATE'; settings?: Partial<Settings>; profile?: Partial<Profile>; selection?: Partial<Selection> }
   | { type: 'MODAL_OPENED'; modal: ModalRef }
   | { type: 'MODAL_CLOSED'; id: string }
@@ -150,6 +153,8 @@ export function reduce(state: RootState, action: Action): RootState {
       return { ...state, settings: { ...state.settings, ...action.patch } };
     case 'UPDATE_PROFILE':
       return { ...state, profile: { ...state.profile, ...action.patch } };
+    case 'JOURNAL':
+      return { ...state, profile: { ...state.profile, journal: applyJournal(state.profile.journal, action.update) } };
     case 'HYDRATE':
       return {
         ...state,
@@ -160,6 +165,8 @@ export function reduce(state: RootState, action: Action): RootState {
           stats: { ...state.profile.stats, ...action.profile?.stats },
           // Saves from before the campaign have no story progress yet.
           story: { ...state.profile.story, ...action.profile?.story },
+          journal: mergeJournals(state.profile.journal, action.profile?.journal),
+          achievementDates: { ...state.profile.achievementDates, ...action.profile?.achievementDates },
         },
         selection: {
           ...state.selection,

@@ -6,10 +6,11 @@ import type { Settings } from '@/core/types';
 import { createDefaultProfile, createDefaultSelection, DEFAULT_SETTINGS } from '@/core/defaults';
 import { resetAllData } from '@/storage/persistence';
 import { fullscreen } from '@/utils/device';
-import { audio, TRACKS } from '@/audio';
+import { haptic, hapticsSupported } from '@/utils/haptics';
+import { audio } from '@/audio';
+import { musicPlayer } from '../musicPlayer';
 import { segmented, slider, toggle } from '../controls';
 import { confirmDialog } from '../Dialog';
-import { icon } from '../icons';
 import { live } from '../live';
 import { notify } from '../Notifications';
 import { tabs } from '../Tabs';
@@ -31,40 +32,10 @@ export const SettingsScreen: ScreenFactory = ({ store }) => {
   };
   const panel = (...children: (Node | null)[]) => h('div', { class: 'settings-panel' }, ...children);
 
-  const trackList = () =>
-    live(
-      h('div', { class: 'control control-tracks', role: 'radiogroup', 'aria-label': 'Music track' }),
-      (st) => st.settings.musicTrack,
-      (el, current) =>
-        el.replaceChildren(
-          h('span', { class: 'control-label' }, 'Music track'),
-          h(
-            'div',
-            { class: 'track-list' },
-            ...TRACKS.map((t) =>
-              h(
-                'button',
-                {
-                  type: 'button',
-                  role: 'radio',
-                  'aria-checked': String(t.id === current),
-                  class: `track${t.id === current ? ' active' : ''}`,
-                  'data-track': t.id,
-                  onclick: () => {
-                    void audio.unlock().then(() => set({ musicTrack: t.id }));
-                  },
-                },
-                icon(t.id === current ? 'music' : 'play'),
-                h('span', null, h('strong', null, t.title), h('small', null, t.mood)),
-              ),
-            ),
-          ),
-        ),
-    );
-
   /** Every deck and board with its artist credit (adult decks only when enabled). */
-  const showCredits = () =>
-    openDialog({
+  const showCredits = () => {
+    store.dispatch({ type: 'JOURNAL', update: { add: { 'credits.viewed': 1 } } });
+    return openDialog({
       title: 'Artwork credits',
       icon: 'star',
       class: 'dialog-wide',
@@ -79,6 +50,7 @@ export const SettingsScreen: ScreenFactory = ({ store }) => {
       dismissValue: undefined,
       actions: [{ label: 'Close', value: undefined }],
     });
+  };
 
   const t = tabs([
     {
@@ -89,17 +61,25 @@ export const SettingsScreen: ScreenFactory = ({ store }) => {
           slider('Master volume', s().masterVolume, (v) => set({ masterVolume: v })),
           slider('Sound effects', s().sfxVolume, (v) => set({ sfxVolume: v })),
           toggle('Mute all', s().muted, (v) => set({ muted: v })),
+          tagged(
+            toggle(
+              'Haptic feedback',
+              s().haptics,
+              (v) => {
+                set({ haptics: v });
+                if (v) haptic('success', true);
+              },
+              hapticsSupported() ? 'Gentle vibrations for wins, wars and mistakes.' : 'Not supported on this device.',
+            ),
+            'haptics',
+          ),
           button('Test sound', () => audio.play('chime'), { variant: 'secondary', sfx: null, icon: 'music' }),
         ),
     },
     {
       id: 'music',
       label: 'Music',
-      render: () =>
-        panel(
-          slider('Music volume', s().musicVolume, (v) => set({ musicVolume: v })),
-          trackList(),
-        ),
+      render: () => h('div', { class: 'settings-panel settings-music' }, musicPlayer()),
     },
     {
       id: 'display',

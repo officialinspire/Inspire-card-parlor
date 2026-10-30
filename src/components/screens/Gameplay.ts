@@ -10,7 +10,8 @@ import { getLevel, type StoryLevel } from '@/story/campaign';
 import { setActiveStoryLevel, setLastStoryOutcome } from '@/story/session';
 import { goFishPlayers } from '@/story/players';
 import { RULES } from '@/games/rules';
-import { nextSeed, saves, useStorySlot } from '@/games/session';
+import { nextSeed, saves, setTableInfo, useStorySlot } from '@/games/session';
+import { setPlayInProgress } from '@/progression/announcer';
 import { PERSONALITIES, getPersonality } from '@/games/cpu/personalities';
 import { WarGame } from '@/games/war/WarGame';
 import { mountWar } from '@/games/war/WarView';
@@ -146,6 +147,7 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
 
   async function showRules(): Promise<void> {
     if (!rules) return;
+    store.dispatch({ type: 'JOURNAL', update: { add: { 'rules.opened': 1 } } });
     await openDialog({
       title: rules.title,
       icon: 'info',
@@ -407,6 +409,9 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
   function mount(table: Table): void {
     view?.destroy();
     currentTable = table;
+    setTableInfo({ deckId: deck.id, boardId: board.id });
+    // Achievement toasts wait until this hand is over.
+    setPlayInProgress(true);
     surface.className = 'table-surface';
     toolbar.primary.replaceChildren();
     toolbar.more.replaceChildren();
@@ -496,6 +501,8 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
     },
     unmount() {
       view?.destroy();
+      setPlayInProgress(false);
+      setTableInfo(null);
       d.dispose();
     },
   };

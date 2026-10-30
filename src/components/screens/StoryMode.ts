@@ -1,7 +1,6 @@
 import { h } from '@/utils/dom';
 import { AppState } from '@/core/states';
 import { navigate } from '@/core/store';
-import type { Store } from '@/core/store';
 import { getDeck } from '@/decks/registry';
 import { getBoard } from '@/boards/registry';
 import { getGame } from '@/games/registry';
@@ -10,7 +9,6 @@ import { audio } from '@/audio';
 import { cssUrl } from '@/boards/BoardRenderer';
 import {
   CAMPAIGN_TITLE,
-  STAMPS,
   STORY_CHAPTERS,
   getChapter,
   getLevel,
@@ -37,6 +35,7 @@ import { avatar } from '../Avatar';
 import { openDialog } from '../Dialog';
 import { icon } from '../icons';
 import { celebrate, notify } from '../Notifications';
+import { passportStamps as passport } from '../passportStamps';
 import { paginator } from '../Paginator';
 import { badge, button, progressBar, screenFrame } from '../ui';
 import { Disposer, type ScreenFactory } from '../Screen';
@@ -155,28 +154,6 @@ function chapterArt(chapter: StoryChapter, large = false): HTMLElement {
         ),
     ),
     art.placeholder ? h('span', { class: 'story-art-label', 'data-placeholder': '' }, art.placeholder) : null,
-  );
-}
-
-function passport(store: Store): HTMLElement {
-  const stamps = storyOf(store.state.profile).stamps;
-  return h(
-    'div',
-    { class: 'passport', role: 'list', 'aria-label': `Passport: ${stamps.length} of ${STAMPS.length} stamps` },
-    h('span', { class: 'passport-label' }, 'Passport'),
-    ...STAMPS.map((s, i) => {
-      const has = stamps.includes(s.id);
-      return h(
-        'span',
-        {
-          class: `stamp${has ? ' earned' : ''}`,
-          role: 'listitem',
-          'data-stamp': s.id,
-          title: has ? `${s.label} — stamped` : `${s.label} — not yet`,
-        },
-        has ? String(i + 1) : '',
-      );
-    }),
   );
 }
 
@@ -429,7 +406,10 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
       }
       return;
     }
-    if (o.firstClear) celebrate('Challenge complete', lv.title, 'star');
+    if (o.firstClear) {
+      audio.play('levelup');
+      notify(lv.title, { kind: 'celebrate', title: 'Challenge complete', icon: 'star', duration: 4200, sound: false });
+    }
     await openDialog({
       title: o.firstClear ? 'Challenge complete!' : 'Well played!',
       icon: 'trophy',
@@ -450,8 +430,6 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
 
   async function chapterComplete(ch: StoryChapter, o: StoryOutcome): Promise<void> {
     celebrate('Passport stamped', ch.title, 'trophy');
-    for (const r of o.chapterRewards)
-      if (r.kind === 'achievement') celebrate('Achievement unlocked', rewardText(r).replace('Achievement: ', ''));
     const stampIndex = STORY_CHAPTERS.indexOf(ch) + 1;
     const next = STORY_CHAPTERS[stampIndex];
     await dialogue({
