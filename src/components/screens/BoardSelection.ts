@@ -1,8 +1,7 @@
 import { h } from '@/utils/dom';
 import { AppState } from '@/core/states';
 import { navigate } from '@/core/store';
-import { allBoards } from '@/boards/registry';
-import { deckThemes, getDeck } from '@/decks';
+import { deckThemes, getDeck, visibleBoards } from '@/decks';
 import { getGame } from '@/games/registry';
 import { isBoardUnlocked, unlockHint } from '@/progression/levels';
 import { audio } from '@/audio';
@@ -16,7 +15,7 @@ import { SETUP_STEPS } from './GameSelection';
 import { boardPreview } from './Gameboards';
 
 export const BoardSelectionScreen: ScreenFactory = ({ store }) => {
-  const BOARDS = allBoards();
+  const BOARDS = visibleBoards();
   const game = getGame(store.state.selection.gameId);
   const deck = getDeck(deckThemes.safeDeckId(store.state.selection.deckId));
   const pager = paginator({

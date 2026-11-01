@@ -22,6 +22,20 @@ BOARDS = {
     'backroom_card_table': 'Inspire Emerald Felt Game Table.png',
     'picnic_table': 'Inspire Picnic Tabletop for Card Games.png',
     'rappahannock_riverside': 'Rappahannock River Woven Game Mat.png',
+    # The Thirteenth Hand boards (sources in art/sources/story/boards/).
+    'cheryls_antique_shop': 'story/boards/Cheryl’s Antique Shop Gameboard.png',
+    'mrs_gray_safehouse': 'story/boards/Mrs. Gray’s Olive Safehouse Desk.png',
+    'masonic_lodge_no4': 'story/boards/Antique Walnut Masonic Gameboard.png',
+    'washington_final_table': 'story/boards/Candlelit Colonial Virginia Cellar Table.png',
+    'kenmore_parlor': 'story/boards/Kenmore-inspired Georgian parlor table.png',
+    'umw_classroom': 'story/boards/Maple UMW Classroom Card Table.png',
+    'germanna_library': 'story/boards/Germanna Community College Library Desk.png',
+}
+# Adult-only boards: written under backgrounds/mature/, which the default
+# (family) build removes (see vite.config.ts), like the adult decks.
+MATURE_BOARDS = {
+    'ismokeshop_counter': 'story/boards/Modern Smoke-Shop Glass Game Counter.png',
+    'ismokeshop_counter_overhead': 'story/boards/Overhead smoke shop glass counter.png',
 }
 MENU = {
     'day': 'Sunlit Rappahannock Riverfront.png',
@@ -65,10 +79,12 @@ def icon(logo: Image.Image, size: int, safe: float) -> Image.Image:
 
 
 def main() -> None:
-    for board, name in BOARDS.items():
+    boards = [(b, n, PUBLIC / 'backgrounds' / b) for b, n in BOARDS.items()]
+    boards += [(b, n, PUBLIC / 'backgrounds' / 'mature' / b) for b, n in MATURE_BOARDS.items()]
+    for board, name, out in boards:
         img = Image.open(SRC / name).convert('RGB')
-        webp(fit(img, 1920), PUBLIC / 'backgrounds' / board / 'background.webp')
-        webp(fit(img, 480), PUBLIC / 'backgrounds' / board / 'preview.webp', 80)
+        webp(fit(img, 1920), out / 'background.webp')
+        webp(fit(img, 480), out / 'preview.webp', 80)
 
     for key, name in MENU.items():
         img = Image.open(SRC / name).convert('RGB')

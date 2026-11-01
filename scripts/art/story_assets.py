@@ -380,7 +380,7 @@ def do_board(sheet: dict, img: Image.Image, warnings: list, check: bool) -> dict
         'preview': runtime(dest / 'preview.webp'),
         'previewWidth': prev.width,
         'previewHeight': prev.height,
-        'registered': False,
+        'registered': bool(sheet.get('registeredAs')),
     }
 
 
@@ -423,6 +423,7 @@ def process(sheet: dict, check: bool) -> dict:
         'source': {'path': sheet['source'], 'sha256': sheet.get('sha256')},
         'verified': False,
         'notes': sheet.get('notes'),
+        **({'registeredAs': sheet['registeredAs']} if sheet.get('registeredAs') else {}),
     }
     if not src.exists():
         warn(warnings, 'missing-source', f'Source image not found: {sheet["source"]}', 'error')
@@ -468,7 +469,29 @@ def process(sheet: dict, check: bool) -> dict:
     return entry
 
 
+def refresh_audit() -> None:
+    """--audit: refresh notes and registrations from the config into the existing
+    manifest, and rewrite the audit, without rebuilding any image."""
+    cfg = json.loads(CONFIG.read_text())
+    manifest = json.loads((OUT / 'manifest.json').read_text())
+    by_id = {s['id']: s for s in cfg['sheets']}
+    for sheet in manifest['sheets']:
+        src = by_id[sheet['id']]
+        sheet['notes'] = src.get('notes')
+        if src.get('registeredAs'):
+            sheet['registeredAs'] = src['registeredAs']
+        else:
+            sheet.pop('registeredAs', None)
+        if sheet.get('board'):
+            sheet['board']['registered'] = bool(src.get('registeredAs'))
+    (OUT / 'manifest.json').write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + '\n')
+    write_audit(cfg, manifest['sheets'])
+    print('manifest notes and docs/ART_ASSET_AUDIT.md refreshed')
+
+
 def main() -> None:
+    if '--audit' in sys.argv:
+        return refresh_audit()
     check = '--check' in sys.argv
     cfg = json.loads(CONFIG.read_text())
     sheets = [process(s, check) for s in cfg['sheets']]
@@ -522,7 +545,7 @@ def write_audit(cfg: dict, sheets: list[dict]) -> None:
     add('')
     titles = {'characters': 'Characters (18 poses each)', 'items': 'Quest items', 'map': 'Map icons, river map and location tiles',
               'stamps': 'Passport stamps', 'effects': 'Visual effects', 'ui': 'Story UI', 'illustrations': 'Documents and illustrations',
-              'boards': 'Gameboards (processed, not registered)', 'decks': 'Decks and card backs (audited only)'}
+              'boards': 'Gameboards', 'decks': 'Decks and card backs'}
     for g in ['characters', 'items', 'map', 'stamps', 'effects', 'ui', 'illustrations', 'boards', 'decks']:
         group = by_group.get(g, [])
         if not group:
@@ -539,8 +562,10 @@ def write_audit(cfg: dict, sheets: list[dict]) -> None:
                       'board': 'gameboard', 'audit': lay.get('kind', 'audit')}[lay['type']]
             if s.get('board'):
                 out, path = 'background + preview', s['board']['background'].rsplit('/', 1)[0] + '/'
+                if s.get('registeredAs'):
+                    out = f"registered: `{s['registeredAs']}`"
             elif s['status'] == 'audit-only':
-                out, path = 'audit only', '—'
+                out, path = (f"built as {s['registeredAs']}", '`assets/cards/`') if s.get('registeredAs') else ('audit only', '—')
             elif s['layout']['type'] == 'single':
                 out, path = '1 image', s['sprites'][0]['src'] if s['sprites'] else '—'
             else:

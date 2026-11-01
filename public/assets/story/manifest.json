@@ -4948,7 +4948,7 @@
         "transparentShare": 0.324
       },
       "verified": false,
-      "notes": null,
+      "notes": "Isometric map tile (transparent), not a top-down table: the underground_tunnels board keeps a drawn surface until a top-down painting is supplied.",
       "sprites": [
         {
           "id": "location-sealed-door-cellar/location-sealed-door-cellar",
@@ -5678,7 +5678,7 @@
         "transparentShare": 0.0
       },
       "verified": false,
-      "notes": "Processed into runtime board images; not yet registered as a selectable gameboard.",
+      "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
       "board": {
         "background": "assets/story/boards/antique-walnut-masonic/background.webp",
         "backgroundWidth": 1672,
@@ -5686,11 +5686,12 @@
         "preview": "assets/story/boards/antique-walnut-masonic/preview.webp",
         "previewWidth": 480,
         "previewHeight": 270,
-        "registered": false
+        "registered": true
       },
       "sprites": [],
       "status": "processed",
-      "warnings": []
+      "warnings": [],
+      "registeredAs": "masonic_lodge_no4"
     },
     {
       "id": "cheryls-antique-shop",
@@ -5709,7 +5710,7 @@
         "transparentShare": 0.0
       },
       "verified": false,
-      "notes": "Processed into runtime board images; not yet registered as a selectable gameboard.",
+      "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
       "board": {
         "background": "assets/story/boards/cheryls-antique-shop/background.webp",
         "backgroundWidth": 1672,
@@ -5717,11 +5718,12 @@
         "preview": "assets/story/boards/cheryls-antique-shop/preview.webp",
         "previewWidth": 480,
         "previewHeight": 270,
-        "registered": false
+        "registered": true
       },
       "sprites": [],
       "status": "processed",
-      "warnings": []
+      "warnings": [],
+      "registeredAs": "cheryls_antique_shop"
     },
     {
       "id": "mrs-grays-olive-desk",
@@ -5740,7 +5742,7 @@
         "transparentShare": 0.0
       },
       "verified": false,
-      "notes": "Processed into runtime board images; not yet registered as a selectable gameboard.",
+      "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
       "board": {
         "background": "assets/story/boards/mrs-grays-olive-desk/background.webp",
         "backgroundWidth": 1672,
@@ -5748,11 +5750,12 @@
         "preview": "assets/story/boards/mrs-grays-olive-desk/preview.webp",
         "previewWidth": 480,
         "previewHeight": 270,
-        "registered": false
+        "registered": true
       },
       "sprites": [],
       "status": "processed",
-      "warnings": []
+      "warnings": [],
+      "registeredAs": "mrs_gray_safehouse"
     },
     {
       "id": "colonial-cellar-table",
@@ -5771,7 +5774,7 @@
         "transparentShare": 0.0
       },
       "verified": false,
-      "notes": "Processed into runtime board images; not yet registered as a selectable gameboard.",
+      "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
       "board": {
         "background": "assets/story/boards/colonial-cellar-table/background.webp",
         "backgroundWidth": 1448,
@@ -5779,11 +5782,12 @@
         "preview": "assets/story/boards/colonial-cellar-table/preview.webp",
         "previewWidth": 480,
         "previewHeight": 360,
-        "registered": false
+        "registered": true
       },
       "sprites": [],
       "status": "processed",
-      "warnings": []
+      "warnings": [],
+      "registeredAs": "washington_final_table"
     },
     {
       "id": "germanna-library-desk",
@@ -5802,7 +5806,7 @@
         "transparentShare": 0.0
       },
       "verified": false,
-      "notes": "Processed into runtime board images; not yet registered as a selectable gameboard.",
+      "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
       "board": {
         "background": "assets/story/boards/germanna-library-desk/background.webp",
         "backgroundWidth": 1448,
@@ -5810,11 +5814,12 @@
         "preview": "assets/story/boards/germanna-library-desk/preview.webp",
         "previewWidth": 480,
         "previewHeight": 360,
-        "registered": false
+        "registered": true
       },
       "sprites": [],
       "status": "processed",
-      "warnings": []
+      "warnings": [],
+      "registeredAs": "germanna_library"
     },
     {
       "id": "kenmore-georgian-parlor",
@@ -5833,7 +5838,7 @@
         "transparentShare": 0.0
       },
       "verified": false,
-      "notes": "Processed into runtime board images; not yet registered as a selectable gameboard.",
+      "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
       "board": {
         "background": "assets/story/boards/kenmore-georgian-parlor/background.webp",
         "backgroundWidth": 1448,
@@ -5841,11 +5846,12 @@
         "preview": "assets/story/boards/kenmore-georgian-parlor/preview.webp",
         "previewWidth": 480,
         "previewHeight": 360,
-        "registered": false
+        "registered": true
       },
       "sprites": [],
       "status": "processed",
-      "warnings": []
+      "warnings": [],
+      "registeredAs": "kenmore_parlor"
     },
     {
       "id": "umw-classroom-table",
@@ -5864,7 +5870,7 @@
         "transparentShare": 0.0
       },
       "verified": false,
-      "notes": "Processed into runtime board images; not yet registered as a selectable gameboard.",
+      "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
       "board": {
         "background": "assets/story/boards/umw-classroom-table/background.webp",
         "backgroundWidth": 1448,
@@ -5872,11 +5878,12 @@
         "preview": "assets/story/boards/umw-classroom-table/preview.webp",
         "previewWidth": 480,
         "previewHeight": 360,
-        "registered": false
+        "registered": true
       },
       "sprites": [],
       "status": "processed",
-      "warnings": []
+      "warnings": [],
+      "registeredAs": "umw_classroom"
     },
     {
       "id": "smoke-shop-glass-counter",
@@ -5895,7 +5902,7 @@
         "transparentShare": 0.0
       },
       "verified": false,
-      "notes": "Processed into runtime board images; not yet registered as a selectable gameboard.",
+      "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
       "board": {
         "background": "assets/story/boards/smoke-shop-glass-counter/background.webp",
         "backgroundWidth": 1448,
@@ -5903,11 +5910,12 @@
         "preview": "assets/story/boards/smoke-shop-glass-counter/preview.webp",
         "previewWidth": 480,
         "previewHeight": 360,
-        "registered": false
+        "registered": true
       },
       "sprites": [],
       "status": "processed",
-      "warnings": []
+      "warnings": [],
+      "registeredAs": "ismokeshop_counter (adult-only)"
     },
     {
       "id": "smoke-shop-counter-overhead",
@@ -5926,7 +5934,7 @@
         "transparentShare": 0.0
       },
       "verified": false,
-      "notes": "Processed into runtime board images; not yet registered as a selectable gameboard.",
+      "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
       "board": {
         "background": "assets/story/boards/smoke-shop-counter-overhead/background.webp",
         "backgroundWidth": 1448,
@@ -5934,11 +5942,12 @@
         "preview": "assets/story/boards/smoke-shop-counter-overhead/preview.webp",
         "previewWidth": 480,
         "previewHeight": 360,
-        "registered": false
+        "registered": true
       },
       "sprites": [],
       "status": "processed",
-      "warnings": []
+      "warnings": [],
+      "registeredAs": "ismokeshop_counter_overhead (adult-only)"
     },
     {
       "id": "engraved-georgian",
@@ -5958,7 +5967,7 @@
         "transparentShare": 0.055
       },
       "verified": false,
-      "notes": "Audited only: decks are built by scripts/art/extract_cards.py once registered.",
+      "notes": "Built into a deck by scripts/art/extract_cards.py (public/assets/cards/).",
       "audit": {
         "kind": "deck",
         "cardsFound": 32,
@@ -5976,7 +5985,8 @@
           "code": "deck-count",
           "message": "Only 12 face-sized cards found; a deck needs 52."
         }
-      ]
+      ],
+      "registeredAs": "deck freemasonry (faces)"
     },
     {
       "id": "spectral-washington",
@@ -5996,7 +6006,7 @@
         "transparentShare": 0.049
       },
       "verified": false,
-      "notes": "Audited only: decks are built by scripts/art/extract_cards.py once registered.",
+      "notes": "Built into a deck by scripts/art/extract_cards.py (public/assets/cards/).",
       "audit": {
         "kind": "deck",
         "cardsFound": 11,
@@ -6014,7 +6024,8 @@
           "code": "deck-count",
           "message": "Only 7 face-sized cards found; a deck needs 52."
         }
-      ]
+      ],
+      "registeredAs": "deck washington_ghost (faces)"
     },
     {
       "id": "inspire-botanical",
@@ -6072,7 +6083,7 @@
         "transparentShare": 0.0
       },
       "verified": false,
-      "notes": "Audited only: decks are built by scripts/art/extract_cards.py once registered.",
+      "notes": "Built into a deck by scripts/art/extract_cards.py (public/assets/cards/).",
       "audit": {
         "kind": "card-back",
         "ratio": 0.714
@@ -6085,7 +6096,8 @@
           "code": "back-margin",
           "message": "Opaque image: the area around the card (if any) must be trimmed before use."
         }
-      ]
+      ],
+      "registeredAs": "deck freemasonry (back)"
     },
     {
       "id": "spectral-tricorn-back",
@@ -6105,7 +6117,7 @@
         "transparentShare": 0.0
       },
       "verified": false,
-      "notes": "Audited only: decks are built by scripts/art/extract_cards.py once registered.",
+      "notes": "Built into a deck by scripts/art/extract_cards.py (public/assets/cards/).",
       "audit": {
         "kind": "card-back",
         "ratio": 0.714
@@ -6118,7 +6130,8 @@
           "code": "back-margin",
           "message": "Opaque image: the area around the card (if any) must be trimmed before use."
         }
-      ]
+      ],
+      "registeredAs": "deck washington_ghost (back)"
     }
   ]
 }

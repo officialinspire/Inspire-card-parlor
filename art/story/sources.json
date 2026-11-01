@@ -655,7 +655,8 @@
         "width": 1254,
         "height": 1254
       },
-      "sourceMode": "RGBA"
+      "sourceMode": "RGBA",
+      "notes": "Isometric map tile (transparent), not a top-down table: the underground_tunnels board keeps a drawn surface until a top-down painting is supplied."
     },
     {
       "id": "location-cheryls-antique-shop",
@@ -920,13 +921,14 @@
       "layout": {
         "type": "board"
       },
-      "notes": "Processed into runtime board images; not yet registered as a selectable gameboard.",
+      "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
       "sha256": "b86bc9c7099f445743b936117010a2bff4ce7c6aea9824a9eaf979b33dec6987",
       "sourceSize": {
         "width": 1672,
         "height": 941
       },
-      "sourceMode": "RGB"
+      "sourceMode": "RGB",
+      "registeredAs": "masonic_lodge_no4"
     },
     {
       "id": "cheryls-antique-shop",
@@ -936,13 +938,14 @@
       "layout": {
         "type": "board"
       },
-      "notes": "Processed into runtime board images; not yet registered as a selectable gameboard.",
+      "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
       "sha256": "9ae699a3de594d865cdc85533fdb59f503681115ff4d57a7d04ba0ece109db18",
       "sourceSize": {
         "width": 1672,
         "height": 940
       },
-      "sourceMode": "RGB"
+      "sourceMode": "RGB",
+      "registeredAs": "cheryls_antique_shop"
     },
     {
       "id": "mrs-grays-olive-desk",
@@ -952,13 +955,14 @@
       "layout": {
         "type": "board"
       },
-      "notes": "Processed into runtime board images; not yet registered as a selectable gameboard.",
+      "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
       "sha256": "a153548152d7e689cedaf09f82e792b3e9bc214b48e9b533bade7d5203881cdf",
       "sourceSize": {
         "width": 1672,
         "height": 941
       },
-      "sourceMode": "RGB"
+      "sourceMode": "RGB",
+      "registeredAs": "mrs_gray_safehouse"
     },
     {
       "id": "colonial-cellar-table",
@@ -968,13 +972,14 @@
       "layout": {
         "type": "board"
       },
-      "notes": "Processed into runtime board images; not yet registered as a selectable gameboard.",
+      "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
       "sha256": "cdf180dd1c3ad9c63fbcf63d0ab906bbf3103e6b5b4337e2f30bf4e8e319ff08",
       "sourceSize": {
         "width": 1448,
         "height": 1086
       },
-      "sourceMode": "RGB"
+      "sourceMode": "RGB",
+      "registeredAs": "washington_final_table"
     },
     {
       "id": "germanna-library-desk",
@@ -984,13 +989,14 @@
       "layout": {
         "type": "board"
       },
-      "notes": "Processed into runtime board images; not yet registered as a selectable gameboard.",
+      "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
       "sha256": "c7907292047aa6e0e07bdbd7088719744bcfc1629a3abc23e84d723a6ac18268",
       "sourceSize": {
         "width": 1448,
         "height": 1086
       },
-      "sourceMode": "RGB"
+      "sourceMode": "RGB",
+      "registeredAs": "germanna_library"
     },
     {
       "id": "kenmore-georgian-parlor",
@@ -1000,13 +1006,14 @@
       "layout": {
         "type": "board"
       },
-      "notes": "Processed into runtime board images; not yet registered as a selectable gameboard.",
+      "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
       "sha256": "641ae0b50536745f6305eaceef90e9114a968270a5dc7884ff02e2862ccdbd33",
       "sourceSize": {
         "width": 1448,
         "height": 1086
       },
-      "sourceMode": "RGB"
+      "sourceMode": "RGB",
+      "registeredAs": "kenmore_parlor"
     },
     {
       "id": "umw-classroom-table",
@@ -1016,13 +1023,14 @@
       "layout": {
         "type": "board"
       },
-      "notes": "Processed into runtime board images; not yet registered as a selectable gameboard.",
+      "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
       "sha256": "77e06512c919c849a763fa5fe1b407a524c4324fd4f5cef8187ffb50d90aedfb",
       "sourceSize": {
         "width": 1448,
         "height": 1086
       },
-      "sourceMode": "RGB"
+      "sourceMode": "RGB",
+      "registeredAs": "umw_classroom"
     },
     {
       "id": "smoke-shop-glass-counter",
@@ -1032,13 +1040,14 @@
       "layout": {
         "type": "board"
       },
-      "notes": "Processed into runtime board images; not yet registered as a selectable gameboard.",
+      "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
       "sha256": "0c946553a9be07376940b48e5105eb0daf626829eba09d020bf3df0ca3899a47",
       "sourceSize": {
         "width": 1448,
         "height": 1086
       },
-      "sourceMode": "RGB"
+      "sourceMode": "RGB",
+      "registeredAs": "ismokeshop_counter (adult-only)"
     },
     {
       "id": "smoke-shop-counter-overhead",
@@ -1048,13 +1057,14 @@
       "layout": {
         "type": "board"
       },
-      "notes": "Processed into runtime board images; not yet registered as a selectable gameboard.",
+      "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
       "sha256": "e608be6c6c7add1fb02815d099288299a15c4617d700c2962e76faeb6902d2ab",
       "sourceSize": {
         "width": 1448,
         "height": 1086
       },
-      "sourceMode": "RGB"
+      "sourceMode": "RGB",
+      "registeredAs": "ismokeshop_counter_overhead (adult-only)"
     },
     {
       "id": "engraved-georgian",
@@ -1065,13 +1075,14 @@
         "type": "audit",
         "kind": "deck"
       },
-      "notes": "Audited only: decks are built by scripts/art/extract_cards.py once registered.",
+      "notes": "Built into a deck by scripts/art/extract_cards.py (public/assets/cards/).",
       "sha256": "a369268590970e5c90295dfb56588eda87c7cba8e7ba7454d5da7dbf16e28b3d",
       "sourceSize": {
         "width": 1846,
         "height": 852
       },
-      "sourceMode": "RGBA"
+      "sourceMode": "RGBA",
+      "registeredAs": "deck freemasonry (faces)"
     },
     {
       "id": "spectral-washington",
@@ -1082,13 +1093,14 @@
         "type": "audit",
         "kind": "deck"
       },
-      "notes": "Audited only: decks are built by scripts/art/extract_cards.py once registered.",
+      "notes": "Built into a deck by scripts/art/extract_cards.py (public/assets/cards/).",
       "sha256": "16a9b84315ad8cba01c7f75721e7bdcf0b8fbbf85454fc304010091877ac5636",
       "sourceSize": {
         "width": 1846,
         "height": 852
       },
-      "sourceMode": "RGBA"
+      "sourceMode": "RGBA",
+      "registeredAs": "deck washington_ghost (faces)"
     },
     {
       "id": "inspire-botanical",
@@ -1116,13 +1128,14 @@
         "type": "audit",
         "kind": "card-back"
       },
-      "notes": "Audited only: decks are built by scripts/art/extract_cards.py once registered.",
+      "notes": "Built into a deck by scripts/art/extract_cards.py (public/assets/cards/).",
       "sha256": "f8d1234358aa73d75bdc2e7f1597201c7198f31bce0247e25e81e8505af3e856",
       "sourceSize": {
         "width": 1060,
         "height": 1484
       },
-      "sourceMode": "RGB"
+      "sourceMode": "RGB",
+      "registeredAs": "deck freemasonry (back)"
     },
     {
       "id": "spectral-tricorn-back",
@@ -1133,13 +1146,14 @@
         "type": "audit",
         "kind": "card-back"
       },
-      "notes": "Audited only: decks are built by scripts/art/extract_cards.py once registered.",
+      "notes": "Built into a deck by scripts/art/extract_cards.py (public/assets/cards/).",
       "sha256": "c642b7d8a008aeb3dc782311535abf520d7adcbd936eb979c068303664f455d3",
       "sourceSize": {
         "width": 1060,
         "height": 1484
       },
-      "sourceMode": "RGB"
+      "sourceMode": "RGB",
+      "registeredAs": "deck washington_ghost (back)"
     }
   ]
 }

@@ -21,6 +21,8 @@ export function standardAssets(basePath: string): DeckAssets {
 }
 
 export const MATURE_ASSET_ROOT = 'assets/cards/mature/';
+/** Adult-only gameboards (removed from the family build like adult decks). */
+export const MATURE_BOARD_ROOT = 'assets/backgrounds/mature/';
 
 /** Credit for the commissioned artwork uploaded by the studio; replace with the illustrator once confirmed. */
 export const studioCredit = (): ArtistCredit => ({

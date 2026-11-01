@@ -80,7 +80,8 @@ describe('story artwork manifest', () => {
     expect(manifest.sheets.every((s) => s.verified === false)).toBe(true);
     for (const id of ['engraved-georgian', 'spectral-washington', 'inspire-botanical'])
       expect(sheet(id)).toMatchObject({ status: 'audit-only', sprites: [] });
-    for (const s of manifest.sheets.filter((x) => x.group === 'boards')) expect(s.board?.registered).toBe(false);
+    // Boards are registered by build_images.py (Prompt 19); the story copies say so.
+    for (const s of manifest.sheets.filter((x) => x.group === 'boards')) expect(s.board?.registered).toBe(true);
   });
 
   it('reports what it could not do instead of failing', () => {

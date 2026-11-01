@@ -27,7 +27,7 @@ const themes = () =>
   new DeckThemeManager({ matureAllowed: () => false, placeholderArt: () => false, variantFor: () => undefined });
 
 describe('uploaded card sheets', () => {
-  it('covers the eight uploaded decks, each from its own sheet', () => {
+  it('covers the ten uploaded decks, each from its own sheet', () => {
     expect(EXTRACTED.sort()).toEqual(
       [
         'classic',
@@ -38,6 +38,8 @@ describe('uploaded card sheets', () => {
         'inspire',
         'jak_gold',
         'spycraft',
+        'freemasonry',
+        'washington_ghost',
       ].sort(),
     );
     expect(new Set(manifest.decks.map((d) => d.source)).size).toBe(manifest.decks.length);
@@ -185,4 +187,29 @@ describe('two-deck Spider with artwork', () => {
     expect(playable.sort()).toEqual([...EXTRACTED].sort());
     expect(allDecks().filter((d) => d.assets.status === 'ready')).toHaveLength(EXTRACTED.length);
   });
+});
+
+describe('Freemasonry and Washington’s Ghost decks', () => {
+  const CODES = ['S', 'H', 'D', 'C'].flatMap((s) =>
+    ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'].map((r) => r + s),
+  );
+  for (const id of ['freemasonry', 'washington_ghost']) {
+    it(`${id}: exactly the 52 standard cards, each from its own frame, with a separate back`, () => {
+      const atlas = JSON.parse(readFileSync(`public/assets/cards/${id}/atlas.json`, 'utf8')) as {
+        frames: Record<string, { x: number; y: number }>;
+        backSource?: string;
+        indexFixes: Record<string, string>;
+        artworkIssues: { cards: string[] }[];
+      };
+      expect(Object.keys(atlas.frames).sort()).toEqual([...CODES].sort());
+      expect(new Set(Object.values(atlas.frames).map((f) => `${f.x},${f.y}`)).size).toBe(52);
+      expect(atlas.backSource).toMatch(/card back\.png$/);
+      // Every corrected index is a real card and is disclosed as an artwork issue.
+      const disclosed = atlas.artworkIssues.flatMap((i) => i.cards);
+      for (const code of Object.keys(atlas.indexFixes)) {
+        expect(CODES).toContain(code);
+        expect(disclosed).toContain(code);
+      }
+    });
+  }
 });

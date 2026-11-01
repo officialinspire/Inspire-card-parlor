@@ -654,5 +654,6 @@
       "cards": [],
       "issue": "The sheet named \"jak theme\" is a celestial design (winged hearts, globes); it does not depict Jak Gold. Mapped to the Jak Gold deck by file name \u2014 confirm this is intended."
     }
-  ]
+  ],
+  "indexFixes": {}
 }

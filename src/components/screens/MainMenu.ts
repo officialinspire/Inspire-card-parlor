@@ -2,8 +2,8 @@ import { h } from '@/utils/dom';
 import { APP } from '@/core/config';
 import { AppState } from '@/core/states';
 import { navigate, store } from '@/core/store';
-import { deckThemes, getDeck } from '@/decks';
-import { allBoards, getBoard } from '@/boards/registry';
+import { deckThemes, getDeck, visibleBoards } from '@/decks';
+import { getBoard } from '@/boards/registry';
 import { boardSwatch } from '@/boards/BoardRenderer';
 import { audio, getTrack, music } from '@/audio';
 import { openMusicPlayer } from '../musicPlayer';
@@ -77,7 +77,7 @@ function playerStatus(): HTMLElement {
     }),
     (s) => s.profile,
     (el, p) => {
-      const c = collectionProgress(p, deckThemes.list(), allBoards());
+      const c = collectionProgress(p, deckThemes.list(), visibleBoards());
       el.title = `Collection ${c.percent}% complete`;
       el.setAttribute('aria-label', `Collection ${c.percent}% complete — open Deck Collection`);
       el.dataset.value = String(c.percent);

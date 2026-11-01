@@ -66,7 +66,8 @@ test('sprites keep their transparency and proportions when shown on a page', asy
   expect(sprites).toHaveLength(pick.length);
   const out = await page.evaluate(async (list) => {
     const host = document.createElement('div');
-    host.style.cssText = 'position:fixed;inset:0;display:flex;flex-wrap:wrap;align-items:flex-start;gap:4px;background:#f0f;z-index:99999';
+    host.style.cssText =
+      'position:fixed;inset:0;display:flex;flex-wrap:wrap;align-items:flex-start;gap:4px;background:#f0f;z-index:99999';
     document.body.append(host);
     const res: { id: string; ratio: number; expected: number; corner: number }[] = [];
     for (const s of list) {

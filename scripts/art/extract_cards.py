@@ -119,6 +119,26 @@ def column_cuts(fg: np.ndarray, y0: int, y1: int, n: int = 13, x0: int = 0, x1: 
     return cuts
 
 
+# --------------------------------------------------------------------------- index overlay
+
+# Share of the card (width, height) holding the top-left rank and suit index.
+INDEX_BOX = (0.22, 0.26)
+
+
+def mirror_index(card: Image.Image, box: tuple[float, float]) -> Image.Image:
+    """Corrects a misprinted bottom-right index: the card's own top-left index
+    (rank and suit, which were checked by eye) is rotated 180 degrees and laid
+    over the bottom-right corner, where standard cards print it inverted. The
+    corner's rounded border comes with it, so the card outline is unchanged.
+    Deterministic, and only applied to cards listed in the deck's indexFixes."""
+    w, h = card.size
+    bw, bh = round(w * box[0]), round(h * box[1])
+    corner = card.crop((0, 0, bw, bh)).rotate(180)
+    out = card.copy()
+    out.paste(corner, (w - bw, h - bh))
+    return out
+
+
 # --------------------------------------------------------------------------- cutting
 
 
@@ -294,6 +314,8 @@ def build(deck: dict) -> dict:
             box = (max(0, cuts[col] - 1), max(0, y0 - pad), cuts[col + 1] + 1, min(rgba.shape[0], y1 + pad))
             img, frame = cut_out(rgba, box, bg)
             code = rank + SUIT_CODE[suit]
+            if code in deck.get('indexFixes', {}):
+                img = mirror_index(img, deck.get('indexBox', INDEX_BOX))
             cards[code] = img
             frames[code] = dict(zip(('x', 'y', 'w', 'h'), frame))
             checks[code] = verify_card(img, rank, suit, deck.get('pipCards', True))
@@ -320,7 +342,7 @@ def build(deck: dict) -> dict:
     save_webp(sheet, out / 'faces.webp')
 
     face = (int(np.median([c.width for c in cards.values()])), int(np.median([c.height for c in cards.values()])))
-    extra_cards = extras(rgba, fg, extras_top, bg, deck.get('extrasMinArea', 12000), face)
+    extra_cards = extras(rgba, fg, extras_top, bg, deck.get('extrasMinArea', 12000), face) if deck['extras'] else []
     named: dict[str, Image.Image] = {}
     extra_frames: dict[str, dict] = {}
     for (img, frame), name in zip(extra_cards, deck['extras']):
@@ -331,9 +353,22 @@ def build(deck: dict) -> dict:
         named[name] = img
         extra_frames[name] = dict(zip(('x', 'y', 'w', 'h'), frame))
 
+    back_frame = None
+    if deck.get('backSource'):
+        # The back is a separate image: cut the card out of its surround.
+        bs = deck['backSource']
+        brgba = load(SOURCES / bs['source'])
+        back, back_frame = cut_out(brgba, (0, 0, brgba.shape[1], brgba.shape[0]), bs['background'])
+        named['back'] = back
+        extra_frames['back'] = {**dict(zip(('x', 'y', 'w', 'h'), back_frame)), 'source': bs['source']}
     back = named.get('back')
     if back is None:
         raise ValueError(f'{deck["id"]}: no card back found on the sheet')
+    if back.height > 2 * target_h:  # separate back images are large: keep them sharp, not heavy
+        back = back.resize((round(back.width * 2 * target_h / back.height), 2 * target_h), Image.LANCZOS)
+    ratio = back.width / back.height
+    if not 0.55 <= ratio <= 0.85:
+        raise ValueError(f'{deck["id"]}: back is {back.width}x{back.height}, not a whole upright card')
     save_webp(place(back, (back.width, back.height)), out / 'back.webp')
     for name, img in named.items():
         if name.startswith('back') and name != 'back':
@@ -359,6 +394,7 @@ def build(deck: dict) -> dict:
     meta = {
         'deck': deck['id'],
         'source': deck['source'],
+        **({'backSource': deck['backSource']['source']} if deck.get('backSource') else {}),
         'sourceSize': {'width': rgba.shape[1], 'height': rgba.shape[0]},
         'sourceRows': deck['rows'],
         'cell': {'width': cell[0], 'height': cell[1]},
@@ -372,6 +408,8 @@ def build(deck: dict) -> dict:
         # were checked by eye and found correct, and real artwork defects.
         'reviewedOk': deck.get('review', {}).get('reviewedOk', {}),
         'artworkIssues': deck.get('review', {}).get('artworkIssues', []),
+        # Bottom-right indices replaced by the card's own top-left index (see mirror_index).
+        'indexFixes': deck.get('indexFixes', {}),
     }
     (out / 'atlas.json').write_text(json.dumps(meta, indent=2) + '\n')
     return meta

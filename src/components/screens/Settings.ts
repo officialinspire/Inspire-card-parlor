@@ -19,8 +19,7 @@ import { tabs } from '../Tabs';
 import { FEATURES } from '@/core/config';
 import { ageGate, ageGateLocked } from '../AgeGate';
 import { openDialog } from '../Dialog';
-import { deckThemes } from '@/decks';
-import { allBoards } from '@/boards/registry';
+import { deckThemes, visibleBoards } from '@/decks';
 import { artistCredit } from './Collection';
 import { button, screenFrame } from '../ui';
 import type { ScreenFactory } from '../Screen';
@@ -44,7 +43,7 @@ export const SettingsScreen: ScreenFactory = ({ store }) => {
       body: h(
         'dl',
         { class: 'credits', 'data-credits': '' },
-        ...[...deckThemes.list(), ...allBoards()].flatMap((item) => [
+        ...[...deckThemes.list(), ...visibleBoards()].flatMap((item) => [
           h('dt', null, item.name),
           h('dd', null, artistCredit(item.artist)),
         ]),

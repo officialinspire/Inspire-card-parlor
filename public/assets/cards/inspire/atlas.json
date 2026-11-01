@@ -714,5 +714,6 @@
       "cards": ["7D"],
       "issue": "Bottom index 7 is not inverted like the other cards."
     }
-  ]
+  ],
+  "indexFixes": {}
 }

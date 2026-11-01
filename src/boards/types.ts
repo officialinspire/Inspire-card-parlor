@@ -1,4 +1,4 @@
-import type { ArtistCredit, AssetStatus, ImageRef, Rarity, UnlockRequirement } from '@/decks/types';
+import type { ArtistCredit, AssetStatus, ContentRating, ImageRef, Rarity, UnlockRequirement } from '@/decks/types';
 
 /** Optional ambient animation drawn above the board and beneath the cards. */
 export type AmbientKind =
@@ -22,6 +22,8 @@ export interface BoardDefinition {
   description: string;
   artist: ArtistCredit;
   rarity: Rarity;
+  /** Adult-only boards ('mature') follow the same gate as adult decks. Default: general. */
+  contentRating?: ContentRating;
   unlock: UnlockRequirement;
   assets: BoardAssets;
   /** Procedural surface used until (and underneath) uploaded artwork. */

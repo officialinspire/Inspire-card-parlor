@@ -1,8 +1,7 @@
 import { h } from '@/utils/dom';
 import type { Store } from '@/core/store';
-import { allBoards } from '@/boards/registry';
 import { boardSwatch } from '@/boards/BoardRenderer';
-import { cardRenderer, deckThemes } from '@/decks';
+import { cardRenderer, deckThemes, visibleBoards } from '@/decks';
 import { isBoardUnlocked, isDeckUnlocked } from '@/progression/levels';
 import { audio } from '@/audio';
 import { toggle } from './controls';
@@ -54,7 +53,7 @@ export function tableCustomizer(store: Store): HTMLElement {
   const p = () => store.state.profile;
   const decks = deckThemes.list().filter((d) => isDeckUnlocked(d.id, p()));
   const backs = [{ id: '', deckId: '', label: 'Match deck' }, ...deckThemes.availableBacks()];
-  const boards = allBoards().filter((b) => isBoardUnlocked(b.id, p()));
+  const boards = visibleBoards().filter((b) => isBoardUnlocked(b.id, p()));
 
   return h(
     'div',

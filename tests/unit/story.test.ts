@@ -15,7 +15,7 @@ import { goFishWinRate, simulateWar, verifySolitaire } from '@/story/verify';
 import { createDefaultProfile } from '@/core/defaults';
 import { Store } from '@/core/store';
 import { allDecks } from '@/decks/registry';
-import { allBoards } from '@/boards/registry';
+import { allBoards, getBoard } from '@/boards/registry';
 import { getDeck } from '@/decks/registry';
 import { ACHIEVEMENTS } from '@/achievements/registry';
 import { unlockEarned } from '@/achievements/engine';
@@ -282,5 +282,14 @@ describe('rewards', () => {
     expect(s.state.profile.credits).toBe(999);
     expect(s.state.profile.storyChapter).toBe(2);
     expect(s.state.profile.story).toEqual(emptyStoryProgress());
+  });
+});
+
+describe('family-friendly story', () => {
+  it('never uses adult-only decks or boards', () => {
+    for (const level of ALL_LEVELS) {
+      expect(getDeck(level.setup.deckId).contentRating, level.id).toBe('general');
+      expect(getBoard(level.setup.boardId).contentRating ?? 'general', level.id).toBe('general');
+    }
   });
 });

@@ -49,7 +49,7 @@ export function buildFacts(profile: Profile): Facts {
   const story = storyOf(profile);
   const decks = allDecks().filter((d) => d.contentRating !== 'mature');
   const variants = decks.flatMap((d) => d.variants.filter((v) => v.contentRating !== 'mature').map((v) => ({ d, v })));
-  const boards = allBoards();
+  const boards = allBoards().filter((b) => b.contentRating !== 'mature');
   return {
     profile,
     c: (k) => j.counters[k] ?? 0,

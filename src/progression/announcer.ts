@@ -147,7 +147,7 @@ const visibleDecks = (p: Profile) =>
     .map((d) => d.id);
 const visibleBoards = (p: Profile) =>
   allBoards()
-    .filter((b) => isBoardUnlocked(b.id, p))
+    .filter((b) => b.contentRating !== 'mature' && isBoardUnlocked(b.id, p))
     .map((b) => b.id);
 
 /** Watches the profile for things worth announcing, and releases held toasts at the right moments. */

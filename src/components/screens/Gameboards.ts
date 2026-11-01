@@ -1,7 +1,7 @@
 import { h } from '@/utils/dom';
-import { allBoards, type BoardDefinition } from '@/boards/registry';
+import type { BoardDefinition } from '@/boards/registry';
 import { boardSwatch } from '@/boards/BoardRenderer';
-import { deckThemes, getDeck } from '@/decks';
+import { deckThemes, getDeck, visibleBoards } from '@/decks';
 import type { DeckDefinition } from '@/decks/types';
 import { isBoardUnlocked, unlockHint } from '@/progression/levels';
 import { cardBack, cardFace } from '../Card';
@@ -38,7 +38,7 @@ export function boardPreview(board: BoardDefinition, deck: DeckDefinition, large
 
 export const GameboardsScreen: ScreenFactory = ({ store }) => {
   // Painted boards first, then the ones still waiting for their artwork.
-  const boards = [...allBoards()].sort(
+  const boards = [...visibleBoards()].sort(
     (a, b) => Number(b.assets.status === 'ready') - Number(a.assets.status === 'ready'),
   );
   const owned = boards.filter((b) => isBoardUnlocked(b.id, store.state.profile)).length;

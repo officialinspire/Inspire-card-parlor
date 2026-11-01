@@ -120,7 +120,7 @@ describe('AssetManager', () => {
 
   it('never requests files for pending decks', async () => {
     const { fn } = loader({});
-    const art = await new AssetManager({ loadImage: fn }).loadDeck(themes().resolve('freemasonry'));
+    const art = await new AssetManager({ loadImage: fn }).loadDeck(themes().resolve('yummyhole_standard'));
     expect(fn).not.toHaveBeenCalled();
     expect(art.faces).toBeNull();
     expect(art.missing).toHaveLength(52);
@@ -140,7 +140,7 @@ describe('AssetManager', () => {
 
   it('uses grid back cells and variant overrides', async () => {
     const theme: DeckTheme = {
-      ...themes(true).resolve('freemasonry'),
+      ...themes(true).resolve('yummyhole_standard'),
       key: 'ph-test',
       overrides: { QH: { path: 'qh', formats: ['png'] } },
     };
@@ -176,7 +176,7 @@ describe('CardRenderer', () => {
   });
 
   it('draws procedural cards while artwork is pending', () => {
-    const theme = themes().resolve('freemasonry');
+    const theme = themes().resolve('yummyhole_standard');
     const face = renderer.renderCard(new Card(12, 'hearts', 0, true), theme);
     expect(face.dataset.art).toBe('fallback');
     expect(face.dataset.code).toBe('QH');
@@ -198,7 +198,7 @@ describe('CardRenderer', () => {
   });
 
   it('renders sprite-sheet art once loaded and upgrades existing elements', async () => {
-    const theme = { ...themes(true).resolve('freemasonry'), key: 'upgrade-test' };
+    const theme = { ...themes(true).resolve('yummyhole_standard'), key: 'upgrade-test' };
     const sheet = '/assets/cards/_placeholder/faces.svg';
     am = new AssetManager({ baseUrl: '/', loadImage: loader({ [sheet]: [1560, 840] }).fn });
     renderer = new CardRenderer(am);

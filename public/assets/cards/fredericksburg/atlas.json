@@ -641,5 +641,6 @@
       "issue": "Eight pips instead of ten (indices are correct).",
       "checks": ["pips"]
     }
-  ]
+  ],
+  "indexFixes": {}
 }

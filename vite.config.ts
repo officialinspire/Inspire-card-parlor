@@ -9,7 +9,8 @@ import pkg from './package.json' with { type: 'json' };
 // (https://<user>.github.io/<repo>/) as well as any custom domain.
 /**
  * Adult-only artwork is compiled out of the public default build: unless
- * VITE_ENABLE_MATURE_CONTENT=true, public/assets/cards/mature is removed from the output.
+ * VITE_ENABLE_MATURE_CONTENT=true, public/assets/cards/mature and public/assets/backgrounds/mature
+ * are removed from the output.
  */
 function stripMatureAssets(enabled: boolean): Plugin {
   let outDir = 'dist';
@@ -20,7 +21,9 @@ function stripMatureAssets(enabled: boolean): Plugin {
       outDir = resolve(config.root, config.build.outDir);
     },
     closeBundle() {
-      if (!enabled) rmSync(resolve(outDir, 'assets/cards/mature'), { recursive: true, force: true });
+      if (enabled) return;
+      rmSync(resolve(outDir, 'assets/cards/mature'), { recursive: true, force: true });
+      rmSync(resolve(outDir, 'assets/backgrounds/mature'), { recursive: true, force: true });
     },
   };
 }

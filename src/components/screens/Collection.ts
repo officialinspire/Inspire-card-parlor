@@ -1,7 +1,6 @@
 import { h } from '@/utils/dom';
-import { assetManager, cardRenderer, deckThemes, getDeck } from '@/decks';
+import { assetManager, cardRenderer, deckThemes, getDeck, visibleBoards } from '@/decks';
 import type { ArtVariant, DeckDefinition } from '@/decks/types';
-import { allBoards } from '@/boards/registry';
 import { CHARACTERS } from '@/story/chapters';
 import { isDeckUnlocked, isVariantOwned, unlockHint } from '@/progression/levels';
 import { collectionProgress } from '@/progression/collection';
@@ -94,7 +93,7 @@ export const CollectionScreen: ScreenFactory = ({ store }) => {
   let filter: DeckFilter = 'all';
   let galleryDeck = deckThemes.safeDeckId(store.state.selection.deckId);
 
-  const progress = collectionProgress(profile(), decks, allBoards());
+  const progress = collectionProgress(profile(), decks, visibleBoards());
   const summary = h(
     'div',
     { class: 'summary-row', 'data-completion': String(progress.percent) },

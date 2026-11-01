@@ -20,6 +20,8 @@ const DECKS = [
   'fredericksburg_downtown',
   'eastern_woodlands',
   'spycraft',
+  'freemasonry',
+  'washington_ghost',
 ];
 const BOARDS = ['backroom_card_table', 'picnic_table', 'rappahannock_riverside'];
 const GAMES = ['klondike', 'spider', 'freecell', 'war', 'go-fish'] as const;
@@ -199,6 +201,22 @@ for (const board of BOARDS) {
       await play(page, [[deck, board]]);
     });
   }
+}
+
+/** The Thirteenth Hand boards (family edition), each in all five games on every layout. */
+const STORY_BOARDS = [
+  'cheryls_antique_shop',
+  'mrs_gray_safehouse',
+  'masonic_lodge_no4',
+  'kenmore_parlor',
+  'washington_final_table',
+  'umw_classroom',
+  'germanna_library',
+];
+for (const [i, board] of STORY_BOARDS.entries()) {
+  test(`${board}: all five games`, async ({ page }) => {
+    await play(page, [[DECKS[i % DECKS.length]!, board]]);
+  });
 }
 
 for (const [i, deck] of DECKS.entries()) {

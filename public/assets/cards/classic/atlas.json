@@ -637,5 +637,6 @@
   "reviewedOk": {
     "10S": "10 pips counted by eye; two pips touch in the automated count."
   },
-  "artworkIssues": []
+  "artworkIssues": [],
+  "indexFixes": {}
 }

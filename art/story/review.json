@@ -3,15 +3,14 @@
   "missing": [
     "No character sprite sheet for **Jak** (Jak Gold): his quest-item atlas, parlor tile and receipt exist, but there are no poses for him.",
     "No sprite art for the current Story Mode hosts (Mae, Jules, Otto, Ivy in `src/story/campaign.ts`); they still use monogram portraits.",
-    "**Freemasonry deck faces** are still missing. A matching back (`Antique navy-gold square-and-compasses card back.png`), a lodge board and lodge relics now exist, but no 52-card face sheet.",
-    "The **Engraved Georgian** and **Spectral Washington** deck sheets have no card back on the sheet; the standalone backs (`Spectral tricorn card back.png`, the navy-gold back) are not yet assigned to a deck.",
-    "No pose sheet for the Thirteenth Hand itself (only the two card illustrations and the VFX atlas)."
+    "No pose sheet for the Thirteenth Hand itself (only the two card illustrations and the VFX atlas).",
+    "A **top-down table painting for the Underground Tunnels** board: `Card Table Beneath the Sealed Door.png` is an isometric map tile, so `underground_tunnels` keeps its drawn surface (marked \"Art coming soon\")."
   ],
   "alpha": [
     "Character, item, UI, stamp, map-icon and VFX sheets have real transparency. Several keep stray colour under fully transparent pixels; the pipeline zeroes it so sprite edges don't pick up coloured fringes when scaled.",
     "Ghost characters (Mary Ball Washington, George Washington) and VFX use translucent glows. Cells are cut on opaque artwork only, so the glow is shared at a cell boundary rather than a figure being cut; faint glow below alpha 8 is dropped.",
     "The documents (receipts, commission form, dossier, sketchbook page, letter, puzzle diagram, the two Thirteenth Hand cards) sit on soft, partly transparent paper edges; check them over both dark and light backgrounds before use.",
-    "Two card backs (`Antique navy-gold square-and-compasses card back.png`, `Spectral tricorn card back.png`) are opaque: the navy-gold back has a white page margin around the card that must be trimmed before it can be used as a back.",
+    "The two card backs are opaque images; the build cuts each card out of its white (navy-gold) or black (tricorn) surround, keeping the rounded corners.",
     "All nine new gameboards are opaque RGB images, as boards should be."
   ],
   "unverified": [
@@ -19,17 +18,17 @@
     "Item names (e.g. `triangle-sigil-coin`, `cipher-ribbon`, `key-13-tag`) describe what is drawn, not how the story uses it. The story meaning of every item, stamp, effect and map icon is unverified.",
     "The twelve passport stamps are named after what they show; which chapter or character each belongs to is my reading, not the artist's.",
     "Map location tiles are identified by their file names; their placement on the river map is not defined anywhere yet.",
+    "**Freemasonry** (Engraved Georgian faces + navy-gold back) and **George Washington's Ghost** (Spectral Washington faces + tricorn back) were checked card by card in Prompt 19: rank and suit of all 52 cards by their top-left index, pips and colours. Misprinted bottom-right indices (Freemasonry: the four 9s and K♠; Washington: 9♠, 9♥, 9♦, 9♣, 5♥, 6♣, K♥) are replaced at build time by each card's own top-left index rotated 180° (`indexFixes` in their atlas.json). The four Freemasonry 5s show four pips (not changed; disclosed). The pairing of these faces with these backs is my reading of the art.",
     "**INSPIRE Botanical Cannabis deck** (audited only): the 8 of diamonds reads \"7\" in its top-left index and shows a heart in its bottom-right corner; the 9 of diamonds also shows a heart in its bottom-right corner; the 3 of spades reads \"2\" in its top-left index (three pips, bottom index 3). The deck is cannabis-themed and should be treated as adult content (isolated like the other 18+ decks) if it is added.",
-    "**Engraved Georgian** and **Spectral Washington** decks were audited only (13 x 4 grids, no back on the sheet); their faces have not been checked card by card.",
     "Nothing in `public/assets/story/` is used by the game yet, and nothing is marked verified (`verified: false` on every sheet)."
   ],
   "followUp": [
     "Confirm the sprite names in `art/story/sources.json` (especially the per-character `special` / `signature` / `gesture-*` poses and the stamp-to-chapter mapping), then set `verified: true` per sheet.",
     "Where neighbouring poses touch (listed under *Cropping and alpha issues*), ask for a re-export with a little more space between cells; the pipeline cuts where the overlap is smallest, but a few pixels of the neighbour's edge can remain or be lost.",
+    "Ask for corrected Freemasonry 5s (four pips each) and corrected bottom indices on both new decks, so the build-time index overlay can be removed.",
     "Re-export the Botanical deck with the 8 of diamonds, 9 of diamonds and 3 of spades corrected before building it, and decide where 18+ content rules apply to it.",
-    "Trim the white margin from the navy-gold card back; then add the Engraved Georgian and Spectral Washington decks through `scripts/art/extract_cards.py` with these backs.",
-    "Register the nine processed gameboards (`public/assets/story/boards/`) in `src/boards/registry.ts` when the story calls for them, with names and unlock rules.",
     "Provide a Jak character sheet, and sprite sheets for the Story Mode hosts if they are kept.",
-    "Define where each location tile sits on the river map (a coordinate list), so the map screen can be built from data."
+    "Define where each location tile sits on the river map (a coordinate list), so the map screen can be built from data.",
+    "Supply a top-down painting for the Underground Tunnels board."
   ]
 }

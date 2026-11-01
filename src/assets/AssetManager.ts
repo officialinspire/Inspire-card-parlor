@@ -1,7 +1,7 @@
 import type { CardCode } from '@/engine/Card';
 import { ALL_CARD_CODES } from '@/engine/Card';
 import type { DeckTheme } from '@/decks/DeckThemeManager';
-import { MATURE_ASSET_ROOT } from '@/decks/assets';
+import { MATURE_ASSET_ROOT, MATURE_BOARD_ROOT } from '@/decks/assets';
 import type { AtlasFrame, ImageFormat, ImageRef } from '@/decks/types';
 import { gridFrames, parseTexturePacker, type FrameMap } from './atlas';
 
@@ -91,7 +91,10 @@ export class AssetManager {
   }
 
   url(basePath: string, file: string): string {
-    if (basePath.startsWith(MATURE_ASSET_ROOT) && !this.opts.matureAllowed()) {
+    if (
+      (basePath.startsWith(MATURE_ASSET_ROOT) || basePath.startsWith(MATURE_BOARD_ROOT)) &&
+      !this.opts.matureAllowed()
+    ) {
       throw new AssetBlockedError(`Mature assets are disabled (${basePath})`);
     }
     return `${this.opts.baseUrl}${basePath}${file}`;
@@ -99,7 +102,14 @@ export class AssetManager {
 
   /** Loads the first candidate that exists. Resolves null if none load. */
   loadImage(basePath: string, ref: ImageRef): Promise<LoadedImage | null> {
-    const urls = this.candidates(basePath, ref);
+    let urls: string[];
+    try {
+      urls = this.candidates(basePath, ref);
+    } catch (err) {
+      // Blocked adult-only artwork never loads; callers keep the drawn surface.
+      if (err instanceof AssetBlockedError) return Promise.resolve(null);
+      throw err;
+    }
     const key = urls.join('|');
     let p = this.#images.get(key);
     if (!p) {

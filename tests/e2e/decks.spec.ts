@@ -40,6 +40,7 @@ test('collection lists the deck registry with mature decks hidden by default', a
       'inspire',
       'jak_gold',
       'spycraft',
+      'washington_ghost',
       'yummyhole_standard',
     ].sort(),
   );
@@ -50,8 +51,8 @@ test('deck details show attribution status and fallback cards', async ({ page })
   await enterParlor(page);
   await clickNav(page, 'COLLECTION');
   // A deck whose artwork has not been uploaded yet.
-  await clickInPager(page, '[data-deck="freemasonry"]');
-  const pending = page.locator('[data-deck-detail="freemasonry"]');
+  await clickInPager(page, '[data-deck="yummyhole_standard"]');
+  const pending = page.locator('[data-deck-detail="yummyhole_standard"]');
   await expect(pending).toContainText('Artist credit coming with the artwork');
   await expect(pending).toContainText('Art coming soon');
   await expect(pending.locator('.card[data-art="fallback"]')).toHaveCount(4);
@@ -98,6 +99,9 @@ test('the public edition has no adult-only content at all', async ({ page, reque
   expect(await (await request.get('assets/cards/mature/yummyhole_after_dark/README.md')).text()).not.toContain(
     'artwork drop folder',
   );
+  // Adult-only gameboards are not shipped either (the preview server answers with the app page).
+  const board = await request.get('assets/backgrounds/mature/ismokeshop_counter/preview.webp');
+  expect(board.headers()['content-type'] ?? '').not.toContain('image/webp');
   // Even a saved opt-in from elsewhere cannot switch it on.
   await page.evaluate(() =>
     (window as unknown as { __ICP__: { store: { dispatch(a: unknown): void } } }).__ICP__.store.dispatch({
@@ -119,10 +123,10 @@ test('placeholder artwork renders cards from the sprite-sheet template', async (
   await expectScreen(page, 'COLLECTION');
   await page.locator(`${CURRENT} [data-tab="gallery"]`).click();
   // The template stands in only for decks whose artwork is still pending.
-  await page.locator(`${CURRENT} select[data-gallery-deck]`).selectOption('freemasonry');
+  await page.locator(`${CURRENT} select[data-gallery-deck]`).selectOption('yummyhole_standard');
 
   // Scope to the new deck's card so the previous deck's card can't be read mid re-render.
-  const card = page.locator(`${CURRENT} .gallery-cell .card[data-code="AS"][data-theme^="freemasonry"]`);
+  const card = page.locator(`${CURRENT} .gallery-cell .card[data-code="AS"][data-theme^="yummyhole_standard"]`);
   await expect(card).toHaveAttribute('data-art', 'atlas');
   const style = await card.locator('.card-art-img').evaluate((el) => {
     const cs = getComputedStyle(el);
