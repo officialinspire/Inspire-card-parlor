@@ -18,8 +18,10 @@
     "test:e2e": "playwright test",
     "test:all": "npm run typecheck && npm run test && npm run test:e2e",
     "validate:decks": "tsx scripts/validate-decks.ts",
-    "validate": "npm run validate:decks && npm run format:check",
+    "validate:story": "tsx scripts/validate-story-art.ts",
+    "validate": "npm run validate:decks && npm run validate:story && npm run format:check",
     "art:cards": "python3 scripts/art/extract_cards.py",
+    "art:story": "python3 scripts/art/story_assets.py",
     "art:images": "python3 scripts/art/build_images.py",
     "assets:placeholders": "tsx scripts/generate-placeholders.ts"
   },

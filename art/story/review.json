@@ -1,0 +1,35 @@
+{
+  "about": "Findings from inspecting the story artwork by eye (Prompt 18). Read into docs/ART_ASSET_AUDIT.md by scripts/art/story_assets.py.",
+  "missing": [
+    "No character sprite sheet for **Jak** (Jak Gold): his quest-item atlas, parlor tile and receipt exist, but there are no poses for him.",
+    "No sprite art for the current Story Mode hosts (Mae, Jules, Otto, Ivy in `src/story/campaign.ts`); they still use monogram portraits.",
+    "**Freemasonry deck faces** are still missing. A matching back (`Antique navy-gold square-and-compasses card back.png`), a lodge board and lodge relics now exist, but no 52-card face sheet.",
+    "The **Engraved Georgian** and **Spectral Washington** deck sheets have no card back on the sheet; the standalone backs (`Spectral tricorn card back.png`, the navy-gold back) are not yet assigned to a deck.",
+    "No pose sheet for the Thirteenth Hand itself (only the two card illustrations and the VFX atlas)."
+  ],
+  "alpha": [
+    "Character, item, UI, stamp, map-icon and VFX sheets have real transparency. Several keep stray colour under fully transparent pixels; the pipeline zeroes it so sprite edges don't pick up coloured fringes when scaled.",
+    "Ghost characters (Mary Ball Washington, George Washington) and VFX use translucent glows. Cells are cut on opaque artwork only, so the glow is shared at a cell boundary rather than a figure being cut; faint glow below alpha 8 is dropped.",
+    "The documents (receipts, commission form, dossier, sketchbook page, letter, puzzle diagram, the two Thirteenth Hand cards) sit on soft, partly transparent paper edges; check them over both dark and light backgrounds before use.",
+    "Two card backs (`Antique navy-gold square-and-compasses card back.png`, `Spectral tricorn card back.png`) are opaque: the navy-gold back has a white page margin around the card that must be trimmed before it can be used as a back.",
+    "All nine new gameboards are opaque RGB images, as boards should be."
+  ],
+  "unverified": [
+    "**All sprite names are mine, from looking at the art.** Character pose names are slot conventions (row = portrait / cards / full body); the meaning of the `special`, `signature` and `gesture-*` slots differs per character (e.g. Cheryl's magnifier, Sophia's binoculars, George Washington's spectral card) and is not confirmed by the artist.",
+    "Item names (e.g. `triangle-sigil-coin`, `cipher-ribbon`, `key-13-tag`) describe what is drawn, not how the story uses it. The story meaning of every item, stamp, effect and map icon is unverified.",
+    "The twelve passport stamps are named after what they show; which chapter or character each belongs to is my reading, not the artist's.",
+    "Map location tiles are identified by their file names; their placement on the river map is not defined anywhere yet.",
+    "**INSPIRE Botanical Cannabis deck** (audited only): the 8 of diamonds reads \"7\" in its top-left index and shows a heart in its bottom-right corner; the 9 of diamonds also shows a heart in its bottom-right corner; the 3 of spades reads \"2\" in its top-left index (three pips, bottom index 3). The deck is cannabis-themed and should be treated as adult content (isolated like the other 18+ decks) if it is added.",
+    "**Engraved Georgian** and **Spectral Washington** decks were audited only (13 x 4 grids, no back on the sheet); their faces have not been checked card by card.",
+    "Nothing in `public/assets/story/` is used by the game yet, and nothing is marked verified (`verified: false` on every sheet)."
+  ],
+  "followUp": [
+    "Confirm the sprite names in `art/story/sources.json` (especially the per-character `special` / `signature` / `gesture-*` poses and the stamp-to-chapter mapping), then set `verified: true` per sheet.",
+    "Where neighbouring poses touch (listed under *Cropping and alpha issues*), ask for a re-export with a little more space between cells; the pipeline cuts where the overlap is smallest, but a few pixels of the neighbour's edge can remain or be lost.",
+    "Re-export the Botanical deck with the 8 of diamonds, 9 of diamonds and 3 of spades corrected before building it, and decide where 18+ content rules apply to it.",
+    "Trim the white margin from the navy-gold card back; then add the Engraved Georgian and Spectral Washington decks through `scripts/art/extract_cards.py` with these backs.",
+    "Register the nine processed gameboards (`public/assets/story/boards/`) in `src/boards/registry.ts` when the story calls for them, with names and unlock rules.",
+    "Provide a Jak character sheet, and sprite sheets for the Story Mode hosts if they are kept.",
+    "Define where each location tile sits on the river map (a coordinate list), so the map screen can be built from data."
+  ]
+}

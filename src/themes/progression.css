@@ -727,3 +727,32 @@
   flex-wrap: wrap;
   row-gap: 4px;
 }
+
+/* ===================== Story artwork ===================== */
+.story-art {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+/* Shown when a sprite is missing or fails to load: never mistaken for finished art. */
+.story-art-missing {
+  display: inline-grid;
+  place-items: center;
+  width: 100%;
+  max-width: 160px;
+  border: 1.5px dashed var(--ink-faint);
+  border-radius: var(--radius-xs);
+  background: repeating-linear-gradient(45deg, transparent 0 8px, rgba(127, 127, 127, 0.12) 8px 16px);
+  color: var(--ink-soft);
+  text-align: center;
+  padding: 4px;
+}
+.story-art-missing small {
+  font-size: max(10px, 0.7em);
+  font-weight: 800;
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+}
