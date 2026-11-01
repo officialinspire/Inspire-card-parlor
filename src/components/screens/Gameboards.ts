@@ -88,9 +88,10 @@ export const GameboardsScreen: ScreenFactory = ({ store }) => {
 
   const pager = paginator({
     items: boards,
-    minTileWidth: 200,
-    minTileHeight: 200,
-    maxTileHeight: 280,
+    // Two thumbnails across on a phone; tap one for the full preview.
+    minTileWidth: 158,
+    minTileHeight: 176,
+    maxTileHeight: 260,
     label: 'Gameboards',
     initialIndex: Math.max(
       0,

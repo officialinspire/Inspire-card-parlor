@@ -1,11 +1,13 @@
 import { expect, test } from '@playwright/test';
 import { CURRENT, clickNav, enterParlor, expectNoOverflow, expectScreen } from './helpers';
 
+// Story Mode is the featured card; the rest are the destination tiles.
 const MENU = [
-  ['GAME_SELECTION', 'Quick Play'],
   ['STORY_MODE', 'Story Mode'],
-  ['COLLECTION', 'Deck Collection'],
+  ['GAME_SELECTION', 'Card Games'],
+  ['COLLECTION', 'Collection'],
   ['GAMEBOARDS', 'Gameboards'],
+  ['PASSPORT', 'Passport'],
   ['ACHIEVEMENTS', 'Achievements'],
   ['STATISTICS', 'Statistics'],
   ['SETTINGS', 'Settings'],
@@ -31,6 +33,67 @@ test('shows every menu entry and the player status', async ({ page }) => {
   await expect(page.locator(`${CURRENT} [data-value="deck"]`)).toHaveText('BlackJak Standard');
   await expect(page.locator(`${CURRENT} [data-value="board"]`)).toHaveText('Backroom Card Table');
   await expect(page.locator(`${CURRENT} [data-value="music"]`)).toHaveText('Inspire Card Parlor Menu Track');
+});
+
+test('Story Mode is featured with a progress summary', async ({ page }) => {
+  const story = page.locator(`${CURRENT} .menu-story`);
+  await expect(story).toBeVisible();
+  await expect(story.locator('[data-value="story-chapter"]')).toContainText('Chapter 1');
+  await expect(story.locator('[data-value="story-progress"]')).toHaveText(/^0\/\d+ challenges · 0\/\d+ stamps$/);
+  // Comes first in reading order, before Quick Play and the tiles.
+  const order = await page.evaluate(
+    (cur) =>
+      [...document.querySelectorAll(`${cur} .menu-panel :is(.menu-story, .quick-play, .menu-tile)`)].map((e) =>
+        e.className.split(' ').find((c) => ['menu-story', 'quick-play', 'menu-tile'].includes(c)),
+      ),
+    CURRENT,
+  );
+  expect(order[0]).toBe('menu-story');
+  expect(order[1]).toBe('quick-play');
+});
+
+test('Quick Play deals the last game straight away', async ({ page }) => {
+  const quick = page.locator(`${CURRENT} [data-action="quick-play"]`);
+  await expect(quick).toContainText('Klondike');
+  await quick.click();
+  await expectScreen(page, 'GAMEPLAY');
+  const game = await page.evaluate(
+    () =>
+      (window as unknown as { __ICP__: { store: { state: { selection: { gameId: string } } } } }).__ICP__.store.state
+        .selection.gameId,
+  );
+  expect(game).toBe('klondike');
+});
+
+test('the Music tile opens the music player', async ({ page }) => {
+  await page.locator(`${CURRENT} .menu-grid [data-action="music-player"]`).click();
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('dialog')).toHaveCount(0);
+});
+
+test('menu targets are large enough to tap, with readable labels', async ({ page }) => {
+  const sizes = await page.evaluate(
+    (cur) =>
+      [...document.querySelectorAll<HTMLElement>(`${cur} .menu-panel button`)].map((b) => {
+        const r = b.getBoundingClientRect();
+        return { name: b.getAttribute('aria-label') ?? b.textContent?.trim(), w: r.width, h: r.height };
+      }),
+    CURRENT,
+  );
+  for (const s of sizes) {
+    expect(s.h, `${s.name} height`).toBeGreaterThanOrEqual(40);
+    expect(s.w, `${s.name} width`).toBeGreaterThanOrEqual(44);
+  }
+  // Visible tile labels are never cut off with an ellipsis.
+  const cut = await page.evaluate(
+    (cur) =>
+      [...document.querySelectorAll<HTMLElement>(`${cur} .menu-tile-label`)]
+        .filter((l) => l.scrollWidth > l.clientWidth + 1)
+        .map((l) => l.textContent),
+    CURRENT,
+  );
+  expect(cut).toEqual([]);
 });
 
 test('fits the viewport without scrolling', async ({ page }) => {

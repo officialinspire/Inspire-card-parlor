@@ -38,7 +38,8 @@ export const MENU_HUB: readonly AppState[] = [
 export const TRANSITIONS: Record<AppState, readonly AppState[]> = {
   BOOT: [AppState.INITIALIZATION],
   INITIALIZATION: [AppState.MAIN_MENU],
-  MAIN_MENU: MENU_HUB,
+  // Quick Play jumps straight back to the table.
+  MAIN_MENU: [...MENU_HUB, AppState.GAMEPLAY],
   GAME_SELECTION: [...MENU_HUB, AppState.DECK_SELECTION],
   DECK_SELECTION: [...MENU_HUB, AppState.BOARD_SELECTION],
   BOARD_SELECTION: [...MENU_HUB, AppState.DECK_SELECTION, AppState.GAMEPLAY],

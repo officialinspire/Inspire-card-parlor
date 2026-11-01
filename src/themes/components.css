@@ -1020,6 +1020,28 @@ button.tile:active {
 .toast-error {
   --toast-accent: var(--danger);
 }
+/* Short screens: slimmer notes; in landscape they sit to the right, off the menu. */
+@media (max-height: 700px) {
+  .toast-region {
+    gap: 6px;
+  }
+  .toast {
+    padding: 6px 12px 6px 8px;
+    font-size: 0.92em;
+  }
+  .toast-celebrate .toast-medal {
+    width: 28px;
+    height: 28px;
+  }
+}
+@media (orientation: landscape) and (max-height: 600px) {
+  .toast-region {
+    left: auto;
+    right: calc(var(--safe-r, 0px) + var(--gutter));
+    transform: none;
+    width: min(320px, 42vw);
+  }
+}
 /* Achievements and unlocks: a gold card with a little burst of suits. */
 .toast-celebrate {
   --toast-accent: var(--gold);

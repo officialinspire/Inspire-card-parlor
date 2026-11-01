@@ -722,9 +722,95 @@
 }
 
 .menu-setup {
+  display: contents;
+}
+/* Story Mode card: chapter on the second line, progress on the third. */
+.play-progress {
+  font-size: max(10px, 0.7em);
+  font-weight: 800;
+  opacity: 0.8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+.menu-story .play-text {
+  min-width: 0;
+  gap: 1px;
+}
+.menu-story .play-label {
+  white-space: nowrap;
+}
+.menu-story {
+  padding-right: clamp(70px, 18vw, 96px);
+}
+.menu-story .play-hint {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.06em;
+}
+/* Quick Play beside your deck and table. */
+.menu-quick {
+  container: menu-quick / inline-size;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, 1fr);
   gap: 8px;
+}
+.quick-play {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: 44px;
+  padding: 5px 10px 5px 6px;
+  border-radius: var(--radius-s);
+  border: 1px solid var(--gold-line);
+  background: color-mix(in srgb, var(--gold-soft) 70%, var(--surface));
+  color: var(--ink);
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  transition:
+    border-color var(--dur-fast),
+    transform var(--dur-fast) var(--ease-press);
+}
+.quick-play > .icon {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  padding: 7px 6px 7px 8px;
+  border-radius: 50%;
+  background: var(--gold-metal);
+  color: var(--gold-ink);
+}
+.quick-play:active {
+  transform: scale(0.98);
+}
+.quick-play-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.2;
+}
+.quick-play-text small {
+  white-space: nowrap;
+  letter-spacing: 0.06em;
+  font-size: max(10px, 0.66em);
+  font-weight: 800;
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  color: var(--gold-deep);
+}
+[data-theme='night'] .quick-play-text small {
+  color: var(--gold);
+}
+.quick-play-text span {
+  font-weight: 800;
+  font-size: 0.88em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .setup-chip {
   display: flex;
@@ -784,14 +870,36 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+/* Narrow row: drop the small caption and let the name use two lines. */
+@container menu-quick (max-width: 420px) {
+  .setup-chip {
+    padding-right: 6px;
+    gap: 6px;
+  }
+  .setup-text small {
+    display: none;
+  }
+  .setup-text span {
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    font-size: 0.8em;
+    line-height: 1.15;
+    hyphens: auto;
+  }
+}
 
 .menu-grid {
+  container: menu-grid / inline-size;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
 }
 .menu-tile {
-  min-height: clamp(62px, 9.5vmin, 88px);
+  min-height: clamp(60px, 9vmin, 80px);
+  min-width: 0;
   border-radius: var(--radius-m);
   background: color-mix(in srgb, var(--surface) 82%, transparent);
   border: 1px solid var(--border);
@@ -864,13 +972,30 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
+  max-width: 100%;
 }
 .menu-tile-label {
-  font-size: max(10px, 0.72em);
+  /* Title case, sized to the tile: long words never break mid-word on narrow phones. */
+  font-size: clamp(10px, 2.9vw, 13px);
   font-weight: 900;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
   line-height: 1.15;
+}
+.menu-tile-label .label-short {
+  display: none;
+}
+/* Short names when the tiles are narrow (phones, the landscape side panel). */
+@container menu-grid (max-width: 440px) {
+  .menu-tile-label .label-full {
+    display: none;
+  }
+  .menu-tile-label .label-short {
+    display: inline;
+  }
 }
 .menu-tile-hint {
   display: none;
@@ -1024,7 +1149,7 @@
 /* Desktop: an elegant column on the left, the painting given room to breathe. */
 @media (orientation: landscape) and (min-width: 1000px) and (min-height: 600px) {
   .menu-layout {
-    grid-template-columns: minmax(0, 420px) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 460px) minmax(0, 1fr);
     padding-top: calc(var(--safe-t) + 24px);
     padding-bottom: calc(var(--safe-b) + 18px);
     gap: 16px 28px;
@@ -1037,8 +1162,8 @@
     gap: 14px;
   }
   .menu-grid {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 6px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
   }
   .menu-tile {
     min-height: 54px;
@@ -1056,6 +1181,17 @@
   }
   .menu-tile-hint {
     display: block;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  /* Two wide columns here: full names fit. */
+  .menu-grid .menu-tile-label .label-full {
+    display: inline;
+  }
+  .menu-grid .menu-tile-label .label-short {
+    display: none;
   }
   @media (hover: hover) {
     .menu-tile:hover {
@@ -3626,6 +3762,7 @@
 
 /* ===================== Gameboard gallery ===================== */
 .board-tile {
+  container: board-tile / inline-size;
   flex-direction: column;
   align-items: stretch;
   padding: 0;
@@ -3683,6 +3820,28 @@
 .board-selected .icon {
   width: 16px;
   height: 16px;
+}
+/* Thumbnail-sized tiles (two across on a phone): full-width action, tighter text. */
+@container board-tile (max-width: 220px) {
+  .board-tile .tile-main {
+    padding: 8px 8px 2px;
+    gap: 4px;
+  }
+  .board-tile .tile-title {
+    font-size: 0.92em;
+  }
+  .board-tile-foot {
+    justify-content: stretch;
+    padding: 0 8px 8px;
+  }
+  .board-tile-foot > * {
+    flex: 1;
+    min-width: 0;
+    justify-content: center;
+  }
+  .board-tile .tile-lock {
+    font-size: 0.78em;
+  }
 }
 .board-ambience-toggle {
   flex: none;
@@ -4102,5 +4261,29 @@
   .stamp {
     width: 20px;
     height: 20px;
+  }
+}
+
+/* Menu focus and press feedback: a ring that reads against the gold Story card too. */
+.menu-play:active {
+  transform: scale(0.985);
+}
+.menu-story:focus-visible,
+.quick-play:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 6px var(--gold-soft);
+}
+.menu-tile:focus-visible,
+.setup-chip:focus-visible {
+  outline-offset: 2px;
+  border-color: var(--gold-line);
+}
+@media (prefers-reduced-motion: reduce) {
+  .menu-play:active,
+  .menu-tile:active,
+  .setup-chip:active,
+  .quick-play:active {
+    transform: none;
   }
 }
