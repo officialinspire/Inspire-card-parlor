@@ -1038,8 +1038,13 @@
 }
 .menu-footer-meta {
   display: flex;
+  align-items: center;
   gap: 10px;
   flex: none;
+}
+.menu-footer-meta a {
+  padding-block: 12px;
+  margin-block: -12px;
 }
 
 /* Short screens (small phones): tighten the panel. */
@@ -3767,6 +3772,14 @@
   align-items: stretch;
   padding: 0;
   gap: 0;
+}
+/* Quick Play's board step: the whole tile is the button, so it keeps its padding. */
+button.board-tile {
+  padding: 8px 8px 10px;
+  gap: 4px;
+}
+button.board-tile .tile-title {
+  line-height: 1.15;
 }
 .board-tile .tile-main {
   flex: 1;

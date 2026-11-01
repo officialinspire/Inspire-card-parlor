@@ -403,11 +403,12 @@
 }
 .pager-dots {
   display: flex;
-  gap: 2px;
+  gap: 0;
 }
+/* Small diamonds, but a finger-sized target around each. */
 .pager-dot {
-  width: 24px;
-  height: 24px;
+  width: 30px;
+  height: 40px;
   border: 0;
   padding: 0;
   background: none;
@@ -735,15 +736,27 @@ button.tile:active {
 .control-label {
   font-weight: 800;
 }
+.control-slider {
+  container-type: inline-size;
+  flex-wrap: wrap;
+  row-gap: 0;
+}
 .control-slider .control-label {
   flex: none;
   min-width: 7.5em;
 }
+/* The slider keeps a usable width: in a narrow card it drops below its label. */
 .control-slider input {
-  flex: 1;
+  flex: 1 1 120px;
   accent-color: var(--accent);
-  min-width: 0;
-  height: 28px;
+  min-width: 120px;
+  height: 36px;
+}
+/* Narrow card: the label takes its own line; slider and value share the next. */
+@container (max-width: 320px) {
+  .control-slider .control-label {
+    flex-basis: 100%;
+  }
 }
 .control-value {
   width: 3.2em;
@@ -805,6 +818,7 @@ button.tile:active {
 .segmented button {
   border: 0;
   background: none;
+  min-height: 36px;
   padding: 6px 14px;
   border-radius: var(--radius-pill);
   cursor: pointer;

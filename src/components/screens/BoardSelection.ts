@@ -20,7 +20,8 @@ export const BoardSelectionScreen: ScreenFactory = ({ store }) => {
   const deck = getDeck(deckThemes.safeDeckId(store.state.selection.deckId));
   const pager = paginator({
     items: BOARDS,
-    minTileWidth: 200,
+    // Two thumbnails across on a phone, like the Gameboards gallery.
+    minTileWidth: 158,
     minTileHeight: 170,
     maxTileHeight: 260,
     label: 'Gameboards',

@@ -117,9 +117,10 @@ export const AchievementsScreen: ScreenFactory = ({ store }) => {
   const panel = (list: AchievementDefinition[], label: string) =>
     paginatorPanel({
       items: order(list),
-      minTileWidth: 290,
-      minTileHeight: 86,
-      maxTileHeight: 112,
+      minTileWidth: 250,
+      minTileHeight: 74,
+      maxTileHeight: 104,
+      gap: 8,
       label: `${label} achievements`,
       render: tile,
     });
