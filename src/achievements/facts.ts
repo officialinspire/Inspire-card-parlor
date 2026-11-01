@@ -28,9 +28,13 @@ export interface Facts {
   /** Fastest win in seconds (Infinity if none). */
   fastest(game: GameId): number;
   level: number;
+  /** Story challenges cleared in any campaign (including the archived first one). */
   storyCleared: number;
+  /** Challenges cleared in The Thirteenth Hand. */
+  campaignCleared: number;
   chaptersComplete: number;
   chapterDone(index: number): boolean;
+  /** Challenges cleared on the first try, in any campaign. */
   firstTryClears: number;
   decksOwned: number;
   decksTotal: number;
@@ -47,6 +51,8 @@ export function buildFacts(profile: Profile): Facts {
   const stats = profile.stats;
   const games = (g?: GameId) => (g ? [g] : GAME_IDS);
   const story = storyOf(profile);
+  const legacy = profile.legacyStory;
+  const legacyCleared = legacy?.completed ?? [];
   const decks = allDecks().filter((d) => d.contentRating !== 'mature');
   const variants = decks.flatMap((d) => d.variants.filter((v) => v.contentRating !== 'mature').map((v) => ({ d, v })));
   const boards = allBoards().filter((b) => b.contentRating !== 'mature');
@@ -60,13 +66,16 @@ export function buildFacts(profile: Profile): Facts {
     streak: (g) => Math.max(0, ...games(g).map((id) => stats[id]?.longestStreak ?? 0)),
     fastest: (g) => (stats[g]?.bestTimeMs != null && stats[g].won > 0 ? stats[g].bestTimeMs! / 1000 : Infinity),
     level: profile.level,
-    storyCleared: story.completed.length,
+    storyCleared: story.completed.length + legacyCleared.length,
+    campaignCleared: story.completed.length,
     chaptersComplete: STORY_CHAPTERS.filter((c) => isChapterComplete(profile, c)).length,
     chapterDone: (i) => {
       const ch = STORY_CHAPTERS.find((c) => c.index === i);
       return !!ch && isChapterComplete(profile, ch);
     },
-    firstTryClears: story.completed.filter((id) => story.attempts[id] === 1).length,
+    firstTryClears:
+      story.completed.filter((id) => story.attempts[id] === 1).length +
+      legacyCleared.filter((id) => legacy?.attempts[id] === 1).length,
     decksOwned: decks.filter((d) => isDeckUnlocked(d.id, profile)).length,
     decksTotal: decks.length,
     boardsOwned: boards.filter((b) => isBoardUnlocked(b.id, profile)).length,

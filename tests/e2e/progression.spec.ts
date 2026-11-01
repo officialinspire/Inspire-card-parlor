@@ -175,9 +175,17 @@ test('the passport shows level, experience, credits, records, stamps and achieve
       level: 6,
       credits: 999,
       stats: { klondike: { played: 9, won: 4, bestTimeMs: null, bestScore: null, currentStreak: 0, longestStreak: 2 } },
-      story: { completed: [], rewarded: [], stamps: ['hometown'], introsSeen: [], attempts: {} },
+      story: {
+        campaign: 'thirteenth-hand',
+        version: 1,
+        completed: [],
+        rewarded: [],
+        stamps: ['th-antique-shop'],
+        introsSeen: [],
+        attempts: {},
+      },
       journal: { counters: { 'deck.inspire': 5 }, seen: {} },
-      schemaVersion: 2,
+      schemaVersion: 3,
     },
   });
   await enterParlor(page);
@@ -193,7 +201,7 @@ test('the passport shows level, experience, credits, records, stamps and achieve
   await expect(book.locator('[data-value="xp"]')).toContainText('XP');
   const turn = page.locator(`${CURRENT} [data-turn="2"]`);
   if (await turn.isVisible()) await turn.click();
-  await expect(book.locator('[data-stamp="hometown"]')).toHaveClass(/earned/);
+  await expect(book.locator('[data-stamp="th-antique-shop"]')).toHaveClass(/earned/);
   await expect(book.locator('[data-value="achievements"]')).toContainText('/ 150');
   await expectNoOverflow(page);
   expect((await state(page)).profile.journal.seen.screens).toContain('PASSPORT');
@@ -234,7 +242,7 @@ test('an older save is upgraded safely: backed up, de-duplicated, and past progr
   });
   await enterParlor(page);
   const p = (await state(page)).profile;
-  expect(p.schemaVersion).toBe(2);
+  expect(p.schemaVersion).toBe(3);
   expect(p.unlockedDecks.filter((d) => d === 'classic')).toHaveLength(1);
   expect(p.unlockedAchievements.filter((a) => a === 'first-win')).toHaveLength(1);
   expect(p.unlockedAchievements).toEqual(expect.arrayContaining(['first-win', 'war-10', 'win-streak-5', 'wins-10']));
@@ -253,4 +261,61 @@ test('an older save is upgraded safely: backed up, de-duplicated, and past progr
   const again = (await state(page)).profile;
   expect(again.unlockedAchievements.length).toBe(new Set(again.unlockedAchievements).size);
   expect(again.achievementDates['war-10']).toBe(p.achievementDates['war-10']);
+});
+
+test('a save from the first story campaign loads: progress archived, everything earned kept, new campaign fresh', async ({
+  page,
+}) => {
+  await seed(page, {
+    profile: {
+      schemaVersion: 2,
+      credits: 777,
+      level: 8,
+      storyChapter: 2,
+      unlockedDecks: ['classic', 'inspire', 'jak_gold', 'fredericksburg_downtown'],
+      unlockedBoards: ['backroom_card_table', 'picnic_table', 'rappahannock_riverside', 'jak_golds_casino'],
+      unlockedAchievements: ['story-start', 'story-ch1', 'passport-first', 'story-ch2'],
+      story: {
+        completed: ['chapter-1-1', 'chapter-1-2', 'chapter-1-3', 'chapter-1-4', 'chapter-1-5', 'chapter-2-1'],
+        rewarded: ['level:chapter-1-1', 'chapter:chapter-1'],
+        stamps: ['hometown', 'casino'],
+        introsSeen: ['chapter-1', 'chapter-2'],
+        attempts: { 'chapter-1-1': 1 },
+      },
+    },
+  });
+  await enterParlor(page);
+  const p = (await state(page)).profile as unknown as {
+    credits: number;
+    unlockedDecks: string[];
+    unlockedBoards: string[];
+    unlockedAchievements: string[];
+    storyChapter: number;
+    story: { campaign: string; completed: string[]; stamps: string[] };
+    legacyStory: { chaptersCompleted: number; completed: string[]; stamps: string[] };
+  };
+  expect(p.credits).toBeGreaterThanOrEqual(777);
+  expect(p.unlockedDecks).toEqual(expect.arrayContaining(['jak_gold', 'fredericksburg_downtown']));
+  expect(p.unlockedBoards).toEqual(expect.arrayContaining(['rappahannock_riverside', 'jak_golds_casino']));
+  expect(p.unlockedAchievements).toEqual(expect.arrayContaining(['story-ch1', 'passport-first', 'story-ch2']));
+  expect(p.legacyStory.chaptersCompleted).toBe(2);
+  expect(p.legacyStory.stamps).toEqual(['hometown', 'casino']);
+  expect(p.legacyStory.completed).toHaveLength(6);
+  expect(p.story.campaign).toBe('thirteenth-hand');
+  expect(p.story.completed).toEqual([]);
+  expect(p.storyChapter).toBe(0);
+  const backup = await page.evaluate(() => localStorage.getItem('icp:profile-backup-v2'));
+  expect(backup).toContain('chapter-2-1');
+  // The new campaign starts at its first chapter; old wins open nothing in it.
+  await clickNav(page, 'STORY_MODE');
+  await expect(page.locator(`${CURRENT} [data-chapter="th-1"]`)).not.toHaveClass(/locked/);
+  await expect(page.locator(`${CURRENT} [data-chapter="th-2"]`)).toHaveClass(/locked/);
+  // Reloading does not archive again or lose anything.
+  await page.waitForTimeout(400);
+  await page.reload();
+  await page.getByRole('button', { name: 'Enter Parlor' }).click();
+  await expectScreen(page, 'MAIN_MENU');
+  const again = (await state(page)).profile as unknown as typeof p;
+  expect(again.legacyStory).toEqual(p.legacyStory);
+  expect(again.unlockedAchievements.length).toBe(new Set(again.unlockedAchievements).size);
 });

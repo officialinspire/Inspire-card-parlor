@@ -1,7 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
 import { computeGrid, dotWindow } from '@/components/Paginator';
 import { grantXp, isDeckUnlocked, isBoardUnlocked, xpForLevel } from '@/progression/levels';
-import { createDefaultProfile } from '@/core/defaults';
+import { createDefaultProfile, PROFILE_SCHEMA } from '@/core/defaults';
+import { getChapter } from '@/story/campaign';
 import { resolveTheme } from '@/themes/theme';
 import { getTrack, nextTrackId, ALL_TRACKS as TRACKS } from '@/audio/tracks';
 import { migrateProfile, attachPersistence } from '@/storage/persistence';
@@ -68,13 +69,37 @@ describe('progression', () => {
     expect(isBoardUnlocked('downtown_cafe', p)).toBe(false);
   });
 
-  it('unlocks story rewards by chapter', () => {
+  it('unlocks story rewards by chapter, and keeps first-campaign unlocks', () => {
     const p = createDefaultProfile();
-    // Chapter 4 (The Woodlands) awards the Eastern Woodlands deck; Chapter 1 the riverside board.
-    expect(isDeckUnlocked('eastern_woodlands', { ...p, storyChapter: 3 })).toBe(false);
-    expect(isDeckUnlocked('eastern_woodlands', { ...p, storyChapter: 4 })).toBe(true);
-    expect(isBoardUnlocked('rappahannock_riverside', { ...p, storyChapter: 0 })).toBe(false);
-    expect(isBoardUnlocked('rappahannock_riverside', { ...p, storyChapter: 1 })).toBe(true);
+    const finished = (...chapters: string[]) => ({
+      ...p,
+      story: { ...p.story, completed: chapters.flatMap((c) => getChapter(c)!.levels.map((l) => l.id)) },
+    });
+    // The Heron's Bend (chapter 2) opens the Eastern Woodlands deck and the riverside board.
+    expect(isDeckUnlocked('eastern_woodlands', finished('th-1'))).toBe(false);
+    expect(isDeckUnlocked('eastern_woodlands', finished('th-1', 'th-2'))).toBe(true);
+    expect(isBoardUnlocked('rappahannock_riverside', finished('th-1'))).toBe(false);
+    expect(isBoardUnlocked('rappahannock_riverside', finished('th-1', 'th-2'))).toBe(true);
+    // A chapter count is not a completion: storyChapter alone unlocks nothing.
+    expect(isDeckUnlocked('eastern_woodlands', { ...p, storyChapter: 9 })).toBe(false);
+    // First-campaign completions keep what they used to unlock (Woodlands was its chapter 4).
+    const legacy = (n: number) => ({
+      ...p,
+      legacyStory: {
+        campaign: 'card-parlor-chronicles' as const,
+        chaptersCompleted: n,
+        completed: [],
+        rewarded: [],
+        stamps: [],
+        introsSeen: [],
+        attempts: {},
+        archivedAt: 0,
+      },
+    });
+    expect(isDeckUnlocked('eastern_woodlands', legacy(3))).toBe(false);
+    expect(isDeckUnlocked('eastern_woodlands', legacy(4))).toBe(true);
+    expect(isBoardUnlocked('rappahannock_riverside', legacy(1))).toBe(true);
+    expect(isDeckUnlocked('washington_ghost', legacy(7))).toBe(true);
   });
 });
 
@@ -127,10 +152,14 @@ describe('persistence', () => {
     expect(m.unlockedDecks).toEqual(['classic', 'inspire']);
     expect(m.unlockedAchievements).toEqual(['first-win']);
     expect(m).not.toHaveProperty('favoriteDecks');
-    expect(m.schemaVersion).toBe(2);
+    expect(m.schemaVersion).toBe(PROFILE_SCHEMA);
     expect(m.journal?.counters.visits).toBe(1);
     // A current save passes through unchanged (and an empty one stays empty of progress).
-    const current = migrateProfile({ schemaVersion: 2, credits: 5, journal: { counters: { games: 3 }, seen: {} } });
+    const current = migrateProfile({
+      schemaVersion: PROFILE_SCHEMA,
+      credits: 5,
+      journal: { counters: { games: 3 }, seen: {} },
+    });
     expect(current.journal).toEqual({ counters: { games: 3 }, seen: {} });
     expect(migrateProfile({}).journal).toBeUndefined();
   });

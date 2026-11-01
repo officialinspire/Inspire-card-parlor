@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
+import { ALL_LEVELS } from '@/story/campaign';
 import { allBoards, availableBoards, getBoard, isMatureBoard } from '@/boards/registry';
 import { applyBoard, ambientLayer, boardSwatch } from '@/boards/BoardRenderer';
 import { contrastRatio } from '@/utils/color';
@@ -303,7 +304,7 @@ describe('favorites and completion', () => {
     const everything = {
       ...createDefaultProfile(),
       level: 99,
-      storyChapter: 99,
+      story: { ...createDefaultProfile().story, completed: ALL_LEVELS.map((l) => l.id) },
       unlockedAchievements: ACHIEVEMENTS.map((a) => a.id),
       ownedVariants: ['collectible_fixture@gilded', 'eastern_woodlands@turtle'],
     };

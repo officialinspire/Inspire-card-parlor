@@ -84,7 +84,12 @@ export type UnlockRequirement =
   | { type: 'default' }
   | { type: 'level'; value: number }
   | { type: 'achievement'; value: string }
-  | { type: 'story'; value: string }
+  /**
+   * Finish a chapter of the story (a "th-N" id). `legacy` names the first
+   * campaign's chapter ("chapter-N") this rule used before, so saves that
+   * finished it keep the unlock.
+   */
+  | { type: 'story'; value: string; legacy?: string }
   /** Collectible: bought with credits in the Card Collection. */
   | { type: 'credits'; value: number };
 

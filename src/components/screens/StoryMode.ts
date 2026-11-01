@@ -121,6 +121,7 @@ function rewardIcon(r: StoryReward): Node {
     variant: 'cards',
     stamp: 'check',
     achievement: 'trophy',
+    evidence: 'hint',
   };
   return icon(map[r.kind]);
 }

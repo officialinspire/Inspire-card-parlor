@@ -42,15 +42,15 @@ test('gameboards: equip an unlocked board, dialogs close with Escape', async ({ 
 test('story: first chapter starts a game, later chapters are locked', async ({ page }) => {
   await enterParlor(page);
   await clickNav(page, 'STORY_MODE');
-  await page.locator(`${CURRENT} [data-chapter="chapter-2"]`).click();
+  await page.locator(`${CURRENT} [data-chapter="th-2"]`).click();
   await expect(page.locator('.toast', { hasText: 'Finish Chapter 1' })).toBeVisible();
   await expectScreen(page, 'STORY_MODE');
-  await page.locator(`${CURRENT} [data-chapter="chapter-1"]`).click();
+  await page.locator(`${CURRENT} [data-chapter="th-1"]`).click();
   await page.locator('[data-dialog-action="skip"]').click();
-  await page.locator(`${CURRENT} [data-level="chapter-1-1"]`).click();
+  await page.locator(`${CURRENT} [data-level="th-1-1"]`).click();
   await page.locator('[data-dialog-action="play"]').click();
   await expectScreen(page, 'GAMEPLAY');
-  await expect(page.locator(`${CURRENT} .screen-subtitle`)).toContainText('Ch. 1 · Riverfront Warm-Up');
+  await expect(page.locator(`${CURRENT} .screen-subtitle`)).toContainText('Ch. 1 · Price Check');
 });
 
 test('settings: every tab renders and the music track can be picked', async ({ page }) => {

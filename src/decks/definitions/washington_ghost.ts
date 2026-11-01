@@ -16,7 +16,7 @@ export const WashingtonGhostDeck: DeckDefinition = {
   rarity: 'legendary',
   contentRating: 'general',
   // The final chapter of The Card Parlor Chronicles.
-  unlock: { type: 'story', value: 'chapter-7' },
+  unlock: { type: 'story', value: 'th-9', legacy: 'chapter-7' },
   assets: extractedAssets('assets/cards/washington_ghost/'),
   fallback: {
     back: { base: '#16233f', accent: '#9cc3ff', pattern: 'sunburst', mark: 'W' },

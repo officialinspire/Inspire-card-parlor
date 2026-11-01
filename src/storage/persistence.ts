@@ -3,6 +3,7 @@ import type { Profile, Selection, Settings } from '@/core/types';
 import { debounce } from '@/utils/timing';
 import { PROFILE_SCHEMA } from '@/core/defaults';
 import { local } from './local';
+import { migrateStoryProgress } from '@/story/migrate';
 import { idb, STORES } from './idb';
 
 const SETTINGS_KEY = 'settings';
@@ -42,8 +43,12 @@ export function migrateProfile(raw: StoredProfile): Partial<Profile> {
     // (shown as "earned before dates were kept"); a returning player has visited.
     rest.journal = { counters: { visits: 1, ...rest.journal?.counters }, seen: { ...rest.journal?.seen } };
   }
-  rest.schemaVersion = Math.max(version, PROFILE_SCHEMA);
-  return rest;
+  // v2 → v3: The Thirteenth Hand replaced the first campaign. Its progress is archived,
+  // never re-read as new-campaign wins (src/story/migrate.ts). Runs on every load: it is
+  // idempotent and also repairs story blocks missing the campaign marker.
+  const migrated = Object.keys(raw).length ? migrateStoryProgress(rest) : rest;
+  migrated.schemaVersion = Math.max(version, PROFILE_SCHEMA);
+  return migrated;
 }
 
 /** Loads saved settings/profile/selection into the store and keeps them saved. */

@@ -9,7 +9,7 @@ export const DantesWorldDeck: DeckDefinition = {
   artist: studioCredit(),
   rarity: 'epic',
   contentRating: 'general',
-  unlock: { type: 'story', value: 'chapter-3' },
+  unlock: { type: 'story', value: 'th-3', legacy: 'chapter-3' },
   assets: extractedAssets('assets/cards/dantes_world/'),
   fallback: {
     back: { base: '#3b1d2e', accent: '#e6a3b8', pattern: 'stripe', mark: 'D' },

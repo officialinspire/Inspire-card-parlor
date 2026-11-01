@@ -1,34 +1,44 @@
-import type { Profile, StoryProgress } from '@/core/types';
+import type { LegacyStoryArchive, Profile, StoryProgress } from '@/core/types';
 import { ACHIEVEMENTS } from '@/achievements/registry';
 import { grantXp } from '@/progression/levels';
 import type { GameResult } from '@/progression/results';
 import {
   STORY_CHAPTERS,
   chapterOfLevel,
+  discoveriesIn,
   getChapter,
   getLevel,
   type StoryChapter,
   type StoryLevel,
   type StoryReward,
 } from './campaign';
+import { getEvidence } from './evidence';
+import { CAMPAIGN_ID } from './ids';
+import { emptyCampaignProgress } from './migrate';
 
 /**
  * Campaign progress and rewards. Pure functions over the profile, so the
  * rules (unlock order, objectives, "rewards only once") are easy to test.
  *
- * Progress lives in `profile.story`; `profile.storyChapter` (chapters
- * completed, used by older unlock rules) is kept in step and never lowered,
- * so saves made before the campaign keep everything they had.
+ * Progress lives in `profile.story`, marked with the campaign it belongs to;
+ * `profile.storyChapter` counts this campaign's chapters completed in order.
+ * The first campaign's progress is archived in `profile.legacyStory`
+ * (./migrate.ts) and is never read as progress here.
  */
 
-export function emptyStoryProgress(): StoryProgress {
-  return { completed: [], rewarded: [], stamps: [], introsSeen: [], attempts: {} };
+export const emptyStoryProgress = emptyCampaignProgress;
+
+/** This campaign's progress. Story blocks from another campaign read as empty (they are archived on load). */
+export function storyOf(profile: Profile): StoryProgress {
+  const story = profile.story;
+  if (story && story.campaign !== undefined && story.campaign !== CAMPAIGN_ID) return emptyCampaignProgress();
+  if (story && story.campaign === undefined && story.completed?.some((id) => !id.startsWith('th-')))
+    return emptyCampaignProgress();
+  return { ...emptyCampaignProgress(), ...story };
 }
 
-/** Saves from before the campaign have no `story`; older fields stay as they are. */
-export function storyOf(profile: Profile): StoryProgress {
-  return { ...emptyStoryProgress(), ...profile.story };
-}
+/** The archived first-campaign progress, if the save had any. */
+export const legacyStoryOf = (profile: Profile): LegacyStoryArchive | undefined => profile.legacyStory;
 
 export function isChapterComplete(profile: Profile, chapter: StoryChapter): boolean {
   const done = storyOf(profile).completed;
@@ -39,9 +49,7 @@ export function isChapterUnlocked(profile: Profile, chapter: StoryChapter): bool
   const req = chapter.unlockRequirements;
   if (req.level && profile.level < req.level) return false;
   if (!req.chapter) return true;
-  const prev = getChapter(req.chapter)!;
-  // Chapters counted in older saves stay open.
-  return isChapterComplete(profile, prev) || profile.storyChapter >= prev.index;
+  return isChapterComplete(profile, getChapter(req.chapter)!);
 }
 
 export function isLevelUnlocked(profile: Profile, level: StoryLevel): boolean {
@@ -49,7 +57,7 @@ export function isLevelUnlocked(profile: Profile, level: StoryLevel): boolean {
   if (!isChapterUnlocked(profile, chapter)) return false;
   if (level.number === 1) return true;
   const prev = chapter.levels[level.number - 2]!;
-  return storyOf(profile).completed.includes(prev.id) || profile.storyChapter >= chapter.index;
+  return storyOf(profile).completed.includes(prev.id);
 }
 
 export const isLevelComplete = (profile: Profile, levelId: string) => storyOf(profile).completed.includes(levelId);
@@ -80,6 +88,7 @@ export function grantRewards(
   let { credits, unlockedDecks, unlockedBoards, ownedVariants } = profile;
   const { unlockedAchievements } = profile;
   let stamps = story.stamps;
+  let evidence = story.evidence ?? [];
   let xp = 0;
   const granted: StoryReward[] = [];
   for (const r of rewards) {
@@ -104,6 +113,9 @@ export function grantRewards(
       case 'stamp':
         if (!stamps.includes(r.id)) ((stamps = [...stamps, r.id]), granted.push(r));
         break;
+      case 'evidence':
+        if (!evidence.includes(r.id) && getEvidence(r.id)) ((evidence = [...evidence, r.id]), granted.push(r));
+        break;
       case 'achievement':
         // Listed for the reward screen only: the achievement engine unlocks it (with its date
         // and XP) as soon as its condition — finishing the chapter — is met, exactly once.
@@ -119,7 +131,7 @@ export function grantRewards(
       unlockedBoards,
       ownedVariants,
       ...levelled,
-      story: { ...story, stamps },
+      story: { ...story, stamps, evidence },
     },
     granted,
   };
@@ -204,11 +216,21 @@ export function applyStoryResult(
   return { patch, outcome };
 }
 
-/** Marks a chapter's introduction as seen (so it is offered, not forced, next time). */
+/**
+ * Marks a chapter's introduction as seen (so it is offered, not forced, next
+ * time) and collects the evidence found in it.
+ */
 export function markIntroSeen(profile: Profile, chapterId: string): Partial<Profile> {
   const s = storyOf(profile);
-  if (s.introsSeen.includes(chapterId)) return {};
-  return { story: { ...s, introsSeen: [...s.introsSeen, chapterId] } };
+  const found = discoveriesIn(getChapter(chapterId)?.intro ?? []).filter((id) => !(s.evidence ?? []).includes(id));
+  if (s.introsSeen.includes(chapterId) && !found.length) return {};
+  return {
+    story: {
+      ...s,
+      introsSeen: s.introsSeen.includes(chapterId) ? s.introsSeen : [...s.introsSeen, chapterId],
+      evidence: [...(s.evidence ?? []), ...found],
+    },
+  };
 }
 
 export function describeReward(
@@ -230,5 +252,7 @@ export function describeReward(
       return 'Passport stamp';
     case 'achievement':
       return `Achievement: ${ACHIEVEMENTS.find((a) => a.id === r.id)?.name ?? r.id}`;
+    case 'evidence':
+      return `Evidence: ${getEvidence(r.id)?.name ?? r.id}`;
   }
 }

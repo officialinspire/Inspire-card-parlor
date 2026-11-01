@@ -111,7 +111,7 @@ const registry: BoardDefinition[] = [
     description: 'A woven game mat spread on the mossy bank of the Rappahannock.',
     artist: studioCredit(),
     rarity: 'rare',
-    unlock: { type: 'story', value: 'chapter-1' },
+    unlock: { type: 'story', value: 'th-2', legacy: 'chapter-1' },
     assets: assets('rappahannock_riverside', 'ready'),
     surface: {
       base: '#daac73',
@@ -275,7 +275,7 @@ const registry: BoardDefinition[] = [
     name: "Washington's Final Table",
     description: 'A candlelit colonial cellar table, set for the last hand with the General.',
     rarity: 'legendary',
-    unlock: { type: 'story', value: 'chapter-7' },
+    unlock: { type: 'story', value: 'th-9', legacy: 'chapter-7' },
     base: '#764e31',
     rim: '#27100a',
     ink: LIGHT_INK,
