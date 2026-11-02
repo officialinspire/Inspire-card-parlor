@@ -4,7 +4,7 @@ import { attachPersistence } from '@/storage/persistence';
 import { attachAchievements, evaluateAchievements } from '@/achievements/engine';
 import { attachJournalTracking } from '@/achievements/tracking';
 import { attachAnnouncer } from '@/progression/announcer';
-import { attachAudio } from '@/audio';
+import { attachAudio, audio } from '@/audio';
 import { setGameHaptics } from '@/audio/gameSounds';
 import { haptic } from '@/utils/haptics';
 import { attachAnalytics, track } from '@/analytics/analytics';
@@ -21,6 +21,7 @@ import { AppState } from './states';
 import { goBack, navigate, store } from './store';
 import { runBoot } from './boot';
 import { loadStoryArt } from '@/story/art';
+import { attachStoryDirector } from '@/audio/director';
 import { setActiveStoryLevel } from '@/story/session';
 import { recordGameResult } from '@/progression/results';
 import { ALL_LEVELS } from '@/story/campaign';
@@ -38,6 +39,7 @@ export async function startApp(mount: HTMLElement): Promise<void> {
   attachDeckThemes(store);
   attachTheme(store);
   attachAudio(store);
+  attachStoryDirector(store);
   setGameHaptics((kind) => haptic(kind));
   attachAnalytics(store);
   attachProductAnalytics(store);
@@ -76,8 +78,11 @@ export async function startApp(mount: HTMLElement): Promise<void> {
 
   track('boot', { version: APP.version });
   navigate(AppState.INITIALIZATION);
-  // Story artwork is decorative: start loading its manifest now, never wait for it.
-  void loadStoryArt();
+  // Story artwork is decorative: fetch its small manifest once the browser is idle (Story Mode
+  // also asks for it when opened), never during boot work. No image is decoded until shown.
+  const idle = (fn: () => void) =>
+    'requestIdleCallback' in window ? requestIdleCallback(fn, { timeout: 4000 }) : setTimeout(fn, 1500);
+  idle(() => void loadStoryArt());
   await runBoot(store);
 
   if (import.meta.env.PROD && 'serviceWorker' in navigator) {
@@ -91,6 +96,8 @@ export async function startApp(mount: HTMLElement): Promise<void> {
       navigate,
       // Product events captured this session (what would be sent to PostHog).
       analytics: recentEvents,
+      // The music engine's state (track, voices still sounding) for audio tests.
+      audio: () => ({ track: audio.track.id, playing: audio.playing, voices: audio.voiceCount }),
       // Records a finished story game (as if played), so tests can reach any result screen.
       storyResult: (levelId: string, outcome: 'win' | 'loss') => {
         const level = ALL_LEVELS.find((l) => l.id === levelId);

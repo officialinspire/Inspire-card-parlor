@@ -28,6 +28,10 @@ import { takeStoryOutcome } from '@/story/session';
 import { isPlayableChapter, levelAfter, type ReplayableScene } from '@/story/world';
 import type { InfoCard } from '@/story/campaign';
 import { adventureContinues } from '../story/continues';
+import { vfxBurst } from '../story/vfx';
+import { preloadStory } from '../story/preload';
+import { setStoryScene } from '@/audio/director';
+import { haptic } from '@/utils/haptics';
 import { infoCards } from '../story/notes';
 import type { MapStop } from '@/story/world';
 import { openDialog } from '../Dialog';
@@ -35,7 +39,8 @@ import { icon } from '../icons';
 import { celebrate, notify } from '../Notifications';
 import { passportStamps } from '../passportStamps';
 import { paginator } from '../Paginator';
-import { button, progressBar, screenFrame } from '../ui';
+import { button, iconButton, progressBar, screenFrame } from '../ui';
+import { openMusicPlayer } from '../musicPlayer';
 import { Disposer, type ScreenFactory } from '../Screen';
 import { journalView } from '../story/journal';
 import { worldMapView } from '../story/map';
@@ -73,12 +78,20 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
       class: 'story-journal-btn',
       attrs: { 'data-action': 'journal' },
     });
+  /** The music player, here too: a track the player picks wins over the story soundtrack. */
+  const musicButton = () =>
+    iconButton('music', 'Music', () => void openMusicPlayer(), {
+      class: 'story-music-btn',
+      attrs: { 'data-action': 'story-music' },
+    });
 
   function mapView() {
     const el = screenFrame({
       title: 'Story Mode',
       subtitle: CAMPAIGN_TITLE,
-      actions: [journalButton()],
+      // The map's way out is always the main menu (history may hold a finished game).
+      back: () => navigate(AppState.MAIN_MENU),
+      actions: [musicButton(), journalButton()],
       body: h('div', { class: 'stack story-stack' }, passportStamps(store), worldMapView(profile(), onStop)),
     });
     el.dataset.storyView = 'map';
@@ -152,7 +165,7 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
       title: `${ch.index}. ${ch.title}`,
       subtitle: ch.location,
       back: () => go({ kind: 'map' }),
-      actions: [journalButton()],
+      actions: [musicButton(), journalButton()],
       body: h('div', { class: 'stack story-stack' }, hero, pager.el),
     });
     el.dataset.chapterView = ch.id;
@@ -240,6 +253,9 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
           ? chapterView(getChapter(view.id)!)
           : journalScreen(view.from);
     root.replaceChildren(mounted.el);
+    // The audio director follows the place: a chapter's music in it, the player's own on the map.
+    const where = view.kind === 'journal' ? view.from : view;
+    setStoryScene(where.kind === 'chapter' ? 'chapter' : 'map', where.kind === 'chapter' ? where.id : null);
   }
 
   function go(v: View): void {
@@ -263,7 +279,9 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
 
   /** The end of the playable demo: a preview of the next place, never a playable chapter. */
   async function continues(next: StoryChapter): Promise<void> {
-    if ((await adventureContinues(next)) === 'menu') navigate(AppState.MAIN_MENU);
+    setStoryScene('ending', next.id);
+    const choice = await adventureContinues(next);
+    if (choice === 'menu') navigate(AppState.MAIN_MENU);
     else go({ kind: 'map' });
   }
 
@@ -380,6 +398,10 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
     if (o.met && o.chapterComplete && choice !== 'retry') {
       await chapterComplete(ch, o);
       go({ kind: 'map' });
+      // The newly revealed place on the map gets its moment.
+      const opened = STORY_CHAPTERS[ch.index];
+      if (opened)
+        requestAnimationFrame(() => vfxBurst('unlock', root.querySelector(`[data-chapter="${opened.id}"]`), 1.3));
       // The demo ends here: the next chapter is still being written.
       const next = STORY_CHAPTERS[ch.index];
       if (next && !isPlayableChapter(next)) await continues(next);
@@ -402,6 +424,7 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
 
   async function chapterComplete(ch: StoryChapter, o: StoryOutcome): Promise<void> {
     celebrate('Passport stamped', ch.location, 'trophy');
+    haptic('celebrate');
     const next = STORY_CHAPTERS[ch.index];
     const stamp = o.chapterRewards.find((r) => r.kind === 'stamp');
     await playScene({
@@ -432,6 +455,11 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
         { label: next ? 'To the map' : 'The end', value: 'ok', variant: 'gold' },
       ],
       dismissValue: 'ok',
+      onOpen: (panel) => {
+        vfxBurst('stamp', panel.querySelector('.chapter-complete .stamp'), 2);
+        const deckReward = panel.querySelector('.chapter-complete [data-reward="deck"]');
+        if (deckReward) setTimeout(() => vfxBurst('deck', deckReward, 2.2), 450);
+      },
     });
   }
 
@@ -448,7 +476,10 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
   render();
   // Story art arrives after the first paint: redraw once it is in (it is optional).
   void loadStoryArt().then((m) => {
-    if (m && root.isConnected !== false) render();
+    if (!m) return;
+    render();
+    // Warm only what comes next: this chapter's portraits and the next place on the map.
+    preloadStory(profile());
   });
   d.add(() => mounted?.destroy());
 

@@ -52,6 +52,22 @@ export function deco(id: string, className: string, thumb = true): HTMLElement |
 }
 
 /**
+ * Moods a character can show, as poses in their expression sheet. Every sheet
+ * is cut to the same pose layout (manifest `poseRows`), so one mapping fits
+ * every character; the tests check each pose exists for each sheet.
+ */
+export type Mood = 'neutral' | 'speak' | 'think' | 'surprise' | 'victory' | 'defeat' | 'frustration';
+export const MOOD_POSE: Record<Mood, string> = {
+  neutral: 'portrait-neutral',
+  speak: 'portrait-talk',
+  think: 'portrait-think',
+  surprise: 'portrait-surprise',
+  victory: 'portrait-greet',
+  defeat: 'portrait-doubt',
+  frustration: 'full-arms-crossed',
+};
+
+/**
  * A character's portrait in a given pose. Uses their expression sheet when
  * it exists; otherwise their opponent avatar (Jak has no sheet yet), or a
  * monogram for anyone else.

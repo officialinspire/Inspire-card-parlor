@@ -80,7 +80,21 @@ export const SettingsScreen: ScreenFactory = ({ store }) => {
     {
       id: 'music',
       label: 'Music',
-      render: () => h('div', { class: 'settings-panel settings-music' }, musicPlayer()),
+      render: () =>
+        h(
+          'div',
+          { class: 'settings-panel settings-music' },
+          tagged(
+            toggle(
+              'Story soundtrack',
+              s().storySoundtrack,
+              (v) => set({ storySoundtrack: v }),
+              'Story Mode chooses music for each place; picking a track yourself always wins',
+            ),
+            'storySoundtrack',
+          ),
+          musicPlayer(),
+        ),
     },
     {
       id: 'display',
@@ -102,6 +116,15 @@ export const SettingsScreen: ScreenFactory = ({ store }) => {
             s().reducedMotion,
             (v) => set({ reducedMotion: v }),
             'Minimize animations and transitions',
+          ),
+          tagged(
+            toggle(
+              'Low effects',
+              s().lowEffects,
+              (v) => set({ lowEffects: v }),
+              'No story particles or glows — smoother on older phones',
+            ),
+            'lowEffects',
           ),
           tagged(
             toggle(

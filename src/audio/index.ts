@@ -1,14 +1,14 @@
 import type { Store } from '@/core/store';
 import type { Settings } from '@/core/types';
 import { audio } from './engine';
-import { getTrack, markUnavailable, type MusicCategoryId, type MusicTrack } from './tracks';
+import { getTrack, markUnavailable, playableTracks, type MusicCategoryId, type MusicTrack } from './tracks';
 
 const DEFAULT_SYNTH = 'lamplight';
 import { nextInPlaylist, previousInPlaylist, type PlaylistState } from './playlist';
 
 export { audio } from './engine';
 export type { Sfx } from './engine';
-export { gameSound, onGameSound, type GameSound } from './gameSounds';
+export { gameHaptic, gameSound, onGameSound, type GameSound } from './gameSounds';
 export {
   ALL_TRACKS,
   playableTracks,
@@ -25,6 +25,43 @@ export {
 export { nextRepeat, type RepeatMode } from './playlist';
 
 let bound: Store | null = null;
+/** The story director's track for the current moment (null outside Story Mode). */
+let context: string | null = null;
+/** The player picked music themselves during this Story Mode visit: their choice wins. */
+let override = false;
+let follow: () => void = () => undefined;
+
+/**
+ * Sets (or clears, with null) the story's music for the current moment.
+ * `inStory` is false once the player has left Story Mode (and its tables):
+ * only then is their own pick forgotten, so a choice made in a chapter holds
+ * on the map and in the next chapter too.
+ */
+let settle: ReturnType<typeof setTimeout> | null = null;
+/** Screens can pass through several moments at once (a game → the map → a chapter): settle first. */
+const SETTLE_MS = 220;
+
+export function setMusicContext(trackId: string | null, inStory = trackId !== null): void {
+  if (!inStory) override = false;
+  if (trackId === context) return;
+  context = trackId;
+  // One crossfade for the place the player lands on, not one per screen passed through.
+  if (settle) clearTimeout(settle);
+  settle = setTimeout(() => {
+    settle = null;
+    follow();
+  }, SETTLE_MS);
+}
+
+/** The track that should be heard now: the story's, unless the player chose otherwise. */
+function wantedTrack(s: Settings): { track: MusicTrack; source: 'story' | 'player' } {
+  if (context && s.storySoundtrack && !override && playableTracks().some((t) => t.id === context))
+    return { track: getTrack(context), source: 'story' };
+  return { track: getTrack(s.musicTrack), source: 'player' };
+}
+const playerChoice = () => {
+  if (context) override = true;
+};
 /** Tracks played this session, for Previous and to keep shuffle from repeating itself. */
 const history: string[] = [];
 
@@ -53,12 +90,17 @@ export const music = {
     else music.pause();
   },
   select(id: string): void {
-    void audio.unlock().then(() => setSettings({ musicTrack: id, musicPaused: false }));
+    playerChoice();
+    void audio.unlock().then(() => {
+      setSettings({ musicTrack: id, musicPaused: false });
+      follow();
+    });
   },
   next(): void {
     if (!bound) return;
     const s = bound.state.settings;
-    const id = nextInPlaylist(s.musicTrack, playlistState(s), { manual: true, recent: history });
+    const from = bound.state.nowPlaying?.track ?? s.musicTrack;
+    const id = nextInPlaylist(from, playlistState(s), { manual: true, recent: history });
     if (id) music.select(id);
   },
   previous(): void {
@@ -84,6 +126,8 @@ export const music = {
 /** When a track finishes, move on per shuffle and repeat. */
 function onTrackEnd(): void {
   if (!bound) return;
+  // The story's music loops for as long as the scene lasts.
+  if (bound.state.nowPlaying?.source === 'story') return audio.restartTrack();
   const s = bound.state.settings;
   const id = nextInPlaylist(s.musicTrack, playlistState(s), { manual: false, recent: history });
   if (id === null) return setSettings({ musicPaused: true });
@@ -95,6 +139,8 @@ function onTrackEnd(): void {
 function onTrackFailed(track: MusicTrack): void {
   if (!bound) return;
   markUnavailable(track.id);
+  // A story track that can't play gives way to the player's own music.
+  if (track.id === context) return follow();
   const s = bound.state.settings;
   if (s.musicTrack !== track.id) return;
   const id = nextInPlaylist(track.id, playlistState(s), { manual: true, recent: history });
@@ -111,17 +157,23 @@ export function attachAudio(store: Store): void {
     (s) => s.settings,
     (settings) => audio.configure(settings),
   );
-  const follow = () => {
+  follow = () => {
     const s = store.state.settings;
     if (!store.state.boot.ready || store.state.screen === 'INITIALIZATION' || store.state.screen === 'BOOT') return;
+    const { track, source } = wantedTrack(s);
+    const now = store.state.nowPlaying;
+    if (now?.track !== track.id || now.source !== source)
+      store.dispatch({ type: 'NOW_PLAYING', nowPlaying: { track: track.id, source } });
     if (s.musicPaused) return audio.stopMusic();
-    const track = getTrack(s.musicTrack);
     if (history[history.length - 1] !== track.id) history.push(track.id);
     if (history.length > 30) history.shift();
+    // One track at a time: the engine crossfades from whatever is playing.
     audio.startMusic(track);
   };
   store.select((s) => s.settings.musicTrack, follow);
   store.select((s) => s.settings.musicPaused, follow);
+  store.select((s) => s.settings.storySoundtrack, follow);
+  store.select((s) => s.boot.ready, follow);
   document.addEventListener('visibilitychange', () => audio.setSuspended(document.hidden));
 
   // Browsers only allow sound after a gesture: unlock on the first one anywhere.
@@ -133,7 +185,6 @@ export function attachAudio(store: Store): void {
 /** Starts music after the Enter button (a user gesture), unless the player paused it. */
 export function startMusicFromGesture(store: Store): void {
   void audio.unlock().then(() => {
-    const s = store.state.settings;
-    if (!s.musicPaused) audio.startMusic(getTrack(s.musicTrack));
+    if (!store.state.settings.musicPaused) follow();
   });
 }

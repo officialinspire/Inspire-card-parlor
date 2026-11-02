@@ -261,6 +261,11 @@ class AudioEngine {
     return this.#voice !== null;
   }
 
+  /** Voices still sounding: the current one plus any fading out (a crossfade briefly has two). */
+  get voiceCount(): number {
+    return (this.#voice ? 1 : 0) + this.#fading.size;
+  }
+
   /** Seconds played of the current track. */
   get position(): number {
     if (!this.#voice || !this.#ctx) return this.#elapsedBefore;
@@ -337,10 +342,13 @@ class AudioEngine {
     return voice;
   }
 
+  #fading = new Set<Voice>();
+
   #release(voice: Voice, fade: number): void {
     const ctx = this.#ctx!;
     const t = ctx.currentTime;
     voice.alive = false;
+    this.#fading.add(voice);
     voice.gain.gain.cancelScheduledValues(t);
     voice.gain.gain.setValueAtTime(voice.gain.gain.value, t);
     voice.gain.gain.linearRampToValueAtTime(0, t + fade);
@@ -358,6 +366,7 @@ class AudioEngine {
           n.disconnect();
         }
         voice.gain.disconnect();
+        this.#fading.delete(voice);
       },
       (fade + 0.2) * 1000,
     );

@@ -37,6 +37,8 @@ export const GAME_SOUND_SFX: Record<GameSound, Sfx> = {
 
 /** Vibration that accompanies an event (when haptics are on and supported). */
 export const GAME_SOUND_HAPTIC: Partial<Record<GameSound, 'tap' | 'error' | 'impact' | 'celebrate'>> = {
+  // A card landing where it should: the lightest tap.
+  valid_move: 'tap',
   invalid_move: 'error',
   war_battle: 'impact',
   victory: 'celebrate',
@@ -80,6 +82,11 @@ let buzzer: (kind: NonNullable<(typeof GAME_SOUND_HAPTIC)[GameSound]>) => void =
 /** Connects haptic output (kept separate so this module stays free of DOM/store imports). */
 export function setGameHaptics(fn: typeof buzzer): void {
   buzzer = fn;
+}
+
+/** A haptic with no sound of its own (picking up a card). Off unless haptics are on and supported. */
+export function gameHaptic(kind: NonNullable<(typeof GAME_SOUND_HAPTIC)[GameSound]>): void {
+  buzzer(kind);
 }
 let clock: () => number = () => (typeof performance !== 'undefined' ? performance.now() : Date.now());
 

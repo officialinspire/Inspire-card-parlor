@@ -7,7 +7,9 @@ import { describeReward, type StoryOutcome } from '@/story/progress';
 import { levelAfter } from '@/story/world';
 import { openDialog, type DialogAction } from '../Dialog';
 import { icon, type IconName } from '../icons';
-import { deco, sprite, UI } from './sprites';
+import { deco, MOOD_POSE, portrait, sprite, UI } from './sprites';
+import { opponentsOf } from './versus';
+import { CHARACTERS } from '@/story/chapters';
 
 const names = { deck: (id: string) => getDeck(id).name, board: (id: string) => getBoard(id).name };
 
@@ -58,6 +60,9 @@ export function storyResult(o: StoryOutcome): Promise<ResultChoice> {
   const won = o.met;
   const next = levelAfter(level.id);
   const earned = [...o.levelRewards, ...o.chapterRewards];
+  // The opponent (as a story character) reacts: crestfallen when beaten, pleased when they win.
+  const firstOpponent = opponentsOf(level)[0];
+  const opponent = firstOpponent ? CHARACTERS.find((c) => c.opponentId === firstOpponent)?.id : undefined;
   const actions: DialogAction<ResultChoice>[] = won
     ? [
         { label: 'Map', value: 'map', variant: 'ghost' },
@@ -84,7 +89,13 @@ export function storyResult(o: StoryOutcome): Promise<ResultChoice> {
         'div',
         { class: 'result-art', 'aria-hidden': 'true' },
         deco(won ? UI.victory : UI.defeat, 'result-fx'),
-        deco(won ? UI.crest : UI.questAlert, 'result-emblem'),
+        opponent
+          ? portrait(
+              opponent,
+              MOOD_POSE[won ? (level.finale ? 'frustration' : 'defeat') : 'victory'],
+              'result-portrait',
+            )
+          : deco(won ? UI.crest : UI.questAlert, 'result-emblem'),
       ),
       h(
         'div',

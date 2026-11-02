@@ -24,6 +24,8 @@ export const DEFAULT_SETTINGS: Settings = {
   haptics: true,
   theme: 'auto',
   reducedMotion: false,
+  lowEffects: false,
+  storySoundtrack: true,
   leftHanded: false,
   showHints: true,
   autoComplete: true,

@@ -26,6 +26,7 @@ export function attachTheme(store: Store): void {
     const theme = resolveTheme(settings.theme);
     root.dataset.theme = theme;
     root.classList.toggle('reduced-motion', settings.reducedMotion);
+    root.classList.toggle('low-effects', settings.lowEffects);
     root.classList.toggle('left-handed', settings.leftHanded);
     root.dataset.orientation = orientation;
     root.dataset.online = String(online);

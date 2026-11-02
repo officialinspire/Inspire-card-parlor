@@ -23,6 +23,10 @@ export interface Settings {
   haptics: boolean;
   theme: ThemeMode;
   reducedMotion: boolean;
+  /** Fewer decorative effects: no story particles, glows or ambient loops (for slower devices). */
+  lowEffects: boolean;
+  /** Story Mode picks music for each place and scene (the player's own pick always wins). */
+  storySoundtrack: boolean;
   leftHanded: boolean;
   showHints: boolean;
   autoComplete: boolean;
@@ -173,6 +177,8 @@ export interface RootState {
   profile: Profile;
   modals: ModalRef[];
   notifications: Notification[];
+  /** What the music engine is playing, and whether the story or the player chose it. */
+  nowPlaying: { track: string; source: 'story' | 'player' } | null;
   orientation: 'portrait' | 'landscape';
   fullscreen: boolean;
   online: boolean;

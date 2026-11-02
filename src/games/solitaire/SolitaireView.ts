@@ -5,7 +5,7 @@ import type { GameId } from '@/core/types';
 import { cardRenderer } from '@/decks';
 import type { DeckTheme } from '@/decks/DeckThemeManager';
 import type { Card, Pile } from '@/engine';
-import { audio, gameSound } from '@/audio';
+import { audio, gameHaptic, gameSound } from '@/audio';
 import { victoryShower } from '@/components/celebration';
 import { button } from '@/components/ui';
 import { moreItem, setTool, toolButton, type GameToolbar } from '@/components/gameToolbar';
@@ -559,6 +559,7 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
       if (!game.canPick(pile, press.index)) return;
       const dragEls = pile.all.slice(press.index).map((c) => els.get(keyOf(c))!.el);
       press.drag = { els: dragEls, origins: dragEls.map((x) => x.style.transform) };
+      gameHaptic('tap'); // picked up
       dragEls.forEach((x, i) => {
         x.classList.add('dragging');
         x.style.zIndex = String(1000 + i);

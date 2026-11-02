@@ -217,3 +217,65 @@ progress is remapped by game, not by position (Klondike `th-2-1→th-2-2`, War
 `2→5`, Go Fish `3→1`, FreeCell `4→3`, Spider `5→4`). This applies to completed
 challenges, paid rewards and attempts. The river-map clue is renamed
 `old-river-map → sophia-river-map`. No win is lost and nothing pays twice.
+
+## Sound, expressions and effects (Prompt 24)
+
+**Story audio director** (`src/audio/director.ts`). Every id is checked
+against the track library by the tests.
+
+| Where                                               | Track                                                            |
+| --------------------------------------------------- | ---------------------------------------------------------------- |
+| Menu and world map                                  | The player's own music                                           |
+| Chapter 1: scenes, then the table                   | Downtown FXBG Saturday Walk, then Silent Study Hours             |
+| Chapter 2: scenes, then the table                   | River at Dawn, then Turtle Creek (synthesized)                   |
+| The adventure continues…                            | Downtown Fredericksburg After Dark                               |
+| Later chapters (assigned for when they are written) | Tape Deck Shuffle, High Roller, Shadows of the Occult and others |
+
+- The director sets a _context_ track and never overwrites the player's
+  saved choice. If the player picks a track during a Story Mode visit, their
+  pick wins until they leave Story Mode.
+- Settings → Music → **Story soundtrack** turns the director off. Pause, mute
+  and volume always apply.
+- Only one track plays at a time. Story changes settle for about 0.2 s and
+  then crossfade once, so passing through several screens doesn't stack
+  fades.
+- Music starts only after a gesture, so browsers allow it.
+- The music player shows what is actually playing, and labels the story
+  soundtrack as such.
+
+**Expressions.**
+
+- Characters use the same mood → pose mapping, because every expression
+  sheet shares one pose layout: speak = talk, think, surprise, victory = greet,
+  defeat = doubt, frustration = arms crossed.
+- Scenes default to the speaking pose.
+- The results panel shows the opponent's reaction: doubt after losing to the
+  player, arms crossed after losing a finale, pleased when they win.
+- Story characters' portraits now appear at the card table too.
+
+**Effects** (`src/components/story/vfx.ts`, sprites from the Thirteenth Hand
+VFX atlas):
+
+- a sparkle for a discovered clue;
+- a spectral wisp for the Thirteenth Hand card;
+- a wax ring for a passport stamp;
+- a card-fan swirl for a deck reward;
+- a suit wheel for a newly opened place.
+
+They never appear at a card table and are never needed to follow what
+happened. Low effects (Settings → Display) or reduced motion switches them
+off.
+
+**Haptics** (only with Haptic feedback on, on supporting devices): a light
+tap when a card is picked up and when a move lands, a success pattern for a
+discovery, and a celebration for a finished chapter. Achievements keep their
+existing feedback.
+
+**Loading.**
+
+- Story Mode shows only cut sprites and thumbnails, never source atlases.
+- The story manifest loads when the browser is idle after boot.
+- Story Mode warms only the current chapter's portraits and the next place's
+  map tile.
+- Undiscovered places load nothing.
+- A Playwright test enforces this budget.

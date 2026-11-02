@@ -2,6 +2,8 @@ import { h } from '@/utils/dom';
 import { assetManager, cardRenderer, deckThemes } from '@/decks';
 import { hasDeck } from '@/decks/registry';
 import type { CpuPersonality } from '@/games/cpu/personalities';
+import { storySprite, storyUrl } from '@/story/art';
+import { CHARACTERS } from '@/story/cast';
 
 /**
  * Character avatar. Uses the character's uploaded portrait when available,
@@ -14,6 +16,15 @@ export function avatar(p: CpuPersonality, className = ''): HTMLElement {
     { class: `avatar ${className}`.trim(), style: { '--avatar-color': p.color }, 'data-avatar': p.id, title: p.name },
     h('span', { class: 'avatar-initials', 'aria-hidden': 'true' }, p.initials),
   );
+
+  // Story characters at the table: their own portrait from the story artwork, when loaded.
+  const sheet = CHARACTERS.find((c) => c.opponentId === p.id)?.portrait?.sheet;
+  const storyFace = sheet ? storySprite(`${sheet}/portrait-neutral`) : undefined;
+  if (storyFace) {
+    el.dataset.art = 'story';
+    el.replaceChildren(h('img', { src: storyUrl(storyFace.thumb), alt: '', draggable: 'false', decoding: 'async' }));
+    return el;
+  }
 
   if (p.portrait.status === 'ready') {
     void assetManager

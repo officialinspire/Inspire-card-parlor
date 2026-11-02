@@ -5,7 +5,9 @@ import { getEvidence } from '@/story/evidence';
 import { audio } from '@/audio';
 import { openDialog, type DialogAction } from '../Dialog';
 import { icon } from '../icons';
-import { portrait, sprite } from './sprites';
+import { MOOD_POSE, portrait, sprite } from './sprites';
+import { vfxBurst } from './vfx';
+import { haptic } from '@/utils/haptics';
 
 /**
  * The dialogue engine: plays a scene one beat at a time.
@@ -28,6 +30,8 @@ export interface SceneOptions<T> {
   actions: DialogAction<T>[];
   dismissValue: T;
   className?: string;
+  /** Called once the scene is on screen (for effects aimed at its parts). */
+  onOpen?: (panel: HTMLElement) => void;
 }
 
 export function playScene<T extends string>(opts: SceneOptions<T>): Promise<T> {
@@ -71,7 +75,8 @@ export function playScene<T extends string>(opts: SceneOptions<T>): Promise<T> {
         class: `scene-beat ${narration ? 'is-narration' : 'is-speech'}${dir ? ' enter' : ''}${line.status === 'draft' ? ' is-draft' : ''}`,
         'data-speaker': narration ? NARRATOR : line.who,
       },
-      narration ? null : portrait(line.who, line.pose),
+      // Speaking is the default expression; scenes pick others line by line.
+      narration ? null : portrait(line.who, line.pose ?? MOOD_POSE.speak),
       h(
         'div',
         { class: 'scene-box' },
@@ -96,6 +101,12 @@ export function playScene<T extends string>(opts: SceneOptions<T>): Promise<T> {
       ),
     );
     stage.replaceChildren(beat);
+    // A discovery: a short sparkle (the card itself gets a faint spectral wisp) and a light buzz.
+    if (found && dir >= 0) {
+      const at = beat.querySelector('[data-found]');
+      requestAnimationFrame(() => vfxBurst(found.id === 'thirteenth-hand-card' ? 'spectral' : 'discovery', at, 1.4));
+      haptic('success');
+    }
   };
 
   const step = (d: 1 | -1) => {
@@ -133,6 +144,10 @@ export function playScene<T extends string>(opts: SceneOptions<T>): Promise<T> {
     actions: opts.actions,
   });
   // Start on the scene itself so arrow keys and Space advance it.
-  requestAnimationFrame(() => stage.focus({ preventScroll: true }));
+  requestAnimationFrame(() => {
+    stage.focus({ preventScroll: true });
+    // Let the dialog settle into place before aiming effects at it.
+    if (opts.onOpen) setTimeout(() => opts.onOpen?.(body), 260);
+  });
   return opened;
 }

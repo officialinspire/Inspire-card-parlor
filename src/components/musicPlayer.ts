@@ -28,18 +28,26 @@ function nowPlaying(): HTMLElement {
   const time = h('span', { class: 'mp-time' });
   const el = live(
     h('div', { class: 'mp-now', 'data-now-playing': '' }),
-    (s) => `${s.settings.musicTrack}|${s.settings.musicPaused}`,
+    (s) => `${s.nowPlaying?.track ?? s.settings.musicTrack}|${s.nowPlaying?.source}|${s.settings.musicPaused}`,
     (el) => {
       const s = store.state.settings;
-      const t = getTrack(s.musicTrack);
+      const now = store.state.nowPlaying;
+      const t = getTrack(now?.track ?? s.musicTrack);
       el.dataset.nowTrack = t.id;
+      el.dataset.nowSource = now?.source ?? 'player';
       el.replaceChildren(
         h('span', { class: 'mp-disc', 'data-spinning': String(!s.musicPaused) }, icon('music')),
         h(
           'span',
           { class: 'mp-title' },
           h('strong', { 'data-value': 'track-title' }, t.title),
-          h('small', null, `${getCategory(t.category)?.title ?? ''} · ${t.mood}`),
+          h(
+            'small',
+            null,
+            now?.source === 'story'
+              ? 'Story soundtrack · pick any track to play your own'
+              : `${getCategory(t.category)?.title ?? ''} · ${t.mood}`,
+          ),
         ),
         h('span', { class: 'mp-progress', 'aria-hidden': 'true' }, bar),
         time,
@@ -48,7 +56,7 @@ function nowPlaying(): HTMLElement {
   );
   const tick = () => {
     if (!el.isConnected) return;
-    const t = getTrack(store.state.settings.musicTrack);
+    const t = getTrack(store.state.nowPlaying?.track ?? store.state.settings.musicTrack);
     const pos = Math.min(audio.position, t.duration);
     bar.style.transform = `scaleX(${t.duration ? pos / t.duration : 0})`;
     time.textContent = `${fmt(pos)} / ${fmt(t.duration)}`;

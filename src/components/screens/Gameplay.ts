@@ -118,7 +118,7 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
     const st = store.state.settings;
     board = getBoard(boardIdOf());
     applyBoard(el, stage, board, {
-      ambient: st.ambientAnimations && !st.reducedMotion,
+      ambient: st.ambientAnimations && !st.reducedMotion && !st.lowEffects,
       highContrast: st.highContrastTable,
     });
     const sub = el.querySelector('.screen-subtitle');
@@ -128,7 +128,8 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
   d.add(store.select((st) => st.selection.boardId, paintBoard));
   d.add(
     store.select(
-      (st) => `${st.settings.ambientAnimations}|${st.settings.highContrastTable}|${st.settings.reducedMotion}`,
+      (st) =>
+        `${st.settings.ambientAnimations}|${st.settings.highContrastTable}|${st.settings.reducedMotion}|${st.settings.lowEffects}`,
       paintBoard,
     ),
   );

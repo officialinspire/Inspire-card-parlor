@@ -223,16 +223,21 @@
   box-shadow: 0 0 0 2px rgba(201, 162, 72, 0.35);
 }
 .map-stop.current .map-tile {
-  box-shadow:
-    0 0 0 2px #c9a248,
-    0 0 16px rgba(201, 162, 72, 0.6);
+  box-shadow: 0 0 0 2px #c9a248;
+}
+/* The current stop breathes with an opacity-only glow (cheap to animate on phones). */
+.map-stop.current .map-tile::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  box-shadow: 0 0 18px rgba(201, 162, 72, 0.7);
+  pointer-events: none;
   animation: map-glow 2.4s ease-in-out infinite;
 }
 @keyframes map-glow {
   50% {
-    box-shadow:
-      0 0 0 2px #c9a248,
-      0 0 4px rgba(201, 162, 72, 0.3);
+    opacity: 0.25;
   }
 }
 .map-stop.completed .map-tile {
@@ -929,11 +934,11 @@
   .versus-you,
   .versus-them-group,
   .result-fx,
-  .map-stop.current .map-tile {
+  .map-stop.current .map-tile::after {
     animation: none;
   }
 }
-.reduced-motion .map-stop.current .map-tile {
+.reduced-motion .map-stop.current .map-tile::after {
   animation: none;
 }
 
@@ -1199,4 +1204,101 @@
 }
 .map-stop.preview .map-state {
   color: #7a3f99;
+}
+
+/* --- Story effects (VFX atlas) ------------------------------------------------ */
+.vfx-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  pointer-events: none;
+  overflow: hidden;
+  contain: strict;
+}
+.vfx {
+  position: absolute;
+  object-fit: contain;
+  opacity: 0;
+  will-change: transform, opacity;
+  animation: vfx-pop 1100ms var(--ease) forwards;
+}
+.vfx-spectral {
+  animation-name: vfx-drift;
+  animation-duration: 1500ms;
+}
+.vfx-unlock {
+  animation-name: vfx-spin;
+}
+@keyframes vfx-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  30% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.15);
+  }
+}
+@keyframes vfx-spin {
+  0% {
+    opacity: 0;
+    transform: scale(0.6) rotate(-40deg);
+  }
+  35% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.1) rotate(20deg);
+  }
+}
+@keyframes vfx-drift {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.9);
+  }
+  40% {
+    opacity: 0.55;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-24px) scale(1.05);
+  }
+}
+
+/* Results: the opponent's reaction. */
+.result-portrait {
+  position: relative;
+  width: 76%;
+  aspect-ratio: 3 / 4;
+  border-radius: 46% 46% 10px 10px;
+}
+
+/* --- Low effects: decoration off, everything still readable ---------------------- */
+.low-effects .vfx-layer,
+.low-effects .result-fx,
+.reduced-motion .vfx-layer {
+  display: none;
+}
+.low-effects .map-stop.current .map-tile::after,
+.low-effects .scene-beat.enter,
+.low-effects .scene-beat.enter .scene-portrait,
+.low-effects .versus-you,
+.low-effects .versus-them-group,
+.low-effects .continues-art,
+.low-effects .stamp.big {
+  animation: none;
+}
+.low-effects .map-tile-art > img,
+.low-effects .continues-place {
+  filter: none;
+}
+
+/* A story character's face at the card table. */
+.avatar[data-art='story'] img {
+  object-fit: cover;
+  object-position: 50% 15%;
 }
