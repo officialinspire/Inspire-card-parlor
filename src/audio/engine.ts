@@ -19,7 +19,10 @@ export type Sfx =
   | 'unlock'
   | 'levelup';
 
-type VolumeSettings = Pick<Settings, 'masterVolume' | 'musicVolume' | 'sfxVolume' | 'muted' | 'musicMuted'>;
+type VolumeSettings = Pick<
+  Settings,
+  'masterVolume' | 'musicVolume' | 'sfxVolume' | 'muted' | 'musicMuted' | 'ambience' | 'ambienceVolume'
+>;
 
 /** One playing track: its own gain (for crossfades) and whatever keeps it going. */
 interface Voice {
@@ -37,6 +40,8 @@ const FADE_OUT = 1.2;
 const PAUSE_FADE = 0.6;
 /** Music sits well under effects: effects run at full bus level, music at a third. */
 const MUSIC_BUS = 0.35;
+/** Riverfront ambience sits under the music (src/audio/ambience.ts). */
+const AMBIENCE_BUS = 0.22;
 
 /**
  * Web Audio engine. Music is generative (or recorded, once files exist);
@@ -50,7 +55,17 @@ class AudioEngine {
   #limiter!: DynamicsCompressorNode;
   #music!: GainNode;
   #sfx!: GainNode;
-  #settings: VolumeSettings = { masterVolume: 0.8, musicVolume: 0.5, sfxVolume: 0.7, muted: false, musicMuted: false };
+  #ambience!: GainNode;
+  #settings: VolumeSettings = {
+    masterVolume: 0.8,
+    musicVolume: 0.5,
+    sfxVolume: 0.7,
+    muted: false,
+    musicMuted: false,
+    ambience: true,
+    ambienceVolume: 0.5,
+  };
+  #ambienceNoise: AudioBuffer | null = null;
   #noise: AudioBuffer | null = null;
   #track: MusicTrack = ALL_TRACKS[0]!;
   #voice: Voice | null = null;
@@ -82,8 +97,11 @@ class AudioEngine {
       this.#limiter.release.value = 0.2;
       this.#music = ctx.createGain();
       this.#sfx = ctx.createGain();
+      this.#ambience = ctx.createGain();
+      this.#ambience.gain.value = 0;
       this.#music.connect(this.#master);
       this.#sfx.connect(this.#master);
+      this.#ambience.connect(this.#master);
       this.#master.connect(this.#limiter).connect(ctx.destination);
       this.#applyVolumes();
     }
@@ -113,6 +131,37 @@ class AudioEngine {
     this.#master.gain.setTargetAtTime(s.muted ? 0 : s.masterVolume, t, 0.05);
     this.#music.gain.setTargetAtTime(s.musicMuted ? 0 : s.musicVolume * MUSIC_BUS, t, 0.1);
     this.#sfx.gain.setTargetAtTime(s.sfxVolume, t, 0.02);
+    // Gentle: switching ambience off or moving its slider never clicks.
+    this.#ambience.gain.setTargetAtTime(s.ambience ? s.ambienceVolume * AMBIENCE_BUS : 0, t, 0.25);
+  }
+
+  /** The context's state ('running', 'suspended'…), or null before the first gesture. */
+  get contextState(): AudioContextState | null {
+    return this.#ctx?.state ?? null;
+  }
+
+  /** The running context, once a gesture has unlocked it (for the ambience). */
+  get context(): AudioContext | null {
+    return this.unlocked ? this.#ctx : null;
+  }
+
+  /** The ambience bus (under the master gain, so Mute all and Master volume apply). */
+  get ambienceOut(): GainNode | null {
+    return this.#ctx ? this.#ambience : null;
+  }
+
+  /**
+   * Eight seconds of white noise for ambience beds. Played looped through
+   * filters, its loop point is inaudible (noise has no phase to break).
+   */
+  ambienceNoise(): AudioBuffer | null {
+    const ctx = this.#ctx;
+    if (!ctx) return null;
+    if (this.#ambienceNoise) return this.#ambienceNoise;
+    const buf = ctx.createBuffer(1, ctx.sampleRate * 8, ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+    return (this.#ambienceNoise = buf);
   }
 
   #noiseBuffer(ctx: AudioContext): AudioBuffer {

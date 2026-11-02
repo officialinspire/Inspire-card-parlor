@@ -47,25 +47,37 @@
   inset: 0;
 }
 
-/* Ambient life, only on capable devices (data-motion="rich"). */
+/* Ambient life, only on capable devices (data-motion="rich": not with reduced motion, Low effects or data
+   saver). Everything sits in .env-frame, which environment.ts lays exactly over the painting, so percentages
+   here are the painting's own coordinates: the moon, the lit skyline, the river. */
 .env-ambient {
   position: absolute;
   inset: 0 0 auto;
   height: var(--art-h);
   display: none;
+  overflow: hidden;
 }
 .env[data-motion='rich'] .env-ambient {
   display: block;
 }
-.env-stars,
-.env-glow {
+.env-frame {
+  position: absolute;
+  inset: 0;
+}
+.fx-day,
+.fx-night {
   position: absolute;
   inset: 0;
   opacity: 0;
-  transition: opacity 900ms var(--ease);
+  transition: opacity 1.4s var(--ease);
 }
-.env[data-env='night'] :is(.env-stars, .env-glow) {
+.env[data-env='day'] .fx-day,
+.env[data-env='night'] .fx-night {
   opacity: 1;
+}
+.env-stars {
+  position: absolute;
+  inset: 0;
 }
 .env-star {
   position: absolute;
@@ -84,24 +96,65 @@
     transform: scale(0.6);
   }
 }
-/* Lamplight along the waterfront breathes very slowly. */
-.env-glow {
-  background: radial-gradient(60% 14% at 50% 52%, rgba(255, 190, 90, 0.22), transparent 70%);
-  mix-blend-mode: screen;
-  animation: breathe 6s ease-in-out infinite;
-}
 @keyframes breathe {
   50% {
     opacity: 0.55;
   }
 }
-/* Light moving on the river. */
+
+/* Day: a faint warmth in the sky, light on the water, leaves from the framing trees. */
+.fx-sun {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(42% 30% at 72% 6%, rgba(255, 236, 190, 0.32), transparent 70%);
+  mix-blend-mode: soft-light;
+  animation: breathe 11s ease-in-out infinite;
+}
+.fx-leaves {
+  position: absolute;
+  inset: 0;
+}
+.fx-leaf {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: 7px;
+  height: 4px;
+  border-radius: 60% 40% 60% 40%;
+  background: #6d8a3c;
+  box-shadow: inset -1px -1px 0 rgba(40, 60, 20, 0.4);
+  opacity: 0;
+  animation: leaf-drift var(--d) ease-in-out var(--delay) infinite;
+}
+/* Most of each cycle the leaf is gone: one or two at most are ever in the air. */
+@keyframes leaf-drift {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) rotate(0deg);
+  }
+  6% {
+    opacity: 0.85;
+  }
+  45% {
+    transform: translate(calc(var(--dir) * 9vw), 14vh) rotate(calc(var(--dir) * 160deg));
+  }
+  58% {
+    opacity: 0.7;
+  }
+  70%,
+  100% {
+    opacity: 0;
+    transform: translate(calc(var(--dir) * 16vw), 26vh) rotate(calc(var(--dir) * 300deg));
+  }
+}
+
+/* Light moving on the river (the lower band of both paintings). */
 .env-shimmer {
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 62%;
-  bottom: 4%;
+  left: 3%;
+  right: 3%;
+  top: 73%;
+  bottom: 2%;
   background: repeating-linear-gradient(
     180deg,
     transparent 0 9px,
@@ -113,7 +166,8 @@
   animation: shimmer 7s linear infinite;
   opacity: 0.8;
 }
-.env[data-env='night'] .env-shimmer {
+.fx-night .env-shimmer {
+  top: 71%;
   background: repeating-linear-gradient(
     180deg,
     transparent 0 9px,
@@ -121,12 +175,95 @@
     transparent 10px 17px
   );
   mix-blend-mode: screen;
-  opacity: 0.55;
+  opacity: 0.5;
+  animation-duration: 10s;
 }
 @keyframes shimmer {
   to {
     background-position: 0 34px;
   }
+}
+
+/* Night: the lit windows along the skyline breathe very slowly. */
+.env-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(48% 8% at 50% 64%, rgba(255, 185, 90, 0.24), transparent 70%);
+  mix-blend-mode: screen;
+  animation: breathe 7s ease-in-out infinite;
+}
+/* A soft halo on the painted moon. */
+.fx-moon {
+  position: absolute;
+  left: 91.4%;
+  top: 13.2%;
+  width: 11%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 246, 220, 0.38) 0%, rgba(200, 215, 255, 0.12) 38%, transparent 70%);
+  mix-blend-mode: screen;
+  animation: breathe 9s ease-in-out infinite;
+}
+/* A faint cool glint on the water beneath it. */
+.fx-moonpath {
+  position: absolute;
+  left: 86%;
+  width: 7%;
+  top: 72%;
+  bottom: 6%;
+  background: repeating-linear-gradient(
+    180deg,
+    transparent 0 7px,
+    rgba(210, 225, 255, 0.28) 7px 8px,
+    transparent 8px 13px
+  );
+  mask-image:
+    linear-gradient(180deg, #000, transparent), linear-gradient(90deg, transparent, #000 30%, #000 70%, transparent);
+  mask-composite: intersect;
+  mix-blend-mode: screen;
+  opacity: 0.7;
+  animation: shimmer 9s linear infinite;
+}
+/* A few warm motes drifting on the night wind over the water. */
+.fx-motes {
+  position: absolute;
+  inset: 0;
+}
+.fx-mote {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #ffd98a;
+  box-shadow: 0 0 6px rgba(255, 200, 110, 0.9);
+  opacity: 0;
+  animation: mote-drift var(--d) ease-in-out var(--delay) infinite;
+}
+@keyframes mote-drift {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  15% {
+    opacity: 0.7;
+  }
+  50% {
+    transform: translate(6vw, -2vh);
+  }
+  80% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(12vw, 1vh);
+  }
+}
+/* Behind the blurred title, only the light: nothing in sharp focus drifts over the soft painting. */
+.env-splash :is(.fx-leaves, .fx-motes) {
+  display: none;
 }
 
 /* ===================== Initialization ===================== */
@@ -688,10 +825,6 @@
   }
   .env-menu .env-art {
     mask-image: linear-gradient(180deg, #000 72%, transparent);
-  }
-  .env-menu .env-shimmer {
-    top: 60%;
-    bottom: 8%;
   }
 }
 .menu-layout {

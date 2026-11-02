@@ -9,6 +9,9 @@ export interface Settings {
   masterVolume: number;
   musicVolume: number;
   sfxVolume: number;
+  /** Riverfront ambience (water, breeze, the town at night) behind the title and menu. */
+  ambience: boolean;
+  ambienceVolume: number;
   muted: boolean;
   /** Music off (sound effects stay on); the table toolbar's Music button. */
   musicMuted: boolean;

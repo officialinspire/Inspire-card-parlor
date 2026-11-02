@@ -58,7 +58,8 @@ export async function enterParlor(page: Page): Promise<void> {
   await page.goto('./');
   const enter = page.getByRole('button', { name: 'Enter Parlor' });
   const skip = page.locator('[data-action="skip-intro"]');
-  await expect(enter.or(skip)).toBeVisible({ timeout: 10_000 });
+  // Whichever shows first (both stay in the page; only one is visible at a time).
+  await expect(enter.or(skip).filter({ visible: true }).first()).toBeVisible({ timeout: 10_000 });
   if (await skip.isVisible()) await skip.click().catch(() => undefined);
   await expect(enter).toBeVisible({ timeout: 10_000 });
   await enter.click();

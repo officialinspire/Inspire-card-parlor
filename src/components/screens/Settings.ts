@@ -61,6 +61,19 @@ export const SettingsScreen: ScreenFactory = ({ store }) => {
         panel(
           slider('Master volume', s().masterVolume, (v) => set({ masterVolume: v })),
           slider('Sound effects', s().sfxVolume, (v) => set({ sfxVolume: v })),
+          tagged(
+            toggle(
+              'Riverfront ambience',
+              s().ambience,
+              (v) => set({ ambience: v }),
+              'Water, breeze and the town at night, behind the menu. Separate from the music.',
+            ),
+            'ambience',
+          ),
+          tagged(
+            slider('Ambience volume', s().ambienceVolume, (v) => set({ ambienceVolume: v })),
+            'ambienceVolume',
+          ),
           toggle('Mute all', s().muted, (v) => set({ muted: v })),
           tagged(
             toggle(

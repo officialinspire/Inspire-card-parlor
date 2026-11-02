@@ -29,7 +29,8 @@ const icp = <T>(page: Page, fn: string) =>
 test('a fresh launch: black, the studio, the title, then Touch to Start once loading is done', async ({ page }) => {
   await page.goto('./', { waitUntil: 'commit' });
   // The very first painted frame is black, before any app style arrives.
-  expect(await page.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe('rgb(0, 0, 0)');
+  // (The page's own <html> style, in place from the first byte; <body> may not exist yet.)
+  expect(await page.evaluate(() => getComputedStyle(document.documentElement).backgroundColor)).toBe('rgb(0, 0, 0)');
   await expect(page.locator('.init')).toHaveAttribute('data-plan', 'full');
   await expect(page.locator('.init')).toHaveAttribute('data-stage', /black|presents/);
   await expect(page.locator('.intro-presents')).toContainText('OFFICIAL INSPIRE');
@@ -48,9 +49,16 @@ test('a fresh launch: black, the studio, the title, then Touch to Start once loa
   expect(box.height).toBeGreaterThanOrEqual(56);
   expect(box.width).toBeGreaterThanOrEqual(240);
   // Start: the intro fades to black, then the menu rises out of black.
+  // The veil can come and go quickly, so record that it appeared rather than racing it.
+  await page.evaluate(() => {
+    const w = window as unknown as { __veil?: boolean };
+    new MutationObserver(() => {
+      if (document.querySelector('.menu-veil')) w.__veil = true;
+    }).observe(document.body, { childList: true, subtree: true });
+  });
   await start(page).click();
   await expectScreen(page, 'MAIN_MENU');
-  await expect(page.locator(`${CURRENT} .menu-veil`)).toBeAttached();
+  await expect.poll(() => page.evaluate(() => (window as unknown as { __veil?: boolean }).__veil)).toBe(true);
   await expect(page.locator(`${CURRENT} .menu-veil`)).toHaveCount(0, { timeout: 4000 });
   expect(await page.evaluate(() => document.documentElement.hasAttribute('data-booted'))).toBe(true);
 });

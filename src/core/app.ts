@@ -5,6 +5,7 @@ import { attachAchievements, evaluateAchievements } from '@/achievements/engine'
 import { attachJournalTracking } from '@/achievements/tracking';
 import { attachAnnouncer } from '@/progression/announcer';
 import { attachAudio, audio } from '@/audio';
+import { ambienceState, attachAmbience } from '@/audio/ambience';
 import { setGameHaptics } from '@/audio/gameSounds';
 import { haptic } from '@/utils/haptics';
 import { attachAnalytics, track } from '@/analytics/analytics';
@@ -40,6 +41,7 @@ export async function startApp(mount: HTMLElement): Promise<void> {
   attachDeckThemes(store);
   attachTheme(store);
   attachAudio(store);
+  attachAmbience(store);
   attachStoryDirector(store);
   setGameHaptics((kind) => haptic(kind));
   attachAnalytics(store);
@@ -100,6 +102,10 @@ export async function startApp(mount: HTMLElement): Promise<void> {
       analytics: recentEvents,
       // The music engine's state (track, voices still sounding) for audio tests.
       audio: () => ({ track: audio.track.id, playing: audio.playing, voices: audio.voiceCount }),
+      // The riverfront ambience: scene, level, instances (live + fading), loop sources, timers.
+      ambience: ambienceState,
+      // The audio context's state ('running', 'suspended'…), or null before the first gesture.
+      audioContext: () => audio.contextState,
       // Records a finished story game (as if played), so tests can reach any result screen.
       storyResult: (levelId: string, outcome: 'win' | 'loss') => {
         const level = ALL_LEVELS.find((l) => l.id === levelId);

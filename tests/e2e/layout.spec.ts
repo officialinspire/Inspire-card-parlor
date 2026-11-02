@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { action, CURRENT, enterParlor, expectScreen, seed } from './helpers';
+import { action, CURRENT, clickInPager, enterParlor, expectScreen, seed } from './helpers';
 import { layoutIssues } from './layout-checks';
 
 /**
@@ -165,9 +165,7 @@ test('story dialogs fit: every scene line, the brief, versus, results, the door,
   await action(page, 'map').click();
   // The Chapter 8 door.
   await page.locator(`${CURRENT} [data-chapter="th-8"]`).click();
-  for (let k = 0; k < 5 && !(await page.locator(`${CURRENT} [data-level="th-8-5"]`).isVisible()); k++)
-    await page.locator(`${CURRENT} [data-pager="next"]`).click();
-  await page.locator(`${CURRENT} [data-level="th-8-5"]`).click();
+  await clickInPager(page, '[data-level="th-8-5"]');
   await action(page, 'play').click();
   await expect(page.locator('.dialog-suit-puzzle')).toBeVisible();
   await expectClean(page, 'the four-suit door');

@@ -14,6 +14,8 @@ export const DEFAULT_SETTINGS: Settings = {
   masterVolume: 0.8,
   musicVolume: 0.5,
   sfxVolume: 0.7,
+  ambience: true,
+  ambienceVolume: 0.5,
   muted: false,
   musicMuted: false,
   musicTrack: DEFAULT_TRACK,

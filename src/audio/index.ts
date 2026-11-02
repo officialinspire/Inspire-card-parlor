@@ -174,6 +174,9 @@ export function attachAudio(store: Store): void {
   store.select((s) => s.settings.musicPaused, follow);
   store.select((s) => s.settings.storySoundtrack, follow);
   store.select((s) => s.boot.ready, follow);
+  // Touch to Start unlocks sound while the title is still fading out; the music
+  // starts once the intro has actually given way to the menu.
+  store.select((s) => s.screen === 'INITIALIZATION' || s.screen === 'BOOT', follow);
   document.addEventListener('visibilitychange', () => audio.setSuspended(document.hidden));
 
   // Browsers only allow sound after a gesture: unlock on the first one anywhere.
