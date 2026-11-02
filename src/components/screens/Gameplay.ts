@@ -64,15 +64,12 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
     const chapterId = storyChapterId ?? CHAPTERS.find((c) => c.levels.some((l) => l.id === story.id))?.id;
     if (chapterId) setStoryReturn({ chapterId, levelId: story.id });
     // Only a straight return to Story Mode reopens the chapter; Home (or any other
-    // screen) leaves Story Mode to start on its map next time, as usual.
-    d.add(
-      store.select(
-        (st) => st.screen,
-        (screen) => {
-          if (screen !== AppState.GAMEPLAY && screen !== AppState.STORY_MODE) setStoryReturn(null);
-        },
-      ),
-    );
+    // screen) leaves Story Mode to start on its map next time, as usual. Decided when
+    // the table closes: by then the store already holds the screen being opened (a
+    // store listener here would be disposed with the screen before it could fire).
+    d.add(() => {
+      if (store.state.screen !== AppState.STORY_MODE) setStoryReturn(null);
+    });
     d.add(() => {
       useStorySlot(false);
       setActiveStoryLevel(null);

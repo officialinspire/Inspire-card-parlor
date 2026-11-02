@@ -399,6 +399,8 @@ test('a story challenge left part-way returns to its chapter, with that challeng
     icp.store.dispatch({ type: 'NAVIGATE', to: 'GAMEPLAY' });
   });
   await expectScreen(page, 'GAMEPLAY');
+  // The table from before is still saved: carry on with it.
+  await page.locator('[data-dialog-action="resume"]').click();
   await clickNav(page, 'home', 'MAIN_MENU');
   await clickNav(page, 'STORY_MODE');
   await expect(page.locator(`${CURRENT} [data-story-view="map"]`)).toBeVisible();
