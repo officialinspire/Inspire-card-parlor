@@ -105,15 +105,18 @@ describe('announcements', () => {
     expect(pendingAnnouncements()).toHaveLength(0);
   });
 
-  it('a burst is led by the latest achievement, not one still waiting from earlier', () => {
+  it('a burst is led by the achievement earned at the table, not older or routine ones', () => {
     vi.useFakeTimers();
     attachAnnouncer(store);
+    // Still waiting from boot when the hand starts…
+    announce({ kind: 'achievement', id: 'first-visit' });
+    announce({ kind: 'achievement', id: 'explore-passport' });
+    setPlayInProgress(true);
     store.dispatch({ type: 'BOOT_READY' });
     store.dispatch({ type: 'NAVIGATE', to: AppState.MAIN_MENU });
-    setPlayInProgress(true);
-    // Earlier ones still queued when the hand started, then one earned at the table.
-    for (const id of ['first-visit', 'explore-passport', 'first-win', 'knock-knock'])
-      announce({ kind: 'achievement', id });
+    // …then one earned mid-hand, then the routine one as the game ends.
+    announce({ kind: 'achievement', id: 'knock-knock' });
+    announce({ kind: 'achievement', id: 'first-win' });
     const before = store.state.notifications.length;
     setPlayInProgress(false);
     vi.advanceTimersByTime(800);

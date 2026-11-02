@@ -74,7 +74,7 @@ any navigation screen.
 | D-02 | P1  | Navigation: pagination     | Pager arrows pushed off screen at 320 px when a gallery has many pages                                               | **Fixed**                    |
 | D-03 | P2  | Main menu: phone landscape | Labels truncate on short landscape phones ("Collec…", "Klon…", music title 11 px wide)                               | **Fixed**                    |
 | D-04 | P2  | Main menu: 320 px          | Status pills slide under the logo                                                                                    | **Fixed**                    |
-| D-05 | P2  | Achievements               | The achievement earned at the table could be hidden behind older queued toasts                                       | **Fixed** (`8349adc`)        |
+| D-05 | P2  | Achievements               | The achievement earned at the table could be hidden behind older queued toasts                                       | **Fixed** (this phase)       |
 | D-06 | P2  | Release / deploy           | GitHub Pages not enabled; the public URL returns 404                                                                 | Open: needs a repo admin     |
 | D-07 | P2  | CI                         | Small-phone music track list tests failed in CI (run 38 onward)                                                      | **Fixed** (`2dbb16d`)        |
 | D-08 | P3  | Tests                      | War first-round e2e raced the 650 ms sweep                                                                           | **Fixed** (`8349adc`)        |
@@ -173,7 +173,7 @@ There are no open P0 or P1 defects.
   28 px rings. It now starts at x = 80, after the logo ends at 78.
 - **Reference:** `docs/qa/phase-iii/menu-320x568-before-after.jpg`.
 
-### D-05 (P2, fixed in `8349adc`): table achievement hidden by older toasts
+### D-05 (P2, fixed this phase): table achievement hidden by older toasts
 
 - **Steps:**
   1. Start a fresh profile, so the boot achievements are queued.
@@ -182,8 +182,17 @@ There are no open P0 or P1 defects.
 - **Expected:** The toast with the medal is the achievement just earned.
 - **Actual:** The held burst was flushed oldest-first, so a boot achievement
   took the medal slot and the new one was folded into "N achievements earned".
-- **Fix:** The flush now leads with the most recent achievement. A unit test
-  covers it.
+- **First fix (`8349adc`), a regression:** That commit led with the _most
+  recent_ achievement.
+  - The full e2e run then failed this test in 5 of 6 projects, every time.
+  - The routine game-end achievements (such as a first War win) are queued
+    after the one earned mid-hand, so they took the slot instead.
+- **Fix:** A burst now leads with the first achievement earned since the hand
+  started.
+  - Achievements still waiting from before the deal can't take the slot.
+  - Neither can the routine ones that arrive as the hand ends.
+  - The unit test covers both cases: it fails under either earlier rule.
+  - The e2e test passes in all 6 projects.
 - **Note:** This supersedes the "War loss toast" item in the 1.1.0 release
   notes. Losing was never the cause.
 
