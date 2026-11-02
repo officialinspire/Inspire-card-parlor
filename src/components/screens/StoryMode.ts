@@ -26,7 +26,7 @@ import {
   storyOf,
   type StoryOutcome,
 } from '@/story/progress';
-import { takeStoryOutcome } from '@/story/session';
+import { takeStoryOutcome, takeStoryReturn } from '@/story/session';
 import { GHOST_REMATCHES, rematchesUnlocked, type GhostRematch } from '@/story/rematches';
 import { isPlayableChapter, levelAfter, type ReplayableScene } from '@/story/world';
 import type { InfoCard } from '@/story/campaign';
@@ -70,7 +70,13 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
   const d = new Disposer();
   const profile = () => store.state.profile;
   const root = h('div', { class: 'story-root' });
-  let view: View = { kind: 'map' };
+  // Back from a challenge (however it was left): its chapter, that challenge in view.
+  const back = takeStoryReturn();
+  const backChapter = back && getChapter(back.chapterId);
+  let view: View =
+    backChapter && isChapterUnlocked(profile(), backChapter)
+      ? { kind: 'chapter', id: backChapter.id }
+      : { kind: 'map' };
   let mounted: { el: HTMLElement; destroy(): void } | null = null;
 
   // ----- Views -----
@@ -145,7 +151,7 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
       label: 'Challenges',
       initialIndex: Math.max(
         0,
-        ch.levels.findIndex((l) => l.id === next?.id),
+        ch.levels.findIndex((l) => l.id === (back?.chapterId === ch.id ? back.levelId : next?.id)),
       ),
       render: (lv) => challengeCard(ch, lv),
     });

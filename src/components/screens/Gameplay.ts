@@ -7,7 +7,7 @@ import { deckThemes, getDeck } from '@/decks';
 import { getGame } from '@/games/registry';
 import { CHAPTERS } from '@/story/chapters';
 import { getLevel, type StoryLevel } from '@/story/campaign';
-import { setActiveStoryLevel, setLastStoryOutcome } from '@/story/session';
+import { setActiveStoryLevel, setLastStoryOutcome, setStoryReturn } from '@/story/session';
 import { goFishPlayers } from '@/story/players';
 import { RULES } from '@/games/rules';
 import { nextSeed, saves, setTableInfo, useStorySlot } from '@/games/session';
@@ -61,6 +61,8 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
   if (story) {
     useStorySlot(true);
     setActiveStoryLevel(story.id);
+    const chapterId = storyChapterId ?? CHAPTERS.find((c) => c.levels.some((l) => l.id === story.id))?.id;
+    if (chapterId) setStoryReturn({ chapterId, levelId: story.id });
     d.add(() => {
       useStorySlot(false);
       setActiveStoryLevel(null);
@@ -301,6 +303,7 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
         outcome: 'loss',
         score: current.score,
         durationMs: current.elapsedMs,
+        key: `${gameId}:${current.seed}:${current.startedAt}`,
       });
     return ok;
   }
@@ -497,7 +500,13 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
         return mount(saved);
       }
       if (SOLITAIRE.includes(gameId!) && sd.moves > 0 && !sd.won) {
-        recordGameResult(store, { gameId: gameId!, outcome: 'loss', score: sd.score, durationMs: sd.elapsedMs });
+        recordGameResult(store, {
+          gameId: gameId!,
+          outcome: 'loss',
+          score: sd.score,
+          durationMs: sd.elapsedMs,
+          key: `${gameId}:${sd.seed}:${sd.startedAt}`,
+        });
       }
       await saves.delete(gameId!);
     }

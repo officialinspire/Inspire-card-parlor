@@ -6,14 +6,14 @@ import type { DeckTheme } from '@/decks/DeckThemeManager';
 import { RANK_CODE, RANKS, type Rank } from '@/engine';
 import { audio, gameSound } from '@/audio';
 import { victoryShower } from '@/components/celebration';
-import { avatar } from '@/components/Avatar';
+import { avatar, preloadMoods, setAvatarMood, type TableMood } from '@/components/Avatar';
 import { say } from '@/components/SpeechBubble';
 import { button } from '@/components/ui';
 import { pauseVeil, setTool, toolButton, type GameToolbar } from '@/components/gameToolbar';
 import { confirmDialog, openDialog } from '@/components/Dialog';
 import { recordGameResult } from '@/progression/results';
 import { getPersonality, pickLine, rankPlural, rankSingular } from '../cpu/personalities';
-import { saves, sleep } from '../session';
+import { saves, settle, sleep } from '../session';
 import { chooseAsk } from './cpu';
 import { playerView } from './view';
 import type { GoFishEvent, GoFishGame, GoFishPlayer } from './GoFishGame';
@@ -75,15 +75,19 @@ export function mountGoFish(ctx: GoFishViewContext) {
   // ----- DOM -----
   const oppEls = new Map<string, { root: HTMLElement; count: HTMLElement; fan: HTMLElement; books: HTMLElement }>();
   const opponents = h('div', { class: 'gf-opponents', 'data-count-players': String(game.players.length - 1) });
+  const faces = new Map<string, HTMLElement>();
   for (const p of game.players.slice(1)) {
     const persona = getPersonality(p.cpu);
+    const face = avatar(persona);
+    faces.set(p.id, face);
+    preloadMoods(persona);
     const count = h('span', { class: 'gf-opp-count', 'data-count': p.id });
     const fan = h('div', { class: 'gf-fan', 'aria-hidden': 'true' });
     const books = h('span', { class: 'gf-opp-books', 'data-books': p.id });
     const root = h(
       'div',
       { class: 'gf-opp', 'data-player': p.id },
-      avatar(persona),
+      face,
       h(
         'div',
         { class: 'gf-opp-meta' },
@@ -131,6 +135,11 @@ export function mountGoFish(ctx: GoFishViewContext) {
   const anchor = (id: string) => (id === human.id ? you : oppEls.get(id)!.root);
   const nameOf = (id: string) => game.players.find((p) => p.id === id)?.name ?? id;
   const personaOf = (p: GoFishPlayer) => getPersonality(p.cpu);
+  /** An opponent's face reacts for a moment (the human player has no portrait to change). */
+  const mood = (id: string, m: TableMood, ms = 1300) => {
+    const face = faces.get(id);
+    if (face) setAvatarMood(face, m, ms === 0 ? undefined : ms * Math.max(f(), 0.5) + 300);
+  };
 
   // ----- Rendering -----
   function render(): void {
@@ -236,12 +245,19 @@ export function mountGoFish(ctx: GoFishViewContext) {
   // ----- Animation -----
   async function fly(from: HTMLElement, to: HTMLElement, n: number): Promise<void> {
     if (f() < 0.2 || n === 0) return;
+    // Never longer than the flight itself (plus a margin), even if the animation is held up.
+    await settle(flight(from, to, n), 900 * f() + 800);
+  }
+
+  function flight(from: HTMLElement, to: HTMLElement, n: number): Promise<unknown> {
     const a = from.getBoundingClientRect();
     const b = to.getBoundingClientRect();
     const base = el.getBoundingClientRect();
-    await Promise.all(
+    const flying: HTMLElement[] = [];
+    return Promise.all(
       Array.from({ length: Math.min(n, 4) }, (_, i) => {
         const c = cardRenderer.renderBack(theme, { className: 'gf-flying' });
+        flying.push(c);
         c.style.left = `${a.left - base.left + a.width / 2 - 20}px`;
         c.style.top = `${a.top - base.top + a.height / 2 - 28}px`;
         el.appendChild(c);
@@ -258,7 +274,7 @@ export function mountGoFish(ctx: GoFishViewContext) {
           .finished.catch(() => undefined)
           .finally(() => c.remove());
       }),
-    );
+    ).finally(() => flying.forEach((c) => c.remove()));
   }
 
   /** Restarts a short highlight animation on a player's area (visual only). */
@@ -286,6 +302,7 @@ export function mountGoFish(ctx: GoFishViewContext) {
       ? personaOf(asker).lines.ask(rank, target.id === human.id ? 'You' : target.name)
       : `${target.name}, any ${rankPlural(rank)}?`;
     void say(anchor(askerId), askText, { tone: 'ask', duration: 1500 * f() + 300 });
+    mood(askerId, 'talk', 1500);
     gameSound('go_fish_ask');
     setStatus(`${asker.name} asked ${target.id === human.id ? 'you' : target.name} for ${rankPlural(rank)}.`);
     // The request: the asker leans in and the one being asked lights up.
@@ -311,9 +328,11 @@ export function mountGoFish(ctx: GoFishViewContext) {
           ? `Here — ${countLabel(e.count, e.rank)}.`
           : `Here you go: ${countLabel(e.count, e.rank)}.`;
         void say(anchor(e.from), line, { duration: 1300 * f() + 300 });
+        mood(e.from, 'lose');
         gameSound('card_move');
         await fly(anchor(e.from), anchor(e.to), e.count);
         const receiver = game.players.find((p) => p.id === e.to)!;
+        mood(e.to, 'win', 1100);
         if (receiver.cpu && rand() < 0.5)
           void say(anchor(e.to), pickLine(personaOf(receiver).lines.gave), { duration: 1100 * f() + 300 });
         await pause(500);
@@ -323,7 +342,10 @@ export function mountGoFish(ctx: GoFishViewContext) {
         const asked = lastAskTarget(askerId);
         const targetPlayer = asked ? game.players.find((p) => p.id === asked) : undefined;
         const line = targetPlayer?.cpu ? pickLine(personaOf(targetPlayer).lines.goFish) : 'Go fish!';
-        if (targetPlayer) void say(anchor(targetPlayer.id), line, { duration: 1300 * f() + 300 });
+        if (targetPlayer) {
+          void say(anchor(targetPlayer.id), line, { duration: 1300 * f() + 300 });
+          mood(targetPlayer.id, 'talk');
+        }
         await pause(500);
         if (e.drew) {
           gameSound('card_deal');
@@ -339,6 +361,7 @@ export function mountGoFish(ctx: GoFishViewContext) {
         void say(anchor(e.p), p.cpu ? pickLine(personaOf(p).lines.lucky) : 'Lucky catch!', {
           duration: 1300 * f() + 300,
         });
+        mood(e.p, 'surprise');
         setStatus(`${p.id === human.id ? 'You' : p.name} drew the ${rankSingular(e.rank)} — another turn!`);
         await pause(700);
         break;
@@ -348,6 +371,7 @@ export function mountGoFish(ctx: GoFishViewContext) {
         gameSound('valid_move');
         spotlight(e.p, 'gf-booked');
         if (p.cpu) void say(anchor(e.p), pickLine(personaOf(p).lines.book), { duration: 1300 * f() + 300 });
+        mood(e.p, 'win');
         setStatus(`${p.id === human.id ? 'You' : p.name} laid down a book of ${rankPlural(e.rank)}.`);
         render();
         await pause(700);
@@ -483,9 +507,17 @@ export function mountGoFish(ctx: GoFishViewContext) {
   }
   let lastTarget: string | undefined;
 
+  let picking = false;
   async function humanTurn(preset?: Rank): Promise<void> {
-    if (!isMyTurn()) return;
-    const pick = await pickRequest(preset);
+    // One request dialog at a time: a double tap on a card must not open two.
+    if (!isMyTurn() || picking) return;
+    picking = true;
+    let pick: { rank: Rank; target: string } | null;
+    try {
+      pick = await pickRequest(preset);
+    } finally {
+      picking = false;
+    }
     if (!pick || destroyed || !isMyTurn()) return;
     busy = true;
     render();
@@ -504,12 +536,23 @@ export function mountGoFish(ctx: GoFishViewContext) {
     busy = true;
     render();
     try {
-      while (!destroyed && !game.isOver && game.current.id !== human.id) {
+      // Every CPU ask changes the log; a turn that changes nothing would loop for
+      // ever, so the table stops waiting after a few of those (and after a
+      // generous cap) and hands the turn back to the player's controls.
+      let stalls = 0;
+      for (let guard = 0; guard < 400 && !destroyed && !game.isOver && game.current.id !== human.id; guard++) {
         const cur = game.current;
+        mood(cur.id, 'think', 650);
         await pause(650);
         if (destroyed) return;
+        const before = game.data.log.length;
         const choice = chooseAsk(playerView(game, cur.id), personaOf(cur), game.data.difficulty, rand);
         await perform(cur.id, choice.target, choice.rank);
+        stalls = game.data.log.length === before ? stalls + 1 : 0;
+        if (stalls >= 3) {
+          console.warn('[go-fish] a CPU turn made no progress; stopping the CPU loop');
+          break;
+        }
       }
     } finally {
       busy = false;
@@ -544,6 +587,7 @@ export function mountGoFish(ctx: GoFishViewContext) {
       outcome,
       score: mine,
       durationMs: Date.now() - game.data.startedAt,
+      key: `go-fish:${game.data.startedAt}`,
       details: {
         books: mine,
         asksOk: game.data.log.filter((e) => e.t === 'give' && e.to === human.id).length,
@@ -556,6 +600,7 @@ export function mountGoFish(ctx: GoFishViewContext) {
       if (!store.state.settings.reducedMotion) el.appendChild(victoryShower());
     }
     for (const p of game.players.slice(1)) {
+      mood(p.id, winners.includes(p.id) ? 'win' : 'lose', 0);
       void say(anchor(p.id), pickLine(winners.includes(p.id) ? personaOf(p).lines.win : personaOf(p).lines.lose), {
         duration: 2400,
       });
@@ -620,8 +665,10 @@ export function mountGoFish(ctx: GoFishViewContext) {
   else if (game.current.id === human.id) {
     setStatus('Your turn — tap a card or press Ask.');
     if (game.data.log.filter((e) => e.t === 'ask').length === 0) {
-      for (const p of game.players.slice(1))
+      for (const p of game.players.slice(1)) {
         void say(anchor(p.id), pickLine(personaOf(p).lines.greet), { duration: 2000 });
+        mood(p.id, 'talk', 1800);
+      }
     }
   } else void continuePlay();
 

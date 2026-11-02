@@ -399,6 +399,7 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
     if (p !== paused) gameEvent(p ? 'game_paused' : 'game_resumed');
     paused = p;
     selection = null;
+    cancelPress();
     board.classList.toggle('paused', p);
     pauseOverlay.hidden = !p;
     if (p) void saves.save(game.table);
@@ -429,7 +430,13 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
       cancelLabel: 'Keep playing',
     });
     if (!ok) return false;
-    recordGameResult(store, { gameId, outcome: 'loss', score: game.data.score, durationMs: game.data.elapsedMs });
+    recordGameResult(store, {
+      gameId,
+      outcome: 'loss',
+      score: game.data.score,
+      durationMs: game.data.elapsedMs,
+      key: `${gameId}:${game.data.seed}:${game.data.startedAt}`,
+    });
     await saves.delete(gameId);
     return true;
   }
@@ -452,6 +459,7 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
       outcome: 'win',
       score: game.data.score,
       durationMs: game.data.elapsedMs,
+      key: `${gameId}:${game.data.seed}:${game.data.startedAt}`,
       details: {
         ...(spider ? { suits: spider.suits } : {}),
         ...(freecell ? { usedCell: !!game.data.usedCell } : {}),
@@ -485,8 +493,8 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
           stat('Time', fmt(game.data.elapsedMs)),
           stat('Moves', game.data.moves),
           stat('Score', game.data.score),
-          stat('XP', `+${summary.xp}`),
         ),
+        h('p', { class: 'result-rewards' }, `+${summary.xp} XP · +${summary.credits} credits`),
       ),
       dismissValue: 'menu',
       actions: [
@@ -509,16 +517,34 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
   }
 
   // ----- Input: drag-and-drop, tap-to-select, double-tap -----
+  //
+  // One pointer at a time. A press becomes a drag only after it travels past
+  // the slop (wider for fingers, so a slightly shaky tap is still a tap); a
+  // press that wanders off an unpickable card is dropped rather than turning
+  // into a stray tap somewhere else. Cancelled or lost pointers always snap
+  // the cards home, so nothing is ever left stuck mid-air.
   interface Press {
     id: number;
     pile: string;
     index: number;
     x: number;
     y: number;
-    drag: { els: HTMLElement[]; origins: string[] } | null;
+    slop: number;
+    /** Travelled past the slop: never a tap any more. */
+    moved: boolean;
+    drag: {
+      els: HTMLElement[];
+      origins: string[];
+      /** The lead card's box when it was lifted (read once: no layout reads while dragging). */
+      start: DOMRect;
+      dx: number;
+      dy: number;
+      target: string | null;
+    } | null;
   }
   let press: Press | null = null;
   let lastTap: { key: string; at: number } | null = null;
+  let dragFrame = 0;
 
   /** The pile under a board point, generous for columns so drops are forgiving. */
   function pileAt(clientX: number, clientY: number): string | null {
@@ -537,6 +563,39 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
     return null;
   }
 
+  /**
+   * Where a drag would land: the pile under the finger, or failing that the
+   * pile under the middle of the card being carried (fingers hold cards by
+   * their top edge, so the card covers the place the player is aiming at).
+   * A legal destination wins over an illegal one.
+   */
+  function dropTarget(p: Press, clientX: number, clientY: number): { pile: string | null; legal: boolean } {
+    const d = p.drag;
+    const candidates: string[] = [];
+    const under = pileAt(clientX, clientY);
+    if (under) candidates.push(under);
+    if (d && metrics) {
+      // Where the card is now, from where it started plus how far the pointer has gone
+      // (the screen may be a frame behind the pointer).
+      const dx = clientX - p.x;
+      const dy = clientY - p.y;
+      const mid = pileAt(d.start.left + dx + d.start.width / 2, d.start.top + dy + metrics.cardH * 0.5);
+      if (mid && !candidates.includes(mid)) candidates.push(mid);
+    }
+    const others = candidates.filter((c) => c !== p.pile);
+    const legal = others.find((to) => game.canMove({ from: p.pile, index: p.index, to }));
+    if (legal) return { pile: legal, legal: true };
+    return { pile: under && under !== p.pile ? under : null, legal: false };
+  }
+
+  function markDrop(target: string | null): void {
+    for (const e of board.querySelectorAll('[data-drop]')) e.removeAttribute('data-drop');
+    if (!target) return;
+    const pile = game.pile(target);
+    slots.get(target)?.setAttribute('data-drop', '');
+    if (pile.top) els.get(keyOf(pile.top))?.el.setAttribute('data-drop', '');
+  }
+
   function locate(target: EventTarget | null): { pile: string; index: number; el: HTMLElement } | null {
     const node = (target as HTMLElement)?.closest?.('.sol-card, .sol-slot') as HTMLElement | null;
     if (!node || !board.contains(node)) return null;
@@ -545,62 +604,131 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
     return loc ? { ...loc, el: node } : null;
   }
 
+  /** Ends a press without acting on it: carried cards go home. */
+  function cancelPress(): void {
+    const p = press;
+    press = null;
+    cancelAnimationFrame(dragFrame);
+    dragFrame = 0;
+    if (!p) return;
+    if (board.hasPointerCapture?.(p.id)) board.releasePointerCapture(p.id);
+    if (p.drag) {
+      for (const x of p.drag.els) x.classList.remove('dragging');
+      markDrop(null);
+      if (!destroyed) render();
+    }
+  }
+
   board.addEventListener('pointerdown', (e) => {
     if (dealing) endDeal(true);
-    if (paused || busy || game.data.won || !e.isPrimary) return;
+    // Primary pointer, main button only (a right-click or a second finger never moves cards).
+    if (!e.isPrimary || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    if (press) cancelPress();
+    if (paused || busy || game.data.won) return;
     const loc = locate(e.target);
     if (!loc) return;
-    press = { id: e.pointerId, pile: loc.pile, index: loc.index, x: e.clientX, y: e.clientY, drag: null };
-    board.setPointerCapture(e.pointerId);
+    press = {
+      id: e.pointerId,
+      pile: loc.pile,
+      index: loc.index,
+      x: e.clientX,
+      y: e.clientY,
+      slop: e.pointerType === 'mouse' ? 5 : 10,
+      moved: false,
+      drag: null,
+    };
+    try {
+      board.setPointerCapture(e.pointerId);
+    } catch {
+      /* the pointer is already gone */
+    }
   });
+
+  function paintDrag(): void {
+    dragFrame = 0;
+    const d = press?.drag;
+    if (!d) return;
+    d.els.forEach((x, i) => (x.style.transform = `${d.origins[i]} translate(${d.dx}px, ${d.dy}px)`));
+  }
 
   board.addEventListener('pointermove', (e) => {
     if (!press || e.pointerId !== press.id) return;
     const dx = e.clientX - press.x;
     const dy = e.clientY - press.y;
     if (!press.drag) {
-      if (Math.hypot(dx, dy) < 6 || press.index < 0) return;
+      if (Math.hypot(dx, dy) < press.slop) return;
+      press.moved = true;
+      if (press.index < 0) return;
       const pile = game.pile(press.pile);
       if (!game.canPick(pile, press.index)) return;
       const dragEls = pile.all.slice(press.index).map((c) => els.get(keyOf(c))!.el);
-      press.drag = { els: dragEls, origins: dragEls.map((x) => x.style.transform) };
+      press.drag = {
+        els: dragEls,
+        origins: dragEls.map((x) => x.style.transform),
+        start: dragEls[0]!.getBoundingClientRect(),
+        dx,
+        dy,
+        target: null,
+      };
       gameHaptic('tap'); // picked up
       dragEls.forEach((x, i) => {
+        x.classList.remove('sol-land', 'sol-shake');
         x.classList.add('dragging');
         x.style.zIndex = String(1000 + i);
       });
       selection = null;
+      lastTap = null;
       clearHints();
+      for (const x of board.querySelectorAll('.sol-card.selected')) x.classList.remove('selected');
     }
-    press.drag.els.forEach((x, i) => (x.style.transform = `${press!.drag!.origins[i]} translate(${dx}px, ${dy}px)`));
+    press.drag.dx = dx;
+    press.drag.dy = dy;
+    // One paint per frame, however fast the pointer reports.
+    if (!dragFrame) dragFrame = requestAnimationFrame(paintDrag);
+    const t = dropTarget(press, e.clientX, e.clientY);
+    const lit = t.legal ? t.pile : null;
+    if (lit !== press.drag.target) {
+      press.drag.target = lit;
+      markDrop(lit);
+    }
   });
 
   const endPress = (e: PointerEvent) => {
     if (!press || e.pointerId !== press.id) return;
+    if (e.type !== 'pointerup') return cancelPress();
     const p = press;
     press = null;
+    cancelAnimationFrame(dragFrame);
+    dragFrame = 0;
     if (p.drag) {
       for (const x of p.drag.els) x.classList.remove('dragging');
-      const to = pileAt(e.clientX, e.clientY);
-      if (to && to !== p.pile) tryMove({ from: p.pile, index: p.index, to }, p.drag.els[0]);
-      else render(); // snap back
+      markDrop(null);
+      const t = dropTarget(p, e.clientX, e.clientY);
+      if (t.pile) tryMove({ from: p.pile, index: p.index, to: t.pile }, t.legal ? null : p.drag.els[0]);
+      else render(); // dropped on open felt, or back where it came from: snap home
       return;
     }
-    if (e.type === 'pointerup') tap(p.pile, p.index, e);
+    if (!p.moved && !paused && !busy) tap(p.pile, p.index, e);
   };
   board.addEventListener('pointerup', endPress);
   board.addEventListener('pointercancel', endPress);
+  board.addEventListener('lostpointercapture', (e) => {
+    if (press && e.pointerId === press.id) cancelPress();
+  });
 
   function tap(pileId: string, index: number, e: PointerEvent): void {
     clearHints();
     const pile = game.pile(pileId);
     if (pile.kind === 'stock') {
       selection = null;
+      lastTap = null;
       stockTap();
       return;
     }
+    const card = index >= 0 ? pile.at(index) : undefined;
+    if (index >= 0 && !card) return; // the card moved on since the press began
     // Double tap: send the card where it fits best.
-    const key = index >= 0 ? keyOf(pile.at(index)!) : '';
+    const key = card ? keyOf(card) : '';
     const now = e.timeStamp;
     if (key && lastTap?.key === key && now - lastTap.at < 350 && game.canPick(pile, index)) {
       lastTap = null;
@@ -609,7 +737,13 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
       else void afterAction(false, els.get(key)?.el);
       return;
     }
-    lastTap = key ? { key, at: now } : null;
+    lastTap = null;
+    const select = () => {
+      selection = { pile: pileId, index };
+      lastTap = { key, at: now };
+      audio.play('tap');
+      render();
+    };
 
     if (selection) {
       const sel = selection;
@@ -624,20 +758,11 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
           return;
         }
       }
-      if (index >= 0 && game.canPick(pile, index)) {
-        selection = { pile: pileId, index };
-        audio.play('tap');
-        render();
-        return;
-      }
+      if (index >= 0 && game.canPick(pile, index)) return select();
       void afterAction(false, index >= 0 ? els.get(key)?.el : slots.get(pileId));
       return;
     }
-    if (index >= 0 && game.canPick(pile, index)) {
-      selection = { pile: pileId, index };
-      audio.play('tap');
-      render();
-    }
+    if (index >= 0 && game.canPick(pile, index)) select();
   }
 
   // Keyboard
@@ -742,6 +867,7 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
     },
     destroy(): void {
       destroyed = true;
+      cancelPress();
       clearInterval(timer);
       ro.disconnect();
       removeEventListener('keydown', onKey);

@@ -2505,6 +2505,47 @@
   --card-w: calc(var(--size) * 0.9);
   box-shadow: none;
 }
+/* Table moods. Story characters change pose (their own expression sheet);
+   everyone else gets one short, restrained motion. Still under reduced motion. */
+.avatar[data-mood] {
+  transition: box-shadow 0.2s ease;
+}
+.avatar[data-mood='talk']:not([data-art='story']) {
+  animation: avatar-nod 0.5s ease 2;
+}
+.avatar[data-mood='think']:not([data-art='story']) {
+  animation: avatar-tilt 1.1s ease-in-out;
+}
+.avatar[data-mood='surprise'] {
+  animation: avatar-pop 0.32s var(--ease);
+}
+.avatar[data-mood='win'] {
+  box-shadow:
+    0 3px 0 rgba(0, 0, 0, 0.25),
+    0 0 0 3px color-mix(in srgb, var(--gold-bright) 70%, transparent);
+}
+.avatar[data-mood='lose'] {
+  filter: saturate(0.75) brightness(0.92);
+}
+@keyframes avatar-nod {
+  50% {
+    translate: 0 -2px;
+  }
+}
+@keyframes avatar-tilt {
+  40%,
+  70% {
+    rotate: -6deg;
+  }
+}
+@keyframes avatar-pop {
+  50% {
+    scale: 1.1;
+  }
+}
+.reduced-motion .avatar[data-mood] {
+  animation: none;
+}
 .avatar-sm {
   --size: 30px;
   border-width: 1.5px;
@@ -3472,6 +3513,17 @@
   cursor: grabbing;
   pointer-events: none;
   filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.35));
+}
+/* While carrying cards: the place they would land, if it is a legal one. */
+.sol-slot[data-drop],
+.sol-card[data-drop] {
+  box-shadow:
+    0 0 0 2px var(--ill-line),
+    0 0 0 4px var(--success);
+}
+.sol-card.card-art[data-drop] {
+  box-shadow: none;
+  --card-art-shadow: drop-shadow(0 0 2px var(--success)) drop-shadow(0 0 4px var(--success));
 }
 .sol-card.selected {
   box-shadow:

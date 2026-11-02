@@ -187,7 +187,10 @@ class AudioEngine {
     osc.stop(start + dur + 0.05);
   }
 
-  #swish(start: number, dur: number, freq: number, peak: number, out: AudioNode = this.#sfx): void {
+  /** Where the effect being played goes: the sfx bus, or a quieter send for a repeat. */
+  #out: AudioNode | null = null;
+
+  #swish(start: number, dur: number, freq: number, peak: number, out: AudioNode = this.#out ?? this.#sfx): void {
     const ctx = this.#ctx!;
     const src = ctx.createBufferSource();
     src.buffer = this.#noiseBuffer(ctx);
@@ -205,13 +208,35 @@ class AudioEngine {
 
   /** A soft low thump (war drum, card knock). */
   #thump(start: number, freq: number, dur: number, peak: number): void {
-    this.#tone(freq * 1.6, start, dur, 'sine', peak, this.#sfx, freq * 0.6);
+    this.#tone(freq * 1.6, start, dur, 'sine', peak, this.#out ?? this.#sfx, freq * 0.6);
   }
 
-  play(name: Sfx): void {
+  /**
+   * Plays an effect. `level` (0–1) plays it quieter, e.g. the fifth card of a
+   * quick run; it rides the sfx bus, so the player's volumes still apply.
+   */
+  play(name: Sfx, level = 1): void {
     if (!this.unlocked) return;
-    const t = this.#ctx!.currentTime;
-    const sfx = this.#sfx;
+    const ctx = this.#ctx!;
+    const t = ctx.currentTime;
+    let sfx: AudioNode = this.#sfx;
+    if (level < 0.999) {
+      const send = ctx.createGain();
+      send.gain.value = Math.max(0, level);
+      send.connect(this.#sfx);
+      sfx = send;
+      // Every voice of an effect ends within a couple of seconds.
+      setTimeout(() => send.disconnect(), 2500);
+    }
+    this.#out = sfx;
+    try {
+      this.#effect(name, t, sfx);
+    } finally {
+      this.#out = null;
+    }
+  }
+
+  #effect(name: Sfx, t: number, sfx: AudioNode): void {
     switch (name) {
       case 'tap':
         // A small wooden click: short triangle blip with a touch of noise.

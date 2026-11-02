@@ -22,6 +22,12 @@ export interface GameResult {
   /** Deck and board used (defaults to the table in play, then the player's selection). */
   deckId?: string;
   boardId?: string;
+  /**
+   * Identifies this particular game (e.g. "war:<startedAt>"). A game that is
+   * reported twice (a repeated finish, a double tap on a result) is paid once:
+   * the second report returns the first summary and changes nothing.
+   */
+  key?: string;
 }
 
 export interface ResultSummary {
@@ -50,8 +56,24 @@ export function applyResult(stats: GameStats, r: GameResult): GameStats {
   };
 }
 
+/** Games already recorded this session, by key (bounded). */
+const recorded = new Map<string, ResultSummary>();
+
 /** Records a finished game: statistics, XP, credits and achievements. */
 export function recordGameResult(store: Store, r: GameResult): ResultSummary {
+  if (r.key) {
+    const done = recorded.get(r.key);
+    if (done) return done;
+  }
+  const summary = record(store, r);
+  if (r.key) {
+    recorded.set(r.key, summary);
+    if (recorded.size > 50) recorded.delete(recorded.keys().next().value!);
+  }
+  return summary;
+}
+
+function record(store: Store, r: GameResult): ResultSummary {
   const profile = store.state.profile;
   const at = r.at ?? new Date();
   const stats = { ...profile.stats, [r.gameId]: applyResult(profile.stats[r.gameId], r) };

@@ -8,9 +8,9 @@ import type { Card } from '@/engine';
 import { gameSound } from '@/audio';
 import { victoryShower } from '@/components/celebration';
 import { getPersonality, pickLine } from '../cpu/personalities';
-import { saves, sleep } from '../session';
+import { saves, settle, sleep } from '../session';
 import { recordGameResult } from '@/progression/results';
-import { avatar } from '@/components/Avatar';
+import { avatar, preloadMoods, setAvatarMood, type TableMood } from '@/components/Avatar';
 import { say } from '@/components/SpeechBubble';
 import { button } from '@/components/ui';
 import { pauseVeil, setTool, toolButton, type GameToolbar } from '@/components/gameToolbar';
@@ -70,7 +70,15 @@ export function mountWar(ctx: WarViewContext) {
   const youSlot = h('div', { class: 'war-slot', 'data-slot': 'player' });
   const banner = h('div', { class: 'war-banner', 'aria-live': 'polite', 'data-banner': '' });
   const field = h('section', { class: 'war-field', 'aria-label': 'Battle' }, oppSlot, banner, youSlot);
-  const oppAnchor = h('div', { class: 'war-who' }, avatar(cpu), h('span', { class: 'war-name' }, cpu.name));
+  const oppFace = avatar(cpu);
+  preloadMoods(cpu);
+  const oppAnchor = h('div', { class: 'war-who' }, oppFace, h('span', { class: 'war-name' }, cpu.name));
+  /** The opponent reacts: a pose (and optionally a line) that settles back to neutral. */
+  const react = (mood: TableMood, line?: string, ms = 1300) => {
+    const hold = factor() === 0 ? Math.min(ms, 900) : ms * Math.max(factor(), 0.5) + 300;
+    setAvatarMood(oppFace, mood, hold);
+    if (line) void say(oppAnchor, line, { duration: hold });
+  };
   const youAnchor = h('div', { class: 'war-who war-who-you' }, h('span', { class: 'war-name' }, 'You'));
 
   const playBtn = button('Play Round', () => void playRound(), {
@@ -144,7 +152,7 @@ export function mountWar(ctx: WarViewContext) {
           void field.offsetWidth;
           field.classList.add('war-clash');
         }
-        if (i === 1 && !instant) void say(oppAnchor, pickLine(cpu.lines.warStart), { duration: 1400 * factor() + 400 });
+        if (i === 1 && !instant) react('surprise', pickLine(cpu.lines.warStart), 1400);
         await pause(500);
         // Face-down cards fan out behind.
         for (const side of ['cpu', 'player'] as WarSide[]) {
@@ -156,7 +164,7 @@ export function mountWar(ctx: WarViewContext) {
             return d;
           });
           if (!instant) {
-            void animator.deal(downs, center(side === 'cpu' ? oppPile : youPile), { stagger: 60 });
+            void settle(animator.deal(downs, center(side === 'cpu' ? oppPile : youPile), { stagger: 60 }), 2000);
             downs.forEach((_, j) => setTimeout(() => gameSound('card_deal'), j * 60 * factor()));
           }
         }
@@ -173,16 +181,21 @@ export function mountWar(ctx: WarViewContext) {
           back.replaceWith(faceUpEl(card));
           return;
         }
-        await animator.deal([back], center(side === 'cpu' ? oppPile : youPile), { ms: 280, stagger: 0 });
+        await settle(animator.deal([back], center(side === 'cpu' ? oppPile : youPile), { ms: 280, stagger: 0 }), 1500);
         gameSound('card_flip');
-        const face = await animator.flip(back, () => {
-          const f = faceUpEl(card);
-          f.classList.add('war-faceup');
-          back.replaceWith(f);
-          return f;
-        });
+        let face: HTMLElement | null = null;
+        const show = () => {
+          if (face) return face;
+          face = faceUpEl(card);
+          face.classList.add('war-faceup');
+          back.replaceWith(face);
+          return face;
+        };
+        // However the flip ends (even interrupted), the card is shown face up.
+        await settle(animator.flip(back, show), 1500);
+        show();
         // The reveal lands with a little slam.
-        face.classList.add('war-reveal');
+        show().classList.add('war-reveal');
       });
       await Promise.all(flips);
       await pause(380);
@@ -202,9 +215,10 @@ export function mountWar(ctx: WarViewContext) {
     banner.dataset.winner = round.winner ?? 'draw';
     gameSound(round.winner === 'player' ? 'valid_move' : 'card_move');
     if (!instant && (round.battles.length > 1 || Math.random() < 0.15)) {
-      void say(oppAnchor, pickLine(round.winner === 'cpu' ? cpu.lines.roundWin : cpu.lines.roundLose), {
-        duration: 1300 * factor() + 300,
-      });
+      react(
+        round.winner === 'cpu' ? 'win' : 'lose',
+        pickLine(round.winner === 'cpu' ? cpu.lines.roundWin : cpu.lines.roundLose),
+      );
     }
     await pause(650);
 
@@ -213,19 +227,22 @@ export function mountWar(ctx: WarViewContext) {
       const target = round.winner === 'player' ? youPile : oppPile;
       const cards = [...oppSlot.children, ...youSlot.children] as HTMLElement[];
       const to = target.getBoundingClientRect();
-      await Promise.all(
-        cards.map((c, i) => {
-          const r = c.getBoundingClientRect();
-          return c
-            .animate(
-              [
-                { transform: 'none', opacity: 1 },
-                { transform: `translate(${to.left - r.left}px, ${to.top - r.top}px) scale(0.9)`, opacity: 0.2 },
-              ],
-              { duration: 320 * factor() + 60, delay: i * 25 * factor(), easing: 'ease-in', fill: 'forwards' },
-            )
-            .finished.catch(() => undefined);
-        }),
+      await settle(
+        Promise.all(
+          cards.map((c, i) => {
+            const r = c.getBoundingClientRect();
+            return c
+              .animate(
+                [
+                  { transform: 'none', opacity: 1 },
+                  { transform: `translate(${to.left - r.left}px, ${to.top - r.top}px) scale(0.9)`, opacity: 0.2 },
+                ],
+                { duration: 320 * factor() + 60, delay: i * 25 * factor(), easing: 'ease-in', fill: 'forwards' },
+              )
+              .finished.catch(() => undefined);
+          }),
+        ),
+        2500,
       );
       // The winnings now live in the pile; clear the field so no ghost cards linger.
       oppSlot.replaceChildren();
@@ -326,6 +343,7 @@ export function mountWar(ctx: WarViewContext) {
       gameId: 'war',
       outcome,
       durationMs: Date.now() - game.data.startedAt,
+      key: `war:${game.data.startedAt}`,
       details: {
         warsLost: game.data.warsLost,
         warsWon: game.data.warsWon ?? 0,
@@ -337,6 +355,7 @@ export function mountWar(ctx: WarViewContext) {
       celebrate();
       gameSound('victory');
     }
+    setAvatarMood(oppFace, outcome === 'win' ? 'lose' : outcome === 'loss' ? 'win' : 'surprise');
     void say(oppAnchor, pickLine(outcome === 'win' ? cpu.lines.lose : cpu.lines.win), { duration: 2600 });
     await sleep(outcome === 'win' && !store.state.settings.reducedMotion ? 900 : 200);
     if (destroyed) return;
@@ -414,7 +433,7 @@ export function mountWar(ctx: WarViewContext) {
   addEventListener('keydown', onKey);
 
   renderStatic();
-  if (game.data.round === 0) void say(oppAnchor, pickLine(cpu.lines.greet), { duration: 2200 });
+  if (game.data.round === 0) react('talk', pickLine(cpu.lines.greet), 2000);
 
   return {
     destroy(): void {
