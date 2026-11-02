@@ -41,12 +41,19 @@ test.describe('War', () => {
     await expect(page.locator(`${CURRENT} [data-hud="round"]`)).toHaveText('Round 0');
 
     await page.locator(`${CURRENT} [data-action="play-round"]`).click();
+    // Both battle cards are turned face up when the round is decided. The table sweeps them into
+    // the winner's pile 650 ms later, so check the banner and both faces together, in the page.
+    await page.waitForFunction((cur) => {
+      const banner = document.querySelector<HTMLElement>(`${cur} [data-banner]`);
+      return (
+        !!banner?.dataset.winner &&
+        !!document.querySelector(`${cur} [data-slot="player"] .card-face`) &&
+        !!document.querySelector(`${cur} [data-slot="cpu"] .card-face`)
+      );
+    }, CURRENT);
     await expect(page.locator(`${CURRENT} [data-banner]`)).toHaveAttribute('data-winner', /player|cpu/);
     await expect(page.locator(`${CURRENT} [data-hud="round"]`)).toHaveText('Round 1');
     expect((await count(page, 'player')) + (await count(page, 'cpu'))).toBe(52);
-    // Both battle cards were turned face up.
-    await expect(page.locator(`${CURRENT} [data-slot="player"] .card-face`).last()).toBeVisible();
-    await expect(page.locator(`${CURRENT} [data-slot="cpu"] .card-face`).last()).toBeVisible();
   });
 
   test('speed, auto play, pause, keyboard and restart', async ({ page }) => {

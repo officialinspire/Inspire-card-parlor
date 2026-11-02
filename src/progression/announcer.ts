@@ -56,7 +56,9 @@ let batchTimer: ReturnType<typeof setTimeout> | null = null;
 
 /**
  * Shows up to three toasts at once: achievements first (a burst collapses
- * into one "N more" toast), then unlocks and level-ups. Anything left waits
+ * into one "N more" toast, led by the most recent one — what the player just
+ * did, not something earlier that was still waiting), then unlocks and
+ * level-ups. Anything left waits
  * for the next batch, once these have had their moment — nothing is dropped.
  */
 function flush(): void {
@@ -67,7 +69,7 @@ function flush(): void {
   const others = items.filter((a) => a.kind !== 'achievement' && a.kind !== 'summary');
   const ordered: Announcement[] = [];
   if (achievements.length + (summed ? 1 : 0) > 2) {
-    ordered.push(achievements[0] ?? { kind: 'summary', count: summed });
+    ordered.push(achievements.at(-1) ?? { kind: 'summary', count: summed });
     const rest = achievements.length ? achievements.length - 1 + summed : 0;
     if (rest) ordered.push({ kind: 'summary', count: rest });
   } else {

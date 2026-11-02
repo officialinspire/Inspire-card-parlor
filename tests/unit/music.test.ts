@@ -104,4 +104,21 @@ describe('announcements', () => {
     setPlayInProgress(false);
     expect(pendingAnnouncements()).toHaveLength(0);
   });
+
+  it('a burst is led by the latest achievement, not one still waiting from earlier', () => {
+    vi.useFakeTimers();
+    attachAnnouncer(store);
+    store.dispatch({ type: 'BOOT_READY' });
+    store.dispatch({ type: 'NAVIGATE', to: AppState.MAIN_MENU });
+    setPlayInProgress(true);
+    // Earlier ones still queued when the hand started, then one earned at the table.
+    for (const id of ['first-visit', 'explore-passport', 'first-win', 'knock-knock'])
+      announce({ kind: 'achievement', id });
+    const before = store.state.notifications.length;
+    setPlayInProgress(false);
+    vi.advanceTimersByTime(800);
+    const shown = store.state.notifications.slice(before);
+    expect(shown[0]?.badge).toBe('knock-knock');
+    expect(shown[1]?.message).toBe('3 achievements earned');
+  });
 });
