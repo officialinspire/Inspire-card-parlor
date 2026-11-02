@@ -28,7 +28,7 @@ async function expectImagesLoaded(page: Page) {
     .poll(() =>
       page.evaluate(() =>
         [...document.querySelectorAll<HTMLImageElement>('.screen:not([aria-hidden]) img')]
-          .filter((i) => i.src && !i.complete === false && i.naturalWidth === 0)
+          .filter((i) => i.src && (!i.complete || i.naturalWidth <= 0))
           .map((i) => i.src),
       ),
     )

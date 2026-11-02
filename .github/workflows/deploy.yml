@@ -26,6 +26,18 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm test
+      - run: npm run validate:decks
+      - run: npm run validate:story
+      - run: npx playwright install --with-deps chromium
+      - name: Browser release checks (phone, desktop and Pages path)
+        run: npm run test:release
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: release-playwright-report
+          path: playwright-report
+          retention-days: 7
+      # Rebuild after browser tests so the published artifact uses production analytics variables.
       - run: npm run build
         env:
           # PostHog project key (public by design; set it as a repository variable).
