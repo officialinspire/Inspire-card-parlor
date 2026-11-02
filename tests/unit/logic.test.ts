@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { computeGrid, dotWindow } from '@/components/Paginator';
+import { computeGrid, dotWindow, maxDotsFor, pageDots } from '@/components/Paginator';
 import { grantXp, isDeckUnlocked, isBoardUnlocked, xpForLevel } from '@/progression/levels';
 import { createDefaultProfile, PROFILE_SCHEMA } from '@/core/defaults';
 import { getChapter } from '@/story/campaign';
@@ -14,6 +14,17 @@ describe('dotWindow', () => {
     expect(dotWindow(0, 25)).toEqual([0, 1, 2, 3, 4, 24]);
     expect(dotWindow(12, 25)).toEqual([0, 10, 11, 12, 13, 14, 24]);
     expect(dotWindow(24, 25)).toEqual([0, 20, 21, 22, 23, 24]);
+  });
+
+  it('fits the dot row beside the arrows on a 320px phone', () => {
+    // 296px of row on a 320px screen: nine dots and two arrows would overflow it.
+    const max = maxDotsFor(296);
+    expect(max).toBe(6);
+    expect(pageDots(0, 9, max)).toEqual([0, 1, 2, 8]);
+    expect(pageDots(4, 9, max)).toEqual([0, 3, 4, 5, 8]);
+    expect(pageDots(0, 6, max)).toEqual([0, 1, 2, 3, 4, 5]);
+    // Wide rows keep the full set.
+    expect(pageDots(0, 9, maxDotsFor(1200))).toHaveLength(9);
   });
 });
 

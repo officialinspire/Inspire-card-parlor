@@ -68,6 +68,8 @@ test('locked decks explain how to unlock them', async ({ page }) => {
 });
 
 test('remembers deck and board per game across reloads', async ({ page }) => {
+  // Two full set-ups, a deal and a reload with boot: ~22 s alone, over 30 s on a loaded runner.
+  test.slow();
   await seed(page, { profile: { level: 6 } });
   await enterParlor(page);
 

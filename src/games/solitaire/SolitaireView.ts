@@ -136,12 +136,17 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
     if (!W || !H) return;
     const cols = game.tableau.length;
     // Ten Spider columns on a phone need every pixel: tighter gutters there.
-    const gap = cols > 8 ? Math.max(2.5, Math.min(10, W * 0.008)) : Math.max(4, Math.min(12, W * 0.012));
+    let gap = cols > 8 ? Math.max(2.5, Math.min(10, W * 0.008)) : Math.max(4, Math.min(12, W * 0.012));
     const byWidth = (W - gap * (cols + 1)) / cols;
     // Leave room for the top row plus a reasonable column below it.
     const byHeight = (H - gap * 3) / (1.4 * 2 + 1.5);
-    const cardW = Math.max(28, Math.min(byWidth, byHeight, 132));
+    // Cards never shrink below 28px wide, unless even hairline gutters couldn't fit
+    // that: ten Spider columns on a 320px phone would otherwise run off the felt.
+    const MIN_GAP = 1.5;
+    const floorW = Math.min(28, (W - MIN_GAP * (cols + 1)) / cols);
+    const cardW = Math.max(floorW, Math.min(byWidth, byHeight, 132));
     const cardH = cardW * 1.4;
+    if (cols * cardW + (cols + 1) * gap > W) gap = Math.max(MIN_GAP, (W - cols * cardW) / (cols + 1));
     const used = cols * cardW + (cols + 1) * gap;
     metrics = {
       cardW,

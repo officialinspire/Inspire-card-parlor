@@ -578,6 +578,24 @@
     padding-right: 3px;
   }
 }
+/* The narrowest phones (320px): the logo and four status controls only just
+   fit side by side, so the pills tighten instead of sliding under the logo. */
+@media (max-width: 340px) {
+  .menu-top,
+  .menu-status {
+    gap: 3px;
+  }
+  .menu-status .status-pill {
+    gap: 4px;
+    padding-right: 7px;
+  }
+  .menu-status .status-level {
+    padding-right: 3px;
+  }
+  .menu-status .ring {
+    --size: 28px;
+  }
+}
 
 /* The stage is the open painting; the scene toggle floats on it. */
 .menu-stage {
@@ -1100,6 +1118,9 @@
 }
 @media (orientation: landscape) and (max-height: 540px) {
   .menu-layout {
+    /* A short phone on its side: the panel needs more of the width or every
+       label truncates ("Collec…", "Klon…"); the painting keeps the rest. */
+    grid-template-columns: minmax(0, min(60%, 460px)) minmax(0, 1fr);
     gap: 6px 10px;
     padding-top: calc(var(--safe-t) + 8px);
     padding-bottom: calc(var(--safe-b) + 6px);
