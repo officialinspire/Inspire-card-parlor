@@ -192,7 +192,7 @@
     calc(var(--safe-b) + var(--gutter)) calc(var(--safe-l) + var(--gutter));
 }
 .init-presents {
-  font-size: clamp(0.66rem, 1vmin + 0.45rem, 0.85rem);
+  font-size: clamp(var(--fs-min), 1vmin + 0.45rem, 0.85rem);
   font-weight: 800;
   letter-spacing: 0.32em;
   padding-left: 0.32em;
@@ -201,7 +201,7 @@
   animation: fade-in 1200ms var(--ease) 200ms both;
 }
 [data-theme='night'] .init-presents {
-  color: var(--gold);
+  color: var(--gold-text);
 }
 .init-title {
   display: flex;
@@ -260,7 +260,7 @@
   margin-top: 6px;
   color: var(--ink);
   font-weight: 700;
-  font-size: 0.86em;
+  font-size: max(var(--fs-min), 0.86em);
   letter-spacing: 0.02em;
   animation: fade-in 1000ms var(--ease) 700ms both;
 }
@@ -350,18 +350,18 @@
 .boot-pct {
   width: 3.2em;
   text-align: right;
-  font-size: max(10px, 0.78em);
+  font-size: max(var(--fs-min), 0.78em);
   font-weight: 800;
   font-variant-numeric: tabular-nums;
   color: var(--gold-deep);
 }
 [data-theme='night'] .boot-pct {
-  color: var(--gold);
+  color: var(--gold-text);
 }
 .boot-label {
   color: var(--ink-soft);
   font-weight: 700;
-  font-size: 0.86em;
+  font-size: max(var(--fs-min), 0.86em);
   min-height: 1.4em;
   letter-spacing: 0.02em;
 }
@@ -386,7 +386,7 @@
 }
 .init-version {
   color: var(--ink-faint);
-  font-size: max(10px, 0.72em);
+  font-size: max(var(--fs-min), 0.72em);
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -535,7 +535,7 @@
   transform: scale(0.96);
 }
 .status-caption {
-  font-size: 0.82em;
+  font-size: max(var(--fs-min), 0.82em);
 }
 .menu-status .pill-credits {
   height: 40px;
@@ -558,7 +558,7 @@
   height: calc(var(--size) - 6px);
   border-radius: 50%;
   background: var(--surface);
-  font-size: 0.8em;
+  font-size: max(var(--fs-min), 0.8em);
   font-weight: 900;
   color: var(--ink);
 }
@@ -568,7 +568,7 @@
   color: var(--gold-deep);
 }
 [data-theme='night'] .ring-inner .icon {
-  color: var(--gold);
+  color: var(--gold-text);
 }
 @media (max-width: 400px) {
   .status-level .status-caption {
@@ -627,7 +627,7 @@
   background: none;
   color: var(--ink-soft);
   font-weight: 800;
-  font-size: 0.8em;
+  font-size: max(var(--fs-min), 0.8em);
   letter-spacing: var(--label-track);
   text-transform: uppercase;
   cursor: pointer;
@@ -704,7 +704,7 @@
   letter-spacing: 0.04em;
 }
 .play-hint {
-  font-size: max(10px, 0.72em);
+  font-size: max(var(--fs-min), 0.72em);
   font-weight: 800;
   white-space: nowrap;
   letter-spacing: 0.1em;
@@ -712,6 +712,12 @@
   opacity: 0.75;
 }
 /* The selected deck rides on the button and fans open on hover. */
+/* The card fan would sit on the "Continue Story" title on the narrowest phones. */
+@media (max-width: 360px) {
+  .play-fan {
+    display: none;
+  }
+}
 .play-fan {
   position: absolute;
   right: 18px;
@@ -744,7 +750,7 @@
 }
 /* Story Mode card: chapter on the second line, progress on the third. */
 .play-progress {
-  font-size: max(10px, 0.7em);
+  font-size: max(var(--fs-min), 0.7em);
   font-weight: 800;
   opacity: 0.8;
   white-space: nowrap;
@@ -813,19 +819,21 @@
 }
 .quick-play-text small {
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   letter-spacing: 0.06em;
-  font-size: max(10px, 0.66em);
+  font-size: max(var(--fs-min), 0.66em);
   font-weight: 800;
   letter-spacing: var(--label-track);
   text-transform: uppercase;
   color: var(--gold-deep);
 }
 [data-theme='night'] .quick-play-text small {
-  color: var(--gold);
+  color: var(--gold-text);
 }
 .quick-play-text span {
   font-weight: 800;
-  font-size: 0.88em;
+  font-size: max(var(--fs-min), 0.88em);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -875,7 +883,7 @@
   line-height: 1.2;
 }
 .setup-text small {
-  font-size: max(10px, 0.66em);
+  font-size: max(var(--fs-min), 0.66em);
   font-weight: 800;
   letter-spacing: var(--label-track);
   text-transform: uppercase;
@@ -883,10 +891,29 @@
 }
 .setup-text span {
   font-weight: 800;
-  font-size: 0.88em;
+  font-size: max(var(--fs-min), 0.88em);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+/* The narrowest row (a 320px phone): the chips show the deck and board themselves; their
+   names stay in the accessible label, and Quick Play keeps room for its game. */
+@container menu-quick (max-width: 300px) {
+  .menu-setup .setup-text {
+    display: none;
+  }
+  /* "QUICK PLAY" would spill over the deck chip: the play icon (and the button's label) says it. */
+  .quick-play-text small {
+    display: none;
+  }
+  .quick-play-text span {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .menu-setup .setup-chip {
+    justify-content: center;
+    padding: 5px;
+  }
 }
 /* Narrow row: drop the small caption and let the name use two lines. */
 @container menu-quick (max-width: 420px) {
@@ -903,7 +930,7 @@
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
     line-clamp: 2;
-    font-size: 0.8em;
+    font-size: max(var(--fs-min), 0.8em);
     line-height: 1.15;
     hyphens: auto;
   }
@@ -980,7 +1007,7 @@
   transition: transform var(--dur) var(--ease-spring);
 }
 [data-theme='night'] .menu-tile-icon {
-  color: var(--gold);
+  color: var(--gold-text);
 }
 .menu-tile-icon .icon {
   width: 19px;
@@ -994,7 +1021,7 @@
 }
 .menu-tile-label {
   /* Title case, sized to the tile: long words never break mid-word on narrow phones. */
-  font-size: clamp(10px, 2.9vw, 13px);
+  font-size: clamp(var(--fs-min), 2.9vw, 13px);
   font-weight: 900;
   letter-spacing: 0.01em;
   white-space: nowrap;
@@ -1005,6 +1032,15 @@
 }
 .menu-tile-label .label-short {
   display: none;
+}
+/* The narrowest grids (a 320px phone): every pixel of the tile goes to its label. */
+@container menu-grid (max-width: 300px) {
+  .menu-tile-content {
+    padding-inline: 2px;
+  }
+  .menu-tile-label {
+    letter-spacing: 0;
+  }
 }
 /* Short names when the tiles are narrow (phones, the landscape side panel). */
 @container menu-grid (max-width: 440px) {
@@ -1017,7 +1053,7 @@
 }
 .menu-tile-hint {
   display: none;
-  font-size: 0.8em;
+  font-size: max(var(--fs-min), 0.8em);
   color: var(--ink-faint);
 }
 
@@ -1028,7 +1064,7 @@
   justify-content: space-between;
   gap: 10px;
   min-width: 0;
-  font-size: max(10px, 0.78em);
+  font-size: max(var(--fs-min), 0.78em);
   font-weight: 700;
   color: var(--ink-faint);
 }
@@ -1046,13 +1082,19 @@
   flex: none;
 }
 [data-theme='night'] .menu-music > .icon {
-  color: var(--gold);
+  color: var(--gold-text);
 }
 .menu-music-title {
   min-width: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+/* On the narrowest phones there is no room for the title: the play and next buttons stay. */
+@media (max-width: 340px) {
+  .menu-music-title {
+    display: none;
+  }
 }
 .menu-footer-meta {
   display: flex;
@@ -1203,7 +1245,7 @@
     text-align: left;
   }
   .menu-tile-label {
-    font-size: 0.82em;
+    font-size: max(var(--fs-min), 0.82em);
   }
   .menu-tile-hint {
     display: block;
@@ -1288,7 +1330,7 @@
   font-weight: 800;
 }
 .game-players {
-  font-size: 0.8em;
+  font-size: max(var(--fs-min), 0.8em);
   font-weight: 800;
   color: var(--ink-faint);
 }
@@ -1446,7 +1488,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 0.85em;
+  font-size: max(var(--fs-min), 0.85em);
   font-weight: 700;
 }
 .deck-fan {
@@ -1634,14 +1676,14 @@
   font-size: clamp(1.02rem, 1.4vmin + 0.75rem, 1.35rem);
 }
 .table-hud .screen-subtitle {
-  font-size: max(10px, 0.74em);
+  font-size: max(var(--fs-min), 0.74em);
 }
 .hud-stats {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: 2px 12px;
-  font-size: 0.8em;
+  font-size: max(var(--fs-min), 0.8em);
   font-weight: 800;
   color: var(--ink-soft);
   font-variant-numeric: tabular-nums;
@@ -1655,7 +1697,7 @@
     flex-direction: column;
     align-items: flex-end;
     gap: 0;
-    font-size: max(10px, 0.72em);
+    font-size: max(var(--fs-min), 0.72em);
     line-height: 1.25;
   }
 }
@@ -1695,7 +1737,7 @@
   border-radius: var(--radius-s);
   background: none;
   color: var(--ink-soft);
-  font-size: max(10px, 0.66em);
+  font-size: max(var(--fs-min), 0.66em);
   font-weight: 800;
   letter-spacing: 0.04em;
   cursor: pointer;
@@ -1753,7 +1795,14 @@
   .tool-btn {
     min-width: 44px;
     padding-inline: 2px;
-    font-size: max(10px, 0.62em);
+    font-size: var(--fs-min);
+  }
+  /* A two-word label ("New Game") wraps rather than spilling past its button. */
+  .tool-label {
+    white-space: normal;
+    text-align: center;
+    line-height: 1.05;
+    letter-spacing: 0;
   }
 }
 /* More: a small card of secondary actions that pops up from the toolbar. */
@@ -1810,7 +1859,7 @@
   color: var(--gold-deep);
 }
 [data-theme='night'] .more-item .icon {
-  color: var(--gold);
+  color: var(--gold-text);
 }
 .more-item:hover,
 .more-item:focus-visible {
@@ -1871,8 +1920,11 @@
     border-top: 0;
     border-left: 1px solid var(--gold-line);
   }
+  /* Two columns of buttons: seven readable labels fit in the height of a phone on its side. */
   .toolbar-group {
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(2, 52px);
+    gap: 2px;
   }
   .toolbar-system {
     padding: 4px 0 0;
@@ -1880,10 +1932,16 @@
     border-top: 1px solid var(--border);
   }
   .tool-btn {
-    min-height: 0;
-    min-width: 48px;
-    padding: 3px;
-    font-size: max(10px, 0.6em);
+    min-height: 44px;
+    min-width: 0;
+    padding: 3px 2px;
+    font-size: var(--fs-min);
+    letter-spacing: 0;
+  }
+  .tool-label {
+    white-space: normal;
+    text-align: center;
+    line-height: 1.05;
   }
   .tool-btn .icon {
     width: 19px;
@@ -2530,7 +2588,7 @@
 .gf-opp-stats {
   display: flex;
   gap: 8px;
-  font-size: max(10px, 0.78em);
+  font-size: max(var(--fs-min), 0.78em);
   font-weight: 700;
   opacity: 0.9;
   white-space: nowrap;
@@ -2707,7 +2765,7 @@
     min-height: 0;
   }
   .gf-status {
-    font-size: 0.85em;
+    font-size: max(var(--fs-min), 0.85em);
   }
 }
 
@@ -2753,7 +2811,7 @@
 }
 .rank-count {
   font-family: var(--font-body);
-  font-size: max(10px, 0.6em);
+  font-size: max(var(--fs-min), 0.6em);
   margin-top: 2px;
 }
 .ask-label {
@@ -2792,7 +2850,7 @@
   color: var(--ink-faint);
 }
 .ask-hint {
-  font-size: max(10px, 0.75em);
+  font-size: max(var(--fs-min), 0.75em);
   color: var(--ink-faint);
 }
 @media (pointer: coarse) {
@@ -2913,7 +2971,7 @@
   /* Long names wrap onto two lines instead of being cut off. */
   .gf-opponents[data-count-players='3'] .gf-opp-name {
     white-space: normal;
-    font-size: 0.88em;
+    font-size: max(var(--fs-min), 0.88em);
     line-height: 1.1;
     overflow-wrap: anywhere;
   }
@@ -3035,7 +3093,7 @@
   background: var(--surface);
   color: var(--ink);
   font-family: var(--font-body);
-  font-size: max(10px, calc(var(--card-w) * 0.16));
+  font-size: max(var(--fs-min), calc(var(--card-w) * 0.16));
   white-space: nowrap;
   box-shadow: 0 2px 0 var(--edge);
 }
@@ -3570,13 +3628,23 @@
   font: inherit;
 }
 .tile-artist {
-  font-size: max(10px, 0.72em);
+  font-size: max(var(--fs-min), 0.72em);
   font-weight: 700;
   color: var(--ink-faint);
   max-width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+/* Text lines keep their height (they were squashed to a sliver in short tiles); the preview gives way. */
+.tile-main > :not(.deck-preview) {
+  flex: none;
+}
+/* A tile too short for the credit line drops it whole rather than cutting it. */
+@container (max-height: 200px) {
+  .tile-artist {
+    display: none;
+  }
 }
 .fav-btn {
   position: absolute;
@@ -3588,10 +3656,14 @@
   border-radius: 50%;
   border: 0;
   background: var(--surface-2);
-  color: var(--mustard);
+  /* The star is the button's only content: deep gold by day so it reads (3:1+) on the light tile. */
+  color: var(--gold-deep);
   font-size: 1.15em;
   cursor: pointer;
   line-height: 1;
+}
+[data-theme='night'] .fav-btn {
+  color: var(--mustard);
 }
 .fav-btn[aria-pressed='true'] {
   background: color-mix(in srgb, var(--mustard) 22%, var(--surface));
@@ -3619,7 +3691,7 @@
   color: var(--ink-soft);
 }
 .unlock-status.owned {
-  color: var(--success);
+  color: var(--success-text);
 }
 .unlock-status .icon {
   width: 16px;
@@ -3755,7 +3827,7 @@
   background: var(--accent-soft);
 }
 .pick-name {
-  font-size: max(10px, 0.68em);
+  font-size: max(var(--fs-min), 0.68em);
   font-weight: 800;
   line-height: 1.1;
   text-align: center;
@@ -3820,13 +3892,13 @@ button.board-tile .tile-title {
   display: flex;
   flex-wrap: wrap;
   gap: 4px 10px;
-  font-size: max(10px, 0.74em);
+  font-size: max(var(--fs-min), 0.74em);
   font-weight: 700;
   color: var(--ink-faint);
 }
 .board-ambience::before {
   content: '✦ ';
-  color: var(--gold);
+  color: var(--gold-text);
 }
 .board-tile-foot {
   display: flex;
@@ -3842,14 +3914,14 @@ button.board-tile .tile-title {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.82em;
+  font-size: max(var(--fs-min), 0.82em);
   font-weight: 900;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--gold-deep);
 }
 [data-theme='night'] .board-selected {
-  color: var(--gold);
+  color: var(--gold-text);
 }
 .board-selected .icon {
   width: 16px;
@@ -3874,7 +3946,7 @@ button.board-tile .tile-title {
     justify-content: center;
   }
   .board-tile .tile-lock {
-    font-size: 0.78em;
+    font-size: max(var(--fs-min), 0.78em);
   }
 }
 .board-ambience-toggle {
@@ -3923,7 +3995,7 @@ button.board-tile .tile-title {
   max-width: 100%;
 }
 .passport-label {
-  font-size: max(10px, 0.68em);
+  font-size: max(var(--fs-min), 0.68em);
   font-weight: 900;
   letter-spacing: var(--label-track);
   text-transform: uppercase;
@@ -3931,7 +4003,7 @@ button.board-tile .tile-title {
   margin-right: 4px;
 }
 [data-theme='night'] .passport-label {
-  color: var(--gold);
+  color: var(--gold-text);
 }
 .stamp {
   display: grid;
@@ -3942,7 +4014,7 @@ button.board-tile .tile-title {
   border: 1.5px dashed var(--gold-line);
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 0.8em;
+  font-size: max(var(--fs-min), 0.8em);
   color: var(--gold-ink);
 }
 .stamp.earned {
@@ -4047,7 +4119,7 @@ button.board-tile .tile-title {
   border-radius: var(--radius-pill);
   background: rgba(0, 0, 0, 0.55);
   color: #fff8ee;
-  font-size: max(10px, 0.68em);
+  font-size: max(var(--fs-min), 0.68em);
   font-weight: 800;
   letter-spacing: 0.04em;
 }
@@ -4109,7 +4181,7 @@ button.board-tile .tile-title {
   gap: 8px;
   white-space: nowrap;
   font-weight: 800;
-  font-size: 0.85em;
+  font-size: max(var(--fs-min), 0.85em);
   color: var(--ink);
 }
 .chapter-progress .progress {
@@ -4152,7 +4224,7 @@ button.board-tile .tile-title {
   height: 18px;
 }
 .level-objective {
-  font-size: 0.84em;
+  font-size: max(var(--fs-min), 0.84em);
   font-weight: 700;
   color: var(--ink-soft);
 }
@@ -4201,13 +4273,13 @@ button.board-tile .tile-title {
 }
 .story-bubble strong {
   display: block;
-  font-size: max(10px, 0.72em);
+  font-size: max(var(--fs-min), 0.72em);
   letter-spacing: var(--label-track);
   text-transform: uppercase;
   color: var(--gold-deep);
 }
 [data-theme='night'] .story-bubble strong {
-  color: var(--gold);
+  color: var(--gold-text);
 }
 .story-dialogue-nav {
   display: flex;
@@ -4234,14 +4306,14 @@ button.board-tile .tile-title {
 .story-objective .icon {
   width: 18px;
   height: 18px;
-  color: var(--gold);
+  color: var(--gold-text);
 }
 .story-setup {
-  font-size: 0.82em;
+  font-size: max(var(--fs-min), 0.82em);
   color: var(--ink-faint);
 }
 .story-rewards small {
-  font-size: max(10px, 0.68em);
+  font-size: max(var(--fs-min), 0.68em);
   font-weight: 900;
   letter-spacing: var(--label-track);
   text-transform: uppercase;
@@ -4263,7 +4335,7 @@ button.board-tile .tile-title {
   border-radius: var(--radius-pill);
   background: var(--gold-soft);
   border: 1px solid var(--gold-line);
-  font-size: 0.82em;
+  font-size: max(var(--fs-min), 0.82em);
   font-weight: 800;
   color: var(--ink);
 }

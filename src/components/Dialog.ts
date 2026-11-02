@@ -87,15 +87,57 @@ export function openDialog<T>(opts: DialogOptions<T>): Promise<T> {
       backdrop.setAttribute('aria-hidden', 'true');
       backdrop.inert = true;
       backdrop.classList.remove('open');
+      // An inert backdrop no longer catches input, so a quick second tap (on the button that
+      // just closed it, or on the scene) would land on whatever is underneath. A transparent
+      // shield over the closed panel takes that tap until the fade is over.
+      // Only over the panel that just closed: that is where a second tap lands; input elsewhere passes.
+      const at = panel.getBoundingClientRect();
+      const layer = host.getBoundingClientRect();
+      const shield = h('div', {
+        class: 'dialog-shield',
+        'aria-hidden': 'true',
+        style: {
+          left: `${at.left - layer.left}px`,
+          top: `${at.top - layer.top}px`,
+          width: `${at.width}px`,
+          height: `${at.height}px`,
+        },
+      });
+      host.appendChild(shield);
+      setTimeout(() => {
+        shield.remove();
+        if (!host.childElementCount) host.hidden = true;
+      }, 320);
+      bodyObserver.disconnect();
       const finish = () => {
         backdrop.remove();
         if (!host.childElementCount) host.hidden = true;
       };
       backdrop.addEventListener('transitionend', finish, { once: true });
       setTimeout(finish, 260);
-      (entry?.restore as HTMLElement | null)?.focus?.({ preventScroll: true });
+      // Back to where focus was; if that control is gone (the view behind changed), to the screen's title.
+      const restore = entry?.restore as HTMLElement | null;
+      const fallback = document.querySelector<HTMLElement>('.screen:not([aria-hidden]) .screen-title');
+      const below = stack.at(-1)?.el.querySelector<HTMLElement>('button, [tabindex]');
+      const back = restore?.isConnected && restore !== document.body ? restore : (below ?? fallback);
+      back?.focus?.({ preventScroll: true });
       resolve(value);
     };
+    // The body scrolls only when it must (a short screen); its edges then fade where more continues.
+    const body = h(
+      'div',
+      { class: 'dialog-body' },
+      typeof opts.body === 'string' ? h('p', null, opts.body) : opts.body,
+    );
+    const edges = () => {
+      const more = body.scrollHeight - body.clientHeight;
+      body.dataset.moreStart = String(more > 1 && body.scrollTop > 1);
+      body.dataset.moreEnd = String(more > 1 && body.scrollTop < more - 1);
+    };
+    body.addEventListener('scroll', edges, { passive: true });
+    const bodyObserver = new ResizeObserver(edges);
+    bodyObserver.observe(body);
+    if (body.firstElementChild) bodyObserver.observe(body.firstElementChild);
     const dismissible = 'dismissValue' in opts;
     const dismiss = dismissible ? () => close(opts.dismissValue as T) : null;
 
@@ -123,7 +165,7 @@ export function openDialog<T>(opts: DialogOptions<T>): Promise<T> {
         h('h2', { id: `${id}-title`, class: 'dialog-title' }, opts.title),
         dismiss ? iconButton('close', 'Close', dismiss, { sfx: 'back', class: 'dialog-close' }) : null,
       ),
-      h('div', { class: 'dialog-body' }, typeof opts.body === 'string' ? h('p', null, opts.body) : opts.body),
+      body,
       h('footer', { class: 'dialog-actions' }, ...actions),
     );
     const backdrop = h('div', { class: 'dialog-backdrop', 'data-dialog': id }, panel);

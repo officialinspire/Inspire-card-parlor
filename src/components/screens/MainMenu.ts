@@ -37,7 +37,7 @@ interface MenuEntry {
  */
 export const MENU_ENTRIES: readonly MenuEntry[] = [
   { state: AppState.GAME_SELECTION, label: 'Card Games', short: 'Games', icon: 'cards', hint: 'Five classic games' },
-  { state: AppState.COLLECTION, label: 'Collection', icon: 'binder', hint: 'Decks, backs & art' },
+  { state: AppState.COLLECTION, label: 'Collection', short: 'Decks', icon: 'binder', hint: 'Decks, backs & art' },
   { state: AppState.GAMEBOARDS, label: 'Gameboards', short: 'Boards', icon: 'board', hint: 'Tables & felts' },
   { state: AppState.PASSPORT, label: 'Passport', icon: 'passport', hint: 'Your progress' },
   {
@@ -47,7 +47,7 @@ export const MENU_ENTRIES: readonly MenuEntry[] = [
     icon: 'trophy',
     hint: 'Medals & milestones',
   },
-  { state: AppState.STATISTICS, label: 'Statistics', icon: 'stats', hint: 'Your records' },
+  { state: AppState.STATISTICS, label: 'Statistics', short: 'Stats', icon: 'stats', hint: 'Your records' },
   { state: AppState.SETTINGS, label: 'Settings', icon: 'settings', hint: 'Sound & display' },
 ];
 

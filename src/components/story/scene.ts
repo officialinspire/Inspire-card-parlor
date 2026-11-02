@@ -1,5 +1,6 @@
 import { h } from '@/utils/dom';
 import { NARRATOR, type DialogueLine } from '@/story/campaign';
+import { paceDialogue } from '@/story/dialogue';
 import { getCharacter } from '@/story/chapters';
 import { getEvidence } from '@/story/evidence';
 import { audio } from '@/audio';
@@ -21,6 +22,12 @@ import { haptic } from '@/utils/haptics';
  *  - Motion is a short fade, and none at all with reduced motion.
  *
  * The final actions are always on screen, so a scene never traps the player.
+ *
+ * Layout: the text appears in full at once (no typing effect, so there is
+ * nothing to wait for or skip through). A long beat is paced into panels
+ * between sentences (src/story/dialogue.ts). The stage is sized to the
+ * scene's tallest panel when it opens, so the controls and actions never
+ * move while the player taps through.
  */
 export interface SceneOptions<T> {
   title: string;
@@ -35,7 +42,7 @@ export interface SceneOptions<T> {
 }
 
 export function playScene<T extends string>(opts: SceneOptions<T>): Promise<T> {
-  const lines = opts.lines.length ? opts.lines : [];
+  const lines = paceDialogue(opts.lines);
   let i = 0;
   const stage = h('div', {
     class: 'scene-stage',
@@ -53,19 +60,12 @@ export function playScene<T extends string>(opts: SceneOptions<T>): Promise<T> {
   );
   const next = h(
     'button',
-    { type: 'button', class: 'scene-nav', 'aria-label': 'Next line', 'data-scene-nav': 'next' },
+    { type: 'button', class: 'scene-nav scene-next', 'aria-label': 'Next line', 'data-scene-nav': 'next' },
+    h('span', { class: 'scene-next-label', 'aria-hidden': 'true' }, 'Next'),
     icon('chevronRight'),
   );
 
-  const render = (n: number, dir: 1 | -1 | 0) => {
-    i = Math.max(0, Math.min(n, lines.length - 1));
-    const line = lines[i];
-    stage.dataset.line = String(i);
-    stage.dataset.lines = String(lines.length);
-    counter.textContent = lines.length > 1 ? `${i + 1} / ${lines.length}` : '';
-    back.disabled = i === 0;
-    next.disabled = i >= lines.length - 1;
-    if (!line) return void stage.replaceChildren();
+  const beatFor = (line: DialogueLine, dir: 1 | -1 | 0): HTMLElement => {
     const narration = line.who === NARRATOR || line.narration;
     const who = getCharacter(line.who);
     const found = line.discovers ? getEvidence(line.discovers) : undefined;
@@ -79,7 +79,8 @@ export function playScene<T extends string>(opts: SceneOptions<T>): Promise<T> {
       narration ? null : portrait(line.who, line.pose ?? MOOD_POSE.speak),
       h(
         'div',
-        { class: 'scene-box' },
+        { class: 'scene-main' },
+        // The nameplate sits above the line (never over it), and beside the portrait on phones.
         narration
           ? null
           : h(
@@ -88,18 +89,37 @@ export function playScene<T extends string>(opts: SceneOptions<T>): Promise<T> {
               h('strong', { 'data-speaker-name': '' }, who?.name ?? line.who),
               who?.role ? h('small', null, who.role) : null,
             ),
-        h('p', { class: 'scene-text', 'aria-live': 'polite' }, line.text),
-        line.status === 'draft' ? h('span', { class: 'scene-draft' }, 'Draft') : null,
-        found
-          ? h(
-              'span',
-              { class: 'scene-found', 'data-found': found.id },
-              sprite(found.sprite, { thumb: true, className: 'found-art', alt: '' }),
-              h('span', null, h('small', null, 'Added to your journal'), h('strong', null, found.name)),
-            )
-          : null,
+        h(
+          'div',
+          { class: 'scene-box' },
+          h('p', { class: 'scene-text', 'aria-live': 'polite' }, line.text),
+          line.status === 'draft' ? h('span', { class: 'scene-draft' }, 'Draft') : null,
+          found
+            ? h(
+                'span',
+                { class: 'scene-found', 'data-found': found.id },
+                sprite(found.sprite, { thumb: true, className: 'found-art', alt: '' }),
+                h('span', null, h('small', null, 'Added to your journal'), h('strong', null, found.name)),
+              )
+            : null,
+        ),
       ),
     );
+    return beat;
+  };
+
+  const render = (n: number, dir: 1 | -1 | 0) => {
+    i = Math.max(0, Math.min(n, lines.length - 1));
+    const line = lines[i];
+    stage.dataset.line = String(i);
+    stage.dataset.lines = String(lines.length);
+    counter.textContent = lines.length > 1 ? `${i + 1} / ${lines.length}` : '';
+    back.disabled = i === 0;
+    next.disabled = i >= lines.length - 1;
+    stage.classList.toggle('at-end', i >= lines.length - 1);
+    if (!line) return void stage.replaceChildren();
+    const found = line.discovers ? getEvidence(line.discovers) : undefined;
+    const beat = beatFor(line, dir);
     stage.replaceChildren(beat);
     // A discovery: a short sparkle (the card itself gets a faint spectral wisp) and a light buzz.
     if (found && dir >= 0) {
@@ -145,9 +165,26 @@ export function playScene<T extends string>(opts: SceneOptions<T>): Promise<T> {
   });
   // Start on the scene itself so arrow keys and Space advance it.
   requestAnimationFrame(() => {
+    fitStage();
     stage.focus({ preventScroll: true });
     // Let the dialog settle into place before aiming effects at it.
     if (opts.onOpen) setTimeout(() => opts.onOpen?.(body), 260);
   });
   return opened;
+
+  /**
+   * Holds the stage at the height of the scene's tallest panel (capped, after
+   * which the stage scrolls), so nothing below it jumps from line to line.
+   */
+  function fitStage(): void {
+    if (lines.length < 2 || !stage.isConnected || !stage.clientWidth) return;
+    const shown = stage.firstElementChild;
+    let tallest = 0;
+    for (const line of lines) {
+      stage.replaceChildren(beatFor(line, 0));
+      tallest = Math.max(tallest, stage.scrollHeight);
+    }
+    stage.replaceChildren(...(shown ? [shown] : []));
+    stage.style.minHeight = `${Math.ceil(tallest)}px`;
+  }
 }

@@ -1,6 +1,12 @@
 import { h } from '@/utils/dom';
 import type { Store } from '@/core/store';
-import { journalOf, replayableScenes, type JournalClue, type ReplayableScene } from '@/story/world';
+import {
+  journalOf,
+  replayableScenes,
+  type JournalChapter,
+  type JournalClue,
+  type ReplayableScene,
+} from '@/story/world';
 import { getLocation } from '@/story/locations';
 import { getChapter } from '@/story/campaign';
 import { openDialog } from '../Dialog';
@@ -98,14 +104,21 @@ export function journalView(store: Store, onReplay: (scene: ReplayableScene) => 
     paginatorPanel({
       items: j.chapters,
       minTileWidth: 260,
-      minTileHeight: 120,
-      maxTileHeight: 190,
+      minTileHeight: 110,
+      maxTileHeight: 200,
       gap: 10,
       label: 'Chapter summaries',
+      // A card shows the start of the summary; tapping it reads the whole thing.
       render: (c) =>
         h(
-          'article',
-          { class: `tile journal-chapter ${c.state}`, 'data-journal-chapter': c.chapter.id },
+          'button',
+          {
+            type: 'button',
+            class: `tile journal-chapter ${c.state}`,
+            'data-journal-chapter': c.chapter.id,
+            'aria-label': `Chapter ${c.chapter.index}: ${c.chapter.title}. ${c.state === 'completed' ? 'Solved' : 'Open'}, ${c.cluesFound} of ${c.cluesTotal} clues. Read the summary.`,
+            onclick: () => void readSummary(c),
+          },
           h('span', { class: 'tile-kicker' }, `Chapter ${c.chapter.index} · ${c.chapter.location}`),
           h('span', { class: 'tile-title' }, c.chapter.title),
           h(
@@ -121,6 +134,7 @@ export function journalView(store: Store, onReplay: (scene: ReplayableScene) => 
             { class: 'tile-meta' },
             badge(c.state === 'completed' ? 'Solved' : 'Open', c.state === 'completed' ? 'badge-done' : 'badge-soft'),
             h('small', null, `${c.cluesFound} / ${c.cluesTotal} clues`),
+            h('span', { class: 'journal-read', 'aria-hidden': 'true' }, 'Read', icon('chevronRight')),
           ),
         ),
     });
@@ -166,6 +180,28 @@ export function journalView(store: Store, onReplay: (scene: ReplayableScene) => 
 }
 
 /** A clue up close: its artwork large, with its description as text. */
+/** A chapter's whole summary, which its journal card can only begin. */
+function readSummary(c: JournalChapter): Promise<void> {
+  return openDialog<void>({
+    title: `Chapter ${c.chapter.index}: ${c.chapter.title}`,
+    class: 'dialog-summary',
+    body: h(
+      'div',
+      { class: 'summary-detail', 'data-summary-detail': c.chapter.id },
+      h('p', { class: 'tile-kicker' }, c.chapter.location),
+      h(
+        'p',
+        null,
+        c.summary ??
+          (c.chapter.status === 'draft' ? 'In progress. (This chapter’s story is in development.)' : 'In progress.'),
+      ),
+      h('p', { class: 'story-hint' }, `${c.cluesFound} of ${c.cluesTotal} clues found.`),
+    ),
+    dismissValue: undefined,
+    actions: [{ label: 'Close', value: undefined }],
+  });
+}
+
 function inspect(c: JournalClue): Promise<void> {
   const location = getLocation(getChapter(c.chapter)?.locationId ?? '') ?? null;
   return openDialog<void>({

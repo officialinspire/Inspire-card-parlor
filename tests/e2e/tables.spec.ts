@@ -52,9 +52,9 @@ async function openTable(page: Page, game: string, deck: string, board: string):
   if (await deal.isVisible()) await deal.click();
   await expect(page.locator(`${CURRENT} .card`).first()).toBeVisible();
   // One screen on stage (the previous table has slid away), the deal dialog
-  // faded out and the opening deal finished.
+  // faded out (with the brief shield over it that catches a double tap) and the opening deal finished.
   await expectScreen(page, 'GAMEPLAY');
-  await expect(page.locator('.dialog-backdrop')).toHaveCount(0);
+  await expect(page.locator('.dialog-backdrop, .dialog-shield')).toHaveCount(0);
   await expect(page.locator(`${CURRENT} [data-dealing]`)).toHaveCount(0);
   await settled(page);
 }

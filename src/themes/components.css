@@ -121,7 +121,7 @@
 }
 .btn-sm {
   min-height: 34px;
-  font-size: 0.88em;
+  font-size: max(var(--fs-min), 0.88em);
 }
 .btn-icon.btn-sm {
   width: 34px;
@@ -167,7 +167,7 @@
   border-radius: 50%;
   background: var(--sage);
   color: var(--surface);
-  font-size: 0.85em;
+  font-size: max(var(--fs-min), 0.85em);
 }
 
 /* ===================== Navigation header ===================== */
@@ -195,13 +195,44 @@
 }
 .screen-title {
   font-size: clamp(1.25rem, 2.6vmin + 0.6rem, 2rem);
-  white-space: nowrap;
+  line-height: 1.12;
+  /* A long title wraps to a second line rather than being cut to "Story M…". */
+  overflow-wrap: break-word;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
   overflow: hidden;
-  text-overflow: ellipsis;
+}
+@media (max-width: 360px) {
+  .screen-title {
+    font-size: 1.12rem;
+  }
+}
+/* Phones, on screens whose header carries extra buttons (Story Mode: music, journal):
+   the title takes its own row under the buttons instead of being squeezed between them. */
+@media (max-width: 520px) {
+  .nav-header:has(.nav-actions > :nth-child(4)) {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas: 'back actions' 'titles titles';
+    row-gap: 2px;
+  }
+  .nav-header:has(.nav-actions > :nth-child(4)) > :first-child {
+    grid-area: back;
+  }
+  .nav-header:has(.nav-actions > :nth-child(4)) > .nav-titles {
+    grid-area: titles;
+  }
+  .nav-header:has(.nav-actions > :nth-child(4)) > .nav-actions {
+    grid-area: actions;
+  }
+  .nav-header:has(.nav-actions > :nth-child(4)) .screen-title {
+    font-size: 1.2rem;
+    -webkit-line-clamp: 1;
+  }
 }
 .screen-subtitle {
   color: var(--ink-soft);
-  font-size: 0.86em;
+  font-size: max(var(--fs-min), 0.86em);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -212,7 +243,7 @@
   padding: 0;
   display: flex;
   gap: 4px;
-  font-size: max(10px, 0.78em);
+  font-size: max(var(--fs-min), 0.78em);
   font-weight: 800;
   color: var(--ink-faint);
   counter-reset: step;
@@ -231,7 +262,7 @@
   height: 18px;
   border-radius: 50%;
   border: 1.5px solid currentColor;
-  font-size: 0.85em;
+  font-size: max(var(--fs-min), 0.85em);
 }
 .nav-steps li + li::after {
   order: -1;
@@ -241,7 +272,7 @@
   background: var(--border);
 }
 .nav-steps li.done {
-  color: var(--sage);
+  color: var(--sage-text);
 }
 .nav-steps li.current {
   color: var(--accent);
@@ -518,14 +549,14 @@ button.tile:active {
   flex: 1;
 }
 .tile-kicker {
-  font-size: max(10px, 0.7em);
+  font-size: max(var(--fs-min), 0.7em);
   font-weight: 800;
   color: var(--gold-deep);
   letter-spacing: var(--label-track);
   text-transform: uppercase;
 }
 [data-theme='night'] .tile-kicker {
-  color: var(--gold);
+  color: var(--gold-text);
 }
 .tile-title {
   font-family: var(--font-display);
@@ -535,7 +566,7 @@ button.tile:active {
 }
 .tile-sub {
   color: var(--ink-soft);
-  font-size: 0.86em;
+  font-size: max(var(--fs-min), 0.86em);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -555,7 +586,7 @@ button.tile:active {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 0.8em;
+  font-size: max(var(--fs-min), 0.8em);
   font-weight: 700;
   color: var(--ink-soft);
 }
@@ -570,7 +601,7 @@ button.tile:active {
   align-items: center;
   padding: 2px 9px;
   border-radius: var(--radius-pill);
-  font-size: max(10px, 0.72em);
+  font-size: max(var(--fs-min), 0.72em);
   font-weight: 800;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -592,7 +623,7 @@ button.tile:active {
 }
 .badge-done {
   background: var(--sage-soft);
-  color: var(--success);
+  color: var(--success-text);
 }
 .badge-common {
   color: var(--rarity-common);
@@ -649,7 +680,7 @@ button.tile:active {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 0.82em;
+  font-size: max(var(--fs-min), 0.82em);
   font-weight: 800;
   color: var(--ink-soft);
 }
@@ -685,12 +716,14 @@ button.tile:active {
   font-variant-numeric: tabular-nums;
 }
 .stat-label {
-  font-size: max(10px, 0.68em);
+  font-size: max(var(--fs-min), 0.68em);
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: var(--label-track);
+  /* Tighter than other labels, and free to wrap: a narrow tile showed "AVORITE GAM". */
+  letter-spacing: 0.06em;
+  line-height: 1.15;
+  text-align: center;
   color: var(--ink-faint);
-  white-space: nowrap;
 }
 
 /* ===================== Form controls ===================== */
@@ -699,6 +732,9 @@ button.tile:active {
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
   gap: 10px;
   align-content: start;
+  /* Rows never shrink below their content (a control's min-height would otherwise
+     win when the panel is short, and a wrapped segmented control spilled into the next row). */
+  grid-auto-rows: max-content;
   max-width: 920px;
   width: 100%;
   margin: 0 auto;
@@ -884,7 +920,13 @@ button.tile:active {
 .about {
   grid-column: 1 / -1;
   color: var(--ink-faint);
-  font-size: 0.85em;
+  font-size: max(var(--fs-min), 0.85em);
+}
+/* An inline link with a finger-sized target (the text line alone is 16px tall). */
+.about a {
+  display: inline-block;
+  padding-block: 12px;
+  margin-block: -12px;
 }
 
 /* ===================== Dialogs ===================== */
@@ -955,7 +997,7 @@ button.tile:active {
   flex: none;
 }
 [data-theme='night'] .dialog-icon {
-  color: var(--gold);
+  color: var(--gold-text);
 }
 .dialog-danger .dialog-icon {
   background: rgba(184, 67, 47, 0.14);
@@ -972,8 +1014,55 @@ button.tile:active {
 .dialog-body {
   color: var(--ink-soft);
   min-height: 0;
-  /* Fallback for very short screens; dialogs are sized to fit without it. */
+  /* Scrolls only on screens too short for the content: then its edges fade where more continues. */
   overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+.dialog-body[data-more-end='true'] {
+  mask-image: linear-gradient(180deg, #000 calc(100% - 28px), transparent);
+}
+.dialog-body[data-more-start='true'] {
+  mask-image: linear-gradient(180deg, transparent, #000 28px);
+}
+.dialog-body[data-more-start='true'][data-more-end='true'] {
+  mask-image: linear-gradient(180deg, transparent, #000 28px, #000 calc(100% - 28px), transparent);
+}
+/* Catches a stray second tap on a closed dialog while it fades out (see Dialog.ts); placed over its panel. */
+.dialog-shield {
+  position: absolute;
+}
+/* Short screens (phones on their side): tighter frames, wider panels, so the body keeps its room. */
+@media (max-height: 520px) {
+  .dialog-backdrop {
+    padding: calc(var(--safe-t) + 8px) calc(var(--safe-r) + var(--gutter)) calc(var(--safe-b) + 8px)
+      calc(var(--safe-l) + var(--gutter));
+  }
+  .dialog {
+    gap: 8px;
+    padding: 12px 16px;
+  }
+  .dialog-header {
+    padding-bottom: 6px;
+  }
+  .dialog-title {
+    font-size: 1.12em;
+  }
+  .dialog-icon {
+    width: 30px;
+    height: 30px;
+  }
+  .dialog-close {
+    margin-block: -4px;
+  }
+}
+@media (max-height: 520px) and (orientation: landscape) {
+  .dialog {
+    width: min(560px, 100%);
+  }
+  .dialog-wide {
+    width: min(720px, 100%);
+  }
 }
 .dialog-actions {
   display: flex;
@@ -1092,13 +1181,13 @@ button.tile:active {
   line-height: 1.25;
 }
 .toast-celebrate .toast-text small {
-  font-size: max(10px, 0.68em);
+  font-size: max(var(--fs-min), 0.68em);
   letter-spacing: var(--label-track);
   text-transform: uppercase;
   color: var(--gold-deep);
 }
 [data-theme='night'] .toast-celebrate .toast-text small {
-  color: var(--gold);
+  color: var(--gold-text);
 }
 .toast-burst {
   position: absolute;
@@ -1112,7 +1201,7 @@ button.tile:active {
   position: absolute;
   font-size: 13px;
   line-height: 1;
-  color: var(--gold);
+  color: var(--gold-text);
   opacity: 0;
   transform: translate(-50%, -50%);
   animation: burst 900ms var(--ease) forwards;
@@ -1198,7 +1287,7 @@ button.tile:active {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
   font-family: var(--font-body);
   font-weight: 900;
-  font-size: max(10px, 28cqw);
+  font-size: max(var(--fs-min), 28cqw);
   line-height: 0.95;
   letter-spacing: -0.04em;
   text-align: center;
