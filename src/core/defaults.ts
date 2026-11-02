@@ -25,6 +25,7 @@ export const DEFAULT_SETTINGS: Settings = {
   theme: 'auto',
   reducedMotion: false,
   lowEffects: false,
+  startupIntro: 'auto',
   storySoundtrack: true,
   leftHanded: false,
   showHints: true,

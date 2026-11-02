@@ -20,6 +20,7 @@ import { SCREENS } from '@/components/screens';
 import { AppState } from './states';
 import { goBack, navigate, store } from './store';
 import { runBoot } from './boot';
+import { attachBrowserBack } from './browserBack';
 import { loadStoryArt } from '@/story/art';
 import { attachStoryDirector } from '@/audio/director';
 import { setActiveStoryLevel } from '@/story/session';
@@ -57,6 +58,7 @@ export async function startApp(mount: HTMLElement): Promise<void> {
   new ScreenManager(stage, store, SCREENS);
   attachDialogs(mount, store);
   attachNotifications(mount, store);
+  attachBrowserBack(store);
 
   addEventListener('keydown', (e) => {
     if (store.state.modals.length || e.metaKey || e.ctrlKey || e.altKey) return;

@@ -106,6 +106,19 @@ export const SettingsScreen: ScreenFactory = ({ store }) => {
             s().theme,
             (v) => set({ theme: v }),
           ),
+          tagged(
+            segmented(
+              'Startup intro',
+              [
+                { value: 'auto', label: 'Auto' },
+                { value: 'full', label: 'Full' },
+                { value: 'brief', label: 'Brief' },
+              ],
+              s().startupIntro,
+              (v) => set({ startupIntro: v }),
+            ),
+            'startupIntro',
+          ),
           toggle(
             'Reduced motion',
             s().reducedMotion,

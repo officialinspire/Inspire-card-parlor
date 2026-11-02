@@ -133,6 +133,230 @@
 .init {
   padding: 0;
   isolation: isolate;
+  /* Black underneath: nothing light shows before the painting has loaded. */
+  background: #000;
+}
+
+/* --- The opening sequence (Initialization.ts): black → presents → title → Touch to Start --- */
+.intro-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  background: #000;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 900ms var(--ease);
+}
+.init[data-stage='title'] .intro-veil,
+.init[data-stage='ready'] .intro-veil {
+  opacity: 0;
+}
+.init[data-stage='leaving'] .intro-veil {
+  opacity: 1;
+  transition-duration: 420ms;
+  transition-timing-function: ease-in;
+}
+.intro-presents {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: calc(var(--safe-t) + var(--gutter)) calc(var(--safe-r) + var(--gutter)) calc(var(--safe-b) + var(--gutter))
+    calc(var(--safe-l) + var(--gutter));
+  text-align: center;
+  color: #f4e6c4;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.985);
+  transition:
+    opacity 650ms var(--ease),
+    transform 2200ms var(--ease);
+}
+.init[data-stage='presents'] .intro-presents {
+  opacity: 1;
+  transform: none;
+}
+.intro-presents p {
+  margin: 0;
+}
+.intro-kicker,
+.intro-presents-line {
+  font-size: max(var(--fs-min), 0.8rem);
+  font-weight: 800;
+  letter-spacing: 0.34em;
+  padding-left: 0.34em;
+  text-transform: uppercase;
+  color: rgba(244, 230, 196, 0.78);
+}
+.intro-presents-line {
+  letter-spacing: 0.42em;
+  padding-left: 0.42em;
+  text-transform: lowercase;
+  font-style: italic;
+  font-weight: 700;
+}
+.intro-wordmark {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2rem, 8.5vw, 4.2rem);
+  line-height: 1.05;
+  letter-spacing: 0.04em;
+}
+/* Gold lettering with one slow sheen across it. */
+.intro-wordmark-text {
+  background: linear-gradient(100deg, #b98c34 0%, #f2d98f 30%, #fff6dc 45%, #f2d98f 60%, #b98c34 100%);
+  background-size: 260% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.init[data-stage='presents'] .intro-wordmark-text {
+  animation: wordmark-sheen 2.2s var(--ease) 300ms both;
+}
+@keyframes wordmark-sheen {
+  to {
+    background-position: 0% 0;
+  }
+}
+.intro-suits {
+  font-size: 1rem;
+  letter-spacing: 0.6em;
+  padding-left: 0.6em;
+  color: rgba(226, 189, 100, 0.7);
+}
+/* After the full intro the studio has just been credited: the small line would repeat it. */
+.init[data-plan='full'] .init-presents {
+  visibility: hidden;
+}
+/* The title's own reveal waits for the title stage (it would otherwise play unseen under the veil). */
+.init[data-stage='black'] .logo-wrap,
+.init[data-stage='presents'] .logo-wrap,
+.init[data-stage='black'] .game-subtitle,
+.init[data-stage='presents'] .game-subtitle {
+  animation: none;
+  opacity: 0;
+}
+.game-subtitle {
+  display: block;
+  margin-top: clamp(4px, 1.2vmin, 10px);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1rem, 3.2vmin + 0.4rem, 1.6rem);
+  letter-spacing: 0.18em;
+  padding-left: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-text);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.25);
+  animation: fade-in 900ms var(--ease) 500ms both;
+}
+[data-theme='night'] .game-subtitle {
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.6);
+}
+.intro-skip {
+  position: absolute;
+  z-index: 7;
+  top: calc(var(--safe-t) + 12px);
+  right: calc(var(--safe-r) + 12px);
+  min-height: 44px;
+  color: rgba(244, 230, 196, 0.9);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(244, 230, 196, 0.35);
+}
+.intro-skip:hover,
+.intro-skip:focus-visible {
+  background: rgba(255, 255, 255, 0.14);
+}
+/* Touch to Start: the largest thing on the screen once loading is done. */
+.btn-enter {
+  flex-direction: column;
+  gap: 2px;
+  min-width: min(320px, 100%);
+  min-height: 60px;
+  padding-block: 10px;
+  animation:
+    enter-in 600ms var(--ease-spring) both,
+    start-glow 2.6s ease-in-out 900ms infinite;
+}
+.btn-enter .start-main {
+  font-size: 1.12rem;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  padding-left: 0.2em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+/* After the full intro, the prompt follows the logo's reveal rather than racing it. */
+.init[data-plan='full'] .btn-enter {
+  animation-delay: 600ms, 1500ms;
+}
+@media (orientation: landscape) and (max-height: 540px) {
+  .btn-enter .start-main {
+    font-size: 1rem;
+    letter-spacing: 0.12em;
+    padding-left: 0.12em;
+  }
+}
+.btn-enter .start-sub {
+  font-size: max(var(--fs-min), 0.72rem);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+@keyframes start-glow {
+  50% {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 250, 230, 0.7),
+      0 0 0 6px rgba(230, 195, 106, 0.22),
+      0 6px 20px rgba(0, 0, 0, 0.25);
+  }
+}
+.init[data-stage='leaving'] .btn-enter {
+  animation: none;
+}
+/* A hidden tab holds everything where it is. */
+.init.paused,
+.init.paused * {
+  animation-play-state: paused !important;
+}
+/* Calm (reduced motion, by setting or system): short fades only — no sheen, scale, shine or glow. */
+.init.calm .intro-veil {
+  transition-duration: 150ms;
+}
+.init.calm .intro-presents {
+  transform: none;
+  transition: opacity 150ms linear;
+}
+.init.calm .intro-wordmark-text,
+.init.calm .btn-enter,
+.init.calm .game-subtitle {
+  animation: none;
+}
+.init.calm .intro-wordmark-text {
+  background-position: 30% 0;
+}
+.init.calm .logo-shine,
+.init.calm .init-dust,
+.low-effects .init .logo-shine,
+.low-effects .init .init-dust {
+  display: none;
+}
+.low-effects .init .btn-enter {
+  animation: enter-in 600ms var(--ease-spring) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .intro-veil,
+  .intro-presents {
+    transition-duration: 150ms;
+  }
+  .intro-presents {
+    transform: none;
+  }
 }
 .env-splash .env-scene {
   filter: blur(5px) saturate(0.95);
@@ -211,6 +435,8 @@
 }
 .game-title {
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   white-space: normal;
   line-height: 1;
@@ -371,13 +597,6 @@
 .init.ready .boot-bar {
   display: none;
 }
-.btn-enter {
-  min-width: min(280px, 100%);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  font-size: 1rem;
-  animation: enter-in 600ms var(--ease-spring) both;
-}
 @keyframes enter-in {
   from {
     opacity: 0;
@@ -398,7 +617,8 @@
   .init-content {
     display: grid;
     grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-    grid-template-rows: auto 1fr auto;
+    /* The middle row gives way, so Touch to Start's row always gets its full height. */
+    grid-template-rows: auto minmax(0, 1fr) auto;
     grid-template-areas:
       'presents stage'
       'title stage'
@@ -416,18 +636,25 @@
   .init-title {
     margin-top: 0;
   }
+  /* Room for the subtitle under the logo, and for Touch to Start on the bottom row. */
   .init-logo {
     width: auto;
-    height: clamp(100px, 46vh, 240px);
+    height: clamp(90px, 36vh, 220px);
     max-width: 100%;
     max-height: none;
+  }
+  .btn-enter {
+    min-height: 52px;
+    padding-block: 6px;
   }
   .init-stage {
     max-height: none;
   }
   .init-stage {
     grid-area: stage;
-    height: 100%;
+    height: auto;
+    min-height: 0;
+    align-self: stretch;
   }
   .init-loader {
     grid-area: loader;
@@ -4392,4 +4619,32 @@ button.board-tile .tile-title {
   .quick-play:active {
     transform: none;
   }
+}
+
+/* Arriving from the opening sequence: the riverfront rises out of black, and the
+   menu's usual entrance (logo, panel, tiles) plays as the black lifts. */
+.menu-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  background: #000;
+  pointer-events: none;
+  animation: veil-out var(--reveal, 1100ms) ease-out forwards;
+}
+@keyframes veil-out {
+  to {
+    opacity: 0;
+  }
+}
+.menu.from-intro .menu-logo {
+  animation-delay: 250ms;
+}
+.menu.from-intro .menu-panel {
+  animation-delay: 380ms;
+}
+.menu.from-intro .menu-tile {
+  animation-delay: calc(520ms + var(--i, 0) * 45ms);
+}
+.reduced-motion .menu-veil {
+  animation-duration: 150ms;
 }

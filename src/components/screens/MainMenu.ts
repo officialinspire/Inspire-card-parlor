@@ -20,6 +20,7 @@ import { STORY_CHAPTERS } from '@/story/campaign';
 import { isPlayableChapter } from '@/story/world';
 import { isChapterComplete, storyOf } from '@/story/progress';
 import { button, creditsPill, fullscreenButton, iconButton } from '../ui';
+import { takeMenuReveal } from '../menuReveal';
 import { Disposer, type ScreenFactory } from '../Screen';
 
 interface MenuEntry {
@@ -400,6 +401,19 @@ export const MainMenuScreen: ScreenFactory = () => {
       ),
     ),
   );
+
+  // Arriving from the opening sequence: the riverfront rises out of black, once.
+  const reveal = takeMenuReveal();
+  if (reveal !== null) {
+    const veil = h('div', { class: 'menu-veil', 'aria-hidden': 'true', style: { '--reveal': `${reveal}ms` } });
+    el.classList.add('from-intro');
+    el.append(veil);
+    const done = setTimeout(() => {
+      veil.remove();
+      el.classList.remove('from-intro');
+    }, reveal + 100);
+    d.add(() => clearTimeout(done));
+  }
 
   return { el, unmount: () => d.dispose() };
 };

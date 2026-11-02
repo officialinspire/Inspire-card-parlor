@@ -43,8 +43,19 @@ const go = (page: Page, path: string[]) =>
     for (const to of path) s.dispatch({ type: 'NAVIGATE', to });
   }, path);
 
-/** Lets a screen or dialog settle (transitions are off with reduced motion; fonts and pagers may still lay out). */
-const settle = (page: Page) => page.waitForTimeout(350);
+/**
+ * Lets a screen or dialog settle: entrance animations (the menu's tiles dealing in, a dialog tipping
+ * up) finish first — ambient loops don't count — then fonts and pagers get a moment to lay out.
+ */
+async function settle(page: Page) {
+  await page.waitForFunction(() =>
+    document
+      .getAnimations()
+      .every((a) => a.playState !== 'running' || a.effect?.getComputedTiming().iterations === Infinity),
+  );
+  await expect(page.locator('.menu-veil')).toHaveCount(0);
+  await page.waitForTimeout(250);
+}
 
 async function expectClean(page: Page, where: string, noPageScroll = false) {
   await settle(page);

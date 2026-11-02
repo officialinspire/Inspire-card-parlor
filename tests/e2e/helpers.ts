@@ -53,9 +53,13 @@ export async function seed(page: Page, data: Record<string, unknown>): Promise<v
   }, data);
 }
 
+/** Launches the app, skips the opening sequence if it is playing, and touches to start. */
 export async function enterParlor(page: Page): Promise<void> {
   await page.goto('./');
   const enter = page.getByRole('button', { name: 'Enter Parlor' });
+  const skip = page.locator('[data-action="skip-intro"]');
+  await expect(enter.or(skip)).toBeVisible({ timeout: 10_000 });
+  if (await skip.isVisible()) await skip.click().catch(() => undefined);
   await expect(enter).toBeVisible({ timeout: 10_000 });
   await enter.click();
   await expectScreen(page, 'MAIN_MENU');

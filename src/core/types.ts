@@ -25,6 +25,11 @@ export interface Settings {
   reducedMotion: boolean;
   /** Fewer decorative effects: no story particles, glows or ambient loops (for slower devices). */
   lowEffects: boolean;
+  /**
+   * The opening sequence on launch. `auto`: the full intro on the first launch, then the brief one
+   * (title and Touch to Start); `full`: every launch; `brief`: always the brief one.
+   */
+  startupIntro: 'auto' | 'full' | 'brief';
   /** Story Mode picks music for each place and scene (the player's own pick always wins). */
   storySoundtrack: boolean;
   leftHanded: boolean;

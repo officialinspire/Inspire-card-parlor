@@ -29,6 +29,13 @@ body {
     color var(--dur-slow);
 }
 
+/* Until the parlor opens (Touch to Start), everything is black: no light frame before the intro. */
+html:not([data-booted]),
+html:not([data-booted]) body,
+html:not([data-booted]) #app {
+  background: #000;
+}
+
 #app {
   position: fixed;
   inset: 0;

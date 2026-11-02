@@ -1,11 +1,10 @@
 import type { Store } from './store';
 import { idb } from '@/storage/idb';
 import { wait } from '@/utils/timing';
-import { DECKS } from '@/decks/registry';
-import { allBoards } from '@/boards/registry';
 import { loadArtworkManifest } from '@/assets/artworkManifest';
 import { assetManager, deckThemes } from '@/decks';
-import { GAMES } from '@/games/registry';
+import { environmentImage } from '@/components/environment';
+import { resolveTheme } from '@/themes/theme';
 
 interface BootStep {
   label: string;
@@ -20,16 +19,20 @@ function preloadImage(src: string): Promise<void> {
   });
 }
 
+/** Waits for an image, but never longer than `cap` ms: a slow network must not hold the doors shut. */
+const preloadCapped = (src: string, cap: number) => Promise.race([preloadImage(src), wait(cap)]);
+
 /**
- * Runs the loading sequence shown on the initialization screen.
- * Steps are real work where it exists today (storage, fonts, icons) and
- * placeholders for asset packs that will arrive with gameplay.
+ * Runs the loading shown on the title screen. Every step is real work — no
+ * step is padded to make the bar look busy; the opening sequence
+ * (Initialization.ts) gives the shuffle its moment instead. Images are
+ * warmed so the title and the menu's riverfront appear whole, but a slow
+ * image only delays its own step by a capped amount.
  */
 export async function runBoot(store: Store): Promise<void> {
   const base = import.meta.env.BASE_URL;
   const steps: BootStep[] = [
     { label: 'Unlocking the parlor doors…', run: () => idb.ready() },
-    { label: 'Polishing the tables…', run: () => Promise.all(allBoards().map(() => wait(30))) },
     {
       label: 'Unpacking the artwork…',
       run: () =>
@@ -41,25 +44,23 @@ export async function runBoot(store: Store): Promise<void> {
           }
         }),
     },
-    { label: 'Shuffling the decks…', run: () => Promise.all(DECKS.map(() => wait(60))) },
-    { label: 'Setting out the games…', run: () => wait(GAMES.length * 40) },
-    { label: 'Lighting the lamps…', run: () => preloadImage(`${base}assets/icons/icon.svg`) },
+    { label: 'Hanging the sign…', run: () => preloadCapped(`${base}assets/branding/logo.webp`, 2500) },
+    {
+      label: 'Lighting the riverfront…',
+      run: () => preloadCapped(environmentImage(resolveTheme(store.state.settings.theme)), 3000),
+    },
+    { label: 'Shuffling the decks…', run: () => preloadCapped(`${base}assets/icons/icon.svg`, 1500) },
     {
       label: 'Tuning the piano…',
       run: () => Promise.race([document.fonts?.ready ?? Promise.resolve(), wait(1500)]),
     },
   ];
 
-  const minDuration = store.state.settings.reducedMotion ? 300 : 1800;
-  const started = performance.now();
   for (let i = 0; i < steps.length; i++) {
     const step = steps[i]!;
     store.dispatch({ type: 'BOOT_PROGRESS', progress: i / steps.length, label: step.label });
     await step.run().catch(() => undefined);
-    // Pace the steps so the shuffle animation gets its moment.
-    const target = (minDuration * (i + 1)) / steps.length;
-    const elapsed = performance.now() - started;
-    if (elapsed < target) await wait(target - elapsed);
   }
+  store.dispatch({ type: 'BOOT_PROGRESS', progress: 1, label: 'The parlor is open.' });
   store.dispatch({ type: 'BOOT_READY' });
 }

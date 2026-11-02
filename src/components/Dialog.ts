@@ -52,11 +52,15 @@ export function attachDialogs(root: HTMLElement, store: Store): void {
 function trapFocus(container: HTMLElement, e: KeyboardEvent): void {
   const focusables = [
     ...container.querySelectorAll<HTMLElement>('button:not([disabled]), [href], input, [tabindex="0"]'),
-  ];
+  ].filter((el) => el.getClientRects().length > 0);
   if (!focusables.length) return;
   const first = focusables[0]!;
   const last = focusables.at(-1)!;
-  if (e.shiftKey && document.activeElement === first) {
+  // Focus somewhere else (the dialog's own first focus lands a frame after it opens): bring it in.
+  if (!container.contains(document.activeElement)) {
+    e.preventDefault();
+    (e.shiftKey ? last : first).focus();
+  } else if (e.shiftKey && document.activeElement === first) {
     e.preventDefault();
     last.focus();
   } else if (!e.shiftKey && document.activeElement === last) {
