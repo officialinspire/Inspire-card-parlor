@@ -179,9 +179,13 @@
               jobs.push(
                 navigator.serviceWorker.getRegistrations().then(function (rs) {
                   return Promise.all(
-                    rs.map(function (r) {
-                      return r.unregister();
-                    }),
+                    rs
+                      .filter(function (r) {
+                        return r.scope === new URL('./', location.href).href;
+                      })
+                      .map(function (r) {
+                        return r.unregister();
+                      }),
                   );
                 }),
               );
@@ -191,7 +195,7 @@
                   return Promise.all(
                     ks
                       .filter(function (k) {
-                        return k.indexOf('icp') === 0;
+                        return k.indexOf('icp-') === 0;
                       })
                       .map(function (k) {
                         return caches.delete(k);
