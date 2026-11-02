@@ -116,10 +116,15 @@ export async function startApp(mount: HTMLElement): Promise<void> {
     // A new worker does not replace JavaScript already running in this tab.
     // Keep play uninterrupted until the player chooses to reload; normal
     // pagehide persistence flushes progress/settings without clearing saves.
-    const hadController = !!navigator.serviceWorker.controller;
+    let hadController = !!navigator.serviceWorker.controller;
     let updateOffered = false;
     navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (!hadController || updateOffered) return;
+      if (!navigator.serviceWorker.controller) return;
+      if (!hadController) {
+        hadController = true;
+        return;
+      }
+      if (updateOffered) return;
       updateOffered = true;
       void confirmDialog({
         title: 'Update available',
