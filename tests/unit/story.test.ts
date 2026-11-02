@@ -7,7 +7,6 @@ import {
   STAMPS,
   STORY_CHAPTERS,
   discoveriesIn,
-  getChapter,
   NARRATOR,
   type DialogueLine,
   type StoryLevel,
@@ -138,40 +137,25 @@ describe('campaign structure', () => {
     for (const s of STAMPS) expect(LEGACY_CHAPTERS.map((x) => x.stamp)).not.toContain(s.id);
   });
 
-  it('writes chapters 1–2 in full and marks chapters 3–9 as drafts', () => {
-    expect(STORY_CHAPTERS.map((c) => c.status)).toEqual([
-      'final',
-      'final',
-      'draft',
-      'draft',
-      'draft',
-      'draft',
-      'draft',
-      'draft',
-      'draft',
-    ]);
+  it('writes all nine chapters in full: no draft text, and every host speaks', () => {
+    expect(STORY_CHAPTERS.map((c) => c.status)).toEqual(Array(9).fill('final'));
     for (const c of STORY_CHAPTERS) {
       const lines = [c.intro, c.outro, ...c.levels.flatMap((l) => [l.intro, l.outro])].flat();
-      if (c.status === 'final') {
-        // Written scenes: no draft text, and the host actually speaks.
-        expect(
-          lines.some((l) => l.status === 'draft'),
-          c.id,
-        ).toBe(false);
-        expect(
-          c.intro.some((l) => l.who === c.hostId),
-          c.id,
-        ).toBe(true);
-        for (const l of c.levels) expect(l.intro.length, l.id).toBeGreaterThan(0);
-      } else {
-        // Outlines: short narration only, every line labelled, no invented character dialogue.
-        for (const l of lines) {
-          expect(l.status, `${c.id}: ${l.text}`).toBe('draft');
-          expect(l.who, `${c.id}: ${l.text}`).toBe(NARRATOR);
-          expect(l.text.length, l.text).toBeLessThanOrEqual(140);
-        }
-        expect(c.artwork.placeholder, c.id).toBeTruthy();
-      }
+      expect(
+        lines.some((l) => l.status === 'draft'),
+        c.id,
+      ).toBe(false);
+      expect(
+        c.intro.some((l) => l.who === c.hostId),
+        c.id,
+      ).toBe(true);
+      expect(c.intro.length, c.id).toBeGreaterThanOrEqual(3);
+      expect(c.outro.length, c.id).toBeGreaterThanOrEqual(2);
+      for (const l of c.levels) expect(l.intro.length, l.id).toBeGreaterThan(0);
+      // Every challenge after the first leaves the player with something: a scene after the win.
+      expect(c.levels.filter((l) => l.outro.length).length, c.id).toBeGreaterThanOrEqual(4);
+      // No "story in development" label on a finished chapter.
+      expect(c.artwork.placeholder, c.id).toBeUndefined();
     }
   });
 });
@@ -283,8 +267,8 @@ describe('references', () => {
     // The four suit marks are found before the tunnels.
     for (const id of ['club-mark', 'heart-mark', 'diamond-mark', 'spade-mark'])
       expect(Number(getEvidence(id)!.chapter.slice(3)), id).toBeLessThan(8);
-    // Written chapters' evidence is final; outlines' is draft.
-    for (const e of EVIDENCE) expect(e.status, e.id).toBe(getChapter(e.chapter)!.status);
+    // Every chapter is written, and so is all of its evidence.
+    for (const e of EVIDENCE) expect(e.status, e.id).toBe('final');
   });
 
   it('casts real characters, each with a portrait sheet that exists (or none yet) and a theme', () => {
@@ -302,10 +286,10 @@ describe('references', () => {
     expect(getCharacter('jak_gold')!.portrait!.sheet).toBeNull();
   });
 
-  it('keeps story opponents out of Quick Play, with draft table talk labelled', () => {
+  it('keeps story opponents out of Quick Play, each with written table talk', () => {
     const quickPlay = PERSONALITIES.map((p) => p.id);
     for (const p of STORY_OPPONENTS) expect(quickPlay).not.toContain(p.id);
-    expect(STORY_OPPONENTS.filter((p) => p.linesStatus === 'final').map((p) => p.id)).toEqual(['cheryl', 'sophia']);
+    for (const p of STORY_OPPONENTS) expect(p.linesStatus, p.id).toBe('final');
     for (const p of STORY_OPPONENTS)
       for (const lines of Object.values(p.lines)) if (Array.isArray(lines)) expect(lines.length).toBeGreaterThan(0);
   });

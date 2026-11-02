@@ -205,17 +205,18 @@ describe('the playable demo (chapters 1–2)', () => {
     expect(map.sprite).toBe('rappahannock-river-map/rappahannock-river-map');
   });
 
-  it('after Chapter 2, Chapter 3 is a preview (not playable) and nothing past it is revealed', () => {
+  it('after Chapter 2, Chapter 3 opens to play and only the place after it is revealed', () => {
     let p = winAll(createDefaultProfile(), 'th-1');
     p = winAll(p, 'th-2');
-    expect(STORY_CHAPTERS.slice(0, 4).map((c) => locationState(p, c))).toEqual([
+    expect(STORY_CHAPTERS.slice(0, 5).map((c) => locationState(p, c))).toEqual([
       'completed',
       'completed',
-      'preview',
+      'available',
+      'locked',
       'undiscovered',
     ]);
-    expect(currentObjective(p)).toBeNull();
-    expect(journalOf(p).preview?.id).toBe('th-3');
+    expect(currentObjective(p)?.level.id).toBe('th-3-1');
+    expect(journalOf(p).preview).toBeNull();
     expect(storyOf(p).stamps).toEqual(['th-antique-shop', 'th-river-station']);
   });
 });

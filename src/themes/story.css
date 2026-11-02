@@ -1302,3 +1302,194 @@
   object-fit: cover;
   object-position: 50% 15%;
 }
+
+/* ===================== The four-suit door (Chapter 8) ===================== */
+.dialog-suit-puzzle {
+  width: min(480px, 100%);
+}
+.suit-puzzle {
+  display: grid;
+  gap: 14px;
+  justify-items: center;
+  text-align: center;
+}
+.suit-prompt {
+  margin: 0;
+  font-style: italic;
+  color: var(--ink-soft);
+}
+.suit-slots {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 64px));
+  gap: 10px;
+}
+.suit-slot {
+  aspect-ratio: 3 / 4;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-s, 8px);
+  border: 2px dashed color-mix(in srgb, var(--gold) 55%, transparent);
+  background: var(--surface-sunk);
+  font-size: 1.9em;
+  line-height: 1;
+}
+.suit-slot.filled {
+  border-style: solid;
+  border-color: var(--gold);
+  background: var(--surface);
+  animation: suit-set 260ms var(--ease) both;
+}
+.suit-marks {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  width: 100%;
+}
+.suit-mark {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  min-height: 64px;
+  padding: 8px 4px;
+  border-radius: var(--radius-m);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+  transition:
+    transform var(--dur-fast) var(--ease-press),
+    opacity var(--dur-fast);
+}
+.suit-mark:active {
+  transform: scale(0.95);
+}
+.suit-mark:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.suit-glyph {
+  font-size: 1.8em;
+  line-height: 1;
+}
+.suit-name {
+  font-size: 0.78em;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+.suit-hearts .suit-glyph,
+.suit-diamonds .suit-glyph,
+.suit-slot.suit-hearts,
+.suit-slot.suit-diamonds {
+  color: #c0392b;
+}
+.suit-mark:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
+@keyframes suit-set {
+  from {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+}
+.reduced-motion .suit-slot.filled {
+  animation: none;
+}
+
+/* ===================== The finished story ===================== */
+.story-finished {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  padding: 8px 12px;
+  border-radius: var(--radius-m);
+  border: 1px solid color-mix(in srgb, var(--gold) 50%, transparent);
+  background: color-mix(in srgb, var(--gold) 12%, var(--surface));
+}
+.story-finished-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-weight: 800;
+}
+.story-finished-text .icon {
+  width: 18px;
+  height: 18px;
+  color: var(--gold);
+}
+.story-finished-actions {
+  display: flex;
+  gap: 8px;
+}
+.dialog-rematches {
+  width: min(520px, 100%);
+}
+.rematch-list {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+.rematch {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.rematch-portrait {
+  flex: none;
+  width: 56px;
+  aspect-ratio: 3 / 4;
+  border-radius: 46% 46% 10px 10px;
+}
+.rematch-text {
+  display: grid;
+  gap: 2px;
+}
+.rematch-text small {
+  color: var(--ink-soft);
+}
+/* Short landscape phones: sockets beside the marks, so the puzzle fits without scrolling. */
+@media (max-height: 500px) {
+  .dialog-suit-puzzle {
+    width: min(620px, 100%);
+  }
+  .suit-puzzle {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 8px 14px;
+  }
+  .suit-prompt {
+    grid-column: 1 / -1;
+    font-size: 0.92em;
+  }
+  .suit-slots {
+    grid-template-columns: repeat(4, minmax(0, 44px));
+    gap: 6px;
+  }
+  .suit-slot {
+    font-size: 1.4em;
+  }
+  .suit-marks {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+  .suit-mark {
+    min-height: 44px;
+    grid-auto-flow: column;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+  }
+  .suit-glyph {
+    font-size: 1.3em;
+  }
+  .suit-tools {
+    grid-column: 1;
+    grid-row: 3;
+  }
+}

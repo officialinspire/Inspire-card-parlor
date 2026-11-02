@@ -14,6 +14,7 @@ import { nextSeed, saves, setTableInfo, useStorySlot } from '@/games/session';
 import { setPlayInProgress } from '@/progression/announcer';
 import { gameEvent } from '@/analytics/productEvents';
 import { PERSONALITIES, getPersonality } from '@/games/cpu/personalities';
+import { unlockedGhostOpponents } from '@/story/rematches';
 import { WarGame } from '@/games/war/WarGame';
 import { mountWar } from '@/games/war/WarView';
 import { GoFishGame } from '@/games/goFish/GoFishGame';
@@ -326,7 +327,10 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
         ? [
             segmented(
               'Opponent',
-              PERSONALITIES.map((p) => ({ value: p.id, label: p.name })),
+              // The ghosts join the table once the story is finished (their rematches).
+              [...PERSONALITIES, ...unlockedGhostOpponents(store.state.profile).map((id) => getPersonality(id))].map(
+                (p) => ({ value: p.id, label: p.name }),
+              ),
               s.warOpponent,
               (v) => {
                 set({ warOpponent: v });

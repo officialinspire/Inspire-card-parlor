@@ -6,6 +6,8 @@ import { audio } from '@/audio';
 import { loadStoryArt } from '@/story/art';
 import {
   CAMPAIGN_TITLE,
+  EPILOGUE,
+  EPILOGUE_TITLE,
   STAMPS,
   STORY_CHAPTERS,
   getChapter,
@@ -25,9 +27,11 @@ import {
   type StoryOutcome,
 } from '@/story/progress';
 import { takeStoryOutcome } from '@/story/session';
+import { GHOST_REMATCHES, rematchesUnlocked, type GhostRematch } from '@/story/rematches';
 import { isPlayableChapter, levelAfter, type ReplayableScene } from '@/story/world';
 import type { InfoCard } from '@/story/campaign';
 import { adventureContinues } from '../story/continues';
+import { isPuzzleSolved, markPuzzleSolved, solveSuitPuzzle } from '../story/puzzle';
 import { vfxBurst } from '../story/vfx';
 import { preloadStory } from '../story/preload';
 import { setStoryScene } from '@/audio/director';
@@ -92,10 +96,41 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
       // The map's way out is always the main menu (history may hold a finished game).
       back: () => navigate(AppState.MAIN_MENU),
       actions: [musicButton(), journalButton()],
-      body: h('div', { class: 'stack story-stack' }, passportStamps(store), worldMapView(profile(), onStop)),
+      body: h(
+        'div',
+        { class: 'stack story-stack' },
+        passportStamps(store),
+        rematchesUnlocked(profile()) ? finishedBanner() : null,
+        worldMapView(profile(), onStop),
+      ),
     });
     el.dataset.storyView = 'map';
     return { el, destroy: () => undefined };
+  }
+
+  /** Once the story is finished: the epilogue to replay, and the ghosts' rematches. */
+  function finishedBanner(): HTMLElement {
+    return h(
+      'div',
+      { class: 'story-finished', 'data-story-finished': '' },
+      h('p', { class: 'story-finished-text' }, icon('trophy'), 'The thirteenth hand is played.'),
+      h(
+        'div',
+        { class: 'story-finished-actions' },
+        button('Epilogue', () => void epilogue(), {
+          variant: 'ghost',
+          size: 'sm',
+          icon: 'story',
+          attrs: { 'data-action': 'epilogue' },
+        }),
+        button('Ghost rematches', () => void rematches(), {
+          variant: 'gold',
+          size: 'sm',
+          icon: 'play',
+          attrs: { 'data-action': 'rematches' },
+        }),
+      ),
+    );
   }
 
   function chapterView(ch: StoryChapter) {
@@ -370,6 +405,11 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
       });
       if (choice !== 'play') return;
     }
+    // A puzzle (the Chapter 8 door) comes before the first win; once solved it stays solved.
+    if (lv.puzzle && !isLevelComplete(profile(), lv.id) && !isPuzzleSolved(lv.id)) {
+      if (!(await solveSuitPuzzle(lv.puzzle, lv.title))) return;
+      markPuzzleSolved(lv.id);
+    }
     if ((await versus(lv)) !== 'play') return;
     store.dispatch({ type: 'SELECT_STORY_LEVEL', levelId: lv.id, chapterId: ch.id });
     navigate(AppState.GAMEPLAY);
@@ -397,6 +437,13 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
     const choice = await storyResult(o);
     if (o.met && o.chapterComplete && choice !== 'retry') {
       await chapterComplete(ch, o);
+      // The last chapter: the epilogue, then the rematches it opens.
+      if (ch === STORY_CHAPTERS.at(-1)) {
+        go({ kind: 'map' });
+        await epilogue();
+        await rematches();
+        return;
+      }
       go({ kind: 'map' });
       // The newly revealed place on the map gets its moment.
       const opened = STORY_CHAPTERS[ch.index];
@@ -461,6 +508,72 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
         if (deckReward) setTimeout(() => vfxBurst('deck', deckReward, 2.2), 450);
       },
     });
+  }
+
+  async function epilogue(): Promise<void> {
+    setStoryScene('ending', STORY_CHAPTERS.at(-1)!.id);
+    await playScene({
+      title: EPILOGUE_TITLE,
+      lines: EPILOGUE,
+      actions: [
+        { label: 'Skip', value: 'skip', variant: 'ghost' },
+        { label: 'The end', value: 'ok', variant: 'gold' },
+      ],
+      dismissValue: 'ok',
+      className: 'scene-epilogue',
+    });
+    setStoryScene('map');
+  }
+
+  /** The ghosts' rematches: free-play War tables, no story rewards. */
+  async function rematches(): Promise<void> {
+    const choice = await openDialog<string>({
+      title: 'Ghost rematches',
+      icon: 'trophy',
+      class: 'dialog-rematches',
+      body: h(
+        'div',
+        { class: 'rematches', 'data-rematches': '' },
+        h(
+          'p',
+          { class: 'story-hint' },
+          'Friendly War tables against the ghosts. Play as often as you like — the story is already won.',
+        ),
+        h(
+          'ul',
+          { class: 'rematch-list' },
+          ...GHOST_REMATCHES.map((r) =>
+            h(
+              'li',
+              { class: 'rematch', 'data-rematch': r.id },
+              portrait(getCharacter(r.opponent)?.id ?? r.opponent, 'portrait-greet', 'rematch-portrait'),
+              h('span', { class: 'rematch-text' }, h('strong', null, r.title), h('small', null, r.blurb)),
+            ),
+          ),
+        ),
+      ),
+      dismissValue: '',
+      actions: [
+        { label: 'Later', value: '', variant: 'ghost' },
+        ...GHOST_REMATCHES.map((r) => ({
+          label: getCharacter(r.opponent)?.name.replace('’s Ghost', '') ?? r.title,
+          value: r.id,
+          variant: 'gold' as const,
+          icon: 'play' as const,
+        })),
+      ],
+    });
+    const r = GHOST_REMATCHES.find((x) => x.id === choice);
+    if (r) startRematch(r);
+  }
+
+  function startRematch(r: GhostRematch): void {
+    store.dispatch({ type: 'SELECT_STORY_LEVEL', levelId: null, chapterId: null });
+    store.dispatch({ type: 'UPDATE_SETTINGS', patch: { warOpponent: r.opponent } });
+    store.dispatch({ type: 'SELECT_GAME', gameId: 'war' });
+    store.dispatch({ type: 'SELECT_DECK', deckId: r.deckId });
+    store.dispatch({ type: 'SELECT_BOARD', boardId: r.boardId });
+    navigate(AppState.GAMEPLAY);
   }
 
   async function replay(scene: ReplayableScene): Promise<void> {

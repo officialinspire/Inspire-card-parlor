@@ -81,6 +81,27 @@ export interface InfoCard {
   sprite?: string;
 }
 
+/** The four suits, as the story's clues name them. */
+export type StorySuit = 'spades' | 'hearts' | 'diamonds' | 'clubs';
+
+/**
+ * A short puzzle the player solves with the clues they carry, before a
+ * challenge is played (the Chapter 8 door). It uses the scene dialog only:
+ * the player sets the four suit marks in an order. Wrong tries earn a hint
+ * from the cast, and the hints end by spelling out the answer, so the puzzle
+ * can never block the story.
+ */
+export interface SuitPuzzle {
+  /** What the player is looking at, in second-person narration. */
+  prompt: string;
+  /** The order that opens it. */
+  answer: StorySuit[];
+  /** Said after each wrong try, in order; the last one repeats. The last hint gives the answer. */
+  hints: DialogueLine[];
+  /** Said when the right order is set. */
+  solved: DialogueLine[];
+}
+
 export interface StoryLevel {
   id: string;
   number: number;
@@ -98,6 +119,8 @@ export interface StoryLevel {
   finale?: boolean;
   /** Optional field notes shown with the challenge. */
   info?: InfoCard[];
+  /** Solved before the first play of this challenge (replays skip it). */
+  puzzle?: SuitPuzzle;
 }
 
 export interface ChapterArtwork {

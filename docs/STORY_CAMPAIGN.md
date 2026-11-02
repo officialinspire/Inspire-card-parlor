@@ -2,17 +2,20 @@
 
 The story campaign is data. The code reads it; it never plays a game differently.
 
-| What                                                       | Where                                                 |
-| ---------------------------------------------------------- | ----------------------------------------------------- |
-| Chapters, challenges and scenes                            | `src/story/campaign.ts`                               |
-| Shapes of everything below                                 | `src/story/types.ts`                                  |
-| Cast: roles, voice, portraits, theme music, opponent link  | `src/story/cast.ts`                                   |
-| Characters as War / Go Fish opponents                      | `src/games/cpu/storyOpponents.ts`                     |
-| Locations, with documented history kept apart from fiction | `src/story/locations.ts`                              |
-| Collectible evidence                                       | `src/story/evidence.ts`                               |
-| Progress rules: unlocks, objectives, one-time rewards      | `src/story/progress.ts`                               |
-| Save migration from the first campaign                     | `src/story/migrate.ts`, `src/story/legacy.ts`         |
-| Tests                                                      | `tests/unit/story.test.ts`, `tests/e2e/story.spec.ts` |
+| What                                                       | Where                                                                                      |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Chapters, challenges and scenes                            | `src/story/campaign.ts`                                                                    |
+| Shapes of everything below                                 | `src/story/types.ts`                                                                       |
+| Cast: roles, voice, portraits, theme music, opponent link  | `src/story/cast.ts`                                                                        |
+| Characters as War / Go Fish opponents                      | `src/games/cpu/storyOpponents.ts`                                                          |
+| Locations, with documented history kept apart from fiction | `src/story/locations.ts`                                                                   |
+| Collectible evidence                                       | `src/story/evidence.ts`                                                                    |
+| Progress rules: unlocks, objectives, one-time rewards      | `src/story/progress.ts`                                                                    |
+| Save migration from the first campaign                     | `src/story/migrate.ts`, `src/story/legacy.ts`                                              |
+| The Chapter 8 suit-order puzzle (rules)                    | `src/story/puzzle.ts`                                                                      |
+| Epilogue and ghost rematches                               | `src/story/campaign.ts`, `src/story/rematches.ts`                                          |
+| The complete script, generated from the data               | `docs/STORY_SCRIPT_COMPLETE.md` (`npm run story:script`)                                   |
+| Tests                                                      | `tests/unit/story*.test.ts`, `tests/e2e/story.spec.ts`, `demo.spec.ts`, `campaign.spec.ts` |
 
 ## The player
 
@@ -35,21 +38,22 @@ suit marks. One mark is found in each of chapters 2–5:
 - spades, in Mrs. Gray's dossier.
 
 Steve shows which parts of the legend are documented and which were invented
-later. Mary Ball Washington's ghost hands over the key. Jak, Steve and Dante
-open the four-suit door. George Washington's ghost finally plays the hand he
-walked away from, loses it, and does not take it well.
+later, and reads the order the marks go in. Mary Ball Washington's ghost hands
+over the key. Jak, Steve and Dante open the four-suit door. George
+Washington's ghost finally plays the hand he walked away from, loses it, and
+does not take it well — until his mother's letter ends the sulking.
 
-| #   | Chapter                   | Location                            | Host                         | Status      | Adds to the mystery                                                |
-| --- | ------------------------- | ----------------------------------- | ---------------------------- | ----------- | ------------------------------------------------------------------ |
-| 1   | The Card Without a Suit   | Cheryl's Antique Shop               | Cheryl                       | **written** | The card, the receipt, the ledger of twelve, the river postcard    |
-| 2   | The Heron's Bend          | Rappahannock River Station          | Sophia                       | **written** | ♣ mark, a returned envelope to Dante, an old map with four marks   |
-| 3   | Neon Commission           | iSMOKESHOP                          | Dante                        | outline     | Anonymous commission; ♥ mark                                       |
-| 4   | On the Record             | Jak's Backroom Card Parlor          | Jak Gold                     | outline     | Records request names the (fictional) operation; ♦ mark            |
-| 5   | Operation Thirteenth Hand | Mrs. Gray's Intelligence Safehouse  | Mrs. Gray                    | outline     | The operation borrowed a local legend as cover; ♠ mark             |
-| 6   | Square and Compasses      | Fredericksburg Masonic Lodge No. 4  | Steve Gonzales               | outline     | Real lodge history vs. the invented cipher; the order of the suits |
-| 7   | A Mother's Opinion        | Kenmore                             | Mary Ball Washington (ghost) | outline     | The legend of the unfinished game; the iron key                    |
-| 8   | Four Suits Below          | The Underground Tunnels (fictional) | Steve, with Jak and Dante    | outline     | The four-suit door opens                                           |
-| 9   | The Thirteenth Hand       | Washington's Spectral Card Parlor   | George Washington (ghost)    | outline     | The final game; the card is complete                               |
+| #   | Chapter                   | Location                            | Host                         | Status      | Adds to the mystery                                              |
+| --- | ------------------------- | ----------------------------------- | ---------------------------- | ----------- | ---------------------------------------------------------------- |
+| 1   | The Card Without a Suit   | Cheryl's Antique Shop               | Cheryl                       | **written** | The card, the receipt, the ledger of twelve, the river postcard  |
+| 2   | The Heron's Bend          | Rappahannock River Station          | Sophia                       | **written** | ♣ mark, a returned envelope to Dante, an old map with four marks |
+| 3   | Neon Commission           | iSMOKESHOP                          | Dante                        | **written** | “G. W.” commission paid in ones; General Monsterton; ♥ mark      |
+| 4   | On the Record             | Jak's Backroom Card Parlor          | Jak Gold                     | **written** | Card-case receipt; redacted reply names the operation; ♦ mark    |
+| 5   | Operation Thirteenth Hand | Mrs. Gray's Intelligence Safehouse  | Mrs. Gray                    | **written** | The dossier and its legend; Lodge No. 4 and Steve; ♠ mark        |
+| 6   | Square and Compasses      | Fredericksburg Masonic Lodge No. 4  | Steve Gonzales               | **written** | Real lodge history vs. the invented cipher; the order; “Kenmore” |
+| 7   | A Mother's Opinion        | Kenmore                             | Mary Ball Washington (ghost) | **written** | The legend of the unfinished game; Mary's letter; the iron key   |
+| 8   | Four Suits Below          | The Underground Tunnels (fictional) | Steve, with Jak and Dante    | **written** | The suit-order puzzle; the four-suit door opens                  |
+| 9   | The Thirteenth Hand       | Washington's Spectral Card Parlor   | George Washington (ghost)    | **written** | The final game; the card awakens; the epilogue and rematches     |
 
 Each chapter has five challenges and plays all five games once: Klondike,
 Spider, FreeCell, War and Go Fish. Solitaire and War challenges use fixed
@@ -57,17 +61,98 @@ deals, each proven winnable by the solver or by simulating the whole game.
 Go Fish deals fresh on every try at an Easy table; the tests check that its
 objective is met on a good share of deals.
 
-### Outlined chapters (3–9)
+### The complete campaign (Prompt 27)
 
-Their plot beats, mystery thread, location, cast, music, rewards and all five
-challenges are defined. Their scenes are short narration, each line marked
-`status: 'draft'`. No character is given dialogue that has not been written
-and approved. The chapter card shows "Story in development" until the scenes
-are written.
+All nine chapters are written (`status: 'final'`), with their evidence and
+every story opponent's table talk (`linesStatus: 'final'`). The `draft`
+status stays in the data model for future content. The full script, generated
+from the data, is in `docs/STORY_SCRIPT_COMPLETE.md`.
 
-Table talk ("Go fish!") for Dante, Mrs. Gray, Steve and both ghosts is generic
-and marked `linesStatus: 'draft'` in `storyOpponents.ts`. Cheryl's and
-Sophia's table talk is written in character.
+**What did not change.** Every challenge id, game, option, deck, board and
+deal is the one already verified for the outline, so the 45 configurations
+were not re-chosen. Chapters 1 and 2 are untouched. Unlock rules, rewards,
+stamps and achievements are the ones the outline defined.
+
+**The clue chain.** Every clue points to the next person or place, or is used
+again later:
+
+| Chapter | Clue                      | Leads to                                                                                |
+| ------- | ------------------------- | --------------------------------------------------------------------------------------- |
+| 3       | Commission form (“G. W.”) | The client; paid in ones packed in a card case from Jak's case maker → Jak              |
+| 3       | General Monsterton        | Shown to George in Chapter 9 (“Precisely the vigor I asked for”)                        |
+| 3       | ♥ heart mark              | The second corner                                                                       |
+| 4       | Card-case receipt         | Two cases from “G. W.”: one to Dante, one to an unmarked office → Mrs. Gray             |
+| 4       | Redacted records reply    | “Operation Thirteenth Hand”, “four marks”, “waterfront”, “not concluded”                |
+| 4       | ♦ diamond mark            | The third corner (edge marking, seen in 240 fps footage)                                |
+| 5       | The dossier               | Survey photos pinning each mark near the waterfront; the legend; Lodge No. 4 → Steve    |
+| 5       | ♠ spade mark              | The fourth corner                                                                       |
+| 6       | Steve's diagram           | The order: spade, diamond, heart, club (downstream from the north) → the Chapter 8 door |
+| 6       | The thirteenth line       | Raking light on the ledger: KENMORE — ASK MOTHER → Kenmore                              |
+| 7       | Mary's letter             | “You owe me a hand” — ends George's sulking in Chapter 9                                |
+| 7       | Iron key                  | The cellar door on the old waterfront → the tunnels                                     |
+| 8       | Dante's tunnel map        | The way back out                                                                        |
+| 8       | The four-suit door        | The card room → Chapter 9                                                               |
+| 9       | The awakened card         | The mystery is resolved                                                                 |
+
+**The four-suit door (Chapter 8).** Before the first play of challenge 8-5,
+the player sets the four marks in order in a dialog: tap the suits, then
+**Set the marks**. The picker lists them in the order they were found (club,
+heart, diamond, spade), which is wrong. Jak's suggestion (new deck order) is
+wrong too. Each wrong try earns a hint from Jak, then Dante, then Steve, and
+the last hint gives the answer, so the puzzle can't block the story. **Not
+now** always leaves. Once solved, it isn't asked again that session, and
+never once the challenge is won. Spider then plays as the door's thirteen
+tumblers (one run from king to ace). No card engine changes.
+
+**The ending.** Winning the thirteenth hand leads to:
+
+1. the Chapter 9 closing scene, with Mary's restrained cameo;
+2. the epilogue (“Not for Sale”), which brings the whole cast back for one
+   line each and ends with a note: “Best of thirteen? — G. W.”;
+3. **Ghost rematches**: free-play War tables against George Washington's
+   ghost (his deck and board) or Mary Ball Washington's ghost (Kenmore).
+   They give no story rewards. The free-play War table also lists both ghosts
+   as opponents from then on.
+
+The map shows an **Epilogue** and **Ghost rematches** banner once the story is
+finished, and the journal can replay the epilogue.
+
+**Writing rules applied.**
+
+- The player never speaks. Every narration line addresses “you”, and the tests
+  check this, including the puzzle hints and the epilogue.
+- Every chapter's host speaks in its arrival scene. Every cast member speaks
+  in their chapter, and only the cast speaks.
+- Expressions change line by line: at least four distinct poses per chapter
+  with a portrait sheet.
+- Real-person-inspired characters (Jak Gold, Steve Gonzales) are portrayed
+  through their public, positive traits: cardistry, public-records requests
+  and filming for Jak; media and VFX work, Norwich, research and Freemasonry
+  for Steve. Neither does anything criminal or covert. Steve's intelligence
+  background is mentioned only as history he studied.
+- Mary Ball Washington's ghost says plainly that Kenmore was Betty and
+  Fielding's house and that hers was on Charles Street.
+- Dante's chapter stays family-friendly. It is about his art and poster
+  history; “psychonaut” is explained as an explorer of the inner world, and
+  no products appear. The adult-rated iSMOKESHOP boards are never used.
+
+**Real knowledge, kept apart from the legend.** Field notes of kind `history`
+carry a source:
+
+- Day-Glo paint and 1960s concert posters;
+- the federal FOIA (1966) and its exemptions;
+- the hollow-nickel case;
+- WWII escape-map playing cards;
+- the British card tax and the ace of spades;
+- the Capitol cornerstone (1793), Norwich University and the pigpen cipher;
+- the Shriners and their hospitals;
+- the Fredericksburg gunnery;
+- Washington's card playing in his account books, and Meditation Rock;
+- new deck order;
+- the Delaware crossing, Valley Forge and the retreat from Long Island.
+
+Notes of kind `note` say what is invented: Dante's commission, cardistry as an
+art form, the lodge chapter, and the legend.
 
 ## History and fiction
 
@@ -117,17 +202,18 @@ bump `CAMPAIGN_VERSION` in `src/story/ids.ts` and add a migration step.
 
 ## Open items
 
-- Write the scenes for chapters 3–9, then set each chapter's `status` to
-  `'final'`. Also mark its evidence `'final'`, and its characters' table talk
-  `linesStatus: 'final'`.
+- **Fact-check the field notes.** The history notes added for Chapters 3–9
+  were written from general knowledge and each names a source to check. They
+  were not checked against those sources in this session. A fact-check pass
+  is recommended before release, especially for exact dates and names (the
+  Day-Glo founders, the 1894 Mary Washington monument, the Shriners' 1922
+  hospitals, new deck order).
+- **Review the real-person portrayals.** Jak Gold and Steve Gonzales are drawn
+  from real people. Their scenes should be reviewed by, or with, the people
+  they are based on.
 - Jak Gold has no character sprite sheet, so his portrait falls back to his
-  avatar.
-- Chapter 3 is set at Dante's art counter and is about his artwork. The story
-  stays family-friendly: no smoke-shop products or psychonaut material
-  appear, and the adult-rated iSMOKESHOP boards are never used. Decide whether
-  that framing is right.
-- The new UI (evidence board, map, location notes, character sheets) is not
-  built yet. The data is ready for it.
+  avatar, and his chapter's expressions are carried by narration and the
+  other speakers.
 - Old passport stamps are kept in the archive, but the passport only shows the
   nine new stamps.
 
@@ -183,9 +269,9 @@ and art hidden. Finished places are _completed_ and can still be revisited.
   and zoom are not needed, because all nine places fit every layout.
 - Jak Gold still has no expression sheet, so his opponent avatar stands in.
 
-## The playable demo (Prompt 23)
+## The opening chapters (Prompt 23)
 
-Chapters 1 and 2 form the demo.
+Chapters 1 and 2 were the first playable demo.
 
 | Chapter                        | Challenge order                                                                    | Table                                                     |
 | ------------------------------ | ---------------------------------------------------------------------------------- | --------------------------------------------------------- |
@@ -205,12 +291,13 @@ removal of the Embrey Dam, bald eagles, and the river's name. A note says the
 Eastern Woodlands deck is a visual theme of the region's wildlife and plants,
 and that the story's clues do not represent Native spirituality or traditions.
 
-**The end of the demo.** Finishing Chapter 2 opens THE ADVENTURE CONTINUES…, a
-preview of Dante's iSMOKESHOP. Chapter 3 is unlocked in the save, but its scenes
-are still outlines, so the map shows it as **Coming soon** (state `preview`)
-and never opens it as playable. Places beyond it stay undiscovered. The main
-menu reads "Chapter 3 coming soon · 10/10 challenges · 2/2 stamps". The
-progress counts cover written chapters only.
+**The end of the demo (until Prompt 27).** Finishing Chapter 2 used to open
+THE ADVENTURE CONTINUES…, a preview of Chapter 3, with the map showing it as
+**Coming soon** (state `preview`). Now that every chapter is written,
+Chapter 3 simply opens. The preview screen and state remain in the code for
+any future unwritten chapter. The main menu counts all 45 challenges and nine
+stamps (for example, “Chapter 3 · Neon Commission · 10/45 challenges · 2/9
+stamps”).
 
 **Campaign data version 2.** Chapter 2's challenges were reordered. Saved
 progress is remapped by game, not by position (Klondike `th-2-1→th-2-2`, War
@@ -223,13 +310,13 @@ challenges, paid rewards and attempts. The river-map clue is renamed
 **Story audio director** (`src/audio/director.ts`). Every id is checked
 against the track library by the tests.
 
-| Where                                               | Track                                                            |
-| --------------------------------------------------- | ---------------------------------------------------------------- |
-| Menu and world map                                  | The player's own music                                           |
-| Chapter 1: scenes, then the table                   | Downtown FXBG Saturday Walk, then Silent Study Hours             |
-| Chapter 2: scenes, then the table                   | River at Dawn, then Turtle Creek (synthesized)                   |
-| The adventure continues…                            | Downtown Fredericksburg After Dark                               |
-| Later chapters (assigned for when they are written) | Tape Deck Shuffle, High Roller, Shadows of the Occult and others |
+| Where                                                | Track                                                                                                                                            |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Menu and world map                                   | The player's own music                                                                                                                           |
+| Chapter 1: scenes, then the table                    | Downtown FXBG Saturday Walk, then Silent Study Hours                                                                                             |
+| Chapter 2: scenes, then the table                    | River at Dawn, then Turtle Creek (synthesized)                                                                                                   |
+| Chapters 3–9 (scenes / table)                        | Per `STORY_SOUNDTRACK` in `src/audio/director.ts`, e.g. Tape Deck Shuffle / Midnight Tea for Dante, Shadows of the Occult / Last Hand for George |
+| The epilogue (and any “adventure continues” preview) | Downtown Fredericksburg After Dark                                                                                                               |
 
 - The director sets a _context_ track and never overwrites the player's
   saved choice. If the player picks a track during a Story Mode visit, their

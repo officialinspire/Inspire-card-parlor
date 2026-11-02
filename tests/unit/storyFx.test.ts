@@ -100,8 +100,18 @@ describe('asset loading', () => {
     const next = preloadPlan(p);
     for (const id of next)
       expect(id.startsWith('sophia/') || id === 'thumb:location-neon-art-shop/location-neon-art-shop', id).toBe(true);
-    // Once the demo is finished there is nothing playable to warm.
-    expect(preloadPlan(winChapter(p, 'th-2'))).toEqual([]);
+    // After Chapter 2, Chapter 3 is next: Dante's portraits and Jak's parlor tile.
+    const third = preloadPlan(winChapter(p, 'th-2'));
+    expect(third.length).toBeGreaterThan(0);
+    for (const id of third)
+      expect(
+        id.startsWith('dante/') || id === 'thumb:location-jaks-cardistry-parlor/location-jaks-cardistry-parlor',
+        id,
+      ).toBe(true);
+    // Once the whole story is finished there is nothing left to warm.
+    let done = p;
+    for (const c of ['th-2', 'th-3', 'th-4', 'th-5', 'th-6', 'th-7', 'th-8', 'th-9']) done = winChapter(done, c);
+    expect(preloadPlan(done)).toEqual([]);
   });
 });
 

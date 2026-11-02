@@ -1,5 +1,33 @@
 # Release notes
 
+## Unreleased — The Thirteenth Hand, complete
+
+All nine chapters are written and playable, on the development branch.
+Nothing is merged or deployed.
+
+- **Chapters 3–9.** Dante's neon commission, Jak's records request, Mrs.
+  Gray's dossier, Steve at Lodge No. 4, Mary Ball Washington at Kenmore, the
+  tunnels, and George Washington's ghost at the spectral card table. Each
+  chapter has an arrival scene, scenes before and after all five challenges,
+  and a departure.
+- **The clue chain.** Every clue leads somewhere: the four suit marks, the
+  order Steve reads from them, “Kenmore — ask Mother” on the ledger's blank
+  line, Mary's letter, and the iron key.
+- **The four-suit door.** In Chapter 8 you set the four marks in order before
+  the last challenge. Wrong tries earn hints, the last of which gives the
+  answer, and the card games themselves are unchanged.
+- **The ending.** The finale, an epilogue with the whole cast, and **ghost
+  rematches**: free-play War tables against George or Mary, who also join
+  the War table's opponent list.
+- **Table talk.** Dante, Mrs. Gray, Steve and both ghosts now have their own
+  written lines.
+- **Field notes.** New notes on history (each with a source) and notes that
+  say what the story invents.
+- **The full script.** `docs/STORY_SCRIPT_COMPLETE.md` is generated from the
+  game data (`npm run story:script`).
+- **Saves.** The demo's saves carry straight on into Chapter 3. Level ids and
+  deals are unchanged, so nothing is migrated or paid twice.
+
 ## 1.1.0 — The Thirteenth Hand: first playable mobile demo
 
 The first playable Story Mode: **Chapter 1, Cheryl's Antique Shop** and

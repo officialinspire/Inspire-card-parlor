@@ -1,9 +1,10 @@
 import { expect, test, type Page } from '@playwright/test';
-import { action, CURRENT, clickNav, enterParlor, expectNoOverflow, expectScreen, revealInPager, seed } from './helpers';
+import { action, CURRENT, clickNav, enterParlor, expectScreen, revealInPager, seed } from './helpers';
 
 /**
- * The first playable story demo, end to end: Chapter 1 (Cheryl's Antique
- * Shop) → Chapter 2 (Sophia's River Station) → THE ADVENTURE CONTINUES….
+ * The opening of the story, end to end: Chapter 1 (Cheryl's Antique Shop) →
+ * Chapter 2 (Sophia's River Station) → Chapter 3 opens on the map. (The rest
+ * of the campaign is covered in campaign.spec.ts.)
  *
  * Every challenge is started through the real story flow — scene, versus
  * card, table — and checked for its board, deck and opponent. The two War
@@ -136,7 +137,7 @@ async function playChapter(page: Page, chapter: keyof typeof CHAPTERS) {
   await action(page, 'ok').click();
 }
 
-test('the demo: Chapter 1 → Chapter 2 → the adventure continues', async ({ page }) => {
+test('the opening: Chapter 1 → Chapter 2 → Chapter 3 opens', async ({ page }) => {
   await seed(page, { settings: { warSpeed: 'instant', musicPaused: true } });
   await enterParlor(page);
   // Main menu → Story Mode: only the antique shop is open.
@@ -168,14 +169,8 @@ test('the demo: Chapter 1 → Chapter 2 → the adventure continues', async ({ p
   await page.locator(`${CURRENT} [data-nav="back"]`).click();
   await playChapter(page, 'th-2');
 
-  // ---- The adventure continues… ----
-  const continues = page.locator('[data-adventure-continues="th-3"]');
-  await expect(continues).toBeVisible();
-  await expect(continues).toContainText('iSMOKESHOP');
-  await expect(continues).toContainText('still being written');
-  await expect(continues.locator('img[data-story-sprite^="location-neon-art-shop"]')).toBeVisible();
-  await expectNoOverflow(page, '.dialog-continues button');
-  await action(page, 'map').click();
+  // ---- Chapter 3 opens: a real chapter now, not a preview ----
+  await expect(page.locator('[data-adventure-continues]')).toHaveCount(0);
   p = await profile(page);
   expect(p.story.stamps).toEqual(['th-antique-shop', 'th-river-station']);
   expect(p.story.evidence).toEqual(
@@ -184,17 +179,25 @@ test('the demo: Chapter 1 → Chapter 2 → the adventure continues', async ({ p
   expect(p.unlockedDecks).toContain('eastern_woodlands');
   expect(p.story.completed).toHaveLength(10);
   expect(new Set(p.story.rewarded).size).toBe(p.story.rewarded.length);
-  // Chapter 3 is a preview, never presented as playable; nothing beyond it is revealed.
-  await expect(page.locator(`${CURRENT} [data-chapter="th-3"]`)).toHaveAttribute('data-state', 'preview');
-  await expect(page.locator(`${CURRENT} [data-chapter="th-3"]`)).toHaveAccessibleName(/Coming soon/);
-  await expect(page.locator(`${CURRENT} [data-chapter="th-4"]`)).toHaveAttribute('data-state', 'undiscovered');
+  // Dante's shop is open; only the next place is shown (locked); nothing past it is revealed.
+  await expect(page.locator(`${CURRENT} [data-chapter="th-3"]`)).toHaveAttribute('data-state', 'available');
+  await expect(page.locator(`${CURRENT} [data-chapter="th-3"]`)).toHaveAccessibleName(/iSMOKESHOP/);
+  await expect(page.locator(`${CURRENT} [data-chapter="th-4"]`)).toHaveAttribute('data-state', 'locked');
+  await expect(page.locator(`${CURRENT} [data-chapter="th-5"]`)).toHaveAttribute('data-state', 'undiscovered');
+  // Opening it plays Dante's arrival scene, then shows its five challenges.
   await page.locator(`${CURRENT} [data-chapter="th-3"]`).click();
-  await expect(continues).toBeVisible();
-  await expect(page.locator(`${CURRENT} [data-chapter-view="th-3"]`)).toHaveCount(0);
-  await action(page, 'menu').click();
+  // It opens with narration; Dante speaks on the next line.
+  await expect(page.locator('.dialog-scene .is-narration')).toBeVisible();
+  await page.locator('.dialog-scene [data-scene]').click();
+  await expect(page.locator('.dialog-scene [data-portrait="dante"]')).toBeVisible();
+  await action(page, 'skip').click();
+  await expect(page.locator(`${CURRENT} [data-chapter-view="th-3"]`)).toBeVisible();
+  await expect(page.locator(`${CURRENT} [data-level="th-3-1"] [data-challenge-state]`)).toHaveText('Start');
+  await page.locator(`${CURRENT} [data-nav="back"]`).click();
+  await page.locator(`${CURRENT} [data-nav="back"]`).click();
   await expectScreen(page, 'MAIN_MENU');
-  await expect(page.locator(`${CURRENT} [data-value="story-chapter"]`)).toHaveText('Chapter 3 coming soon');
-  await expect(page.locator(`${CURRENT} [data-value="story-progress"]`)).toHaveText('10/10 challenges · 2/2 stamps');
+  await expect(page.locator(`${CURRENT} [data-value="story-chapter"]`)).toHaveText('Chapter 3 · Neon Commission');
+  await expect(page.locator(`${CURRENT} [data-value="story-progress"]`)).toHaveText('10/45 challenges · 2/9 stamps');
 
   // Resume after a reload: everything kept, nothing paid twice.
   const before = await profile(page);
@@ -208,7 +211,7 @@ test('the demo: Chapter 1 → Chapter 2 → the adventure continues', async ({ p
   await clickNav(page, 'STORY_MODE');
   await expect(page.locator(`${CURRENT} .stamp.earned img`)).toHaveCount(2);
   await page.locator(`${CURRENT} [data-action="journal"]`).click();
-  await expect(page.locator(`${CURRENT} [data-journal-objective]`)).toContainText('still being written');
+  await expect(page.locator(`${CURRENT} [data-journal-objective]`)).toContainText('Chapter 3 · Monster Sketches');
   await expect(page.locator(`${CURRENT} [data-clue-count]`)).toHaveText('8 clues found');
 });
 

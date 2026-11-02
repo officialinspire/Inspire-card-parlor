@@ -1,5 +1,7 @@
 import type { Profile } from '@/core/types';
 import {
+  EPILOGUE,
+  EPILOGUE_TITLE,
   STORY_CHAPTERS,
   getChapter,
   getLevel,
@@ -11,6 +13,7 @@ import { EVIDENCE } from './evidence';
 import type { Evidence } from './types';
 import { getLocation } from './locations';
 import { chapterProgress, isChapterComplete, isChapterUnlocked, isLevelComplete, nextLevel, storyOf } from './progress';
+import { isCampaignComplete } from './rematches';
 
 /**
  * What the Story Mode screens show, worked out from the save: the state of
@@ -162,6 +165,9 @@ export function replayableScenes(profile: Profile): ReplayableScene[] {
         scenes.push({ id: `${level.id}:outro`, title: level.title, chapter, lines: level.outro });
     if (isChapterComplete(profile, chapter))
       scenes.push({ id: `${chapter.id}:outro`, title: `${chapter.title}: departure`, chapter, lines: chapter.outro });
+    // The epilogue closes the last chapter, once the whole story is finished.
+    if (chapter === STORY_CHAPTERS.at(-1) && isCampaignComplete(profile))
+      scenes.push({ id: 'epilogue', title: EPILOGUE_TITLE, chapter, lines: [...EPILOGUE] });
     return scenes;
   });
 }

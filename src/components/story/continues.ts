@@ -32,7 +32,7 @@ export function adventureContinues(next: StoryChapter): Promise<'map' | 'menu'> 
         h(
           'p',
           { class: 'continues-soon', 'data-coming-soon': '' },
-          `Chapter ${next.index} is still being written. Thank you for playing the first two chapters of The Thirteenth Hand — your progress is saved and waiting here.`,
+          `Chapter ${next.index} is still being written. Thank you for playing The Thirteenth Hand so far — your progress is saved and waiting here.`,
         ),
       ),
     ),

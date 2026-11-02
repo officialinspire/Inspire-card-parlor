@@ -217,19 +217,19 @@ test('finishing a chapter stamps the passport, grants its rewards and opens the 
   await expect(done).toContainText('Passport stamp');
   await expect(done.locator('img[data-story-sprite="passport-stamps/heron-river"]')).toBeAttached();
   await action(page, 'ok').click();
-  // The demo ends: Chapter 3 is previewed, not offered as playable.
-  await expect(page.locator('[data-adventure-continues="th-3"]')).toBeVisible();
-  await action(page, 'map').click();
+  // The story goes on: no "coming soon" screen, straight back to the map.
+  await expect(page.locator('[data-adventure-continues]')).toHaveCount(0);
   const p = await profile(page);
   expect(p.story.stamps).toEqual(['th-antique-shop', 'th-river-station']);
   expect(p.unlockedDecks).toContain('eastern_woodlands');
   expect(p.unlockedBoards).toContain('rappahannock_riverside');
-  // Back on the map: two stamps, Chapter 3 a preview, nothing beyond it revealed.
+  // Back on the map: two stamps, Chapter 3 open, only Chapter 4 shown beyond it (locked).
   expect(await view(page)).toBe('map');
   await expect(page.locator(`${CURRENT} .stamp.earned`)).toHaveCount(2);
   await expect(tile(page, 'th-2')).toHaveAttribute('data-state', 'completed');
-  await expect(tile(page, 'th-3')).toHaveAttribute('data-state', 'preview');
-  await expect(tile(page, 'th-4')).toHaveAttribute('data-state', 'undiscovered');
+  await expect(tile(page, 'th-3')).toHaveAttribute('data-state', 'available');
+  await expect(tile(page, 'th-4')).toHaveAttribute('data-state', 'locked');
+  await expect(tile(page, 'th-5')).toHaveAttribute('data-state', 'undiscovered');
 });
 
 test('the dialogue engine: tap or keys to advance, back, narration apart from speech, skip', async ({ page }) => {
