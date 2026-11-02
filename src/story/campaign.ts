@@ -124,7 +124,7 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
       ),
       say('cheryl', 'We close at five. It’s ten to.', 'portrait-neutral'),
       narrate('On the counter you see an estate-sale box tied with string. A single card lies on top.'),
-      say('cheryl', 'Bought the whole lot for twenty dollars. Twelve old decks, a ledger, and that.', 'portrait-talk'),
+      say('cheryl', 'Bought the whole lot for twenty dollars. Twelve old decks, a ledger, and that.', 'cards-reveal'),
       narrate(
         'You pick up the card. It has no suit and no number — only the words THE THIRTEENTH HAND, and four blank corners.',
         'thirteenth-hand-card',
@@ -191,7 +191,7 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
           deckId: 'fredericksburg',
           boardId: 'cheryls_antique_shop',
         },
-        intro: [say('cheryl', 'Go Fish. Don’t laugh. It’s how I check a matched set.')],
+        intro: [say('cheryl', 'Go Fish. Don’t laugh. It’s how I check a matched set.', 'cards-shuffle')],
         outro: [
           say('cheryl', 'Every deck in that box is complete. Fifty-two each. So where did the extra card come from?'),
         ],
@@ -235,6 +235,15 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
       credits(300),
       xp(200),
     ],
+    info: [
+      {
+        id: 'fredericksburg-1728',
+        kind: 'history',
+        title: 'Fredericksburg',
+        text: 'Fredericksburg was established in 1728 as a port on the Rappahannock River. Its historic downtown, including Caroline Street, is known today for its antique shops. Cheryl and her shop are fictional.',
+        source: 'City of Fredericksburg; Fredericksburg Area Museum',
+      },
+    ],
     unlockRequirements: {},
   },
 
@@ -245,20 +254,21 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
     title: 'The Heron’s Bend',
     locationId: 'rappahannock-river-station',
     location: 'Rappahannock River Station',
-    description: 'A heron sketch, a trail marker nobody remembers and a letter that never reached Dante.',
+    description:
+      'A heron sketch, a trail marker nobody remembers, Sophia’s river map and a letter that never reached Dante.',
     hostId: 'sophia',
     cast: ['sophia'],
     status: 'final',
     music: 'river-dawn',
     mysteryThread:
-      'The first suit mark — a club — is carved on an old trail marker at the heron’s bend. A returned envelope ties the card to Dante; an old map shows four marks near the waterfront.',
+      'The first suit mark — a club — is carved on an old trail marker at the heron’s bend. Sophia’s annotated river map shows four marks near the old waterfront, and a returned envelope ties the card to Dante.',
     beats: [
       'You walk the river path to Sophia’s ranger station.',
       'Sophia recognises the heron in the postcard sketch as one she logs every morning at the same bend.',
       'She mentions a man who filmed her lobby and asked for the visitor logs: Jak.',
-      'The wildlife log, an unlisted trail marker carved with a club, and the lost-and-found turn up clues.',
-      'An envelope addressed to Dante at iSMOKESHOP came back to the station with a heron card inside.',
-      'An old map shows four marks by the waterfront. Sophia sends you to Dante.',
+      'The wildlife log and an unlisted trail marker carved with a club turn up clues.',
+      'Sophia lends you her annotated river map: four marks circled near the old waterfront.',
+      'An envelope addressed to Dante at iSMOKESHOP came back to the station with a heron card inside. Sophia sends you to Dante.',
     ],
     artwork: {
       backdrop: 'backgrounds/rappahannock_riverside/background.webp',
@@ -302,40 +312,7 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
     ],
     levels: [
       level('th-2', 1, {
-        title: 'Field Notes',
-        game: 'klondike',
-        objectiveText: 'Complete Klondike, Draw 1.',
-        setup: { seed: 3101, options: { draw: 1 }, deckId: 'eastern_woodlands', boardId: 'rappahannock_riverside' },
-        intro: [say('sophia', 'Sort these while I check the wildlife log. Patience is most of this job.')],
-        outro: [
-          narrate(
-            'You read the wildlife log over Sophia’s shoulder: the same heron, at the same bend, every morning for years.',
-            'field-journal-page',
-          ),
-          say('sophia', 'Consistent. Herons usually are. People aren’t.'),
-        ],
-      }),
-      level('th-2', 2, {
-        title: 'Trail Markers',
-        game: 'war',
-        objectiveText: 'Win War against Sophia.',
-        setup: {
-          seed: 2001,
-          options: { opponent: 'sophia' },
-          deckId: 'eastern_woodlands',
-          boardId: 'rappahannock_riverside',
-        },
-        intro: [say('sophia', 'Quick game. Then we walk to the bend.')],
-        outro: [
-          narrate(
-            'At the heron’s bend, an old trail marker leans toward the water. Carved into it is a small club — the exact size of one blank corner on your card.',
-            'club-mark',
-          ),
-          say('sophia', 'That marker is older than I am. It isn’t on our trail inventory.', 'portrait-surprise'),
-        ],
-      }),
-      level('th-2', 3, {
-        title: 'Lost and Found',
+        title: 'Lunch Break',
         game: 'go-fish',
         objective: { kind: 'books', min: 3 },
         objectiveText: 'Lay down 3 books against Sophia.',
@@ -344,7 +321,96 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
           deckId: 'eastern_woodlands',
           boardId: 'rappahannock_riverside',
         },
-        intro: [say('sophia', 'Our lost-and-found has thirty years of everything. Help me sort while we play.')],
+        intro: [
+          say(
+            'sophia',
+            'Lunch break. Twenty minutes. Go Fish is about all I can teach in twenty minutes.',
+            'cards-deal',
+          ),
+        ],
+        outro: [
+          narrate(
+            'You read the wildlife log over Sophia’s shoulder: the same heron, at the same bend, every morning for years.',
+            'field-journal-page',
+          ),
+          say('sophia', 'Consistent. Herons usually are. People aren’t.'),
+        ],
+        info: [
+          {
+            id: 'great-blue-heron',
+            kind: 'wildlife',
+            title: 'Great blue heron',
+            text: 'The great blue heron is the largest heron in North America. It hunts by standing still in shallow water, then striking fast. Herons live along the Rappahannock all year.',
+            source: 'Cornell Lab of Ornithology, All About Birds',
+            sprite: 'river-ranger/heron-card',
+          },
+        ],
+      }),
+      level('th-2', 2, {
+        title: 'Trail Markers',
+        game: 'klondike',
+        objectiveText: 'Complete Klondike, Draw 1.',
+        setup: { seed: 3101, options: { draw: 1 }, deckId: 'eastern_woodlands', boardId: 'rappahannock_riverside' },
+        intro: [
+          narrate('You walk the river trail with Sophia toward the heron’s bend.'),
+          say('sophia', 'Sort these while I check the markers. Patience is most of this job.'),
+        ],
+        outro: [
+          narrate(
+            'At the heron’s bend, an old trail marker leans toward the water. Carved into it is a small club — the exact size of one blank corner on your card.',
+            'club-mark',
+          ),
+          say('sophia', 'That marker is older than I am. It isn’t on our trail inventory.', 'portrait-surprise'),
+        ],
+        info: [
+          {
+            id: 'fall-line',
+            kind: 'history',
+            title: 'The fall line',
+            text: 'Fredericksburg grew where the Rappahannock drops over rocky rapids at the fall line — the farthest point ocean-going ships could sail upstream. The town was established in 1728 as a river port.',
+            source: 'City of Fredericksburg; Fredericksburg Area Museum',
+            sprite: 'river-ranger/river-stone',
+          },
+        ],
+      }),
+      level('th-2', 3, {
+        title: 'The Archive Drawer',
+        game: 'freecell',
+        objectiveText: 'Solve this FreeCell deal.',
+        setup: { seed: 1016, deckId: 'eastern_woodlands', boardId: 'rappahannock_riverside' },
+        intro: [say('sophia', 'If that marker is old, it’ll be on an old map. Archive drawer. Bring patience.')],
+        outro: [
+          narrate(
+            'Sophia spreads her own annotated map of the river trail across the desk and lets you take it. Near the old waterfront, four small marks are circled in pencil.',
+            'sophia-river-map',
+          ),
+          say(
+            'sophia',
+            'Those four marks were on the survey I traced it from. They don’t match anything I know — and one of them is a club.',
+            'portrait-think',
+          ),
+        ],
+        info: [
+          {
+            id: 'american-shad',
+            kind: 'wildlife',
+            title: 'American shad',
+            text: 'Each spring, American shad swim up the Rappahannock from the ocean to spawn. Removing the Embrey Dam at Fredericksburg in 2004 reopened miles of river to them and other migrating fish.',
+            source: 'Friends of the Rappahannock; U.S. Fish and Wildlife Service',
+          },
+        ],
+      }),
+      level('th-2', 4, {
+        title: 'High Water',
+        game: 'spider',
+        objectiveText: 'Clear one-suit Spider.',
+        setup: { seed: 1002, options: { suits: 1 }, deckId: 'eastern_woodlands', boardId: 'rappahannock_riverside' },
+        intro: [
+          say(
+            'sophia',
+            'The river’s up. While we wait it out, the lost-and-found needs sorting. Thirty years of everything.',
+          ),
+        ],
         outro: [
           narrate(
             'In the lost-and-found you find an envelope addressed to Dante at iSMOKESHOP, stamped Return to Sender. Inside is a card with a heron on it.',
@@ -356,34 +422,40 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
             'portrait-greet',
           ),
         ],
-      }),
-      level('th-2', 4, {
-        title: 'The Archive Drawer',
-        game: 'freecell',
-        objectiveText: 'Solve this FreeCell deal.',
-        setup: { seed: 1016, deckId: 'eastern_woodlands', boardId: 'rappahannock_riverside' },
-        intro: [say('sophia', 'There’s an old map in the archive drawer. Let’s see if it’s the one I’m thinking of.')],
-        outro: [
-          narrate(
-            'You unfold a map of the river and the old town. Four small marks sit near the waterfront.',
-            'old-river-map',
-          ),
-          say(
-            'sophia',
-            'Those marks don’t match any survey I know. I’d call them decoration — if one of them weren’t a club.',
-            'portrait-think',
-          ),
+        info: [
+          {
+            id: 'bald-eagle',
+            kind: 'wildlife',
+            title: 'Bald eagles',
+            text: 'Bald eagles nest along the Rappahannock. The Chesapeake Bay region, which the river feeds, has one of the largest bald eagle populations on the Atlantic coast.',
+            source: 'Center for Conservation Biology, William & Mary',
+            sprite: 'river-ranger/binoculars',
+          },
         ],
       }),
       level('th-2', 5, {
-        title: 'High Water',
-        game: 'spider',
+        title: 'End of Shift',
+        game: 'war',
         finale: true,
-        objectiveText: 'Finale: clear one-suit Spider.',
-        setup: { seed: 1002, options: { suits: 1 }, deckId: 'eastern_woodlands', boardId: 'rappahannock_riverside' },
-        intro: [say('sophia', 'The river’s rising, and so is my paperwork. One last game.')],
+        objectiveText: 'Finale: win War against Sophia.',
+        setup: {
+          seed: 2001,
+          options: { opponent: 'sophia' },
+          deckId: 'eastern_woodlands',
+          boardId: 'rappahannock_riverside',
+        },
+        intro: [say('sophia', 'End of shift. One quick game of War — loser files the incident report.', 'cards-deal')],
         outro: [say('sophia', 'One suit found, three to go. I’ll watch the river. You watch that card.')],
         rewards: [credits(130), xp(160)],
+        info: [
+          {
+            id: 'rappahannock-name',
+            kind: 'history',
+            title: 'The river’s name',
+            text: 'The river shares its name with the Rappahannock people. The Rappahannock Tribe, based in Virginia’s Northern Neck, was federally recognized in 2018.',
+            source: 'Rappahannock Tribe; U.S. Bureau of Indian Affairs',
+          },
+        ],
       }),
     ],
     rewards: [
@@ -392,6 +464,14 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
       stamp('th-river-station'),
       credits(350),
       xp(230),
+    ],
+    info: [
+      {
+        id: 'eastern-woodlands-deck',
+        kind: 'note',
+        title: 'About the Eastern Woodlands deck',
+        text: 'The Eastern Woodlands deck is a visual theme: the wildlife, plants and rivers of the region. The clues and mysteries in this story are fiction; they do not represent Native spirituality or traditions.',
+      },
     ],
     unlockRequirements: { chapter: 'th-1' },
   },

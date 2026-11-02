@@ -20,12 +20,14 @@ const STATE_LABEL: Record<MapStop['state'], string> = {
   locked: 'Locked',
   available: 'Open',
   completed: 'Completed',
+  preview: 'Coming soon',
 };
 const STATE_ICON: Record<MapStop['state'], string> = {
   undiscovered: UI.mystery,
   locked: UI.padlock,
   available: UI.pin,
   completed: UI.seal,
+  preview: UI.compass,
 };
 
 export function worldMapView(profile: Profile, onSelect: (stop: MapStop) => void): HTMLElement {

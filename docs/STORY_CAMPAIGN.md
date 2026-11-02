@@ -182,3 +182,38 @@ and art hidden. Finished places are _completed_ and can still be revisited.
   trail in story order, which makes no claim about where the places are. Pan
   and zoom are not needed, because all nine places fit every layout.
 - Jak Gold still has no expression sheet, so his opponent avatar stands in.
+
+## The playable demo (Prompt 23)
+
+Chapters 1 and 2 form the demo.
+
+| Chapter                        | Challenge order                                                                    | Table                                                     |
+| ------------------------------ | ---------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| 1 · Cheryl's Antique Shop      | War vs Cheryl → Klondike (Draw 1) → Go Fish vs Cheryl → FreeCell → Spider (1 suit) | Cheryl's Antique Shop board, Fredericksburg Heritage deck |
+| 2 · Rappahannock River Station | Go Fish vs Sophia → Klondike (Draw 1) → FreeCell → Spider (1 suit) → War vs Sophia | Rappahannock Riverside board, Eastern Woodlands deck      |
+
+Every seeded deal is proven winnable, and Go Fish is dealt at an Easy table.
+
+The Thirteenth Hand card appears in Cheryl's opening scene, not as a reward
+pop-up. Each clue (the receipt, the ledger, the postcard, Sophia's annotated
+river map, the returned envelope addressed to Dante) is found in a closing
+scene and saved to the journal.
+
+**Field notes.** Short, optional cards on real wildlife and local history,
+each with a source: the great blue heron, the fall line, American shad and the
+removal of the Embrey Dam, bald eagles, and the river's name. A note says the
+Eastern Woodlands deck is a visual theme of the region's wildlife and plants,
+and that the story's clues do not represent Native spirituality or traditions.
+
+**The end of the demo.** Finishing Chapter 2 opens THE ADVENTURE CONTINUES…, a
+preview of Dante's iSMOKESHOP. Chapter 3 is unlocked in the save, but its scenes
+are still outlines, so the map shows it as **Coming soon** (state `preview`)
+and never opens it as playable. Places beyond it stay undiscovered. The main
+menu reads "Chapter 3 coming soon · 10/10 challenges · 2/2 stamps". The
+progress counts cover written chapters only.
+
+**Campaign data version 2.** Chapter 2's challenges were reordered. Saved
+progress is remapped by game, not by position (Klondike `th-2-1→th-2-2`, War
+`2→5`, Go Fish `3→1`, FreeCell `4→3`, Spider `5→4`). This applies to completed
+challenges, paid rewards and attempts. The river-map clue is renamed
+`old-river-map → sophia-river-map`. No win is lost and nothing pays twice.

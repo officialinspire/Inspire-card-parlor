@@ -25,7 +25,10 @@ import {
   type StoryOutcome,
 } from '@/story/progress';
 import { takeStoryOutcome } from '@/story/session';
-import { levelAfter, type ReplayableScene } from '@/story/world';
+import { isPlayableChapter, levelAfter, type ReplayableScene } from '@/story/world';
+import type { InfoCard } from '@/story/campaign';
+import { adventureContinues } from '../story/continues';
+import { infoCards } from '../story/notes';
 import type { MapStop } from '@/story/world';
 import { openDialog } from '../Dialog';
 import { icon } from '../icons';
@@ -134,6 +137,14 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
             icon: 'trophy',
             attrs: { 'data-action': 'chapter-rewards' },
           }),
+          chapterNotes(ch).length
+            ? button('Field notes', () => void fieldNotes(`${ch.location}: field notes`, chapterNotes(ch)), {
+                variant: 'ghost',
+                size: 'sm',
+                icon: 'info',
+                attrs: { 'data-action': 'field-notes' },
+              })
+            : null,
         ),
       ),
     );
@@ -246,11 +257,19 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
         icon: 'lock',
       });
     audio.play('tap');
+    if (stop.state === 'preview') return void continues(stop.chapter);
     void openChapter(stop.chapter);
+  }
+
+  /** The end of the playable demo: a preview of the next place, never a playable chapter. */
+  async function continues(next: StoryChapter): Promise<void> {
+    if ((await adventureContinues(next)) === 'menu') navigate(AppState.MAIN_MENU);
+    else go({ kind: 'map' });
   }
 
   async function openChapter(ch: StoryChapter): Promise<void> {
     if (!isChapterUnlocked(profile(), ch)) return;
+    if (!isPlayableChapter(ch)) return continues(ch);
     go({ kind: 'chapter', id: ch.id });
     if (!storyOf(profile()).introsSeen.includes(ch.id)) await chapterIntro(ch);
   }
@@ -268,6 +287,23 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
     // Seen (even when skipped): it is offered again from the chapter and the journal.
     const patch = markIntroSeen(profile(), ch.id);
     if (Object.keys(patch).length) store.dispatch({ type: 'UPDATE_PROFILE', patch });
+  }
+
+  /** Every field note in a chapter: its own, then each challenge's. */
+  const chapterNotes = (ch: StoryChapter): InfoCard[] => [
+    ...(ch.info ?? []),
+    ...ch.levels.flatMap((l) => l.info ?? []),
+  ];
+
+  function fieldNotes(title: string, cards: InfoCard[]): Promise<void> {
+    return openDialog<void>({
+      title,
+      icon: 'info',
+      class: 'dialog-notes',
+      body: infoCards(cards),
+      dismissValue: undefined,
+      actions: [{ label: 'Close', value: undefined }],
+    });
   }
 
   function chapterRewards(ch: StoryChapter): Promise<void> {
@@ -290,6 +326,20 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
           'div',
           { class: 'story-brief' },
           h('p', { class: 'story-objective', 'data-objective': '' }, icon('check'), lv.objectiveText),
+          lv.info?.length
+            ? h(
+                'div',
+                { class: 'story-notes' },
+                ...lv.info.map((card) =>
+                  button(`Field note: ${card.title}`, () => void fieldNotes(card.title, [card]), {
+                    variant: 'ghost',
+                    size: 'sm',
+                    icon: 'info',
+                    attrs: { 'data-field-note': card.id },
+                  }),
+                ),
+              )
+            : null,
           isLevelComplete(profile(), lv.id)
             ? h('p', { class: 'story-hint' }, 'Already complete — play again any time, just for fun.')
             : rewardList(lv.rewards, 'Rewards'),
@@ -329,7 +379,11 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
     const choice = await storyResult(o);
     if (o.met && o.chapterComplete && choice !== 'retry') {
       await chapterComplete(ch, o);
-      return go({ kind: 'map' });
+      go({ kind: 'map' });
+      // The demo ends here: the next chapter is still being written.
+      const next = STORY_CHAPTERS[ch.index];
+      if (next && !isPlayableChapter(next)) await continues(next);
+      return;
     }
     switch (choice) {
       case 'retry':
@@ -364,7 +418,13 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
         ),
         rewardList(o.chapterRewards, 'Chapter rewards'),
         next
-          ? h('p', { class: 'story-hint' }, `A new place is open on the map: ${next.location}.`)
+          ? h(
+              'p',
+              { class: 'story-hint' },
+              isPlayableChapter(next)
+                ? `A new place is open on the map: ${next.location}.`
+                : `A new place appears on the map: ${next.location}.`,
+            )
           : h('p', { class: 'story-hint' }, 'The thirteenth hand is played. The mystery is solved.'),
       ),
       actions: [

@@ -92,13 +92,13 @@ export const EVIDENCE: readonly Evidence[] = [
     status: 'final',
   },
   {
-    id: 'old-river-map',
-    name: 'Old river map',
+    id: 'sophia-river-map',
+    name: 'Sophia’s annotated river map',
     chapter: 'th-2',
     kind: 'document',
     description:
-      'A hand-drawn map of the river and the old town. Four small marks sit near the waterfront; Sophia cannot match them to any survey she knows.',
-    sprite: 'river-ranger/old-river-map',
+      'Sophia’s own map of the river trail, covered in her field notes. Near the old waterfront, four small marks traced from an older survey are circled in pencil; one of them is a club.',
+    sprite: 'rappahannock-river-map/rappahannock-river-map',
     importance: 'key',
     status: 'final',
   },

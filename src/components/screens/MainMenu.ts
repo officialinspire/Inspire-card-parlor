@@ -16,7 +16,8 @@ import { environment } from '../environment';
 import { live } from '../live';
 import { cardBack } from '../Card';
 import { GAMES } from '@/games/registry';
-import { ALL_LEVELS, STORY_CHAPTERS } from '@/story/campaign';
+import { STORY_CHAPTERS } from '@/story/campaign';
+import { isPlayableChapter } from '@/story/world';
 import { isChapterComplete, storyOf } from '@/story/progress';
 import { button, creditsPill, fullscreenButton, iconButton } from '../ui';
 import { Disposer, type ScreenFactory } from '../Screen';
@@ -246,15 +247,23 @@ function storyFeature(): HTMLElement {
     (s) => s.profile,
     (el, p) => {
       const story = storyOf(p);
+      // Only written chapters are playable; the counts cover those, not the outlines.
+      const playable = STORY_CHAPTERS.filter(isPlayableChapter);
+      const levels = new Set(playable.flatMap((c) => c.levels.map((l) => l.id)));
+      const cleared = story.completed.filter((id) => levels.has(id)).length;
       const next = STORY_CHAPTERS.find((c) => !isChapterComplete(p, c));
-      const status = next ? `Chapter ${next.index} · ${next.title}` : 'The Chronicles are complete';
+      const status = !next
+        ? 'The Thirteenth Hand is complete'
+        : isPlayableChapter(next)
+          ? `Chapter ${next.index} · ${next.title}`
+          : `Chapter ${next.index} coming soon`;
       el.replaceChildren(
         h('span', { class: 'play-label' }, story.completed.length ? 'Continue Story' : 'Story Mode'),
         h('span', { class: 'play-hint', 'data-value': 'story-chapter' }, status),
         h(
           'span',
           { class: 'play-progress', 'data-value': 'story-progress' },
-          `${story.completed.length}/${ALL_LEVELS.length} challenges · ${story.stamps.length}/${STORY_CHAPTERS.length} stamps`,
+          `${cleared}/${levels.size} challenges · ${story.stamps.length}/${playable.length} stamps`,
         ),
       );
     },

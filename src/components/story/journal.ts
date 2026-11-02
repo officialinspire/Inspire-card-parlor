@@ -33,7 +33,18 @@ export function journalView(store: Store, onReplay: (scene: ReplayableScene) => 
             `Chapter ${j.objective.chapter.index} · ${j.objective.level.title}: ${j.objective.level.objectiveText}`,
           ),
         )
-      : h('p', null, h('small', null, 'Current objective'), h('strong', null, 'The thirteenth hand is finished.')),
+      : h(
+          'p',
+          null,
+          h('small', null, 'Current objective'),
+          h(
+            'strong',
+            null,
+            j.preview
+              ? `The adventure continues: Chapter ${j.preview.index}, ${j.preview.location}, is still being written.`
+              : 'The thirteenth hand is finished.',
+          ),
+        ),
   );
 
   const clueTile = (c: JournalClue) =>

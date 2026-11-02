@@ -1067,3 +1067,136 @@
     padding-block: 1px;
   }
 }
+
+/* --- Field notes ------------------------------------------------------------ */
+.story-notes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.dialog-notes {
+  width: min(520px, 100%);
+}
+.info-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.info-card {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border-radius: var(--radius-s);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+.info-card.note {
+  border-style: dashed;
+}
+.info-art {
+  flex: none;
+  width: 56px;
+}
+.info-art img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+.info-text {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.info-text p {
+  margin: 0;
+  line-height: 1.45;
+}
+.info-source {
+  font-size: 0.78em;
+  color: var(--ink-faint);
+}
+
+/* --- The adventure continues… ------------------------------------------------ */
+.dialog-continues {
+  width: min(560px, 100%);
+}
+.continues {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.continues-art {
+  position: relative;
+  flex: none;
+  width: clamp(110px, 32vmin, 180px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-m);
+  background: radial-gradient(circle, rgba(181, 106, 216, 0.35), transparent 70%);
+  animation: continues-in 600ms var(--ease) both;
+}
+.continues-place {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 12px rgba(181, 106, 216, 0.5));
+}
+.continues-host {
+  position: absolute;
+  right: -6px;
+  bottom: -6px;
+  width: 38%;
+  aspect-ratio: 3 / 4;
+  border-radius: 46% 46% 10px 10px;
+}
+@keyframes continues-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+}
+.continues-text {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.continues-text p {
+  margin: 0;
+}
+.continues-title {
+  font-family: var(--font-display);
+  font-size: 1.3em;
+  font-weight: 800;
+}
+.continues-soon {
+  font-size: 0.86em;
+  color: var(--ink-faint);
+}
+@media (max-width: 480px) {
+  .continues {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .continues-art {
+    animation: none;
+  }
+}
+
+/* --- Map: a place that is coming soon ---------------------------------------- */
+.map-stop.preview .map-tile {
+  border-style: dashed;
+  border-color: rgba(181, 106, 216, 0.6);
+  background: rgba(255, 250, 235, 0.55);
+}
+.map-stop.preview .map-tile-art > img:not(.map-badge-art) {
+  filter: saturate(0.6) drop-shadow(0 0 8px rgba(181, 106, 216, 0.45));
+}
+.map-stop.preview .map-state {
+  color: #7a3f99;
+}

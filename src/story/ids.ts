@@ -5,4 +5,4 @@
  */
 export const CAMPAIGN_ID = 'thirteenth-hand';
 /** Bump when the meaning of existing level ids changes; saves record the version they were made with. */
-export const CAMPAIGN_VERSION = 1;
+export const CAMPAIGN_VERSION = 2;

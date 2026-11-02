@@ -427,7 +427,7 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
       onExit: () => {
         navigate(story ? AppState.STORY_MODE : AppState.MAIN_MENU);
       },
-      labels: story ? { again: 'Play again', exit: 'Story map' } : undefined,
+      labels: story ? { again: 'Play again', exit: 'Continue story' } : undefined,
     };
     if (gameId === 'war') view = mountWar({ ...common, game: WarGame.restore(table) });
     else if (gameId === 'go-fish') view = mountGoFish({ ...common, game: GoFishGame.restore(table) });

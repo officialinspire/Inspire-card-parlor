@@ -25,13 +25,22 @@ import { chapterProgress, isChapterComplete, isChapterUnlocked, isLevelComplete,
  *  - available: open to play (or revisit);
  *  - completed: all five challenges done (still open to revisit).
  */
-export type LocationState = 'undiscovered' | 'locked' | 'available' | 'completed';
+export type LocationState = 'undiscovered' | 'locked' | 'available' | 'completed' | 'preview';
+
+/**
+ * Chapters whose scenes are still outlines are not offered as playable: once
+ * reached they show as a "coming soon" preview (their progress still unlocks
+ * underneath, so nothing changes for saves when they are written).
+ */
+export const isPlayableChapter = (chapter: StoryChapter) => chapter.status === 'final';
 
 export function locationState(profile: Profile, chapter: StoryChapter): LocationState {
   if (isChapterComplete(profile, chapter)) return 'completed';
-  if (isChapterUnlocked(profile, chapter)) return 'available';
+  if (isChapterUnlocked(profile, chapter)) return isPlayableChapter(chapter) ? 'available' : 'preview';
   const prev = STORY_CHAPTERS[chapter.index - 2];
-  return prev && isChapterUnlocked(profile, prev) ? 'locked' : 'undiscovered';
+  if (!prev || !isChapterUnlocked(profile, prev)) return 'undiscovered';
+  // Past an unfinished chapter, nothing more is revealed yet.
+  return isPlayableChapter(prev) ? 'locked' : 'undiscovered';
 }
 
 export interface MapStop {
@@ -100,6 +109,8 @@ export interface Journal {
   cluesTotal: number;
   chapters: JournalChapter[];
   objective: { chapter: StoryChapter; level: StoryLevel } | null;
+  /** The next chapter, when it is reached but not written yet (the end of the demo). */
+  preview: StoryChapter | null;
 }
 
 /** The quest journal: clues found (in story order), chapter summaries and the current objective. */
@@ -111,7 +122,7 @@ export function journalOf(profile: Profile): Journal {
   }));
   const chapters = STORY_CHAPTERS.flatMap((chapter): JournalChapter[] => {
     const state = locationState(profile, chapter);
-    if (state === 'undiscovered' || state === 'locked') return [];
+    if (state === 'undiscovered' || state === 'locked' || state === 'preview') return [];
     const own = EVIDENCE.filter((e) => e.chapter === chapter.id);
     return [
       {
@@ -123,7 +134,13 @@ export function journalOf(profile: Profile): Journal {
       },
     ];
   });
-  return { clues, cluesTotal: EVIDENCE.length, chapters, objective: currentObjective(profile) };
+  return {
+    clues,
+    cluesTotal: EVIDENCE.length,
+    chapters,
+    objective: currentObjective(profile),
+    preview: STORY_CHAPTERS.find((c) => locationState(profile, c) === 'preview') ?? null,
+  };
 }
 
 export interface ReplayableScene {

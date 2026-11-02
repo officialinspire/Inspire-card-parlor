@@ -85,8 +85,42 @@ export function migrateStoryProgress(profile: MigratableProfile, now = Date.now(
     out.story = emptyCampaignProgress();
     out.storyChapter = 0;
   } else if (story) {
-    // Already this campaign's: fill any fields an older build of it did not write.
-    out.story = { ...emptyCampaignProgress(), ...story, campaign: CAMPAIGN_ID };
+    // Already this campaign's: fill any fields an older build of it did not write, then
+    // bring older data versions up to date.
+    out.story = upgradeCampaignVersion({ ...emptyCampaignProgress(), ...story, version: story.version ?? 1 });
   }
   return out;
+}
+
+/**
+ * Campaign data version 1 → 2: Chapter 2's challenges were put in a new order
+ * (Go Fish, Klondike, FreeCell, Spider, War). Each saved challenge keeps its
+ * meaning: ids are remapped by game, not by position, in completed challenges,
+ * paid rewards and attempts, so no win is lost and nothing is paid twice.
+ * The river-map clue was renamed for Sophia's annotated map.
+ */
+const V2_LEVELS: Record<string, string> = {
+  'th-2-1': 'th-2-2', // Klondike
+  'th-2-2': 'th-2-5', // War
+  'th-2-3': 'th-2-1', // Go Fish
+  'th-2-4': 'th-2-3', // FreeCell
+  'th-2-5': 'th-2-4', // Spider
+};
+const V2_EVIDENCE: Record<string, string> = { 'old-river-map': 'sophia-river-map' };
+
+export function upgradeCampaignVersion(story: StoryProgress): StoryProgress {
+  if ((story.version ?? 1) >= CAMPAIGN_VERSION) return story;
+  let s = story;
+  if ((s.version ?? 1) < 2) {
+    const level = (id: string) => V2_LEVELS[id] ?? id;
+    s = {
+      ...s,
+      completed: [...new Set(s.completed.map(level))],
+      rewarded: [...new Set(s.rewarded.map((k) => (k.startsWith('level:') ? `level:${level(k.slice(6))}` : k)))],
+      attempts: Object.fromEntries(Object.entries(s.attempts).map(([id, n]) => [level(id), n])),
+      evidence: [...new Set((s.evidence ?? []).map((id) => V2_EVIDENCE[id] ?? id))],
+      version: 2,
+    };
+  }
+  return { ...s, version: CAMPAIGN_VERSION };
 }

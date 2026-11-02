@@ -171,3 +171,84 @@ describe('screens render from data, with or without artwork', () => {
     expect(passportStamps(s).querySelector('[data-legacy-stamp]')).toBeNull();
   });
 });
+
+describe('the playable demo (chapters 1–2)', () => {
+  it('plays the challenges in the order the demo specifies', () => {
+    expect(getChapter('th-1')!.levels.map((l) => l.game)).toEqual(['war', 'klondike', 'go-fish', 'freecell', 'spider']);
+    expect(getChapter('th-2')!.levels.map((l) => l.game)).toEqual(['go-fish', 'klondike', 'freecell', 'spider', 'war']);
+    expect(getChapter('th-2')!.levels[0]!.setup.options?.opponents).toEqual(['sophia']);
+    expect(getChapter('th-2')!.levels[4]!.setup.options?.opponent).toBe('sophia');
+    for (const id of ['th-1', 'th-2']) {
+      const ch = getChapter(id)!;
+      expect(ch.levels[0]!.setup.options?.draw ?? 1).toBe(1);
+      for (const l of ch.levels) {
+        if (l.game === 'klondike') expect(l.setup.options?.draw).toBe(1);
+        if (l.game === 'spider') expect(l.setup.options?.suits).toBe(1);
+        if (l.game === 'go-fish') expect(l.setup.options?.difficulty).toBe('easy');
+      }
+    }
+  });
+
+  it('gives Chapter 2 optional field notes on real wildlife and history, each sourced', () => {
+    const ch = getChapter('th-2')!;
+    const notes = [...(ch.info ?? []), ...ch.levels.flatMap((l) => l.info ?? [])];
+    expect(notes.filter((n) => n.kind === 'wildlife').length).toBeGreaterThanOrEqual(2);
+    expect(notes.filter((n) => n.kind === 'history').length).toBeGreaterThanOrEqual(1);
+    for (const n of notes) {
+      if (n.kind !== 'note') expect(n.source, n.id).toBeTruthy();
+      if (n.sprite) expect(sprites.has(n.sprite), n.sprite).toBe(true);
+    }
+    // The deck is a visual theme, not a claim about Native spirituality.
+    expect(notes.find((n) => n.id === 'eastern-woodlands-deck')?.text).toMatch(/visual theme.*do not represent/s);
+    // The river map clue is Sophia's annotated map, with its own artwork.
+    const map = EVIDENCE.find((e) => e.id === 'sophia-river-map')!;
+    expect(map.sprite).toBe('rappahannock-river-map/rappahannock-river-map');
+  });
+
+  it('after Chapter 2, Chapter 3 is a preview (not playable) and nothing past it is revealed', () => {
+    let p = winAll(createDefaultProfile(), 'th-1');
+    p = winAll(p, 'th-2');
+    expect(STORY_CHAPTERS.slice(0, 4).map((c) => locationState(p, c))).toEqual([
+      'completed',
+      'completed',
+      'preview',
+      'undiscovered',
+    ]);
+    expect(currentObjective(p)).toBeNull();
+    expect(journalOf(p).preview?.id).toBe('th-3');
+    expect(storyOf(p).stamps).toEqual(['th-antique-shop', 'th-river-station']);
+  });
+});
+
+describe('campaign data version 2 (Chapter 2 reordered)', () => {
+  it('remaps saved Chapter 2 progress by meaning, so no win is lost and nothing pays twice', async () => {
+    const { migrateProfile } = await import('@/storage/persistence');
+    const v1 = {
+      ...createDefaultProfile(),
+      story: {
+        ...createDefaultProfile().story,
+        version: 1,
+        // Old order: 1 Klondike, 2 War, 3 Go Fish, 4 FreeCell, 5 Spider.
+        completed: ['th-1-1', 'th-2-1', 'th-2-2'],
+        rewarded: ['level:th-2-1', 'level:th-2-2', 'chapter:th-1'],
+        attempts: { 'th-2-1': 2, 'th-2-2': 1 },
+        evidence: ['old-river-map', 'club-mark'],
+      },
+    };
+    const m = migrateProfile(v1 as Profile) as Profile;
+    const s = storyOf({ ...createDefaultProfile(), ...m });
+    expect(s.version).toBe(2);
+    // Klondike was th-2-1, now th-2-2; War was th-2-2, now th-2-5.
+    expect(s.completed).toEqual(['th-1-1', 'th-2-2', 'th-2-5']);
+    expect(s.rewarded).toEqual(['level:th-2-2', 'level:th-2-5', 'chapter:th-1']);
+    expect(s.attempts).toEqual({ 'th-2-2': 2, 'th-2-5': 1 });
+    expect(s.evidence).toEqual(['sophia-river-map', 'club-mark']);
+    // Winning the remapped Klondike again pays nothing more.
+    const p = { ...createDefaultProfile(), ...m };
+    const klondike = getChapter('th-2')!.levels.find((l) => l.game === 'klondike')!;
+    const r = applyStoryResult(p, klondike.id, { gameId: 'klondike', outcome: 'win', durationMs: 1 });
+    expect(r.outcome.levelRewards).toEqual([]);
+    // And the upgrade is idempotent.
+    expect(storyOf({ ...p, ...(migrateProfile(JSON.parse(JSON.stringify(m))) as Profile) })).toEqual(s);
+  });
+});

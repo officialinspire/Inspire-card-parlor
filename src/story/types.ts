@@ -69,6 +69,18 @@ export interface DialogueLine {
 
 export const NARRATOR = 'narrator';
 
+/** A short, optional card of real-world information (wildlife, local history) or a note about the fiction. */
+export interface InfoCard {
+  id: string;
+  kind: 'wildlife' | 'history' | 'note';
+  title: string;
+  text: string;
+  /** Where wildlife and history facts can be checked. */
+  source?: string;
+  /** Story sprite id for a picture. */
+  sprite?: string;
+}
+
 export interface StoryLevel {
   id: string;
   number: number;
@@ -84,6 +96,8 @@ export interface StoryLevel {
   outro: DialogueLine[];
   rewards: StoryReward[];
   finale?: boolean;
+  /** Optional field notes shown with the challenge. */
+  info?: InfoCard[];
 }
 
 export interface ChapterArtwork {
@@ -133,6 +147,8 @@ export interface StoryChapter {
   levels: StoryLevel[];
   rewards: StoryReward[];
   unlockRequirements: UnlockRequirements;
+  /** Optional field notes for the chapter as a whole. */
+  info?: InfoCard[];
 }
 
 export interface Portrait {
