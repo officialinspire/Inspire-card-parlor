@@ -19,7 +19,10 @@ export type Sfx =
   | 'unlock'
   | 'levelup';
 
-type VolumeSettings = Pick<Settings, 'masterVolume' | 'musicVolume' | 'sfxVolume' | 'muted' | 'musicMuted'>;
+type VolumeSettings = Pick<
+  Settings,
+  'masterVolume' | 'musicVolume' | 'sfxVolume' | 'muted' | 'musicMuted' | 'ambience' | 'ambienceVolume'
+>;
 
 /** One playing track: its own gain (for crossfades) and whatever keeps it going. */
 interface Voice {
@@ -37,6 +40,8 @@ const FADE_OUT = 1.2;
 const PAUSE_FADE = 0.6;
 /** Music sits well under effects: effects run at full bus level, music at a third. */
 const MUSIC_BUS = 0.35;
+/** Riverfront ambience sits under the music (src/audio/ambience.ts). */
+const AMBIENCE_BUS = 0.22;
 
 /**
  * Web Audio engine. Music is generative (or recorded, once files exist);
@@ -50,7 +55,17 @@ class AudioEngine {
   #limiter!: DynamicsCompressorNode;
   #music!: GainNode;
   #sfx!: GainNode;
-  #settings: VolumeSettings = { masterVolume: 0.8, musicVolume: 0.5, sfxVolume: 0.7, muted: false, musicMuted: false };
+  #ambience!: GainNode;
+  #settings: VolumeSettings = {
+    masterVolume: 0.8,
+    musicVolume: 0.5,
+    sfxVolume: 0.7,
+    muted: false,
+    musicMuted: false,
+    ambience: true,
+    ambienceVolume: 0.5,
+  };
+  #ambienceNoise: AudioBuffer | null = null;
   #noise: AudioBuffer | null = null;
   #track: MusicTrack = ALL_TRACKS[0]!;
   #voice: Voice | null = null;
@@ -67,12 +82,24 @@ class AudioEngine {
   }
 
   /** Must be called from a user gesture (tap/click/key). */
+  /** Set when the browser refused to create an audio context; sound stays off, play continues. */
+  #broken = false;
+
   async unlock(): Promise<void> {
     if (!this.#ctx) {
       const Ctor =
         window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-      if (!Ctor) return;
-      const ctx = (this.#ctx = new Ctor());
+      if (!Ctor || this.#broken) return;
+      let ctx: AudioContext;
+      try {
+        ctx = new Ctor();
+      } catch (err) {
+        // No sound on this device (blocked, or too many audio contexts): the game plays on silently.
+        this.#broken = true;
+        console.warn('[audio] unavailable:', err);
+        return;
+      }
+      this.#ctx = ctx;
       this.#master = ctx.createGain();
       this.#limiter = ctx.createDynamicsCompressor();
       this.#limiter.threshold.value = -10;
@@ -82,8 +109,11 @@ class AudioEngine {
       this.#limiter.release.value = 0.2;
       this.#music = ctx.createGain();
       this.#sfx = ctx.createGain();
+      this.#ambience = ctx.createGain();
+      this.#ambience.gain.value = 0;
       this.#music.connect(this.#master);
       this.#sfx.connect(this.#master);
+      this.#ambience.connect(this.#master);
       this.#master.connect(this.#limiter).connect(ctx.destination);
       this.#applyVolumes();
     }
@@ -113,6 +143,37 @@ class AudioEngine {
     this.#master.gain.setTargetAtTime(s.muted ? 0 : s.masterVolume, t, 0.05);
     this.#music.gain.setTargetAtTime(s.musicMuted ? 0 : s.musicVolume * MUSIC_BUS, t, 0.1);
     this.#sfx.gain.setTargetAtTime(s.sfxVolume, t, 0.02);
+    // Gentle: switching ambience off or moving its slider never clicks.
+    this.#ambience.gain.setTargetAtTime(s.ambience ? s.ambienceVolume * AMBIENCE_BUS : 0, t, 0.25);
+  }
+
+  /** The context's state ('running', 'suspended'…), or null before the first gesture. */
+  get contextState(): AudioContextState | null {
+    return this.#ctx?.state ?? null;
+  }
+
+  /** The running context, once a gesture has unlocked it (for the ambience). */
+  get context(): AudioContext | null {
+    return this.unlocked ? this.#ctx : null;
+  }
+
+  /** The ambience bus (under the master gain, so Mute all and Master volume apply). */
+  get ambienceOut(): GainNode | null {
+    return this.#ctx ? this.#ambience : null;
+  }
+
+  /**
+   * Eight seconds of white noise for ambience beds. Played looped through
+   * filters, its loop point is inaudible (noise has no phase to break).
+   */
+  ambienceNoise(): AudioBuffer | null {
+    const ctx = this.#ctx;
+    if (!ctx) return null;
+    if (this.#ambienceNoise) return this.#ambienceNoise;
+    const buf = ctx.createBuffer(1, ctx.sampleRate * 8, ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+    return (this.#ambienceNoise = buf);
   }
 
   #noiseBuffer(ctx: AudioContext): AudioBuffer {
@@ -138,7 +199,10 @@ class AudioEngine {
     osc.stop(start + dur + 0.05);
   }
 
-  #swish(start: number, dur: number, freq: number, peak: number, out: AudioNode = this.#sfx): void {
+  /** Where the effect being played goes: the sfx bus, or a quieter send for a repeat. */
+  #out: AudioNode | null = null;
+
+  #swish(start: number, dur: number, freq: number, peak: number, out: AudioNode = this.#out ?? this.#sfx): void {
     const ctx = this.#ctx!;
     const src = ctx.createBufferSource();
     src.buffer = this.#noiseBuffer(ctx);
@@ -156,13 +220,35 @@ class AudioEngine {
 
   /** A soft low thump (war drum, card knock). */
   #thump(start: number, freq: number, dur: number, peak: number): void {
-    this.#tone(freq * 1.6, start, dur, 'sine', peak, this.#sfx, freq * 0.6);
+    this.#tone(freq * 1.6, start, dur, 'sine', peak, this.#out ?? this.#sfx, freq * 0.6);
   }
 
-  play(name: Sfx): void {
+  /**
+   * Plays an effect. `level` (0–1) plays it quieter, e.g. the fifth card of a
+   * quick run; it rides the sfx bus, so the player's volumes still apply.
+   */
+  play(name: Sfx, level = 1): void {
     if (!this.unlocked) return;
-    const t = this.#ctx!.currentTime;
-    const sfx = this.#sfx;
+    const ctx = this.#ctx!;
+    const t = ctx.currentTime;
+    let sfx: AudioNode = this.#sfx;
+    if (level < 0.999) {
+      const send = ctx.createGain();
+      send.gain.value = Math.max(0, level);
+      send.connect(this.#sfx);
+      sfx = send;
+      // Every voice of an effect ends within a couple of seconds.
+      setTimeout(() => send.disconnect(), 2500);
+    }
+    this.#out = sfx;
+    try {
+      this.#effect(name, t, sfx);
+    } finally {
+      this.#out = null;
+    }
+  }
+
+  #effect(name: Sfx, t: number, sfx: AudioNode): void {
     switch (name) {
       case 'tap':
         // A small wooden click: short triangle blip with a touch of noise.
@@ -261,6 +347,11 @@ class AudioEngine {
     return this.#voice !== null;
   }
 
+  /** Voices still sounding: the current one plus any fading out (a crossfade briefly has two). */
+  get voiceCount(): number {
+    return (this.#voice ? 1 : 0) + this.#fading.size;
+  }
+
   /** Seconds played of the current track. */
   get position(): number {
     if (!this.#voice || !this.#ctx) return this.#elapsedBefore;
@@ -337,10 +428,13 @@ class AudioEngine {
     return voice;
   }
 
+  #fading = new Set<Voice>();
+
   #release(voice: Voice, fade: number): void {
     const ctx = this.#ctx!;
     const t = ctx.currentTime;
     voice.alive = false;
+    this.#fading.add(voice);
     voice.gain.gain.cancelScheduledValues(t);
     voice.gain.gain.setValueAtTime(voice.gain.gain.value, t);
     voice.gain.gain.linearRampToValueAtTime(0, t + fade);
@@ -358,6 +452,7 @@ class AudioEngine {
           n.disconnect();
         }
         voice.gain.disconnect();
+        this.#fading.delete(voice);
       },
       (fade + 0.2) * 1000,
     );

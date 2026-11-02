@@ -1,4 +1,5 @@
 import type { Rank } from '@/engine';
+import { STORY_PERSONALITIES } from './storyOpponents';
 
 /**
  * CPU opponents. Traits shape how they play; lines are what they say in
@@ -14,6 +15,8 @@ export interface CpuPersonality {
   deckId?: string;
   initials: string;
   color: string;
+  /** Table talk approved for the game, or a draft to be replaced (story characters only). */
+  linesStatus?: 'final' | 'draft';
   traits: {
     /** 0–1: how much of the public history they keep in mind. */
     memory: number;
@@ -76,23 +79,23 @@ export const PERSONALITIES: readonly CpuPersonality[] = [
   {
     id: 'jak_gold',
     name: 'Jak Gold',
-    title: 'Parlor challenger',
+    title: 'Cardistry artist & First Amendment auditor',
     portrait: { status: 'pending' },
     deckId: 'jak_gold',
     initials: 'JG',
     color: '#e0b54a',
     traits: { memory: 0.75, whimsy: 0.1, pressure: 0.8, greed: 0.7 },
     lines: {
-      greet: ['Deal me in.', 'Let’s see what you’ve got.'],
+      greet: ['Camera’s rolling. Deal me in.', 'Let’s see what you’ve got.'],
       ask: (r, t) => `${t}, hand over your ${rankPlural(r)}.`,
-      gave: ['Knew it.', 'Much obliged.'],
+      gave: ['Knew it.', 'For the record: thank you.'],
       goFish: ['Go fish.', 'Not a one. Go fish.'],
-      lucky: ['Look at that!', 'Right off the top.'],
+      lucky: ['Did everyone get that on video?', 'Right off the top.'],
       book: ['That’s a book.', 'Four of a kind. Next.'],
       warStart: ['War! Let’s see it.', 'Tie? Then it’s war.'],
       roundWin: ['Mine.', 'I’ll take those.'],
       roundLose: ['Take it — for now.', 'Enjoy it while it lasts.'],
-      win: ['Good game. Rematch any time.', 'That one’s mine.'],
+      win: ['Good game. Rematch any time.', 'That one’s going in the highlight reel.'],
       lose: ['Well played. Rematch?', 'You earned that one.'],
     },
   },
@@ -142,7 +145,11 @@ export const PERSONALITIES: readonly CpuPersonality[] = [
   },
 ];
 
-export const getPersonality = (id: string | undefined) => PERSONALITIES.find((p) => p.id === id) ?? PERSONALITIES[0]!;
+/** Story characters, as opponents. Only story challenges seat them; Quick Play uses PERSONALITIES. */
+export const STORY_OPPONENTS: readonly CpuPersonality[] = STORY_PERSONALITIES;
+
+export const getPersonality = (id: string | undefined) =>
+  PERSONALITIES.find((p) => p.id === id) ?? STORY_OPPONENTS.find((p) => p.id === id) ?? PERSONALITIES[0]!;
 
 export const pickLine = (lines: string[], rand: () => number = Math.random) =>
   lines[Math.floor(rand() * lines.length)]!;

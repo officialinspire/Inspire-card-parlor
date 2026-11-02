@@ -7,7 +7,7 @@ import { allDecks, DEFAULT_DECK_ID } from './registry';
 import { FEATURES } from '@/core/config';
 import { isDeckUnlocked, isVariantOwned } from '@/progression/levels';
 import { getDeck } from './registry';
-import { allBoards, DEFAULT_BOARD_ID } from '@/boards/registry';
+import { availableBoards, DEFAULT_BOARD_ID } from '@/boards/registry';
 
 export * from './registry';
 export type { DeckTheme, PreviewContext } from './DeckThemeManager';
@@ -15,6 +15,9 @@ export type { DeckTheme, PreviewContext } from './DeckThemeManager';
 /** Adult-only content needs an edition that allows it, the player's opt-in, and a passed age check. */
 export const matureAllowed = () =>
   FEATURES.matureContent && store.state.settings.matureContent && store.state.settings.ageVerified;
+
+/** The gameboards the player may see (adult-only boards only when allowed). */
+export const visibleBoards = () => availableBoards(matureAllowed());
 
 /** App-wide instances, bound to the store's settings and selections. */
 export const deckThemes = new DeckThemeManager({
@@ -46,15 +49,19 @@ export function attachDeckThemes(s: Store = store): void {
       .map((d) => d.id);
     s.dispatch({ type: 'REPLACE_DECKS', unavailable, known: allDecks().map((d) => d.id), fallback: DEFAULT_DECK_ID });
   };
+  // Boards renamed or removed in an update, or adult boards once adult content
+  // is off, fall back to the default table.
+  const sanitizeBoards = () =>
+    s.dispatch({ type: 'REPLACE_BOARD', known: visibleBoards().map((b) => b.id), fallback: DEFAULT_BOARD_ID });
   sanitize();
-  // Boards renamed or removed in an update fall back to the default table.
-  s.dispatch({ type: 'REPLACE_BOARD', known: allBoards().map((b) => b.id), fallback: DEFAULT_BOARD_ID });
+  sanitizeBoards();
   s.select(
     () => matureAllowed(),
     (allowed) => {
       deckThemes.invalidate();
       if (!allowed) assetManager.clear((key) => key.includes('@') && !deckThemes.isAvailable(key.split('@')[0]!));
       sanitize();
+      sanitizeBoards();
     },
   );
   // Ownership and back choice change what a theme resolves to.

@@ -19,8 +19,7 @@ import { tabs } from '../Tabs';
 import { FEATURES } from '@/core/config';
 import { ageGate, ageGateLocked } from '../AgeGate';
 import { openDialog } from '../Dialog';
-import { deckThemes } from '@/decks';
-import { allBoards } from '@/boards/registry';
+import { deckThemes, visibleBoards } from '@/decks';
 import { artistCredit } from './Collection';
 import { button, screenFrame } from '../ui';
 import type { ScreenFactory } from '../Screen';
@@ -44,7 +43,7 @@ export const SettingsScreen: ScreenFactory = ({ store }) => {
       body: h(
         'dl',
         { class: 'credits', 'data-credits': '' },
-        ...[...deckThemes.list(), ...allBoards()].flatMap((item) => [
+        ...[...deckThemes.list(), ...visibleBoards()].flatMap((item) => [
           h('dt', null, item.name),
           h('dd', null, artistCredit(item.artist)),
         ]),
@@ -62,6 +61,19 @@ export const SettingsScreen: ScreenFactory = ({ store }) => {
         panel(
           slider('Master volume', s().masterVolume, (v) => set({ masterVolume: v })),
           slider('Sound effects', s().sfxVolume, (v) => set({ sfxVolume: v })),
+          tagged(
+            toggle(
+              'Riverfront ambience',
+              s().ambience,
+              (v) => set({ ambience: v }),
+              'Water, breeze and the town at night, behind the menu. Separate from the music.',
+            ),
+            'ambience',
+          ),
+          tagged(
+            slider('Ambience volume', s().ambienceVolume, (v) => set({ ambienceVolume: v })),
+            'ambienceVolume',
+          ),
           toggle('Mute all', s().muted, (v) => set({ muted: v })),
           tagged(
             toggle(
@@ -74,6 +86,15 @@ export const SettingsScreen: ScreenFactory = ({ store }) => {
               hapticsSupported() ? 'Gentle vibrations for wins, wars and mistakes.' : 'Not supported on this device.',
             ),
             'haptics',
+          ),
+          tagged(
+            toggle(
+              'Story soundtrack',
+              s().storySoundtrack,
+              (v) => set({ storySoundtrack: v }),
+              'Story Mode chooses music for each place; picking a track yourself always wins',
+            ),
+            'storySoundtrack',
           ),
           button('Test sound', () => audio.play('chime'), { variant: 'secondary', sfx: null, icon: 'music' }),
         ),
@@ -98,11 +119,33 @@ export const SettingsScreen: ScreenFactory = ({ store }) => {
             s().theme,
             (v) => set({ theme: v }),
           ),
+          tagged(
+            segmented(
+              'Startup intro',
+              [
+                { value: 'auto', label: 'Auto' },
+                { value: 'full', label: 'Full' },
+                { value: 'brief', label: 'Brief' },
+              ],
+              s().startupIntro,
+              (v) => set({ startupIntro: v }),
+            ),
+            'startupIntro',
+          ),
           toggle(
             'Reduced motion',
             s().reducedMotion,
             (v) => set({ reducedMotion: v }),
             'Minimize animations and transitions',
+          ),
+          tagged(
+            toggle(
+              'Low effects',
+              s().lowEffects,
+              (v) => set({ lowEffects: v }),
+              'No story particles or glows — smoother on older phones',
+            ),
+            'lowEffects',
           ),
           tagged(
             toggle(
@@ -256,6 +299,21 @@ export const SettingsScreen: ScreenFactory = ({ store }) => {
               navigate(AppState.MAIN_MENU);
             },
             { variant: 'danger', attrs: { 'data-action': 'reset' } },
+          ),
+          button(
+            'Repair offline files',
+            async () => {
+              const ok = await confirmDialog({
+                title: 'Repair offline files?',
+                message:
+                  'The game’s offline copy will be cleared and downloaded fresh. Use this if something looks out of date or broken after an update. Your progress, collection and settings are kept.',
+                confirmLabel: 'Repair and reload',
+                cancelLabel: 'Cancel',
+              });
+              if (!ok) return;
+              (window as Window & { __icpRepair?: () => void }).__icpRepair?.();
+            },
+            { variant: 'secondary', icon: 'restart', attrs: { 'data-action': 'repair-offline' } },
           ),
           button('Artwork credits', () => void showCredits(), {
             variant: 'secondary',

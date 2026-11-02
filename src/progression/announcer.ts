@@ -28,10 +28,13 @@ type Announcement =
 const MAX_AT_ONCE = 3;
 let queue: Announcement[] = [];
 let inPlay = false;
+// Achievements queued since the current (or last) hand started: those lead a burst.
+const thisHand = new Set<Announcement>();
 let bound: Store | null = null;
 
 /** Gameplay calls this when a hand starts (true) and ends (false). */
 export function setPlayInProgress(on: boolean): void {
+  if (on && !inPlay) thisHand.clear();
   inPlay = on;
   if (!on) flush();
 }
@@ -45,6 +48,7 @@ const held = () =>
 
 export function announce(a: Announcement): void {
   queue.push(a);
+  if (a.kind === 'achievement') thisHand.add(a);
   if (!held()) queueMicrotask(flush);
 }
 
@@ -55,9 +59,13 @@ export function pendingAnnouncements(): readonly Announcement[] {
 let batchTimer: ReturnType<typeof setTimeout> | null = null;
 
 /**
- * Shows up to three toasts at once: achievements first (a burst collapses
- * into one "N more" toast), then unlocks and level-ups. Anything left waits
- * for the next batch, once these have had their moment — nothing is dropped.
+ * Shows up to three toasts at once: achievements first, then unlocks and
+ * level-ups. A burst of achievements collapses into one "N more" toast, led
+ * by the first one earned at the table this hand — what the player just did,
+ * not something still waiting from before the deal (the boot burst), and not
+ * the routine "game finished" ones that pile in as the hand ends. Anything
+ * left waits for the next batch, once these have had their moment — nothing
+ * is dropped.
  */
 function flush(): void {
   if (held() || !queue.length || batchTimer) return;
@@ -67,7 +75,8 @@ function flush(): void {
   const others = items.filter((a) => a.kind !== 'achievement' && a.kind !== 'summary');
   const ordered: Announcement[] = [];
   if (achievements.length + (summed ? 1 : 0) > 2) {
-    ordered.push(achievements[0] ?? { kind: 'summary', count: summed });
+    const lead = achievements.find((a) => thisHand.has(a)) ?? achievements.at(-1);
+    ordered.push(lead ?? { kind: 'summary', count: summed });
     const rest = achievements.length ? achievements.length - 1 + summed : 0;
     if (rest) ordered.push({ kind: 'summary', count: rest });
   } else {
@@ -77,6 +86,7 @@ function flush(): void {
   ordered.push(...others);
   const now = ordered.slice(0, MAX_AT_ONCE);
   queue = ordered.slice(MAX_AT_ONCE);
+  for (const a of now) thisHand.delete(a);
   now.forEach((a, i) => show(a, i));
   if (queue.length)
     batchTimer = setTimeout(
@@ -147,7 +157,7 @@ const visibleDecks = (p: Profile) =>
     .map((d) => d.id);
 const visibleBoards = (p: Profile) =>
   allBoards()
-    .filter((b) => isBoardUnlocked(b.id, p))
+    .filter((b) => b.contentRating !== 'mature' && isBoardUnlocked(b.id, p))
     .map((b) => b.id);
 
 /** Watches the profile for things worth announcing, and releases held toasts at the right moments. */

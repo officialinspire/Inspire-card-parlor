@@ -26,6 +26,7 @@ const INITIAL = [
   'eastern_woodlands',
   'spycraft',
   'freemasonry',
+  'washington_ghost',
 ];
 
 /** Decks whose artwork has been uploaded and extracted (art/sources/manifest.json). */
@@ -38,6 +39,8 @@ const UPLOADED = [
   'fredericksburg_downtown',
   'eastern_woodlands',
   'spycraft',
+  'freemasonry',
+  'washington_ghost',
 ];
 
 const ctx = (
@@ -210,12 +213,12 @@ describe('deck validation', () => {
 
   it('reports missing files: warnings while pending, errors once ready', async () => {
     const none = () => false;
-    const pending = await validateDeckFiles(getDeck('freemasonry'), none);
+    const pending = await validateDeckFiles(getDeck('yummyhole_standard'), none);
     expect(pending.ok).toBe(true);
     expect(pending.issues.find((i) => i.code === 'files.missing')?.level).toBe('warning');
     expect(pending.missingFiles.map((f) => f.purpose)).toEqual(['face sprite sheet', 'card back', 'preview image']);
 
-    const strict = await validateDeckFiles(getDeck('freemasonry'), none, { strict: true });
+    const strict = await validateDeckFiles(getDeck('yummyhole_standard'), none, { strict: true });
     expect(strict.ok).toBe(false);
 
     const ready = await validateDeckFiles(fixture, none);
@@ -278,11 +281,11 @@ describe('DeckThemeManager', () => {
 
   it('substitutes the placeholder template for pending decks on request', () => {
     const m = new DeckThemeManager(ctx({ placeholder: true }));
-    expect(m.resolve('freemasonry').placeholder).toBe(true);
-    expect(m.resolve('freemasonry').assets).toBe(PLACEHOLDER_ASSETS);
+    expect(m.resolve('yummyhole_standard').placeholder).toBe(true);
+    expect(m.resolve('yummyhole_standard').assets).toBe(PLACEHOLDER_ASSETS);
     expect(m.resolve('test_fixture').placeholder).toBe(false);
     // Decks with uploaded artwork never fall back to the template.
     expect(m.resolve('classic').placeholder).toBe(false);
-    expect(new DeckThemeManager(ctx()).resolve('freemasonry').placeholder).toBe(false);
+    expect(new DeckThemeManager(ctx()).resolve('yummyhole_standard').placeholder).toBe(false);
   });
 });

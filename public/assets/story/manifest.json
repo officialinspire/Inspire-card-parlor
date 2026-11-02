@@ -1,0 +1,6137 @@
+{
+  "about": "Story artwork built by scripts/art/story_assets.py from art/story/sources.json. Do not edit by hand.",
+  "pipelineVersion": 1,
+  "poseRows": [
+    {
+      "row": "portrait",
+      "poses": [
+        "greet",
+        "neutral",
+        "talk",
+        "think",
+        "doubt",
+        "surprise"
+      ]
+    },
+    {
+      "row": "cards",
+      "poses": [
+        "deal",
+        "fan",
+        "shuffle",
+        "reveal",
+        "special",
+        "signature"
+      ]
+    },
+    {
+      "row": "full",
+      "poses": [
+        "stand",
+        "arms-crossed",
+        "gesture-a",
+        "gesture-b",
+        "gesture-c",
+        "signature"
+      ]
+    }
+  ],
+  "sheets": [
+    {
+      "id": "cheryl",
+      "title": "Cheryl",
+      "group": "characters",
+      "layout": {
+        "type": "grid",
+        "cols": 6,
+        "rows": 3
+      },
+      "source": {
+        "path": "art/sources/story/characters/Cheryl’s Antique Parlor Character Sprites.png",
+        "sha256": "3c3535e931be53c6608c86b53de1fca0a1490ed0db11753ea63f21ed93cf60ce",
+        "width": 1536,
+        "height": 1024,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.371
+      },
+      "verified": false,
+      "notes": "18 poses in a 6x3 grid: expression portraits, card-handling busts, full-body poses. Pose names are positional slot conventions.",
+      "sprites": [
+        {
+          "id": "cheryl/portrait-greet",
+          "name": "portrait-greet",
+          "frame": {
+            "x": 18,
+            "y": 13,
+            "w": 304,
+            "h": 275
+          },
+          "src": "assets/story/characters/cheryl/portrait-greet.webp",
+          "width": 304,
+          "height": 275,
+          "thumb": "assets/story/characters/cheryl/thumbs/portrait-greet.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 116
+        },
+        {
+          "id": "cheryl/portrait-neutral",
+          "name": "portrait-neutral",
+          "frame": {
+            "x": 305,
+            "y": 13,
+            "w": 222,
+            "h": 275
+          },
+          "src": "assets/story/characters/cheryl/portrait-neutral.webp",
+          "width": 222,
+          "height": 275,
+          "thumb": "assets/story/characters/cheryl/thumbs/portrait-neutral.webp",
+          "thumbWidth": 103,
+          "thumbHeight": 128
+        },
+        {
+          "id": "cheryl/portrait-talk",
+          "name": "portrait-talk",
+          "frame": {
+            "x": 527,
+            "y": 15,
+            "w": 265,
+            "h": 273
+          },
+          "src": "assets/story/characters/cheryl/portrait-talk.webp",
+          "width": 265,
+          "height": 273,
+          "thumb": "assets/story/characters/cheryl/thumbs/portrait-talk.webp",
+          "thumbWidth": 124,
+          "thumbHeight": 128
+        },
+        {
+          "id": "cheryl/portrait-think",
+          "name": "portrait-think",
+          "frame": {
+            "x": 791,
+            "y": 26,
+            "w": 234,
+            "h": 262
+          },
+          "src": "assets/story/characters/cheryl/portrait-think.webp",
+          "width": 234,
+          "height": 262,
+          "thumb": "assets/story/characters/cheryl/thumbs/portrait-think.webp",
+          "thumbWidth": 114,
+          "thumbHeight": 128
+        },
+        {
+          "id": "cheryl/portrait-doubt",
+          "name": "portrait-doubt",
+          "frame": {
+            "x": 1045,
+            "y": 13,
+            "w": 230,
+            "h": 275
+          },
+          "src": "assets/story/characters/cheryl/portrait-doubt.webp",
+          "width": 230,
+          "height": 275,
+          "thumb": "assets/story/characters/cheryl/thumbs/portrait-doubt.webp",
+          "thumbWidth": 107,
+          "thumbHeight": 128
+        },
+        {
+          "id": "cheryl/portrait-surprise",
+          "name": "portrait-surprise",
+          "frame": {
+            "x": 1288,
+            "y": 9,
+            "w": 243,
+            "h": 277
+          },
+          "src": "assets/story/characters/cheryl/portrait-surprise.webp",
+          "width": 243,
+          "height": 277,
+          "thumb": "assets/story/characters/cheryl/thumbs/portrait-surprise.webp",
+          "thumbWidth": 112,
+          "thumbHeight": 128
+        },
+        {
+          "id": "cheryl/cards-deal",
+          "name": "cards-deal",
+          "frame": {
+            "x": 18,
+            "y": 288,
+            "w": 270,
+            "h": 290
+          },
+          "src": "assets/story/characters/cheryl/cards-deal.webp",
+          "width": 270,
+          "height": 290,
+          "thumb": "assets/story/characters/cheryl/thumbs/cards-deal.webp",
+          "thumbWidth": 119,
+          "thumbHeight": 128
+        },
+        {
+          "id": "cheryl/cards-fan",
+          "name": "cards-fan",
+          "frame": {
+            "x": 298,
+            "y": 288,
+            "w": 230,
+            "h": 284
+          },
+          "src": "assets/story/characters/cheryl/cards-fan.webp",
+          "width": 230,
+          "height": 284,
+          "thumb": "assets/story/characters/cheryl/thumbs/cards-fan.webp",
+          "thumbWidth": 104,
+          "thumbHeight": 128
+        },
+        {
+          "id": "cheryl/cards-shuffle",
+          "name": "cards-shuffle",
+          "frame": {
+            "x": 527,
+            "y": 288,
+            "w": 259,
+            "h": 282
+          },
+          "src": "assets/story/characters/cheryl/cards-shuffle.webp",
+          "width": 259,
+          "height": 282,
+          "thumb": "assets/story/characters/cheryl/thumbs/cards-shuffle.webp",
+          "thumbWidth": 118,
+          "thumbHeight": 128
+        },
+        {
+          "id": "cheryl/cards-reveal",
+          "name": "cards-reveal",
+          "frame": {
+            "x": 790,
+            "y": 288,
+            "w": 233,
+            "h": 278
+          },
+          "src": "assets/story/characters/cheryl/cards-reveal.webp",
+          "width": 233,
+          "height": 278,
+          "thumb": "assets/story/characters/cheryl/thumbs/cards-reveal.webp",
+          "thumbWidth": 107,
+          "thumbHeight": 128
+        },
+        {
+          "id": "cheryl/cards-special",
+          "name": "cards-special",
+          "frame": {
+            "x": 1033,
+            "y": 288,
+            "w": 254,
+            "h": 282
+          },
+          "src": "assets/story/characters/cheryl/cards-special.webp",
+          "width": 254,
+          "height": 282,
+          "thumb": "assets/story/characters/cheryl/thumbs/cards-special.webp",
+          "thumbWidth": 115,
+          "thumbHeight": 128
+        },
+        {
+          "id": "cheryl/cards-signature",
+          "name": "cards-signature",
+          "frame": {
+            "x": 1287,
+            "y": 294,
+            "w": 243,
+            "h": 276
+          },
+          "src": "assets/story/characters/cheryl/cards-signature.webp",
+          "width": 243,
+          "height": 276,
+          "thumb": "assets/story/characters/cheryl/thumbs/cards-signature.webp",
+          "thumbWidth": 113,
+          "thumbHeight": 128
+        },
+        {
+          "id": "cheryl/full-stand",
+          "name": "full-stand",
+          "frame": {
+            "x": 11,
+            "y": 568,
+            "w": 256,
+            "h": 441
+          },
+          "src": "assets/story/characters/cheryl/full-stand.webp",
+          "width": 256,
+          "height": 441,
+          "thumb": "assets/story/characters/cheryl/thumbs/full-stand.webp",
+          "thumbWidth": 74,
+          "thumbHeight": 128
+        },
+        {
+          "id": "cheryl/full-arms-crossed",
+          "name": "full-arms-crossed",
+          "frame": {
+            "x": 282,
+            "y": 570,
+            "w": 193,
+            "h": 438
+          },
+          "src": "assets/story/characters/cheryl/full-arms-crossed.webp",
+          "width": 193,
+          "height": 438,
+          "thumb": "assets/story/characters/cheryl/thumbs/full-arms-crossed.webp",
+          "thumbWidth": 56,
+          "thumbHeight": 128
+        },
+        {
+          "id": "cheryl/full-gesture-a",
+          "name": "full-gesture-a",
+          "frame": {
+            "x": 522,
+            "y": 570,
+            "w": 256,
+            "h": 435
+          },
+          "src": "assets/story/characters/cheryl/full-gesture-a.webp",
+          "width": 256,
+          "height": 435,
+          "thumb": "assets/story/characters/cheryl/thumbs/full-gesture-a.webp",
+          "thumbWidth": 75,
+          "thumbHeight": 128
+        },
+        {
+          "id": "cheryl/full-gesture-b",
+          "name": "full-gesture-b",
+          "frame": {
+            "x": 787,
+            "y": 573,
+            "w": 199,
+            "h": 432
+          },
+          "src": "assets/story/characters/cheryl/full-gesture-b.webp",
+          "width": 199,
+          "height": 432,
+          "thumb": "assets/story/characters/cheryl/thumbs/full-gesture-b.webp",
+          "thumbWidth": 59,
+          "thumbHeight": 128
+        },
+        {
+          "id": "cheryl/full-gesture-c",
+          "name": "full-gesture-c",
+          "frame": {
+            "x": 1038,
+            "y": 570,
+            "w": 211,
+            "h": 437
+          },
+          "src": "assets/story/characters/cheryl/full-gesture-c.webp",
+          "width": 211,
+          "height": 437,
+          "thumb": "assets/story/characters/cheryl/thumbs/full-gesture-c.webp",
+          "thumbWidth": 62,
+          "thumbHeight": 128
+        },
+        {
+          "id": "cheryl/full-signature",
+          "name": "full-signature",
+          "frame": {
+            "x": 1286,
+            "y": 569,
+            "w": 246,
+            "h": 437
+          },
+          "src": "assets/story/characters/cheryl/full-signature.webp",
+          "width": 246,
+          "height": 437,
+          "thumb": "assets/story/characters/cheryl/thumbs/full-signature.webp",
+          "thumbWidth": 72,
+          "thumbHeight": 128
+        }
+      ],
+      "status": "processed",
+      "warnings": []
+    },
+    {
+      "id": "sophia",
+      "title": "Sophia",
+      "group": "characters",
+      "layout": {
+        "type": "grid",
+        "cols": 6,
+        "rows": 3
+      },
+      "source": {
+        "path": "art/sources/story/characters/Sophia's Ranger Character Sprite Sheet.png",
+        "sha256": "dd84ddf91650d2be991b56d2dc77ddf5396e46372d221ac59555d4c0b8d33a2b",
+        "width": 1536,
+        "height": 1024,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.415
+      },
+      "verified": false,
+      "notes": "18 poses in a 6x3 grid: expression portraits, card-handling busts, full-body poses. Pose names are positional slot conventions.",
+      "sprites": [
+        {
+          "id": "sophia/portrait-greet",
+          "name": "portrait-greet",
+          "frame": {
+            "x": 11,
+            "y": 7,
+            "w": 279,
+            "h": 276
+          },
+          "src": "assets/story/characters/sophia/portrait-greet.webp",
+          "width": 279,
+          "height": 276,
+          "thumb": "assets/story/characters/sophia/thumbs/portrait-greet.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 127
+        },
+        {
+          "id": "sophia/portrait-neutral",
+          "name": "portrait-neutral",
+          "frame": {
+            "x": 306,
+            "y": 7,
+            "w": 235,
+            "h": 276
+          },
+          "src": "assets/story/characters/sophia/portrait-neutral.webp",
+          "width": 235,
+          "height": 276,
+          "thumb": "assets/story/characters/sophia/thumbs/portrait-neutral.webp",
+          "thumbWidth": 109,
+          "thumbHeight": 128
+        },
+        {
+          "id": "sophia/portrait-talk",
+          "name": "portrait-talk",
+          "frame": {
+            "x": 546,
+            "y": 8,
+            "w": 270,
+            "h": 272
+          },
+          "src": "assets/story/characters/sophia/portrait-talk.webp",
+          "width": 270,
+          "height": 272,
+          "thumb": "assets/story/characters/sophia/thumbs/portrait-talk.webp",
+          "thumbWidth": 127,
+          "thumbHeight": 128,
+          "clipped": {
+            "right": 10
+          }
+        },
+        {
+          "id": "sophia/portrait-think",
+          "name": "portrait-think",
+          "frame": {
+            "x": 799,
+            "y": 11,
+            "w": 245,
+            "h": 269
+          },
+          "src": "assets/story/characters/sophia/portrait-think.webp",
+          "width": 245,
+          "height": 269,
+          "thumb": "assets/story/characters/sophia/thumbs/portrait-think.webp",
+          "thumbWidth": 117,
+          "thumbHeight": 128,
+          "clipped": {
+            "left": 10
+          }
+        },
+        {
+          "id": "sophia/portrait-doubt",
+          "name": "portrait-doubt",
+          "frame": {
+            "x": 1055,
+            "y": 9,
+            "w": 226,
+            "h": 274
+          },
+          "src": "assets/story/characters/sophia/portrait-doubt.webp",
+          "width": 226,
+          "height": 274,
+          "thumb": "assets/story/characters/sophia/thumbs/portrait-doubt.webp",
+          "thumbWidth": 106,
+          "thumbHeight": 128
+        },
+        {
+          "id": "sophia/portrait-surprise",
+          "name": "portrait-surprise",
+          "frame": {
+            "x": 1285,
+            "y": 7,
+            "w": 244,
+            "h": 272
+          },
+          "src": "assets/story/characters/sophia/portrait-surprise.webp",
+          "width": 244,
+          "height": 272,
+          "thumb": "assets/story/characters/sophia/thumbs/portrait-surprise.webp",
+          "thumbWidth": 115,
+          "thumbHeight": 128
+        },
+        {
+          "id": "sophia/cards-deal",
+          "name": "cards-deal",
+          "frame": {
+            "x": 10,
+            "y": 284,
+            "w": 277,
+            "h": 295
+          },
+          "src": "assets/story/characters/sophia/cards-deal.webp",
+          "width": 277,
+          "height": 295,
+          "thumb": "assets/story/characters/sophia/thumbs/cards-deal.webp",
+          "thumbWidth": 120,
+          "thumbHeight": 128
+        },
+        {
+          "id": "sophia/cards-fan",
+          "name": "cards-fan",
+          "frame": {
+            "x": 287,
+            "y": 283,
+            "w": 253,
+            "h": 296
+          },
+          "src": "assets/story/characters/sophia/cards-fan.webp",
+          "width": 253,
+          "height": 296,
+          "thumb": "assets/story/characters/sophia/thumbs/cards-fan.webp",
+          "thumbWidth": 109,
+          "thumbHeight": 128
+        },
+        {
+          "id": "sophia/cards-shuffle",
+          "name": "cards-shuffle",
+          "frame": {
+            "x": 538,
+            "y": 283,
+            "w": 263,
+            "h": 281
+          },
+          "src": "assets/story/characters/sophia/cards-shuffle.webp",
+          "width": 263,
+          "height": 281,
+          "thumb": "assets/story/characters/sophia/thumbs/cards-shuffle.webp",
+          "thumbWidth": 120,
+          "thumbHeight": 128
+        },
+        {
+          "id": "sophia/cards-reveal",
+          "name": "cards-reveal",
+          "frame": {
+            "x": 814,
+            "y": 287,
+            "w": 215,
+            "h": 281
+          },
+          "src": "assets/story/characters/sophia/cards-reveal.webp",
+          "width": 215,
+          "height": 281,
+          "thumb": "assets/story/characters/sophia/thumbs/cards-reveal.webp",
+          "thumbWidth": 98,
+          "thumbHeight": 128
+        },
+        {
+          "id": "sophia/cards-special",
+          "name": "cards-special",
+          "frame": {
+            "x": 1035,
+            "y": 282,
+            "w": 269,
+            "h": 287
+          },
+          "src": "assets/story/characters/sophia/cards-special.webp",
+          "width": 269,
+          "height": 287,
+          "thumb": "assets/story/characters/sophia/thumbs/cards-special.webp",
+          "thumbWidth": 120,
+          "thumbHeight": 128
+        },
+        {
+          "id": "sophia/cards-signature",
+          "name": "cards-signature",
+          "frame": {
+            "x": 1311,
+            "y": 286,
+            "w": 225,
+            "h": 276
+          },
+          "src": "assets/story/characters/sophia/cards-signature.webp",
+          "width": 225,
+          "height": 276,
+          "thumb": "assets/story/characters/sophia/thumbs/cards-signature.webp",
+          "thumbWidth": 104,
+          "thumbHeight": 128,
+          "touchesEdge": true
+        },
+        {
+          "id": "sophia/full-stand",
+          "name": "full-stand",
+          "frame": {
+            "x": 9,
+            "y": 563,
+            "w": 218,
+            "h": 455
+          },
+          "src": "assets/story/characters/sophia/full-stand.webp",
+          "width": 218,
+          "height": 455,
+          "thumb": "assets/story/characters/sophia/thumbs/full-stand.webp",
+          "thumbWidth": 61,
+          "thumbHeight": 128
+        },
+        {
+          "id": "sophia/full-arms-crossed",
+          "name": "full-arms-crossed",
+          "frame": {
+            "x": 269,
+            "y": 568,
+            "w": 190,
+            "h": 448
+          },
+          "src": "assets/story/characters/sophia/full-arms-crossed.webp",
+          "width": 190,
+          "height": 448,
+          "thumb": "assets/story/characters/sophia/thumbs/full-arms-crossed.webp",
+          "thumbWidth": 54,
+          "thumbHeight": 128
+        },
+        {
+          "id": "sophia/full-gesture-a",
+          "name": "full-gesture-a",
+          "frame": {
+            "x": 504,
+            "y": 570,
+            "w": 286,
+            "h": 448
+          },
+          "src": "assets/story/characters/sophia/full-gesture-a.webp",
+          "width": 286,
+          "height": 448,
+          "thumb": "assets/story/characters/sophia/thumbs/full-gesture-a.webp",
+          "thumbWidth": 82,
+          "thumbHeight": 128
+        },
+        {
+          "id": "sophia/full-gesture-b",
+          "name": "full-gesture-b",
+          "frame": {
+            "x": 794,
+            "y": 568,
+            "w": 236,
+            "h": 450
+          },
+          "src": "assets/story/characters/sophia/full-gesture-b.webp",
+          "width": 236,
+          "height": 450,
+          "thumb": "assets/story/characters/sophia/thumbs/full-gesture-b.webp",
+          "thumbWidth": 67,
+          "thumbHeight": 128
+        },
+        {
+          "id": "sophia/full-gesture-c",
+          "name": "full-gesture-c",
+          "frame": {
+            "x": 1051,
+            "y": 568,
+            "w": 220,
+            "h": 450
+          },
+          "src": "assets/story/characters/sophia/full-gesture-c.webp",
+          "width": 220,
+          "height": 450,
+          "thumb": "assets/story/characters/sophia/thumbs/full-gesture-c.webp",
+          "thumbWidth": 63,
+          "thumbHeight": 128
+        },
+        {
+          "id": "sophia/full-signature",
+          "name": "full-signature",
+          "frame": {
+            "x": 1290,
+            "y": 571,
+            "w": 235,
+            "h": 447
+          },
+          "src": "assets/story/characters/sophia/full-signature.webp",
+          "width": 235,
+          "height": 447,
+          "thumb": "assets/story/characters/sophia/thumbs/full-signature.webp",
+          "thumbWidth": 67,
+          "thumbHeight": 128
+        }
+      ],
+      "status": "processed",
+      "warnings": [
+        {
+          "level": "warning",
+          "code": "clipped",
+          "message": "portrait-talk: touches its neighbour; the artwork is cut at the right (10 px)."
+        },
+        {
+          "level": "warning",
+          "code": "clipped",
+          "message": "portrait-think: touches its neighbour; the artwork is cut at the left (10 px)."
+        },
+        {
+          "level": "warning",
+          "code": "edge",
+          "message": "cards-signature: artwork touches the sheet edge and may be cut off in the source."
+        }
+      ]
+    },
+    {
+      "id": "dante",
+      "title": "Dante",
+      "group": "characters",
+      "layout": {
+        "type": "grid",
+        "cols": 6,
+        "rows": 3
+      },
+      "source": {
+        "path": "art/sources/story/characters/Dante's Card Parlor Character Sprite Sheet.png",
+        "sha256": "0822f507ed68502c7feead6d6653a9fb928d0962eea90e7dae643b364786c0fc",
+        "width": 1536,
+        "height": 1024,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.407
+      },
+      "verified": false,
+      "notes": "18 poses in a 6x3 grid: expression portraits, card-handling busts, full-body poses. Pose names are positional slot conventions.",
+      "sprites": [
+        {
+          "id": "dante/portrait-greet",
+          "name": "portrait-greet",
+          "frame": {
+            "x": 12,
+            "y": 7,
+            "w": 347,
+            "h": 301
+          },
+          "src": "assets/story/characters/dante/portrait-greet.webp",
+          "width": 347,
+          "height": 301,
+          "thumb": "assets/story/characters/dante/thumbs/portrait-greet.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 111,
+          "clipped": {
+            "right": 8
+          }
+        },
+        {
+          "id": "dante/portrait-neutral",
+          "name": "portrait-neutral",
+          "frame": {
+            "x": 329,
+            "y": 9,
+            "w": 243,
+            "h": 300
+          },
+          "src": "assets/story/characters/dante/portrait-neutral.webp",
+          "width": 243,
+          "height": 300,
+          "thumb": "assets/story/characters/dante/thumbs/portrait-neutral.webp",
+          "thumbWidth": 104,
+          "thumbHeight": 128,
+          "clipped": {
+            "left": 8
+          }
+        },
+        {
+          "id": "dante/portrait-talk",
+          "name": "portrait-talk",
+          "frame": {
+            "x": 583,
+            "y": 8,
+            "w": 237,
+            "h": 299
+          },
+          "src": "assets/story/characters/dante/portrait-talk.webp",
+          "width": 237,
+          "height": 299,
+          "thumb": "assets/story/characters/dante/thumbs/portrait-talk.webp",
+          "thumbWidth": 101,
+          "thumbHeight": 128
+        },
+        {
+          "id": "dante/portrait-think",
+          "name": "portrait-think",
+          "frame": {
+            "x": 828,
+            "y": 7,
+            "w": 252,
+            "h": 302
+          },
+          "src": "assets/story/characters/dante/portrait-think.webp",
+          "width": 252,
+          "height": 302,
+          "thumb": "assets/story/characters/dante/thumbs/portrait-think.webp",
+          "thumbWidth": 107,
+          "thumbHeight": 128
+        },
+        {
+          "id": "dante/portrait-doubt",
+          "name": "portrait-doubt",
+          "frame": {
+            "x": 1085,
+            "y": 8,
+            "w": 236,
+            "h": 300
+          },
+          "src": "assets/story/characters/dante/portrait-doubt.webp",
+          "width": 236,
+          "height": 300,
+          "thumb": "assets/story/characters/dante/thumbs/portrait-doubt.webp",
+          "thumbWidth": 101,
+          "thumbHeight": 128
+        },
+        {
+          "id": "dante/portrait-surprise",
+          "name": "portrait-surprise",
+          "frame": {
+            "x": 1325,
+            "y": 9,
+            "w": 204,
+            "h": 299
+          },
+          "src": "assets/story/characters/dante/portrait-surprise.webp",
+          "width": 204,
+          "height": 299,
+          "thumb": "assets/story/characters/dante/thumbs/portrait-surprise.webp",
+          "thumbWidth": 87,
+          "thumbHeight": 128
+        },
+        {
+          "id": "dante/cards-deal",
+          "name": "cards-deal",
+          "frame": {
+            "x": 15,
+            "y": 314,
+            "w": 277,
+            "h": 300
+          },
+          "src": "assets/story/characters/dante/cards-deal.webp",
+          "width": 277,
+          "height": 300,
+          "thumb": "assets/story/characters/dante/thumbs/cards-deal.webp",
+          "thumbWidth": 118,
+          "thumbHeight": 128
+        },
+        {
+          "id": "dante/cards-fan",
+          "name": "cards-fan",
+          "frame": {
+            "x": 302,
+            "y": 316,
+            "w": 245,
+            "h": 298
+          },
+          "src": "assets/story/characters/dante/cards-fan.webp",
+          "width": 245,
+          "height": 298,
+          "thumb": "assets/story/characters/dante/thumbs/cards-fan.webp",
+          "thumbWidth": 105,
+          "thumbHeight": 128
+        },
+        {
+          "id": "dante/cards-shuffle",
+          "name": "cards-shuffle",
+          "frame": {
+            "x": 547,
+            "y": 315,
+            "w": 261,
+            "h": 291
+          },
+          "src": "assets/story/characters/dante/cards-shuffle.webp",
+          "width": 261,
+          "height": 291,
+          "thumb": "assets/story/characters/dante/thumbs/cards-shuffle.webp",
+          "thumbWidth": 115,
+          "thumbHeight": 128
+        },
+        {
+          "id": "dante/cards-reveal",
+          "name": "cards-reveal",
+          "frame": {
+            "x": 805,
+            "y": 314,
+            "w": 221,
+            "h": 281
+          },
+          "src": "assets/story/characters/dante/cards-reveal.webp",
+          "width": 221,
+          "height": 281,
+          "thumb": "assets/story/characters/dante/thumbs/cards-reveal.webp",
+          "thumbWidth": 101,
+          "thumbHeight": 128
+        },
+        {
+          "id": "dante/cards-special",
+          "name": "cards-special",
+          "frame": {
+            "x": 1033,
+            "y": 319,
+            "w": 225,
+            "h": 277
+          },
+          "src": "assets/story/characters/dante/cards-special.webp",
+          "width": 225,
+          "height": 277,
+          "thumb": "assets/story/characters/dante/thumbs/cards-special.webp",
+          "thumbWidth": 104,
+          "thumbHeight": 128
+        },
+        {
+          "id": "dante/cards-signature",
+          "name": "cards-signature",
+          "frame": {
+            "x": 1267,
+            "y": 317,
+            "w": 254,
+            "h": 278
+          },
+          "src": "assets/story/characters/dante/cards-signature.webp",
+          "width": 254,
+          "height": 278,
+          "thumb": "assets/story/characters/dante/thumbs/cards-signature.webp",
+          "thumbWidth": 117,
+          "thumbHeight": 128
+        },
+        {
+          "id": "dante/full-stand",
+          "name": "full-stand",
+          "frame": {
+            "x": 23,
+            "y": 599,
+            "w": 190,
+            "h": 410
+          },
+          "src": "assets/story/characters/dante/full-stand.webp",
+          "width": 190,
+          "height": 410,
+          "thumb": "assets/story/characters/dante/thumbs/full-stand.webp",
+          "thumbWidth": 59,
+          "thumbHeight": 128
+        },
+        {
+          "id": "dante/full-arms-crossed",
+          "name": "full-arms-crossed",
+          "frame": {
+            "x": 271,
+            "y": 606,
+            "w": 192,
+            "h": 404
+          },
+          "src": "assets/story/characters/dante/full-arms-crossed.webp",
+          "width": 192,
+          "height": 404,
+          "thumb": "assets/story/characters/dante/thumbs/full-arms-crossed.webp",
+          "thumbWidth": 61,
+          "thumbHeight": 128
+        },
+        {
+          "id": "dante/full-gesture-a",
+          "name": "full-gesture-a",
+          "frame": {
+            "x": 512,
+            "y": 601,
+            "w": 247,
+            "h": 409
+          },
+          "src": "assets/story/characters/dante/full-gesture-a.webp",
+          "width": 247,
+          "height": 409,
+          "thumb": "assets/story/characters/dante/thumbs/full-gesture-a.webp",
+          "thumbWidth": 77,
+          "thumbHeight": 128
+        },
+        {
+          "id": "dante/full-gesture-b",
+          "name": "full-gesture-b",
+          "frame": {
+            "x": 783,
+            "y": 604,
+            "w": 228,
+            "h": 407
+          },
+          "src": "assets/story/characters/dante/full-gesture-b.webp",
+          "width": 228,
+          "height": 407,
+          "thumb": "assets/story/characters/dante/thumbs/full-gesture-b.webp",
+          "thumbWidth": 72,
+          "thumbHeight": 128
+        },
+        {
+          "id": "dante/full-gesture-c",
+          "name": "full-gesture-c",
+          "frame": {
+            "x": 1028,
+            "y": 607,
+            "w": 242,
+            "h": 404
+          },
+          "src": "assets/story/characters/dante/full-gesture-c.webp",
+          "width": 242,
+          "height": 404,
+          "thumb": "assets/story/characters/dante/thumbs/full-gesture-c.webp",
+          "thumbWidth": 77,
+          "thumbHeight": 128
+        },
+        {
+          "id": "dante/full-signature",
+          "name": "full-signature",
+          "frame": {
+            "x": 1311,
+            "y": 606,
+            "w": 205,
+            "h": 408
+          },
+          "src": "assets/story/characters/dante/full-signature.webp",
+          "width": 205,
+          "height": 408,
+          "thumb": "assets/story/characters/dante/thumbs/full-signature.webp",
+          "thumbWidth": 64,
+          "thumbHeight": 128
+        }
+      ],
+      "status": "processed",
+      "warnings": [
+        {
+          "level": "warning",
+          "code": "clipped",
+          "message": "portrait-greet: touches its neighbour; the artwork is cut at the right (8 px)."
+        },
+        {
+          "level": "warning",
+          "code": "clipped",
+          "message": "portrait-neutral: touches its neighbour; the artwork is cut at the left (8 px)."
+        }
+      ]
+    },
+    {
+      "id": "steve-gonzales",
+      "title": "Steve Gonzales",
+      "group": "characters",
+      "layout": {
+        "type": "grid",
+        "cols": 6,
+        "rows": 3
+      },
+      "source": {
+        "path": "art/sources/story/characters/Steve Gonzales_ Serious Card Magician.png",
+        "sha256": "25ccc04acf55664efc287ad2c987664301fbfd0fadce401fe07969e32438d7e8",
+        "width": 1536,
+        "height": 1024,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.357
+      },
+      "verified": false,
+      "notes": "18 poses in a 6x3 grid: expression portraits, card-handling busts, full-body poses. Pose names are positional slot conventions.",
+      "sprites": [
+        {
+          "id": "steve-gonzales/portrait-greet",
+          "name": "portrait-greet",
+          "frame": {
+            "x": 1,
+            "y": 3,
+            "w": 309,
+            "h": 282
+          },
+          "src": "assets/story/characters/steve-gonzales/portrait-greet.webp",
+          "width": 309,
+          "height": 282,
+          "thumb": "assets/story/characters/steve-gonzales/thumbs/portrait-greet.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 117,
+          "touchesEdge": true,
+          "clipped": {
+            "bottom": 49
+          }
+        },
+        {
+          "id": "steve-gonzales/portrait-neutral",
+          "name": "portrait-neutral",
+          "frame": {
+            "x": 315,
+            "y": 1,
+            "w": 253,
+            "h": 279
+          },
+          "src": "assets/story/characters/steve-gonzales/portrait-neutral.webp",
+          "width": 253,
+          "height": 279,
+          "thumb": "assets/story/characters/steve-gonzales/thumbs/portrait-neutral.webp",
+          "thumbWidth": 116,
+          "thumbHeight": 128,
+          "touchesEdge": true,
+          "clipped": {
+            "bottom": 21
+          }
+        },
+        {
+          "id": "steve-gonzales/portrait-talk",
+          "name": "portrait-talk",
+          "frame": {
+            "x": 568,
+            "y": 4,
+            "w": 260,
+            "h": 276
+          },
+          "src": "assets/story/characters/steve-gonzales/portrait-talk.webp",
+          "width": 260,
+          "height": 276,
+          "thumb": "assets/story/characters/steve-gonzales/thumbs/portrait-talk.webp",
+          "thumbWidth": 121,
+          "thumbHeight": 128,
+          "clipped": {
+            "bottom": 32
+          }
+        },
+        {
+          "id": "steve-gonzales/portrait-think",
+          "name": "portrait-think",
+          "frame": {
+            "x": 821,
+            "y": 5,
+            "w": 269,
+            "h": 275
+          },
+          "src": "assets/story/characters/steve-gonzales/portrait-think.webp",
+          "width": 269,
+          "height": 275,
+          "thumb": "assets/story/characters/steve-gonzales/thumbs/portrait-think.webp",
+          "thumbWidth": 125,
+          "thumbHeight": 128
+        },
+        {
+          "id": "steve-gonzales/portrait-doubt",
+          "name": "portrait-doubt",
+          "frame": {
+            "x": 1087,
+            "y": 6,
+            "w": 201,
+            "h": 274
+          },
+          "src": "assets/story/characters/steve-gonzales/portrait-doubt.webp",
+          "width": 201,
+          "height": 274,
+          "thumb": "assets/story/characters/steve-gonzales/thumbs/portrait-doubt.webp",
+          "thumbWidth": 94,
+          "thumbHeight": 128
+        },
+        {
+          "id": "steve-gonzales/portrait-surprise",
+          "name": "portrait-surprise",
+          "frame": {
+            "x": 1288,
+            "y": 1,
+            "w": 244,
+            "h": 279
+          },
+          "src": "assets/story/characters/steve-gonzales/portrait-surprise.webp",
+          "width": 244,
+          "height": 279,
+          "thumb": "assets/story/characters/steve-gonzales/thumbs/portrait-surprise.webp",
+          "thumbWidth": 112,
+          "thumbHeight": 128,
+          "touchesEdge": true
+        },
+        {
+          "id": "steve-gonzales/cards-deal",
+          "name": "cards-deal",
+          "frame": {
+            "x": 6,
+            "y": 280,
+            "w": 280,
+            "h": 299
+          },
+          "src": "assets/story/characters/steve-gonzales/cards-deal.webp",
+          "width": 280,
+          "height": 299,
+          "thumb": "assets/story/characters/steve-gonzales/thumbs/cards-deal.webp",
+          "thumbWidth": 120,
+          "thumbHeight": 128,
+          "clipped": {
+            "top": 49
+          }
+        },
+        {
+          "id": "steve-gonzales/cards-fan",
+          "name": "cards-fan",
+          "frame": {
+            "x": 280,
+            "y": 280,
+            "w": 276,
+            "h": 294
+          },
+          "src": "assets/story/characters/steve-gonzales/cards-fan.webp",
+          "width": 276,
+          "height": 294,
+          "thumb": "assets/story/characters/steve-gonzales/thumbs/cards-fan.webp",
+          "thumbWidth": 120,
+          "thumbHeight": 128,
+          "clipped": {
+            "top": 21
+          }
+        },
+        {
+          "id": "steve-gonzales/cards-shuffle",
+          "name": "cards-shuffle",
+          "frame": {
+            "x": 547,
+            "y": 280,
+            "w": 277,
+            "h": 289
+          },
+          "src": "assets/story/characters/steve-gonzales/cards-shuffle.webp",
+          "width": 277,
+          "height": 289,
+          "thumb": "assets/story/characters/steve-gonzales/thumbs/cards-shuffle.webp",
+          "thumbWidth": 123,
+          "thumbHeight": 128,
+          "clipped": {
+            "top": 32
+          }
+        },
+        {
+          "id": "steve-gonzales/cards-reveal",
+          "name": "cards-reveal",
+          "frame": {
+            "x": 803,
+            "y": 280,
+            "w": 223,
+            "h": 289
+          },
+          "src": "assets/story/characters/steve-gonzales/cards-reveal.webp",
+          "width": 223,
+          "height": 289,
+          "thumb": "assets/story/characters/steve-gonzales/thumbs/cards-reveal.webp",
+          "thumbWidth": 99,
+          "thumbHeight": 128
+        },
+        {
+          "id": "steve-gonzales/cards-special",
+          "name": "cards-special",
+          "frame": {
+            "x": 1025,
+            "y": 280,
+            "w": 298,
+            "h": 289
+          },
+          "src": "assets/story/characters/steve-gonzales/cards-special.webp",
+          "width": 298,
+          "height": 289,
+          "thumb": "assets/story/characters/steve-gonzales/thumbs/cards-special.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 124
+        },
+        {
+          "id": "steve-gonzales/cards-signature",
+          "name": "cards-signature",
+          "frame": {
+            "x": 1311,
+            "y": 281,
+            "w": 225,
+            "h": 288
+          },
+          "src": "assets/story/characters/steve-gonzales/cards-signature.webp",
+          "width": 225,
+          "height": 288,
+          "thumb": "assets/story/characters/steve-gonzales/thumbs/cards-signature.webp",
+          "thumbWidth": 100,
+          "thumbHeight": 128,
+          "touchesEdge": true
+        },
+        {
+          "id": "steve-gonzales/full-stand",
+          "name": "full-stand",
+          "frame": {
+            "x": 15,
+            "y": 568,
+            "w": 205,
+            "h": 443
+          },
+          "src": "assets/story/characters/steve-gonzales/full-stand.webp",
+          "width": 205,
+          "height": 443,
+          "thumb": "assets/story/characters/steve-gonzales/thumbs/full-stand.webp",
+          "thumbWidth": 59,
+          "thumbHeight": 128
+        },
+        {
+          "id": "steve-gonzales/full-arms-crossed",
+          "name": "full-arms-crossed",
+          "frame": {
+            "x": 253,
+            "y": 569,
+            "w": 214,
+            "h": 442
+          },
+          "src": "assets/story/characters/steve-gonzales/full-arms-crossed.webp",
+          "width": 214,
+          "height": 442,
+          "thumb": "assets/story/characters/steve-gonzales/thumbs/full-arms-crossed.webp",
+          "thumbWidth": 62,
+          "thumbHeight": 128
+        },
+        {
+          "id": "steve-gonzales/full-gesture-a",
+          "name": "full-gesture-a",
+          "frame": {
+            "x": 497,
+            "y": 569,
+            "w": 224,
+            "h": 442
+          },
+          "src": "assets/story/characters/steve-gonzales/full-gesture-a.webp",
+          "width": 224,
+          "height": 442,
+          "thumb": "assets/story/characters/steve-gonzales/thumbs/full-gesture-a.webp",
+          "thumbWidth": 65,
+          "thumbHeight": 128
+        },
+        {
+          "id": "steve-gonzales/full-gesture-b",
+          "name": "full-gesture-b",
+          "frame": {
+            "x": 739,
+            "y": 569,
+            "w": 294,
+            "h": 443
+          },
+          "src": "assets/story/characters/steve-gonzales/full-gesture-b.webp",
+          "width": 294,
+          "height": 443,
+          "thumb": "assets/story/characters/steve-gonzales/thumbs/full-gesture-b.webp",
+          "thumbWidth": 85,
+          "thumbHeight": 128
+        },
+        {
+          "id": "steve-gonzales/full-gesture-c",
+          "name": "full-gesture-c",
+          "frame": {
+            "x": 1042,
+            "y": 569,
+            "w": 234,
+            "h": 442
+          },
+          "src": "assets/story/characters/steve-gonzales/full-gesture-c.webp",
+          "width": 234,
+          "height": 442,
+          "thumb": "assets/story/characters/steve-gonzales/thumbs/full-gesture-c.webp",
+          "thumbWidth": 68,
+          "thumbHeight": 128
+        },
+        {
+          "id": "steve-gonzales/full-signature",
+          "name": "full-signature",
+          "frame": {
+            "x": 1294,
+            "y": 569,
+            "w": 242,
+            "h": 442
+          },
+          "src": "assets/story/characters/steve-gonzales/full-signature.webp",
+          "width": 242,
+          "height": 442,
+          "thumb": "assets/story/characters/steve-gonzales/thumbs/full-signature.webp",
+          "thumbWidth": 70,
+          "thumbHeight": 128,
+          "touchesEdge": true
+        }
+      ],
+      "status": "processed",
+      "warnings": [
+        {
+          "level": "warning",
+          "code": "edge",
+          "message": "portrait-greet: artwork touches the sheet edge and may be cut off in the source."
+        },
+        {
+          "level": "warning",
+          "code": "clipped",
+          "message": "portrait-greet: touches its neighbour; the artwork is cut at the bottom (49 px)."
+        },
+        {
+          "level": "warning",
+          "code": "edge",
+          "message": "portrait-neutral: artwork touches the sheet edge and may be cut off in the source."
+        },
+        {
+          "level": "warning",
+          "code": "clipped",
+          "message": "portrait-neutral: touches its neighbour; the artwork is cut at the bottom (21 px)."
+        },
+        {
+          "level": "warning",
+          "code": "clipped",
+          "message": "portrait-talk: touches its neighbour; the artwork is cut at the bottom (32 px)."
+        },
+        {
+          "level": "warning",
+          "code": "edge",
+          "message": "portrait-surprise: artwork touches the sheet edge and may be cut off in the source."
+        },
+        {
+          "level": "warning",
+          "code": "clipped",
+          "message": "cards-deal: touches its neighbour; the artwork is cut at the top (49 px)."
+        },
+        {
+          "level": "warning",
+          "code": "clipped",
+          "message": "cards-fan: touches its neighbour; the artwork is cut at the top (21 px)."
+        },
+        {
+          "level": "warning",
+          "code": "clipped",
+          "message": "cards-shuffle: touches its neighbour; the artwork is cut at the top (32 px)."
+        },
+        {
+          "level": "warning",
+          "code": "edge",
+          "message": "cards-signature: artwork touches the sheet edge and may be cut off in the source."
+        },
+        {
+          "level": "warning",
+          "code": "edge",
+          "message": "full-signature: artwork touches the sheet edge and may be cut off in the source."
+        }
+      ]
+    },
+    {
+      "id": "mrs-gray",
+      "title": "Mrs. Gray",
+      "group": "characters",
+      "layout": {
+        "type": "grid",
+        "cols": 6,
+        "rows": 3
+      },
+      "source": {
+        "path": "art/sources/story/characters/Mrs. Gray’s 18-Pose Spy Card Atlas.png",
+        "sha256": "c6bb4e71812ceba9a386161bbd4bc64597af27e996981c34cc4afb2d2b345530",
+        "width": 1536,
+        "height": 1024,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.436
+      },
+      "verified": false,
+      "notes": "18 poses in a 6x3 grid: expression portraits, card-handling busts, full-body poses. Pose names are positional slot conventions.",
+      "sprites": [
+        {
+          "id": "mrs-gray/portrait-greet",
+          "name": "portrait-greet",
+          "frame": {
+            "x": 1,
+            "y": 8,
+            "w": 298,
+            "h": 282
+          },
+          "src": "assets/story/characters/mrs-gray/portrait-greet.webp",
+          "width": 298,
+          "height": 282,
+          "thumb": "assets/story/characters/mrs-gray/thumbs/portrait-greet.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 121,
+          "touchesEdge": true
+        },
+        {
+          "id": "mrs-gray/portrait-neutral",
+          "name": "portrait-neutral",
+          "frame": {
+            "x": 314,
+            "y": 10,
+            "w": 253,
+            "h": 280
+          },
+          "src": "assets/story/characters/mrs-gray/portrait-neutral.webp",
+          "width": 253,
+          "height": 280,
+          "thumb": "assets/story/characters/mrs-gray/thumbs/portrait-neutral.webp",
+          "thumbWidth": 116,
+          "thumbHeight": 128
+        },
+        {
+          "id": "mrs-gray/portrait-talk",
+          "name": "portrait-talk",
+          "frame": {
+            "x": 585,
+            "y": 9,
+            "w": 243,
+            "h": 281
+          },
+          "src": "assets/story/characters/mrs-gray/portrait-talk.webp",
+          "width": 243,
+          "height": 281,
+          "thumb": "assets/story/characters/mrs-gray/thumbs/portrait-talk.webp",
+          "thumbWidth": 111,
+          "thumbHeight": 128
+        },
+        {
+          "id": "mrs-gray/portrait-think",
+          "name": "portrait-think",
+          "frame": {
+            "x": 838,
+            "y": 10,
+            "w": 237,
+            "h": 280
+          },
+          "src": "assets/story/characters/mrs-gray/portrait-think.webp",
+          "width": 237,
+          "height": 280,
+          "thumb": "assets/story/characters/mrs-gray/thumbs/portrait-think.webp",
+          "thumbWidth": 108,
+          "thumbHeight": 128
+        },
+        {
+          "id": "mrs-gray/portrait-doubt",
+          "name": "portrait-doubt",
+          "frame": {
+            "x": 1089,
+            "y": 13,
+            "w": 225,
+            "h": 277
+          },
+          "src": "assets/story/characters/mrs-gray/portrait-doubt.webp",
+          "width": 225,
+          "height": 277,
+          "thumb": "assets/story/characters/mrs-gray/thumbs/portrait-doubt.webp",
+          "thumbWidth": 104,
+          "thumbHeight": 128
+        },
+        {
+          "id": "mrs-gray/portrait-surprise",
+          "name": "portrait-surprise",
+          "frame": {
+            "x": 1327,
+            "y": 14,
+            "w": 208,
+            "h": 276
+          },
+          "src": "assets/story/characters/mrs-gray/portrait-surprise.webp",
+          "width": 208,
+          "height": 276,
+          "thumb": "assets/story/characters/mrs-gray/thumbs/portrait-surprise.webp",
+          "thumbWidth": 96,
+          "thumbHeight": 128,
+          "touchesEdge": true
+        },
+        {
+          "id": "mrs-gray/cards-deal",
+          "name": "cards-deal",
+          "frame": {
+            "x": 25,
+            "y": 290,
+            "w": 261,
+            "h": 282
+          },
+          "src": "assets/story/characters/mrs-gray/cards-deal.webp",
+          "width": 261,
+          "height": 282,
+          "thumb": "assets/story/characters/mrs-gray/thumbs/cards-deal.webp",
+          "thumbWidth": 118,
+          "thumbHeight": 128
+        },
+        {
+          "id": "mrs-gray/cards-fan",
+          "name": "cards-fan",
+          "frame": {
+            "x": 301,
+            "y": 290,
+            "w": 239,
+            "h": 282
+          },
+          "src": "assets/story/characters/mrs-gray/cards-fan.webp",
+          "width": 239,
+          "height": 282,
+          "thumb": "assets/story/characters/mrs-gray/thumbs/cards-fan.webp",
+          "thumbWidth": 108,
+          "thumbHeight": 128
+        },
+        {
+          "id": "mrs-gray/cards-shuffle",
+          "name": "cards-shuffle",
+          "frame": {
+            "x": 538,
+            "y": 290,
+            "w": 258,
+            "h": 273
+          },
+          "src": "assets/story/characters/mrs-gray/cards-shuffle.webp",
+          "width": 258,
+          "height": 273,
+          "thumb": "assets/story/characters/mrs-gray/thumbs/cards-shuffle.webp",
+          "thumbWidth": 121,
+          "thumbHeight": 128
+        },
+        {
+          "id": "mrs-gray/cards-reveal",
+          "name": "cards-reveal",
+          "frame": {
+            "x": 808,
+            "y": 290,
+            "w": 231,
+            "h": 272
+          },
+          "src": "assets/story/characters/mrs-gray/cards-reveal.webp",
+          "width": 231,
+          "height": 272,
+          "thumb": "assets/story/characters/mrs-gray/thumbs/cards-reveal.webp",
+          "thumbWidth": 109,
+          "thumbHeight": 128
+        },
+        {
+          "id": "mrs-gray/cards-special",
+          "name": "cards-special",
+          "frame": {
+            "x": 1044,
+            "y": 290,
+            "w": 278,
+            "h": 278
+          },
+          "src": "assets/story/characters/mrs-gray/cards-special.webp",
+          "width": 278,
+          "height": 278,
+          "thumb": "assets/story/characters/mrs-gray/thumbs/cards-special.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 128,
+          "clipped": {
+            "right": 71
+          }
+        },
+        {
+          "id": "mrs-gray/cards-signature",
+          "name": "cards-signature",
+          "frame": {
+            "x": 1284,
+            "y": 290,
+            "w": 252,
+            "h": 275
+          },
+          "src": "assets/story/characters/mrs-gray/cards-signature.webp",
+          "width": 252,
+          "height": 275,
+          "thumb": "assets/story/characters/mrs-gray/thumbs/cards-signature.webp",
+          "thumbWidth": 117,
+          "thumbHeight": 128,
+          "touchesEdge": true,
+          "clipped": {
+            "left": 71
+          }
+        },
+        {
+          "id": "mrs-gray/full-stand",
+          "name": "full-stand",
+          "frame": {
+            "x": 59,
+            "y": 566,
+            "w": 157,
+            "h": 453
+          },
+          "src": "assets/story/characters/mrs-gray/full-stand.webp",
+          "width": 157,
+          "height": 453,
+          "thumb": "assets/story/characters/mrs-gray/thumbs/full-stand.webp",
+          "thumbWidth": 44,
+          "thumbHeight": 128
+        },
+        {
+          "id": "mrs-gray/full-arms-crossed",
+          "name": "full-arms-crossed",
+          "frame": {
+            "x": 293,
+            "y": 569,
+            "w": 168,
+            "h": 450
+          },
+          "src": "assets/story/characters/mrs-gray/full-arms-crossed.webp",
+          "width": 168,
+          "height": 450,
+          "thumb": "assets/story/characters/mrs-gray/thumbs/full-arms-crossed.webp",
+          "thumbWidth": 48,
+          "thumbHeight": 128
+        },
+        {
+          "id": "mrs-gray/full-gesture-a",
+          "name": "full-gesture-a",
+          "frame": {
+            "x": 540,
+            "y": 569,
+            "w": 221,
+            "h": 450
+          },
+          "src": "assets/story/characters/mrs-gray/full-gesture-a.webp",
+          "width": 221,
+          "height": 450,
+          "thumb": "assets/story/characters/mrs-gray/thumbs/full-gesture-a.webp",
+          "thumbWidth": 63,
+          "thumbHeight": 128
+        },
+        {
+          "id": "mrs-gray/full-gesture-b",
+          "name": "full-gesture-b",
+          "frame": {
+            "x": 784,
+            "y": 569,
+            "w": 240,
+            "h": 448
+          },
+          "src": "assets/story/characters/mrs-gray/full-gesture-b.webp",
+          "width": 240,
+          "height": 448,
+          "thumb": "assets/story/characters/mrs-gray/thumbs/full-gesture-b.webp",
+          "thumbWidth": 69,
+          "thumbHeight": 128
+        },
+        {
+          "id": "mrs-gray/full-gesture-c",
+          "name": "full-gesture-c",
+          "frame": {
+            "x": 1059,
+            "y": 568,
+            "w": 185,
+            "h": 451
+          },
+          "src": "assets/story/characters/mrs-gray/full-gesture-c.webp",
+          "width": 185,
+          "height": 451,
+          "thumb": "assets/story/characters/mrs-gray/thumbs/full-gesture-c.webp",
+          "thumbWidth": 53,
+          "thumbHeight": 128
+        },
+        {
+          "id": "mrs-gray/full-signature",
+          "name": "full-signature",
+          "frame": {
+            "x": 1344,
+            "y": 571,
+            "w": 128,
+            "h": 443
+          },
+          "src": "assets/story/characters/mrs-gray/full-signature.webp",
+          "width": 128,
+          "height": 443,
+          "thumb": "assets/story/characters/mrs-gray/thumbs/full-signature.webp",
+          "thumbWidth": 37,
+          "thumbHeight": 128
+        }
+      ],
+      "status": "processed",
+      "warnings": [
+        {
+          "level": "warning",
+          "code": "edge",
+          "message": "portrait-greet: artwork touches the sheet edge and may be cut off in the source."
+        },
+        {
+          "level": "warning",
+          "code": "edge",
+          "message": "portrait-surprise: artwork touches the sheet edge and may be cut off in the source."
+        },
+        {
+          "level": "warning",
+          "code": "clipped",
+          "message": "cards-special: touches its neighbour; the artwork is cut at the right (71 px)."
+        },
+        {
+          "level": "warning",
+          "code": "edge",
+          "message": "cards-signature: artwork touches the sheet edge and may be cut off in the source."
+        },
+        {
+          "level": "warning",
+          "code": "clipped",
+          "message": "cards-signature: touches its neighbour; the artwork is cut at the left (71 px)."
+        }
+      ]
+    },
+    {
+      "id": "mary-ball-washington",
+      "title": "Mary Ball Washington (ghost)",
+      "group": "characters",
+      "layout": {
+        "type": "grid",
+        "cols": 6,
+        "rows": 3
+      },
+      "source": {
+        "path": "art/sources/story/characters/Mary Ball Washington's Ghost Sprite Sheet.png",
+        "sha256": "97b1dbd8768c761958bd7c3025cbcff1473d5416a6c6c4afddc13c8dd9ee07a3",
+        "width": 1536,
+        "height": 1024,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.124
+      },
+      "verified": false,
+      "notes": "18 poses in a 6x3 grid: expression portraits, card-handling busts, full-body poses. Pose names are positional slot conventions.",
+      "sprites": [
+        {
+          "id": "mary-ball-washington/portrait-greet",
+          "name": "portrait-greet",
+          "frame": {
+            "x": 24,
+            "y": 5,
+            "w": 287,
+            "h": 305
+          },
+          "src": "assets/story/characters/mary-ball-washington/portrait-greet.webp",
+          "width": 287,
+          "height": 305,
+          "thumb": "assets/story/characters/mary-ball-washington/thumbs/portrait-greet.webp",
+          "thumbWidth": 120,
+          "thumbHeight": 128,
+          "clipped": {
+            "bottom": 17
+          }
+        },
+        {
+          "id": "mary-ball-washington/portrait-neutral",
+          "name": "portrait-neutral",
+          "frame": {
+            "x": 311,
+            "y": 0,
+            "w": 254,
+            "h": 306
+          },
+          "src": "assets/story/characters/mary-ball-washington/portrait-neutral.webp",
+          "width": 254,
+          "height": 306,
+          "thumb": "assets/story/characters/mary-ball-washington/thumbs/portrait-neutral.webp",
+          "thumbWidth": 106,
+          "thumbHeight": 128,
+          "touchesEdge": true
+        },
+        {
+          "id": "mary-ball-washington/portrait-talk",
+          "name": "portrait-talk",
+          "frame": {
+            "x": 565,
+            "y": 11,
+            "w": 271,
+            "h": 295
+          },
+          "src": "assets/story/characters/mary-ball-washington/portrait-talk.webp",
+          "width": 271,
+          "height": 295,
+          "thumb": "assets/story/characters/mary-ball-washington/thumbs/portrait-talk.webp",
+          "thumbWidth": 118,
+          "thumbHeight": 128
+        },
+        {
+          "id": "mary-ball-washington/portrait-think",
+          "name": "portrait-think",
+          "frame": {
+            "x": 836,
+            "y": 9,
+            "w": 234,
+            "h": 297
+          },
+          "src": "assets/story/characters/mary-ball-washington/portrait-think.webp",
+          "width": 234,
+          "height": 297,
+          "thumb": "assets/story/characters/mary-ball-washington/thumbs/portrait-think.webp",
+          "thumbWidth": 101,
+          "thumbHeight": 128
+        },
+        {
+          "id": "mary-ball-washington/portrait-doubt",
+          "name": "portrait-doubt",
+          "frame": {
+            "x": 1070,
+            "y": 8,
+            "w": 236,
+            "h": 298
+          },
+          "src": "assets/story/characters/mary-ball-washington/portrait-doubt.webp",
+          "width": 236,
+          "height": 298,
+          "thumb": "assets/story/characters/mary-ball-washington/thumbs/portrait-doubt.webp",
+          "thumbWidth": 101,
+          "thumbHeight": 128
+        },
+        {
+          "id": "mary-ball-washington/portrait-surprise",
+          "name": "portrait-surprise",
+          "frame": {
+            "x": 1306,
+            "y": 11,
+            "w": 230,
+            "h": 295
+          },
+          "src": "assets/story/characters/mary-ball-washington/portrait-surprise.webp",
+          "width": 230,
+          "height": 295,
+          "thumb": "assets/story/characters/mary-ball-washington/thumbs/portrait-surprise.webp",
+          "thumbWidth": 100,
+          "thumbHeight": 128,
+          "touchesEdge": true
+        },
+        {
+          "id": "mary-ball-washington/cards-deal",
+          "name": "cards-deal",
+          "frame": {
+            "x": 3,
+            "y": 306,
+            "w": 283,
+            "h": 306
+          },
+          "src": "assets/story/characters/mary-ball-washington/cards-deal.webp",
+          "width": 283,
+          "height": 306,
+          "thumb": "assets/story/characters/mary-ball-washington/thumbs/cards-deal.webp",
+          "thumbWidth": 118,
+          "thumbHeight": 128,
+          "clipped": {
+            "top": 17
+          }
+        },
+        {
+          "id": "mary-ball-washington/cards-fan",
+          "name": "cards-fan",
+          "frame": {
+            "x": 286,
+            "y": 306,
+            "w": 247,
+            "h": 306
+          },
+          "src": "assets/story/characters/mary-ball-washington/cards-fan.webp",
+          "width": 247,
+          "height": 306,
+          "thumb": "assets/story/characters/mary-ball-washington/thumbs/cards-fan.webp",
+          "thumbWidth": 103,
+          "thumbHeight": 128
+        },
+        {
+          "id": "mary-ball-washington/cards-shuffle",
+          "name": "cards-shuffle",
+          "frame": {
+            "x": 533,
+            "y": 306,
+            "w": 267,
+            "h": 294
+          },
+          "src": "assets/story/characters/mary-ball-washington/cards-shuffle.webp",
+          "width": 267,
+          "height": 294,
+          "thumb": "assets/story/characters/mary-ball-washington/thumbs/cards-shuffle.webp",
+          "thumbWidth": 116,
+          "thumbHeight": 128
+        },
+        {
+          "id": "mary-ball-washington/cards-reveal",
+          "name": "cards-reveal",
+          "frame": {
+            "x": 800,
+            "y": 306,
+            "w": 243,
+            "h": 291
+          },
+          "src": "assets/story/characters/mary-ball-washington/cards-reveal.webp",
+          "width": 243,
+          "height": 291,
+          "thumb": "assets/story/characters/mary-ball-washington/thumbs/cards-reveal.webp",
+          "thumbWidth": 107,
+          "thumbHeight": 128
+        },
+        {
+          "id": "mary-ball-washington/cards-special",
+          "name": "cards-special",
+          "frame": {
+            "x": 1043,
+            "y": 306,
+            "w": 253,
+            "h": 291
+          },
+          "src": "assets/story/characters/mary-ball-washington/cards-special.webp",
+          "width": 253,
+          "height": 291,
+          "thumb": "assets/story/characters/mary-ball-washington/thumbs/cards-special.webp",
+          "thumbWidth": 111,
+          "thumbHeight": 128
+        },
+        {
+          "id": "mary-ball-washington/cards-signature",
+          "name": "cards-signature",
+          "frame": {
+            "x": 1296,
+            "y": 306,
+            "w": 240,
+            "h": 291
+          },
+          "src": "assets/story/characters/mary-ball-washington/cards-signature.webp",
+          "width": 240,
+          "height": 291,
+          "thumb": "assets/story/characters/mary-ball-washington/thumbs/cards-signature.webp",
+          "thumbWidth": 106,
+          "thumbHeight": 128,
+          "touchesEdge": true
+        },
+        {
+          "id": "mary-ball-washington/full-stand",
+          "name": "full-stand",
+          "frame": {
+            "x": 5,
+            "y": 593,
+            "w": 234,
+            "h": 425
+          },
+          "src": "assets/story/characters/mary-ball-washington/full-stand.webp",
+          "width": 234,
+          "height": 425,
+          "thumb": "assets/story/characters/mary-ball-washington/thumbs/full-stand.webp",
+          "thumbWidth": 70,
+          "thumbHeight": 128
+        },
+        {
+          "id": "mary-ball-washington/full-arms-crossed",
+          "name": "full-arms-crossed",
+          "frame": {
+            "x": 239,
+            "y": 600,
+            "w": 245,
+            "h": 416
+          },
+          "src": "assets/story/characters/mary-ball-washington/full-arms-crossed.webp",
+          "width": 245,
+          "height": 416,
+          "thumb": "assets/story/characters/mary-ball-washington/thumbs/full-arms-crossed.webp",
+          "thumbWidth": 75,
+          "thumbHeight": 128
+        },
+        {
+          "id": "mary-ball-washington/full-gesture-a",
+          "name": "full-gesture-a",
+          "frame": {
+            "x": 484,
+            "y": 597,
+            "w": 279,
+            "h": 420
+          },
+          "src": "assets/story/characters/mary-ball-washington/full-gesture-a.webp",
+          "width": 279,
+          "height": 420,
+          "thumb": "assets/story/characters/mary-ball-washington/thumbs/full-gesture-a.webp",
+          "thumbWidth": 85,
+          "thumbHeight": 128
+        },
+        {
+          "id": "mary-ball-washington/full-gesture-b",
+          "name": "full-gesture-b",
+          "frame": {
+            "x": 763,
+            "y": 597,
+            "w": 259,
+            "h": 421
+          },
+          "src": "assets/story/characters/mary-ball-washington/full-gesture-b.webp",
+          "width": 259,
+          "height": 421,
+          "thumb": "assets/story/characters/mary-ball-washington/thumbs/full-gesture-b.webp",
+          "thumbWidth": 79,
+          "thumbHeight": 128
+        },
+        {
+          "id": "mary-ball-washington/full-gesture-c",
+          "name": "full-gesture-c",
+          "frame": {
+            "x": 1022,
+            "y": 597,
+            "w": 250,
+            "h": 425
+          },
+          "src": "assets/story/characters/mary-ball-washington/full-gesture-c.webp",
+          "width": 250,
+          "height": 425,
+          "thumb": "assets/story/characters/mary-ball-washington/thumbs/full-gesture-c.webp",
+          "thumbWidth": 75,
+          "thumbHeight": 128,
+          "touchesEdge": true
+        },
+        {
+          "id": "mary-ball-washington/full-signature",
+          "name": "full-signature",
+          "frame": {
+            "x": 1272,
+            "y": 597,
+            "w": 260,
+            "h": 419
+          },
+          "src": "assets/story/characters/mary-ball-washington/full-signature.webp",
+          "width": 260,
+          "height": 419,
+          "thumb": "assets/story/characters/mary-ball-washington/thumbs/full-signature.webp",
+          "thumbWidth": 79,
+          "thumbHeight": 128
+        }
+      ],
+      "status": "processed",
+      "warnings": [
+        {
+          "level": "warning",
+          "code": "clipped",
+          "message": "portrait-greet: touches its neighbour; the artwork is cut at the bottom (17 px)."
+        },
+        {
+          "level": "warning",
+          "code": "edge",
+          "message": "portrait-neutral: artwork touches the sheet edge and may be cut off in the source."
+        },
+        {
+          "level": "warning",
+          "code": "edge",
+          "message": "portrait-surprise: artwork touches the sheet edge and may be cut off in the source."
+        },
+        {
+          "level": "warning",
+          "code": "clipped",
+          "message": "cards-deal: touches its neighbour; the artwork is cut at the top (17 px)."
+        },
+        {
+          "level": "warning",
+          "code": "edge",
+          "message": "cards-signature: artwork touches the sheet edge and may be cut off in the source."
+        },
+        {
+          "level": "warning",
+          "code": "edge",
+          "message": "full-gesture-c: artwork touches the sheet edge and may be cut off in the source."
+        }
+      ]
+    },
+    {
+      "id": "george-washington",
+      "title": "George Washington (ghost)",
+      "group": "characters",
+      "layout": {
+        "type": "grid",
+        "cols": 6,
+        "rows": 3
+      },
+      "source": {
+        "path": "art/sources/story/characters/George Washington’s Ghost, Card Game Final Boss.png",
+        "sha256": "0491274038ee8371e73ed1cf61ec6ad901820a85ff9c6e3bd319742b10741908",
+        "width": 1536,
+        "height": 1024,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.264
+      },
+      "verified": false,
+      "notes": "18 poses in a 6x3 grid: expression portraits, card-handling busts, full-body poses. Pose names are positional slot conventions.",
+      "sprites": [
+        {
+          "id": "george-washington/portrait-greet",
+          "name": "portrait-greet",
+          "frame": {
+            "x": 1,
+            "y": 26,
+            "w": 307,
+            "h": 269
+          },
+          "src": "assets/story/characters/george-washington/portrait-greet.webp",
+          "width": 307,
+          "height": 269,
+          "thumb": "assets/story/characters/george-washington/thumbs/portrait-greet.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 112,
+          "touchesEdge": true
+        },
+        {
+          "id": "george-washington/portrait-neutral",
+          "name": "portrait-neutral",
+          "frame": {
+            "x": 308,
+            "y": 27,
+            "w": 226,
+            "h": 268
+          },
+          "src": "assets/story/characters/george-washington/portrait-neutral.webp",
+          "width": 226,
+          "height": 268,
+          "thumb": "assets/story/characters/george-washington/thumbs/portrait-neutral.webp",
+          "thumbWidth": 108,
+          "thumbHeight": 128
+        },
+        {
+          "id": "george-washington/portrait-talk",
+          "name": "portrait-talk",
+          "frame": {
+            "x": 534,
+            "y": 27,
+            "w": 255,
+            "h": 267
+          },
+          "src": "assets/story/characters/george-washington/portrait-talk.webp",
+          "width": 255,
+          "height": 267,
+          "thumb": "assets/story/characters/george-washington/thumbs/portrait-talk.webp",
+          "thumbWidth": 122,
+          "thumbHeight": 128
+        },
+        {
+          "id": "george-washington/portrait-think",
+          "name": "portrait-think",
+          "frame": {
+            "x": 789,
+            "y": 38,
+            "w": 251,
+            "h": 256
+          },
+          "src": "assets/story/characters/george-washington/portrait-think.webp",
+          "width": 251,
+          "height": 256,
+          "thumb": "assets/story/characters/george-washington/thumbs/portrait-think.webp",
+          "thumbWidth": 126,
+          "thumbHeight": 128,
+          "clipped": {
+            "right": 22
+          }
+        },
+        {
+          "id": "george-washington/portrait-doubt",
+          "name": "portrait-doubt",
+          "frame": {
+            "x": 1033,
+            "y": 25,
+            "w": 263,
+            "h": 274
+          },
+          "src": "assets/story/characters/george-washington/portrait-doubt.webp",
+          "width": 263,
+          "height": 274,
+          "thumb": "assets/story/characters/george-washington/thumbs/portrait-doubt.webp",
+          "thumbWidth": 123,
+          "thumbHeight": 128,
+          "clipped": {
+            "left": 22
+          }
+        },
+        {
+          "id": "george-washington/portrait-surprise",
+          "name": "portrait-surprise",
+          "frame": {
+            "x": 1295,
+            "y": 36,
+            "w": 235,
+            "h": 258
+          },
+          "src": "assets/story/characters/george-washington/portrait-surprise.webp",
+          "width": 235,
+          "height": 258,
+          "thumb": "assets/story/characters/george-washington/thumbs/portrait-surprise.webp",
+          "thumbWidth": 117,
+          "thumbHeight": 128
+        },
+        {
+          "id": "george-washington/cards-deal",
+          "name": "cards-deal",
+          "frame": {
+            "x": 11,
+            "y": 301,
+            "w": 277,
+            "h": 290
+          },
+          "src": "assets/story/characters/george-washington/cards-deal.webp",
+          "width": 277,
+          "height": 290,
+          "thumb": "assets/story/characters/george-washington/thumbs/cards-deal.webp",
+          "thumbWidth": 122,
+          "thumbHeight": 128
+        },
+        {
+          "id": "george-washington/cards-fan",
+          "name": "cards-fan",
+          "frame": {
+            "x": 288,
+            "y": 307,
+            "w": 235,
+            "h": 271
+          },
+          "src": "assets/story/characters/george-washington/cards-fan.webp",
+          "width": 235,
+          "height": 271,
+          "thumb": "assets/story/characters/george-washington/thumbs/cards-fan.webp",
+          "thumbWidth": 111,
+          "thumbHeight": 128
+        },
+        {
+          "id": "george-washington/cards-shuffle",
+          "name": "cards-shuffle",
+          "frame": {
+            "x": 523,
+            "y": 309,
+            "w": 283,
+            "h": 268
+          },
+          "src": "assets/story/characters/george-washington/cards-shuffle.webp",
+          "width": 283,
+          "height": 268,
+          "thumb": "assets/story/characters/george-washington/thumbs/cards-shuffle.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 121
+        },
+        {
+          "id": "george-washington/cards-reveal",
+          "name": "cards-reveal",
+          "frame": {
+            "x": 806,
+            "y": 305,
+            "w": 228,
+            "h": 271
+          },
+          "src": "assets/story/characters/george-washington/cards-reveal.webp",
+          "width": 228,
+          "height": 271,
+          "thumb": "assets/story/characters/george-washington/thumbs/cards-reveal.webp",
+          "thumbWidth": 108,
+          "thumbHeight": 128
+        },
+        {
+          "id": "george-washington/cards-special",
+          "name": "cards-special",
+          "frame": {
+            "x": 1033,
+            "y": 299,
+            "w": 248,
+            "h": 292
+          },
+          "src": "assets/story/characters/george-washington/cards-special.webp",
+          "width": 248,
+          "height": 292,
+          "thumb": "assets/story/characters/george-washington/thumbs/cards-special.webp",
+          "thumbWidth": 109,
+          "thumbHeight": 128
+        },
+        {
+          "id": "george-washington/cards-signature",
+          "name": "cards-signature",
+          "frame": {
+            "x": 1281,
+            "y": 311,
+            "w": 255,
+            "h": 272
+          },
+          "src": "assets/story/characters/george-washington/cards-signature.webp",
+          "width": 255,
+          "height": 272,
+          "thumb": "assets/story/characters/george-washington/thumbs/cards-signature.webp",
+          "thumbWidth": 120,
+          "thumbHeight": 128,
+          "touchesEdge": true
+        },
+        {
+          "id": "george-washington/full-stand",
+          "name": "full-stand",
+          "frame": {
+            "x": 37,
+            "y": 588,
+            "w": 189,
+            "h": 406
+          },
+          "src": "assets/story/characters/george-washington/full-stand.webp",
+          "width": 189,
+          "height": 406,
+          "thumb": "assets/story/characters/george-washington/thumbs/full-stand.webp",
+          "thumbWidth": 60,
+          "thumbHeight": 128
+        },
+        {
+          "id": "george-washington/full-arms-crossed",
+          "name": "full-arms-crossed",
+          "frame": {
+            "x": 275,
+            "y": 591,
+            "w": 193,
+            "h": 403
+          },
+          "src": "assets/story/characters/george-washington/full-arms-crossed.webp",
+          "width": 193,
+          "height": 403,
+          "thumb": "assets/story/characters/george-washington/thumbs/full-arms-crossed.webp",
+          "thumbWidth": 61,
+          "thumbHeight": 128
+        },
+        {
+          "id": "george-washington/full-gesture-a",
+          "name": "full-gesture-a",
+          "frame": {
+            "x": 521,
+            "y": 593,
+            "w": 198,
+            "h": 401
+          },
+          "src": "assets/story/characters/george-washington/full-gesture-a.webp",
+          "width": 198,
+          "height": 401,
+          "thumb": "assets/story/characters/george-washington/thumbs/full-gesture-a.webp",
+          "thumbWidth": 63,
+          "thumbHeight": 128
+        },
+        {
+          "id": "george-washington/full-gesture-b",
+          "name": "full-gesture-b",
+          "frame": {
+            "x": 739,
+            "y": 595,
+            "w": 321,
+            "h": 399
+          },
+          "src": "assets/story/characters/george-washington/full-gesture-b.webp",
+          "width": 321,
+          "height": 399,
+          "thumb": "assets/story/characters/george-washington/thumbs/full-gesture-b.webp",
+          "thumbWidth": 103,
+          "thumbHeight": 128
+        },
+        {
+          "id": "george-washington/full-gesture-c",
+          "name": "full-gesture-c",
+          "frame": {
+            "x": 1060,
+            "y": 590,
+            "w": 234,
+            "h": 405
+          },
+          "src": "assets/story/characters/george-washington/full-gesture-c.webp",
+          "width": 234,
+          "height": 405,
+          "thumb": "assets/story/characters/george-washington/thumbs/full-gesture-c.webp",
+          "thumbWidth": 74,
+          "thumbHeight": 128
+        },
+        {
+          "id": "george-washington/full-signature",
+          "name": "full-signature",
+          "frame": {
+            "x": 1329,
+            "y": 618,
+            "w": 168,
+            "h": 376
+          },
+          "src": "assets/story/characters/george-washington/full-signature.webp",
+          "width": 168,
+          "height": 376,
+          "thumb": "assets/story/characters/george-washington/thumbs/full-signature.webp",
+          "thumbWidth": 57,
+          "thumbHeight": 128
+        }
+      ],
+      "status": "processed",
+      "warnings": [
+        {
+          "level": "warning",
+          "code": "edge",
+          "message": "portrait-greet: artwork touches the sheet edge and may be cut off in the source."
+        },
+        {
+          "level": "warning",
+          "code": "clipped",
+          "message": "portrait-think: touches its neighbour; the artwork is cut at the right (22 px)."
+        },
+        {
+          "level": "warning",
+          "code": "clipped",
+          "message": "portrait-doubt: touches its neighbour; the artwork is cut at the left (22 px)."
+        },
+        {
+          "level": "warning",
+          "code": "edge",
+          "message": "cards-signature: artwork touches the sheet edge and may be cut off in the source."
+        }
+      ]
+    },
+    {
+      "id": "mystery-parlor",
+      "title": "Mystery parlor quest item atlas",
+      "group": "items",
+      "layout": {
+        "type": "grid",
+        "cols": 4,
+        "rows": 3
+      },
+      "source": {
+        "path": "art/sources/story/items/Mystery parlor quest item atlas.png",
+        "sha256": "de2abc70d5dc2c52ebe7d94a95f35293a584c5550c297ac955ddb837a2f304b4",
+        "width": 1448,
+        "height": 1086,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.45
+      },
+      "verified": false,
+      "notes": null,
+      "sprites": [
+        {
+          "id": "mystery-parlor/masonic-playing-card",
+          "name": "masonic-playing-card",
+          "frame": {
+            "x": 72,
+            "y": 20,
+            "w": 249,
+            "h": 340
+          },
+          "src": "assets/story/items/mystery-parlor/masonic-playing-card.webp",
+          "width": 249,
+          "height": 340,
+          "thumb": "assets/story/items/mystery-parlor/thumbs/masonic-playing-card.webp",
+          "thumbWidth": 94,
+          "thumbHeight": 128
+        },
+        {
+          "id": "mystery-parlor/masonic-card-back",
+          "name": "masonic-card-back",
+          "frame": {
+            "x": 421,
+            "y": 24,
+            "w": 252,
+            "h": 336
+          },
+          "src": "assets/story/items/mystery-parlor/masonic-card-back.webp",
+          "width": 252,
+          "height": 336,
+          "thumb": "assets/story/items/mystery-parlor/thumbs/masonic-card-back.webp",
+          "thumbWidth": 96,
+          "thumbHeight": 128
+        },
+        {
+          "id": "mystery-parlor/torn-letter-fleur-seal",
+          "name": "torn-letter-fleur-seal",
+          "frame": {
+            "x": 761,
+            "y": 18,
+            "w": 306,
+            "h": 347
+          },
+          "src": "assets/story/items/mystery-parlor/torn-letter-fleur-seal.webp",
+          "width": 306,
+          "height": 347,
+          "thumb": "assets/story/items/mystery-parlor/thumbs/torn-letter-fleur-seal.webp",
+          "thumbWidth": 113,
+          "thumbHeight": 128
+        },
+        {
+          "id": "mystery-parlor/ornate-brass-key",
+          "name": "ornate-brass-key",
+          "frame": {
+            "x": 1118,
+            "y": 36,
+            "w": 294,
+            "h": 324
+          },
+          "src": "assets/story/items/mystery-parlor/ornate-brass-key.webp",
+          "width": 294,
+          "height": 324,
+          "thumb": "assets/story/items/mystery-parlor/thumbs/ornate-brass-key.webp",
+          "thumbWidth": 116,
+          "thumbHeight": 128
+        },
+        {
+          "id": "mystery-parlor/leather-journal",
+          "name": "leather-journal",
+          "frame": {
+            "x": 23,
+            "y": 379,
+            "w": 332,
+            "h": 335
+          },
+          "src": "assets/story/items/mystery-parlor/leather-journal.webp",
+          "width": 332,
+          "height": 335,
+          "thumb": "assets/story/items/mystery-parlor/thumbs/leather-journal.webp",
+          "thumbWidth": 127,
+          "thumbHeight": 128
+        },
+        {
+          "id": "mystery-parlor/torn-map-fragment",
+          "name": "torn-map-fragment",
+          "frame": {
+            "x": 392,
+            "y": 403,
+            "w": 316,
+            "h": 297
+          },
+          "src": "assets/story/items/mystery-parlor/torn-map-fragment.webp",
+          "width": 316,
+          "height": 297,
+          "thumb": "assets/story/items/mystery-parlor/thumbs/torn-map-fragment.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 120
+        },
+        {
+          "id": "mystery-parlor/pocket-watch",
+          "name": "pocket-watch",
+          "frame": {
+            "x": 740,
+            "y": 383,
+            "w": 334,
+            "h": 327
+          },
+          "src": "assets/story/items/mystery-parlor/pocket-watch.webp",
+          "width": 334,
+          "height": 327,
+          "thumb": "assets/story/items/mystery-parlor/thumbs/pocket-watch.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 125
+        },
+        {
+          "id": "mystery-parlor/magnifying-glass",
+          "name": "magnifying-glass",
+          "frame": {
+            "x": 1115,
+            "y": 372,
+            "w": 310,
+            "h": 338
+          },
+          "src": "assets/story/items/mystery-parlor/magnifying-glass.webp",
+          "width": 310,
+          "height": 338,
+          "thumb": "assets/story/items/mystery-parlor/thumbs/magnifying-glass.webp",
+          "thumbWidth": 117,
+          "thumbHeight": 128
+        },
+        {
+          "id": "mystery-parlor/tied-card-box",
+          "name": "tied-card-box",
+          "frame": {
+            "x": 23,
+            "y": 713,
+            "w": 352,
+            "h": 313
+          },
+          "src": "assets/story/items/mystery-parlor/tied-card-box.webp",
+          "width": 352,
+          "height": 313,
+          "thumb": "assets/story/items/mystery-parlor/thumbs/tied-card-box.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 114
+        },
+        {
+          "id": "mystery-parlor/old-town-postcard",
+          "name": "old-town-postcard",
+          "frame": {
+            "x": 373,
+            "y": 716,
+            "w": 383,
+            "h": 326
+          },
+          "src": "assets/story/items/mystery-parlor/old-town-postcard.webp",
+          "width": 383,
+          "height": 326,
+          "thumb": "assets/story/items/mystery-parlor/thumbs/old-town-postcard.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 109
+        },
+        {
+          "id": "mystery-parlor/triangle-sigil-coin",
+          "name": "triangle-sigil-coin",
+          "frame": {
+            "x": 768,
+            "y": 733,
+            "w": 298,
+            "h": 304
+          },
+          "src": "assets/story/items/mystery-parlor/triangle-sigil-coin.webp",
+          "width": 298,
+          "height": 304,
+          "thumb": "assets/story/items/mystery-parlor/thumbs/triangle-sigil-coin.webp",
+          "thumbWidth": 125,
+          "thumbHeight": 128
+        },
+        {
+          "id": "mystery-parlor/blank-luggage-tag",
+          "name": "blank-luggage-tag",
+          "frame": {
+            "x": 1108,
+            "y": 709,
+            "w": 327,
+            "h": 327
+          },
+          "src": "assets/story/items/mystery-parlor/blank-luggage-tag.webp",
+          "width": 327,
+          "height": 327,
+          "thumb": "assets/story/items/mystery-parlor/thumbs/blank-luggage-tag.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 128
+        }
+      ],
+      "status": "processed",
+      "warnings": []
+    },
+    {
+      "id": "river-ranger",
+      "title": "Rappahannock River Ranger Quest Atlas",
+      "group": "items",
+      "layout": {
+        "type": "grid",
+        "cols": 4,
+        "rows": 3
+      },
+      "source": {
+        "path": "art/sources/story/items/Rappahannock River Ranger Quest Atlas.png",
+        "sha256": "448f47a511cc0203ab576951f9592663fec293aa40fb1265b31340dd299e5f62",
+        "width": 1448,
+        "height": 1086,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.382
+      },
+      "verified": false,
+      "notes": null,
+      "sprites": [
+        {
+          "id": "river-ranger/river-trail-map",
+          "name": "river-trail-map",
+          "frame": {
+            "x": 11,
+            "y": 12,
+            "w": 411,
+            "h": 338
+          },
+          "src": "assets/story/items/river-ranger/river-trail-map.webp",
+          "width": 411,
+          "height": 338,
+          "thumb": "assets/story/items/river-ranger/thumbs/river-trail-map.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 105
+        },
+        {
+          "id": "river-ranger/field-journal",
+          "name": "field-journal",
+          "frame": {
+            "x": 393,
+            "y": 10,
+            "w": 354,
+            "h": 340
+          },
+          "src": "assets/story/items/river-ranger/field-journal.webp",
+          "width": 354,
+          "height": 340,
+          "thumb": "assets/story/items/river-ranger/thumbs/field-journal.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 123
+        },
+        {
+          "id": "river-ranger/binoculars",
+          "name": "binoculars",
+          "frame": {
+            "x": 747,
+            "y": 52,
+            "w": 362,
+            "h": 287
+          },
+          "src": "assets/story/items/river-ranger/binoculars.webp",
+          "width": 362,
+          "height": 287,
+          "thumb": "assets/story/items/river-ranger/thumbs/binoculars.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 101
+        },
+        {
+          "id": "river-ranger/brass-compass",
+          "name": "brass-compass",
+          "frame": {
+            "x": 1131,
+            "y": 8,
+            "w": 294,
+            "h": 346
+          },
+          "src": "assets/story/items/river-ranger/brass-compass.webp",
+          "width": 294,
+          "height": 346,
+          "thumb": "assets/story/items/river-ranger/thumbs/brass-compass.webp",
+          "thumbWidth": 109,
+          "thumbHeight": 128
+        },
+        {
+          "id": "river-ranger/box-turtle-card",
+          "name": "box-turtle-card",
+          "frame": {
+            "x": 60,
+            "y": 366,
+            "w": 297,
+            "h": 336
+          },
+          "src": "assets/story/items/river-ranger/box-turtle-card.webp",
+          "width": 297,
+          "height": 336,
+          "thumb": "assets/story/items/river-ranger/thumbs/box-turtle-card.webp",
+          "thumbWidth": 113,
+          "thumbHeight": 128
+        },
+        {
+          "id": "river-ranger/heron-card",
+          "name": "heron-card",
+          "frame": {
+            "x": 414,
+            "y": 360,
+            "w": 286,
+            "h": 342
+          },
+          "src": "assets/story/items/river-ranger/heron-card.webp",
+          "width": 286,
+          "height": 342,
+          "thumb": "assets/story/items/river-ranger/thumbs/heron-card.webp",
+          "thumbWidth": 107,
+          "thumbHeight": 128
+        },
+        {
+          "id": "river-ranger/oak-leaf-acorn",
+          "name": "oak-leaf-acorn",
+          "frame": {
+            "x": 737,
+            "y": 368,
+            "w": 347,
+            "h": 326
+          },
+          "src": "assets/story/items/river-ranger/oak-leaf-acorn.webp",
+          "width": 347,
+          "height": 326,
+          "thumb": "assets/story/items/river-ranger/thumbs/oak-leaf-acorn.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 120
+        },
+        {
+          "id": "river-ranger/river-stone",
+          "name": "river-stone",
+          "frame": {
+            "x": 1089,
+            "y": 428,
+            "w": 347,
+            "h": 256
+          },
+          "src": "assets/story/items/river-ranger/river-stone.webp",
+          "width": 347,
+          "height": 256,
+          "thumb": "assets/story/items/river-ranger/thumbs/river-stone.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 94
+        },
+        {
+          "id": "river-ranger/trail-marker-post",
+          "name": "trail-marker-post",
+          "frame": {
+            "x": 101,
+            "y": 711,
+            "w": 169,
+            "h": 360
+          },
+          "src": "assets/story/items/river-ranger/trail-marker-post.webp",
+          "width": 169,
+          "height": 360,
+          "thumb": "assets/story/items/river-ranger/thumbs/trail-marker-post.webp",
+          "thumbWidth": 60,
+          "thumbHeight": 128
+        },
+        {
+          "id": "river-ranger/envelope-with-card",
+          "name": "envelope-with-card",
+          "frame": {
+            "x": 365,
+            "y": 714,
+            "w": 334,
+            "h": 351
+          },
+          "src": "assets/story/items/river-ranger/envelope-with-card.webp",
+          "width": 334,
+          "height": 351,
+          "thumb": "assets/story/items/river-ranger/thumbs/envelope-with-card.webp",
+          "thumbWidth": 122,
+          "thumbHeight": 128
+        },
+        {
+          "id": "river-ranger/old-river-map",
+          "name": "old-river-map",
+          "frame": {
+            "x": 716,
+            "y": 711,
+            "w": 404,
+            "h": 358
+          },
+          "src": "assets/story/items/river-ranger/old-river-map.webp",
+          "width": 404,
+          "height": 358,
+          "thumb": "assets/story/items/river-ranger/thumbs/old-river-map.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 113
+        },
+        {
+          "id": "river-ranger/ranger-patch",
+          "name": "ranger-patch",
+          "frame": {
+            "x": 1117,
+            "y": 716,
+            "w": 303,
+            "h": 349
+          },
+          "src": "assets/story/items/river-ranger/ranger-patch.webp",
+          "width": 303,
+          "height": 349,
+          "thumb": "assets/story/items/river-ranger/thumbs/ranger-patch.webp",
+          "thumbWidth": 111,
+          "thumbHeight": 128
+        }
+      ],
+      "status": "processed",
+      "warnings": []
+    },
+    {
+      "id": "neon-art-supplies",
+      "title": "Neon fantasy art supply sprite atlas",
+      "group": "items",
+      "layout": {
+        "type": "grid",
+        "cols": 4,
+        "rows": 3
+      },
+      "source": {
+        "path": "art/sources/story/items/Neon fantasy art supply sprite atlas.png",
+        "sha256": "7cf3aa6fc7decef9a363d614db24f76d4c7c18b3c261175ef0bac405f0e2f8ed",
+        "width": 1448,
+        "height": 1086,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.326
+      },
+      "verified": false,
+      "notes": null,
+      "sprites": [
+        {
+          "id": "neon-art-supplies/monster-sketch-page",
+          "name": "monster-sketch-page",
+          "frame": {
+            "x": 5,
+            "y": 11,
+            "w": 392,
+            "h": 380
+          },
+          "src": "assets/story/items/neon-art-supplies/monster-sketch-page.webp",
+          "width": 392,
+          "height": 380,
+          "thumb": "assets/story/items/neon-art-supplies/thumbs/monster-sketch-page.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 124
+        },
+        {
+          "id": "neon-art-supplies/gw-commission-card",
+          "name": "gw-commission-card",
+          "frame": {
+            "x": 376,
+            "y": 6,
+            "w": 333,
+            "h": 394
+          },
+          "src": "assets/story/items/neon-art-supplies/gw-commission-card.webp",
+          "width": 333,
+          "height": 394,
+          "thumb": "assets/story/items/neon-art-supplies/thumbs/gw-commission-card.webp",
+          "thumbWidth": 108,
+          "thumbHeight": 128
+        },
+        {
+          "id": "neon-art-supplies/monster-card-back",
+          "name": "monster-card-back",
+          "frame": {
+            "x": 714,
+            "y": 17,
+            "w": 296,
+            "h": 374
+          },
+          "src": "assets/story/items/neon-art-supplies/monster-card-back.webp",
+          "width": 296,
+          "height": 374,
+          "thumb": "assets/story/items/neon-art-supplies/thumbs/monster-card-back.webp",
+          "thumbWidth": 101,
+          "thumbHeight": 128
+        },
+        {
+          "id": "neon-art-supplies/monster-sketchbook",
+          "name": "monster-sketchbook",
+          "frame": {
+            "x": 1005,
+            "y": 12,
+            "w": 443,
+            "h": 387
+          },
+          "src": "assets/story/items/neon-art-supplies/monster-sketchbook.webp",
+          "width": 443,
+          "height": 387,
+          "thumb": "assets/story/items/neon-art-supplies/thumbs/monster-sketchbook.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 112,
+          "touchesEdge": true
+        },
+        {
+          "id": "neon-art-supplies/neon-markers",
+          "name": "neon-markers",
+          "frame": {
+            "x": 9,
+            "y": 393,
+            "w": 345,
+            "h": 318
+          },
+          "src": "assets/story/items/neon-art-supplies/neon-markers.webp",
+          "width": 345,
+          "height": 318,
+          "thumb": "assets/story/items/neon-art-supplies/thumbs/neon-markers.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 118
+        },
+        {
+          "id": "neon-art-supplies/drawing-tablet",
+          "name": "drawing-tablet",
+          "frame": {
+            "x": 355,
+            "y": 393,
+            "w": 413,
+            "h": 313
+          },
+          "src": "assets/story/items/neon-art-supplies/drawing-tablet.webp",
+          "width": 413,
+          "height": 313,
+          "thumb": "assets/story/items/neon-art-supplies/thumbs/drawing-tablet.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 97
+        },
+        {
+          "id": "neon-art-supplies/keyring-neon-tag",
+          "name": "keyring-neon-tag",
+          "frame": {
+            "x": 784,
+            "y": 417,
+            "w": 306,
+            "h": 292
+          },
+          "src": "assets/story/items/neon-art-supplies/keyring-neon-tag.webp",
+          "width": 306,
+          "height": 292,
+          "thumb": "assets/story/items/neon-art-supplies/thumbs/keyring-neon-tag.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 122
+        },
+        {
+          "id": "neon-art-supplies/monster-card-box",
+          "name": "monster-card-box",
+          "frame": {
+            "x": 1143,
+            "y": 383,
+            "w": 276,
+            "h": 342
+          },
+          "src": "assets/story/items/neon-art-supplies/monster-card-box.webp",
+          "width": 276,
+          "height": 342,
+          "thumb": "assets/story/items/neon-art-supplies/thumbs/monster-card-box.webp",
+          "thumbWidth": 103,
+          "thumbHeight": 128
+        },
+        {
+          "id": "neon-art-supplies/rolled-poster",
+          "name": "rolled-poster",
+          "frame": {
+            "x": 13,
+            "y": 703,
+            "w": 378,
+            "h": 355
+          },
+          "src": "assets/story/items/neon-art-supplies/rolled-poster.webp",
+          "width": 378,
+          "height": 355,
+          "thumb": "assets/story/items/neon-art-supplies/thumbs/rolled-poster.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 120
+        },
+        {
+          "id": "neon-art-supplies/monster-sticker-sheet",
+          "name": "monster-sticker-sheet",
+          "frame": {
+            "x": 396,
+            "y": 703,
+            "w": 385,
+            "h": 337
+          },
+          "src": "assets/story/items/neon-art-supplies/monster-sticker-sheet.webp",
+          "width": 385,
+          "height": 337,
+          "thumb": "assets/story/items/neon-art-supplies/thumbs/monster-sticker-sheet.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 112
+        },
+        {
+          "id": "neon-art-supplies/monster-trading-card",
+          "name": "monster-trading-card",
+          "frame": {
+            "x": 795,
+            "y": 706,
+            "w": 293,
+            "h": 348
+          },
+          "src": "assets/story/items/neon-art-supplies/monster-trading-card.webp",
+          "width": 293,
+          "height": 348,
+          "thumb": "assets/story/items/neon-art-supplies/thumbs/monster-trading-card.webp",
+          "thumbWidth": 108,
+          "thumbHeight": 128
+        },
+        {
+          "id": "neon-art-supplies/purple-ink-bottle",
+          "name": "purple-ink-bottle",
+          "frame": {
+            "x": 1139,
+            "y": 709,
+            "w": 286,
+            "h": 346
+          },
+          "src": "assets/story/items/neon-art-supplies/purple-ink-bottle.webp",
+          "width": 286,
+          "height": 346,
+          "thumb": "assets/story/items/neon-art-supplies/thumbs/purple-ink-bottle.webp",
+          "thumbWidth": 106,
+          "thumbHeight": 128
+        }
+      ],
+      "status": "processed",
+      "warnings": [
+        {
+          "level": "warning",
+          "code": "edge",
+          "message": "monster-sketchbook: artwork touches the sheet edge and may be cut off in the source."
+        }
+      ]
+    },
+    {
+      "id": "jak-black-gold",
+      "title": "JAK's Black-Gold Quest Item Atlas",
+      "group": "items",
+      "layout": {
+        "type": "grid",
+        "cols": 4,
+        "rows": 3
+      },
+      "source": {
+        "path": "art/sources/story/items/JAK’s Black-Gold Quest Item Atlas.png",
+        "sha256": "2db58fe5a67999b95a35978aaed2d24f90448a2f8950fe75a7aba7a0d94d628a",
+        "width": 1448,
+        "height": 1086,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.497
+      },
+      "verified": false,
+      "notes": null,
+      "sprites": [
+        {
+          "id": "jak-black-gold/black-gold-card-box",
+          "name": "black-gold-card-box",
+          "frame": {
+            "x": 59,
+            "y": 31,
+            "w": 273,
+            "h": 331
+          },
+          "src": "assets/story/items/jak-black-gold/black-gold-card-box.webp",
+          "width": 273,
+          "height": 331,
+          "thumb": "assets/story/items/jak-black-gold/thumbs/black-gold-card-box.webp",
+          "thumbWidth": 106,
+          "thumbHeight": 128
+        },
+        {
+          "id": "jak-black-gold/red-card-fan",
+          "name": "red-card-fan",
+          "frame": {
+            "x": 352,
+            "y": 49,
+            "w": 421,
+            "h": 319
+          },
+          "src": "assets/story/items/jak-black-gold/red-card-fan.webp",
+          "width": 421,
+          "height": 319,
+          "thumb": "assets/story/items/jak-black-gold/thumbs/red-card-fan.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 97
+        },
+        {
+          "id": "jak-black-gold/card-spring-cascade",
+          "name": "card-spring-cascade",
+          "frame": {
+            "x": 755,
+            "y": 10,
+            "w": 385,
+            "h": 364
+          },
+          "src": "assets/story/items/jak-black-gold/card-spring-cascade.webp",
+          "width": 385,
+          "height": 364,
+          "thumb": "assets/story/items/jak-black-gold/thumbs/card-spring-cascade.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 121
+        },
+        {
+          "id": "jak-black-gold/gold-ace-of-spades",
+          "name": "gold-ace-of-spades",
+          "frame": {
+            "x": 1158,
+            "y": 18,
+            "w": 241,
+            "h": 351
+          },
+          "src": "assets/story/items/jak-black-gold/gold-ace-of-spades.webp",
+          "width": 241,
+          "height": 351,
+          "thumb": "assets/story/items/jak-black-gold/thumbs/gold-ace-of-spades.webp",
+          "thumbWidth": 88,
+          "thumbHeight": 128
+        },
+        {
+          "id": "jak-black-gold/smartphone-recording",
+          "name": "smartphone-recording",
+          "frame": {
+            "x": 75,
+            "y": 370,
+            "w": 209,
+            "h": 330
+          },
+          "src": "assets/story/items/jak-black-gold/smartphone-recording.webp",
+          "width": 209,
+          "height": 330,
+          "thumb": "assets/story/items/jak-black-gold/thumbs/smartphone-recording.webp",
+          "thumbWidth": 81,
+          "thumbHeight": 128
+        },
+        {
+          "id": "jak-black-gold/video-camera",
+          "name": "video-camera",
+          "frame": {
+            "x": 385,
+            "y": 366,
+            "w": 352,
+            "h": 333
+          },
+          "src": "assets/story/items/jak-black-gold/video-camera.webp",
+          "width": 352,
+          "height": 333,
+          "thumb": "assets/story/items/jak-black-gold/thumbs/video-camera.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 121
+        },
+        {
+          "id": "jak-black-gold/stamped-certificate",
+          "name": "stamped-certificate",
+          "frame": {
+            "x": 740,
+            "y": 366,
+            "w": 354,
+            "h": 333
+          },
+          "src": "assets/story/items/jak-black-gold/stamped-certificate.webp",
+          "width": 354,
+          "height": 333,
+          "thumb": "assets/story/items/jak-black-gold/thumbs/stamped-certificate.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 120
+        },
+        {
+          "id": "jak-black-gold/black-gold-usb-drive",
+          "name": "black-gold-usb-drive",
+          "frame": {
+            "x": 1094,
+            "y": 372,
+            "w": 316,
+            "h": 311
+          },
+          "src": "assets/story/items/jak-black-gold/black-gold-usb-drive.webp",
+          "width": 316,
+          "height": 311,
+          "thumb": "assets/story/items/jak-black-gold/thumbs/black-gold-usb-drive.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 126
+        },
+        {
+          "id": "jak-black-gold/phone-tripod",
+          "name": "phone-tripod",
+          "frame": {
+            "x": 31,
+            "y": 699,
+            "w": 304,
+            "h": 364
+          },
+          "src": "assets/story/items/jak-black-gold/phone-tripod.webp",
+          "width": 304,
+          "height": 364,
+          "thumb": "assets/story/items/jak-black-gold/thumbs/phone-tripod.webp",
+          "thumbWidth": 107,
+          "thumbHeight": 128
+        },
+        {
+          "id": "jak-black-gold/gold-money-clip",
+          "name": "gold-money-clip",
+          "frame": {
+            "x": 396,
+            "y": 699,
+            "w": 331,
+            "h": 323
+          },
+          "src": "assets/story/items/jak-black-gold/gold-money-clip.webp",
+          "width": 331,
+          "height": 323,
+          "thumb": "assets/story/items/jak-black-gold/thumbs/gold-money-clip.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 125
+        },
+        {
+          "id": "jak-black-gold/admission-ticket",
+          "name": "admission-ticket",
+          "frame": {
+            "x": 778,
+            "y": 698,
+            "w": 242,
+            "h": 374
+          },
+          "src": "assets/story/items/jak-black-gold/admission-ticket.webp",
+          "width": 242,
+          "height": 374,
+          "thumb": "assets/story/items/jak-black-gold/thumbs/admission-ticket.webp",
+          "thumbWidth": 83,
+          "thumbHeight": 128
+        },
+        {
+          "id": "jak-black-gold/gold-card-trophy",
+          "name": "gold-card-trophy",
+          "frame": {
+            "x": 1129,
+            "y": 702,
+            "w": 284,
+            "h": 362
+          },
+          "src": "assets/story/items/jak-black-gold/gold-card-trophy.webp",
+          "width": 284,
+          "height": 362,
+          "thumb": "assets/story/items/jak-black-gold/thumbs/gold-card-trophy.webp",
+          "thumbWidth": 100,
+          "thumbHeight": 128
+        }
+      ],
+      "status": "processed",
+      "warnings": []
+    },
+    {
+      "id": "cold-war-spycraft",
+      "title": "Cold War Spycraft Quest Item Atlas",
+      "group": "items",
+      "layout": {
+        "type": "grid",
+        "cols": 4,
+        "rows": 3
+      },
+      "source": {
+        "path": "art/sources/story/items/Cold War Spycraft Quest Item Atlas.png",
+        "sha256": "f6abf9b095afaa297438266e980492562e4f3e0e6e392c6bab2c41d983da65f9",
+        "width": 1448,
+        "height": 1086,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.398
+      },
+      "verified": false,
+      "notes": null,
+      "sprites": [
+        {
+          "id": "cold-war-spycraft/classified-folder",
+          "name": "classified-folder",
+          "frame": {
+            "x": 27,
+            "y": 9,
+            "w": 344,
+            "h": 365
+          },
+          "src": "assets/story/items/cold-war-spycraft/classified-folder.webp",
+          "width": 344,
+          "height": 365,
+          "thumb": "assets/story/items/cold-war-spycraft/thumbs/classified-folder.webp",
+          "thumbWidth": 121,
+          "thumbHeight": 128
+        },
+        {
+          "id": "cold-war-spycraft/redacted-document",
+          "name": "redacted-document",
+          "frame": {
+            "x": 393,
+            "y": 31,
+            "w": 300,
+            "h": 337
+          },
+          "src": "assets/story/items/cold-war-spycraft/redacted-document.webp",
+          "width": 300,
+          "height": 337,
+          "thumb": "assets/story/items/cold-war-spycraft/thumbs/redacted-document.webp",
+          "thumbWidth": 114,
+          "thumbHeight": 128
+        },
+        {
+          "id": "cold-war-spycraft/film-reel",
+          "name": "film-reel",
+          "frame": {
+            "x": 737,
+            "y": 69,
+            "w": 347,
+            "h": 287
+          },
+          "src": "assets/story/items/cold-war-spycraft/film-reel.webp",
+          "width": 347,
+          "height": 287,
+          "thumb": "assets/story/items/cold-war-spycraft/thumbs/film-reel.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 106
+        },
+        {
+          "id": "cold-war-spycraft/id-badge",
+          "name": "id-badge",
+          "frame": {
+            "x": 1124,
+            "y": 32,
+            "w": 305,
+            "h": 342
+          },
+          "src": "assets/story/items/cold-war-spycraft/id-badge.webp",
+          "width": 305,
+          "height": 342,
+          "thumb": "assets/story/items/cold-war-spycraft/thumbs/id-badge.webp",
+          "thumbWidth": 114,
+          "thumbHeight": 128
+        },
+        {
+          "id": "cold-war-spycraft/field-radio",
+          "name": "field-radio",
+          "frame": {
+            "x": 24,
+            "y": 384,
+            "w": 363,
+            "h": 304
+          },
+          "src": "assets/story/items/cold-war-spycraft/field-radio.webp",
+          "width": 363,
+          "height": 304,
+          "thumb": "assets/story/items/cold-war-spycraft/thumbs/field-radio.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 107
+        },
+        {
+          "id": "cold-war-spycraft/black-notebook",
+          "name": "black-notebook",
+          "frame": {
+            "x": 403,
+            "y": 387,
+            "w": 298,
+            "h": 309
+          },
+          "src": "assets/story/items/cold-war-spycraft/black-notebook.webp",
+          "width": 298,
+          "height": 309,
+          "thumb": "assets/story/items/cold-war-spycraft/thumbs/black-notebook.webp",
+          "thumbWidth": 123,
+          "thumbHeight": 128
+        },
+        {
+          "id": "cold-war-spycraft/cipher-ribbon",
+          "name": "cipher-ribbon",
+          "frame": {
+            "x": 730,
+            "y": 462,
+            "w": 356,
+            "h": 234
+          },
+          "src": "assets/story/items/cold-war-spycraft/cipher-ribbon.webp",
+          "width": 356,
+          "height": 234,
+          "thumb": "assets/story/items/cold-war-spycraft/thumbs/cipher-ribbon.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 84
+        },
+        {
+          "id": "cold-war-spycraft/wax-sealed-envelope",
+          "name": "wax-sealed-envelope",
+          "frame": {
+            "x": 1088,
+            "y": 400,
+            "w": 349,
+            "h": 280
+          },
+          "src": "assets/story/items/cold-war-spycraft/wax-sealed-envelope.webp",
+          "width": 349,
+          "height": 280,
+          "thumb": "assets/story/items/cold-war-spycraft/thumbs/wax-sealed-envelope.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 103
+        },
+        {
+          "id": "cold-war-spycraft/reel-to-reel-recorder",
+          "name": "reel-to-reel-recorder",
+          "frame": {
+            "x": 23,
+            "y": 680,
+            "w": 358,
+            "h": 378
+          },
+          "src": "assets/story/items/cold-war-spycraft/reel-to-reel-recorder.webp",
+          "width": 358,
+          "height": 378,
+          "thumb": "assets/story/items/cold-war-spycraft/thumbs/reel-to-reel-recorder.webp",
+          "thumbWidth": 121,
+          "thumbHeight": 128
+        },
+        {
+          "id": "cold-war-spycraft/key-13-tag",
+          "name": "key-13-tag",
+          "frame": {
+            "x": 427,
+            "y": 688,
+            "w": 304,
+            "h": 351
+          },
+          "src": "assets/story/items/cold-war-spycraft/key-13-tag.webp",
+          "width": 304,
+          "height": 351,
+          "thumb": "assets/story/items/cold-war-spycraft/thumbs/key-13-tag.webp",
+          "thumbWidth": 111,
+          "thumbHeight": 128
+        },
+        {
+          "id": "cold-war-spycraft/spycraft-ace-of-spades",
+          "name": "spycraft-ace-of-spades",
+          "frame": {
+            "x": 764,
+            "y": 680,
+            "w": 265,
+            "h": 362
+          },
+          "src": "assets/story/items/cold-war-spycraft/spycraft-ace-of-spades.webp",
+          "width": 265,
+          "height": 362,
+          "thumb": "assets/story/items/cold-war-spycraft/thumbs/spycraft-ace-of-spades.webp",
+          "thumbWidth": 94,
+          "thumbHeight": 128
+        },
+        {
+          "id": "cold-war-spycraft/surveillance-photo-folder",
+          "name": "surveillance-photo-folder",
+          "frame": {
+            "x": 1077,
+            "y": 677,
+            "w": 363,
+            "h": 383
+          },
+          "src": "assets/story/items/cold-war-spycraft/surveillance-photo-folder.webp",
+          "width": 363,
+          "height": 383,
+          "thumb": "assets/story/items/cold-war-spycraft/thumbs/surveillance-photo-folder.webp",
+          "thumbWidth": 121,
+          "thumbHeight": 128
+        }
+      ],
+      "status": "processed",
+      "warnings": []
+    },
+    {
+      "id": "lodge-relics",
+      "title": "Antique Lodge Tools and Puzzle Relics",
+      "group": "items",
+      "layout": {
+        "type": "grid",
+        "cols": 4,
+        "rows": 3
+      },
+      "source": {
+        "path": "art/sources/story/items/Antique Lodge Tools and Puzzle Relics.png",
+        "sha256": "0e073e78a62a2c33a937c95e8b2d1e3c7a5b544d03160a349271791501c22401",
+        "width": 1448,
+        "height": 1086,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.528
+      },
+      "verified": false,
+      "notes": null,
+      "sprites": [
+        {
+          "id": "lodge-relics/square-and-compasses",
+          "name": "square-and-compasses",
+          "frame": {
+            "x": 18,
+            "y": 14,
+            "w": 373,
+            "h": 345
+          },
+          "src": "assets/story/items/lodge-relics/square-and-compasses.webp",
+          "width": 373,
+          "height": 345,
+          "thumb": "assets/story/items/lodge-relics/thumbs/square-and-compasses.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 118
+        },
+        {
+          "id": "lodge-relics/try-square",
+          "name": "try-square",
+          "frame": {
+            "x": 427,
+            "y": 40,
+            "w": 294,
+            "h": 319
+          },
+          "src": "assets/story/items/lodge-relics/try-square.webp",
+          "width": 294,
+          "height": 319,
+          "thumb": "assets/story/items/lodge-relics/thumbs/try-square.webp",
+          "thumbWidth": 118,
+          "thumbHeight": 128
+        },
+        {
+          "id": "lodge-relics/compasses",
+          "name": "compasses",
+          "frame": {
+            "x": 768,
+            "y": 8,
+            "w": 236,
+            "h": 353
+          },
+          "src": "assets/story/items/lodge-relics/compasses.webp",
+          "width": 236,
+          "height": 353,
+          "thumb": "assets/story/items/lodge-relics/thumbs/compasses.webp",
+          "thumbWidth": 86,
+          "thumbHeight": 128
+        },
+        {
+          "id": "lodge-relics/measuring-rule",
+          "name": "measuring-rule",
+          "frame": {
+            "x": 1074,
+            "y": 8,
+            "w": 358,
+            "h": 353
+          },
+          "src": "assets/story/items/lodge-relics/measuring-rule.webp",
+          "width": 358,
+          "height": 353,
+          "thumb": "assets/story/items/lodge-relics/thumbs/measuring-rule.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 126
+        },
+        {
+          "id": "lodge-relics/gavel",
+          "name": "gavel",
+          "frame": {
+            "x": 15,
+            "y": 351,
+            "w": 388,
+            "h": 341
+          },
+          "src": "assets/story/items/lodge-relics/gavel.webp",
+          "width": 388,
+          "height": 341,
+          "thumb": "assets/story/items/lodge-relics/thumbs/gavel.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 112
+        },
+        {
+          "id": "lodge-relics/plumb-line",
+          "name": "plumb-line",
+          "frame": {
+            "x": 438,
+            "y": 347,
+            "w": 196,
+            "h": 354
+          },
+          "src": "assets/story/items/lodge-relics/plumb-line.webp",
+          "width": 196,
+          "height": 354,
+          "thumb": "assets/story/items/lodge-relics/thumbs/plumb-line.webp",
+          "thumbWidth": 71,
+          "thumbHeight": 128
+        },
+        {
+          "id": "lodge-relics/spirit-level",
+          "name": "spirit-level",
+          "frame": {
+            "x": 699,
+            "y": 347,
+            "w": 402,
+            "h": 286
+          },
+          "src": "assets/story/items/lodge-relics/spirit-level.webp",
+          "width": 402,
+          "height": 286,
+          "thumb": "assets/story/items/lodge-relics/thumbs/spirit-level.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 91
+        },
+        {
+          "id": "lodge-relics/masonic-book",
+          "name": "masonic-book",
+          "frame": {
+            "x": 1101,
+            "y": 354,
+            "w": 337,
+            "h": 347
+          },
+          "src": "assets/story/items/lodge-relics/masonic-book.webp",
+          "width": 337,
+          "height": 347,
+          "thumb": "assets/story/items/lodge-relics/thumbs/masonic-book.webp",
+          "thumbWidth": 124,
+          "thumbHeight": 128
+        },
+        {
+          "id": "lodge-relics/ornate-key",
+          "name": "ornate-key",
+          "frame": {
+            "x": 40,
+            "y": 713,
+            "w": 287,
+            "h": 333
+          },
+          "src": "assets/story/items/lodge-relics/ornate-key.webp",
+          "width": 287,
+          "height": 333,
+          "thumb": "assets/story/items/lodge-relics/thumbs/ornate-key.webp",
+          "thumbWidth": 110,
+          "thumbHeight": 128
+        },
+        {
+          "id": "lodge-relics/columned-parchment",
+          "name": "columned-parchment",
+          "frame": {
+            "x": 340,
+            "y": 702,
+            "w": 373,
+            "h": 345
+          },
+          "src": "assets/story/items/lodge-relics/columned-parchment.webp",
+          "width": 373,
+          "height": 345,
+          "thumb": "assets/story/items/lodge-relics/thumbs/columned-parchment.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 118
+        },
+        {
+          "id": "lodge-relics/carved-stone-tablet",
+          "name": "carved-stone-tablet",
+          "frame": {
+            "x": 746,
+            "y": 710,
+            "w": 328,
+            "h": 333
+          },
+          "src": "assets/story/items/lodge-relics/carved-stone-tablet.webp",
+          "width": 328,
+          "height": 333,
+          "thumb": "assets/story/items/lodge-relics/thumbs/carved-stone-tablet.webp",
+          "thumbWidth": 126,
+          "thumbHeight": 128
+        },
+        {
+          "id": "lodge-relics/sketch-notebook",
+          "name": "sketch-notebook",
+          "frame": {
+            "x": 1087,
+            "y": 710,
+            "w": 357,
+            "h": 350
+          },
+          "src": "assets/story/items/lodge-relics/sketch-notebook.webp",
+          "width": 357,
+          "height": 350,
+          "thumb": "assets/story/items/lodge-relics/thumbs/sketch-notebook.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 125
+        }
+      ],
+      "status": "processed",
+      "warnings": []
+    },
+    {
+      "id": "kenmore-heirlooms",
+      "title": "Kenmore Heirloom Mystery Sprite Atlas",
+      "group": "items",
+      "layout": {
+        "type": "grid",
+        "cols": 4,
+        "rows": 3
+      },
+      "source": {
+        "path": "art/sources/story/items/Kenmore Heirloom Mystery Sprite Atlas.png",
+        "sha256": "f9a1d4a929bfe6d8eb5a6d0ecfcd6815c67ef04df321c73a7e5cc1272fa547ca",
+        "width": 1448,
+        "height": 1086,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.399
+      },
+      "verified": false,
+      "notes": null,
+      "sprites": [
+        {
+          "id": "kenmore-heirlooms/framed-mansion-painting",
+          "name": "framed-mansion-painting",
+          "frame": {
+            "x": 27,
+            "y": 75,
+            "w": 363,
+            "h": 299
+          },
+          "src": "assets/story/items/kenmore-heirlooms/framed-mansion-painting.webp",
+          "width": 363,
+          "height": 299,
+          "thumb": "assets/story/items/kenmore-heirlooms/thumbs/framed-mansion-painting.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 105
+        },
+        {
+          "id": "kenmore-heirlooms/wax-sealed-letter",
+          "name": "wax-sealed-letter",
+          "frame": {
+            "x": 413,
+            "y": 58,
+            "w": 378,
+            "h": 332
+          },
+          "src": "assets/story/items/kenmore-heirlooms/wax-sealed-letter.webp",
+          "width": 378,
+          "height": 332,
+          "thumb": "assets/story/items/kenmore-heirlooms/thumbs/wax-sealed-letter.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 112
+        },
+        {
+          "id": "kenmore-heirlooms/oval-portrait-locket",
+          "name": "oval-portrait-locket",
+          "frame": {
+            "x": 815,
+            "y": 22,
+            "w": 260,
+            "h": 374
+          },
+          "src": "assets/story/items/kenmore-heirlooms/oval-portrait-locket.webp",
+          "width": 260,
+          "height": 374,
+          "thumb": "assets/story/items/kenmore-heirlooms/thumbs/oval-portrait-locket.webp",
+          "thumbWidth": 89,
+          "thumbHeight": 128
+        },
+        {
+          "id": "kenmore-heirlooms/candlestick",
+          "name": "candlestick",
+          "frame": {
+            "x": 1169,
+            "y": 13,
+            "w": 254,
+            "h": 390
+          },
+          "src": "assets/story/items/kenmore-heirlooms/candlestick.webp",
+          "width": 254,
+          "height": 390,
+          "thumb": "assets/story/items/kenmore-heirlooms/thumbs/candlestick.webp",
+          "thumbWidth": 83,
+          "thumbHeight": 128
+        },
+        {
+          "id": "kenmore-heirlooms/carved-plaster-fragment",
+          "name": "carved-plaster-fragment",
+          "frame": {
+            "x": 44,
+            "y": 422,
+            "w": 337,
+            "h": 286
+          },
+          "src": "assets/story/items/kenmore-heirlooms/carved-plaster-fragment.webp",
+          "width": 337,
+          "height": 286,
+          "thumb": "assets/story/items/kenmore-heirlooms/thumbs/carved-plaster-fragment.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 109
+        },
+        {
+          "id": "kenmore-heirlooms/blue-willow-teacup",
+          "name": "blue-willow-teacup",
+          "frame": {
+            "x": 403,
+            "y": 440,
+            "w": 344,
+            "h": 244
+          },
+          "src": "assets/story/items/kenmore-heirlooms/blue-willow-teacup.webp",
+          "width": 344,
+          "height": 244,
+          "thumb": "assets/story/items/kenmore-heirlooms/thumbs/blue-willow-teacup.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 91
+        },
+        {
+          "id": "kenmore-heirlooms/leather-book",
+          "name": "leather-book",
+          "frame": {
+            "x": 757,
+            "y": 406,
+            "w": 351,
+            "h": 307
+          },
+          "src": "assets/story/items/kenmore-heirlooms/leather-book.webp",
+          "width": 351,
+          "height": 307,
+          "thumb": "assets/story/items/kenmore-heirlooms/thumbs/leather-book.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 112
+        },
+        {
+          "id": "kenmore-heirlooms/iron-key",
+          "name": "iron-key",
+          "frame": {
+            "x": 1124,
+            "y": 413,
+            "w": 314,
+            "h": 298
+          },
+          "src": "assets/story/items/kenmore-heirlooms/iron-key.webp",
+          "width": 314,
+          "height": 298,
+          "thumb": "assets/story/items/kenmore-heirlooms/thumbs/iron-key.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 121
+        },
+        {
+          "id": "kenmore-heirlooms/ghostly-locket",
+          "name": "ghostly-locket",
+          "frame": {
+            "x": 35,
+            "y": 708,
+            "w": 345,
+            "h": 361
+          },
+          "src": "assets/story/items/kenmore-heirlooms/ghostly-locket.webp",
+          "width": 345,
+          "height": 361,
+          "thumb": "assets/story/items/kenmore-heirlooms/thumbs/ghostly-locket.webp",
+          "thumbWidth": 122,
+          "thumbHeight": 128
+        },
+        {
+          "id": "kenmore-heirlooms/ribbon-tied-letters",
+          "name": "ribbon-tied-letters",
+          "frame": {
+            "x": 380,
+            "y": 706,
+            "w": 379,
+            "h": 337
+          },
+          "src": "assets/story/items/kenmore-heirlooms/ribbon-tied-letters.webp",
+          "width": 379,
+          "height": 337,
+          "thumb": "assets/story/items/kenmore-heirlooms/thumbs/ribbon-tied-letters.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 114
+        },
+        {
+          "id": "kenmore-heirlooms/glowing-queen-of-hearts",
+          "name": "glowing-queen-of-hearts",
+          "frame": {
+            "x": 759,
+            "y": 706,
+            "w": 319,
+            "h": 362
+          },
+          "src": "assets/story/items/kenmore-heirlooms/glowing-queen-of-hearts.webp",
+          "width": 319,
+          "height": 362,
+          "thumb": "assets/story/items/kenmore-heirlooms/thumbs/glowing-queen-of-hearts.webp",
+          "thumbWidth": 113,
+          "thumbHeight": 128
+        },
+        {
+          "id": "kenmore-heirlooms/carved-wood-panel",
+          "name": "carved-wood-panel",
+          "frame": {
+            "x": 1078,
+            "y": 714,
+            "w": 346,
+            "h": 326
+          },
+          "src": "assets/story/items/kenmore-heirlooms/carved-wood-panel.webp",
+          "width": 346,
+          "height": 326,
+          "thumb": "assets/story/items/kenmore-heirlooms/thumbs/carved-wood-panel.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 121
+        }
+      ],
+      "status": "processed",
+      "warnings": []
+    },
+    {
+      "id": "map-icons",
+      "title": "Antique adventure map icons",
+      "group": "map",
+      "layout": {
+        "type": "grid",
+        "cols": 4,
+        "rows": 3
+      },
+      "source": {
+        "path": "art/sources/story/map/Antique adventure map icon atlas.png",
+        "sha256": "9824abec900d4583a5308d34623973b7010d72858d3379ef240a8cfc0e164c16",
+        "width": 1447,
+        "height": 1087,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.553
+      },
+      "verified": false,
+      "notes": "The two path pieces are made of separate dots; grid assignment keeps each path whole.",
+      "sprites": [
+        {
+          "id": "map-icons/padlock",
+          "name": "padlock",
+          "frame": {
+            "x": 58,
+            "y": 34,
+            "w": 269,
+            "h": 339
+          },
+          "src": "assets/story/map/map-icons/padlock.webp",
+          "width": 269,
+          "height": 339,
+          "thumb": "assets/story/map/map-icons/thumbs/padlock.webp",
+          "thumbWidth": 102,
+          "thumbHeight": 128
+        },
+        {
+          "id": "map-icons/map-pin-spade",
+          "name": "map-pin-spade",
+          "frame": {
+            "x": 425,
+            "y": 51,
+            "w": 223,
+            "h": 316
+          },
+          "src": "assets/story/map/map-icons/map-pin-spade.webp",
+          "width": 223,
+          "height": 316,
+          "thumb": "assets/story/map/map-icons/thumbs/map-pin-spade.webp",
+          "thumbWidth": 90,
+          "thumbHeight": 128
+        },
+        {
+          "id": "map-icons/wax-seal-check",
+          "name": "wax-seal-check",
+          "frame": {
+            "x": 735,
+            "y": 68,
+            "w": 306,
+            "h": 295
+          },
+          "src": "assets/story/map/map-icons/wax-seal-check.webp",
+          "width": 306,
+          "height": 295,
+          "thumb": "assets/story/map/map-icons/thumbs/wax-seal-check.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 123
+        },
+        {
+          "id": "map-icons/compass-star",
+          "name": "compass-star",
+          "frame": {
+            "x": 1099,
+            "y": 32,
+            "w": 331,
+            "h": 349
+          },
+          "src": "assets/story/map/map-icons/compass-star.webp",
+          "width": 331,
+          "height": 349,
+          "thumb": "assets/story/map/map-icons/thumbs/compass-star.webp",
+          "thumbWidth": 121,
+          "thumbHeight": 128
+        },
+        {
+          "id": "map-icons/path-dots-diagonal",
+          "name": "path-dots-diagonal",
+          "frame": {
+            "x": 33,
+            "y": 439,
+            "w": 317,
+            "h": 213
+          },
+          "src": "assets/story/map/map-icons/path-dots-diagonal.webp",
+          "width": 317,
+          "height": 213,
+          "thumb": "assets/story/map/map-icons/thumbs/path-dots-diagonal.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 86
+        },
+        {
+          "id": "map-icons/path-fork",
+          "name": "path-fork",
+          "frame": {
+            "x": 413,
+            "y": 411,
+            "w": 257,
+            "h": 278
+          },
+          "src": "assets/story/map/map-icons/path-fork.webp",
+          "width": 257,
+          "height": 278,
+          "thumb": "assets/story/map/map-icons/thumbs/path-fork.webp",
+          "thumbWidth": 118,
+          "thumbHeight": 128
+        },
+        {
+          "id": "map-icons/blank-medallion",
+          "name": "blank-medallion",
+          "frame": {
+            "x": 750,
+            "y": 385,
+            "w": 278,
+            "h": 322
+          },
+          "src": "assets/story/map/map-icons/blank-medallion.webp",
+          "width": 278,
+          "height": 322,
+          "thumb": "assets/story/map/map-icons/thumbs/blank-medallion.webp",
+          "thumbWidth": 111,
+          "thumbHeight": 128
+        },
+        {
+          "id": "map-icons/ghost-tricorn",
+          "name": "ghost-tricorn",
+          "frame": {
+            "x": 1051,
+            "y": 414,
+            "w": 392,
+            "h": 269
+          },
+          "src": "assets/story/map/map-icons/ghost-tricorn.webp",
+          "width": 392,
+          "height": 269,
+          "thumb": "assets/story/map/map-icons/thumbs/ghost-tricorn.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 88
+        },
+        {
+          "id": "map-icons/quest-scroll-alert",
+          "name": "quest-scroll-alert",
+          "frame": {
+            "x": 56,
+            "y": 729,
+            "w": 279,
+            "h": 310
+          },
+          "src": "assets/story/map/map-icons/quest-scroll-alert.webp",
+          "width": 279,
+          "height": 310,
+          "thumb": "assets/story/map/map-icons/thumbs/quest-scroll-alert.webp",
+          "thumbWidth": 115,
+          "thumbHeight": 128
+        },
+        {
+          "id": "map-icons/card-pair",
+          "name": "card-pair",
+          "frame": {
+            "x": 375,
+            "y": 753,
+            "w": 336,
+            "h": 260
+          },
+          "src": "assets/story/map/map-icons/card-pair.webp",
+          "width": 336,
+          "height": 260,
+          "thumb": "assets/story/map/map-icons/thumbs/card-pair.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 99
+        },
+        {
+          "id": "map-icons/ornate-card-back",
+          "name": "ornate-card-back",
+          "frame": {
+            "x": 793,
+            "y": 731,
+            "w": 209,
+            "h": 300
+          },
+          "src": "assets/story/map/map-icons/ornate-card-back.webp",
+          "width": 209,
+          "height": 300,
+          "thumb": "assets/story/map/map-icons/thumbs/ornate-card-back.webp",
+          "thumbWidth": 89,
+          "thumbHeight": 128
+        },
+        {
+          "id": "map-icons/mystery-emblem",
+          "name": "mystery-emblem",
+          "frame": {
+            "x": 1117,
+            "y": 716,
+            "w": 290,
+            "h": 331
+          },
+          "src": "assets/story/map/map-icons/mystery-emblem.webp",
+          "width": 290,
+          "height": 331,
+          "thumb": "assets/story/map/map-icons/thumbs/mystery-emblem.webp",
+          "thumbWidth": 112,
+          "thumbHeight": 128
+        }
+      ],
+      "status": "processed",
+      "warnings": []
+    },
+    {
+      "id": "passport-stamps",
+      "title": "Twelve Passport Stamps of Mystery",
+      "group": "stamps",
+      "layout": {
+        "type": "grid",
+        "cols": 4,
+        "rows": 3
+      },
+      "source": {
+        "path": "art/sources/story/stamps/Twelve Passport Stamps of Mystery.png",
+        "sha256": "dff989a3e88b6d170488ac6d2d0b42d6e31839fd98e387b49e1a8bec8593bf31",
+        "width": 1448,
+        "height": 1086,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.303
+      },
+      "verified": false,
+      "notes": null,
+      "sprites": [
+        {
+          "id": "passport-stamps/antique-clock-key",
+          "name": "antique-clock-key",
+          "frame": {
+            "x": 18,
+            "y": 11,
+            "w": 334,
+            "h": 349
+          },
+          "src": "assets/story/stamps/passport-stamps/antique-clock-key.webp",
+          "width": 334,
+          "height": 349,
+          "thumb": "assets/story/stamps/passport-stamps/thumbs/antique-clock-key.webp",
+          "thumbWidth": 122,
+          "thumbHeight": 128
+        },
+        {
+          "id": "passport-stamps/heron-river",
+          "name": "heron-river",
+          "frame": {
+            "x": 368,
+            "y": 22,
+            "w": 349,
+            "h": 331
+          },
+          "src": "assets/story/stamps/passport-stamps/heron-river.webp",
+          "width": 349,
+          "height": 331,
+          "thumb": "assets/story/stamps/passport-stamps/thumbs/heron-river.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 121
+        },
+        {
+          "id": "passport-stamps/neon-monster",
+          "name": "neon-monster",
+          "frame": {
+            "x": 730,
+            "y": 10,
+            "w": 354,
+            "h": 350
+          },
+          "src": "assets/story/stamps/passport-stamps/neon-monster.webp",
+          "width": 354,
+          "height": 350,
+          "thumb": "assets/story/stamps/passport-stamps/thumbs/neon-monster.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 127
+        },
+        {
+          "id": "passport-stamps/cards-and-camera",
+          "name": "cards-and-camera",
+          "frame": {
+            "x": 1094,
+            "y": 10,
+            "w": 343,
+            "h": 349
+          },
+          "src": "assets/story/stamps/passport-stamps/cards-and-camera.webp",
+          "width": 343,
+          "height": 349,
+          "thumb": "assets/story/stamps/passport-stamps/thumbs/cards-and-camera.webp",
+          "thumbWidth": 126,
+          "thumbHeight": 128
+        },
+        {
+          "id": "passport-stamps/sealed-dossier",
+          "name": "sealed-dossier",
+          "frame": {
+            "x": 10,
+            "y": 360,
+            "w": 345,
+            "h": 345
+          },
+          "src": "assets/story/stamps/passport-stamps/sealed-dossier.webp",
+          "width": 345,
+          "height": 345,
+          "thumb": "assets/story/stamps/passport-stamps/thumbs/sealed-dossier.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 128
+        },
+        {
+          "id": "passport-stamps/square-and-compasses",
+          "name": "square-and-compasses",
+          "frame": {
+            "x": 367,
+            "y": 361,
+            "w": 351,
+            "h": 345
+          },
+          "src": "assets/story/stamps/passport-stamps/square-and-compasses.webp",
+          "width": 351,
+          "height": 345,
+          "thumb": "assets/story/stamps/passport-stamps/thumbs/square-and-compasses.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 126
+        },
+        {
+          "id": "passport-stamps/kenmore-mansion",
+          "name": "kenmore-mansion",
+          "frame": {
+            "x": 730,
+            "y": 361,
+            "w": 353,
+            "h": 345
+          },
+          "src": "assets/story/stamps/passport-stamps/kenmore-mansion.webp",
+          "width": 353,
+          "height": 345,
+          "thumb": "assets/story/stamps/passport-stamps/thumbs/kenmore-mansion.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 125
+        },
+        {
+          "id": "passport-stamps/lantern-cellar",
+          "name": "lantern-cellar",
+          "frame": {
+            "x": 1095,
+            "y": 363,
+            "w": 342,
+            "h": 338
+          },
+          "src": "assets/story/stamps/passport-stamps/lantern-cellar.webp",
+          "width": 342,
+          "height": 338,
+          "thumb": "assets/story/stamps/passport-stamps/thumbs/lantern-cellar.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 127
+        },
+        {
+          "id": "passport-stamps/spectral-tricorn",
+          "name": "spectral-tricorn",
+          "frame": {
+            "x": 11,
+            "y": 704,
+            "w": 349,
+            "h": 353
+          },
+          "src": "assets/story/stamps/passport-stamps/spectral-tricorn.webp",
+          "width": 349,
+          "height": 353,
+          "thumb": "assets/story/stamps/passport-stamps/thumbs/spectral-tricorn.webp",
+          "thumbWidth": 127,
+          "thumbHeight": 128
+        },
+        {
+          "id": "passport-stamps/three-stars",
+          "name": "three-stars",
+          "frame": {
+            "x": 375,
+            "y": 705,
+            "w": 335,
+            "h": 341
+          },
+          "src": "assets/story/stamps/passport-stamps/three-stars.webp",
+          "width": 335,
+          "height": 341,
+          "thumb": "assets/story/stamps/passport-stamps/thumbs/three-stars.webp",
+          "thumbWidth": 126,
+          "thumbHeight": 128
+        },
+        {
+          "id": "passport-stamps/card-box",
+          "name": "card-box",
+          "frame": {
+            "x": 733,
+            "y": 707,
+            "w": 343,
+            "h": 350
+          },
+          "src": "assets/story/stamps/passport-stamps/card-box.webp",
+          "width": 343,
+          "height": 350,
+          "thumb": "assets/story/stamps/passport-stamps/thumbs/card-box.webp",
+          "thumbWidth": 125,
+          "thumbHeight": 128
+        },
+        {
+          "id": "passport-stamps/wax-seal-check",
+          "name": "wax-seal-check",
+          "frame": {
+            "x": 1090,
+            "y": 707,
+            "w": 349,
+            "h": 348
+          },
+          "src": "assets/story/stamps/passport-stamps/wax-seal-check.webp",
+          "width": 349,
+          "height": 348,
+          "thumb": "assets/story/stamps/passport-stamps/thumbs/wax-seal-check.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 128
+        }
+      ],
+      "status": "processed",
+      "warnings": []
+    },
+    {
+      "id": "thirteenth-hand-vfx",
+      "title": "Thirteenth Hand VFX",
+      "group": "effects",
+      "layout": {
+        "type": "grid",
+        "cols": 4,
+        "rows": 3
+      },
+      "source": {
+        "path": "art/sources/story/effects/Thirteenth Hand VFX Sprite Atlas.png",
+        "sha256": "d4ce6acb23b9d50f2821433c877ee44da3bf5c571825fd065c51a511067467cd",
+        "width": 1448,
+        "height": 1086,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.222
+      },
+      "verified": false,
+      "notes": "Effects are made of many loose particles; grid assignment keeps each effect whole.",
+      "sprites": [
+        {
+          "id": "thirteenth-hand-vfx/card-fan-swirl",
+          "name": "card-fan-swirl",
+          "frame": {
+            "x": 14,
+            "y": 59,
+            "w": 348,
+            "h": 316
+          },
+          "src": "assets/story/effects/thirteenth-hand-vfx/card-fan-swirl.webp",
+          "width": 348,
+          "height": 316,
+          "thumb": "assets/story/effects/thirteenth-hand-vfx/thumbs/card-fan-swirl.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 116
+        },
+        {
+          "id": "thirteenth-hand-vfx/card-burst-scatter",
+          "name": "card-burst-scatter",
+          "frame": {
+            "x": 362,
+            "y": 23,
+            "w": 339,
+            "h": 352
+          },
+          "src": "assets/story/effects/thirteenth-hand-vfx/card-burst-scatter.webp",
+          "width": 339,
+          "height": 352,
+          "thumb": "assets/story/effects/thirteenth-hand-vfx/thumbs/card-burst-scatter.webp",
+          "thumbWidth": 123,
+          "thumbHeight": 128
+        },
+        {
+          "id": "thirteenth-hand-vfx/ace-flash",
+          "name": "ace-flash",
+          "frame": {
+            "x": 701,
+            "y": 14,
+            "w": 353,
+            "h": 361
+          },
+          "src": "assets/story/effects/thirteenth-hand-vfx/ace-flash.webp",
+          "width": 353,
+          "height": 361,
+          "thumb": "assets/story/effects/thirteenth-hand-vfx/thumbs/ace-flash.webp",
+          "thumbWidth": 125,
+          "thumbHeight": 128
+        },
+        {
+          "id": "thirteenth-hand-vfx/confetti-suits",
+          "name": "confetti-suits",
+          "frame": {
+            "x": 1054,
+            "y": 31,
+            "w": 374,
+            "h": 335
+          },
+          "src": "assets/story/effects/thirteenth-hand-vfx/confetti-suits.webp",
+          "width": 374,
+          "height": 335,
+          "thumb": "assets/story/effects/thirteenth-hand-vfx/thumbs/confetti-suits.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 115
+        },
+        {
+          "id": "thirteenth-hand-vfx/spectral-ring",
+          "name": "spectral-ring",
+          "frame": {
+            "x": 9,
+            "y": 375,
+            "w": 352,
+            "h": 325
+          },
+          "src": "assets/story/effects/thirteenth-hand-vfx/spectral-ring.webp",
+          "width": 352,
+          "height": 325,
+          "thumb": "assets/story/effects/thirteenth-hand-vfx/thumbs/spectral-ring.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 118
+        },
+        {
+          "id": "thirteenth-hand-vfx/spectral-wisp",
+          "name": "spectral-wisp",
+          "frame": {
+            "x": 361,
+            "y": 375,
+            "w": 333,
+            "h": 329
+          },
+          "src": "assets/story/effects/thirteenth-hand-vfx/spectral-wisp.webp",
+          "width": 333,
+          "height": 329,
+          "thumb": "assets/story/effects/thirteenth-hand-vfx/thumbs/spectral-wisp.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 126
+        },
+        {
+          "id": "thirteenth-hand-vfx/spectral-card-frame",
+          "name": "spectral-card-frame",
+          "frame": {
+            "x": 694,
+            "y": 375,
+            "w": 364,
+            "h": 329
+          },
+          "src": "assets/story/effects/thirteenth-hand-vfx/spectral-card-frame.webp",
+          "width": 364,
+          "height": 329,
+          "thumb": "assets/story/effects/thirteenth-hand-vfx/thumbs/spectral-card-frame.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 116
+        },
+        {
+          "id": "thirteenth-hand-vfx/red-seal-splat",
+          "name": "red-seal-splat",
+          "frame": {
+            "x": 1058,
+            "y": 384,
+            "w": 373,
+            "h": 302
+          },
+          "src": "assets/story/effects/thirteenth-hand-vfx/red-seal-splat.webp",
+          "width": 373,
+          "height": 302,
+          "thumb": "assets/story/effects/thirteenth-hand-vfx/thumbs/red-seal-splat.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 104
+        },
+        {
+          "id": "thirteenth-hand-vfx/suit-wheel",
+          "name": "suit-wheel",
+          "frame": {
+            "x": 8,
+            "y": 710,
+            "w": 342,
+            "h": 338
+          },
+          "src": "assets/story/effects/thirteenth-hand-vfx/suit-wheel.webp",
+          "width": 342,
+          "height": 338,
+          "thumb": "assets/story/effects/thirteenth-hand-vfx/thumbs/suit-wheel.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 127
+        },
+        {
+          "id": "thirteenth-hand-vfx/rubble-burst",
+          "name": "rubble-burst",
+          "frame": {
+            "x": 354,
+            "y": 704,
+            "w": 364,
+            "h": 333
+          },
+          "src": "assets/story/effects/thirteenth-hand-vfx/rubble-burst.webp",
+          "width": 364,
+          "height": 333,
+          "thumb": "assets/story/effects/thirteenth-hand-vfx/thumbs/rubble-burst.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 117
+        },
+        {
+          "id": "thirteenth-hand-vfx/card-ring-sparkle",
+          "name": "card-ring-sparkle",
+          "frame": {
+            "x": 718,
+            "y": 704,
+            "w": 344,
+            "h": 364
+          },
+          "src": "assets/story/effects/thirteenth-hand-vfx/card-ring-sparkle.webp",
+          "width": 344,
+          "height": 364,
+          "thumb": "assets/story/effects/thirteenth-hand-vfx/thumbs/card-ring-sparkle.webp",
+          "thumbWidth": 121,
+          "thumbHeight": 128
+        },
+        {
+          "id": "thirteenth-hand-vfx/green-wax-ring",
+          "name": "green-wax-ring",
+          "frame": {
+            "x": 1062,
+            "y": 718,
+            "w": 368,
+            "h": 341
+          },
+          "src": "assets/story/effects/thirteenth-hand-vfx/green-wax-ring.webp",
+          "width": 368,
+          "height": 341,
+          "thumb": "assets/story/effects/thirteenth-hand-vfx/thumbs/green-wax-ring.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 119
+        }
+      ],
+      "status": "processed",
+      "warnings": []
+    },
+    {
+      "id": "parlor-ui",
+      "title": "Antique emerald card parlor UI",
+      "group": "ui",
+      "layout": {
+        "type": "blobs",
+        "merge": 3,
+        "minArea": 900
+      },
+      "source": {
+        "path": "art/sources/story/ui/Antique emerald card parlor UI atlas.png",
+        "sha256": "17c288b149b5e6190648025dadd981e6e2be8090544d35a6b4c2cbb932d1d006",
+        "width": 1448,
+        "height": 1086,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.463
+      },
+      "verified": false,
+      "notes": "Irregular layout (14 pieces in three rows); pieces are found by their transparent gaps, in reading order.",
+      "sprites": [
+        {
+          "id": "parlor-ui/emerald-panel",
+          "name": "emerald-panel",
+          "frame": {
+            "x": 27,
+            "y": 82,
+            "w": 374,
+            "h": 234
+          },
+          "src": "assets/story/ui/parlor-ui/emerald-panel.webp",
+          "width": 374,
+          "height": 234,
+          "thumb": "assets/story/ui/parlor-ui/thumbs/emerald-panel.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 80,
+          "droppedHazePixels": 2588
+        },
+        {
+          "id": "parlor-ui/nameplate",
+          "name": "nameplate",
+          "frame": {
+            "x": 405,
+            "y": 141,
+            "w": 309,
+            "h": 122
+          },
+          "src": "assets/story/ui/parlor-ui/nameplate.webp",
+          "width": 309,
+          "height": 122,
+          "thumb": "assets/story/ui/parlor-ui/thumbs/nameplate.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 51,
+          "droppedHazePixels": 1271
+        },
+        {
+          "id": "parlor-ui/parchment-panel",
+          "name": "parchment-panel",
+          "frame": {
+            "x": 729,
+            "y": 93,
+            "w": 371,
+            "h": 217
+          },
+          "src": "assets/story/ui/parlor-ui/parchment-panel.webp",
+          "width": 371,
+          "height": 217,
+          "thumb": "assets/story/ui/parlor-ui/thumbs/parchment-panel.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 75,
+          "droppedHazePixels": 2201
+        },
+        {
+          "id": "parlor-ui/arrow-prev",
+          "name": "arrow-prev",
+          "frame": {
+            "x": 1106,
+            "y": 128,
+            "w": 81,
+            "h": 150
+          },
+          "src": "assets/story/ui/parlor-ui/arrow-prev.webp",
+          "width": 81,
+          "height": 150,
+          "thumb": "assets/story/ui/parlor-ui/thumbs/arrow-prev.webp",
+          "thumbWidth": 69,
+          "thumbHeight": 128,
+          "droppedHazePixels": 650
+        },
+        {
+          "id": "parlor-ui/arrow-next",
+          "name": "arrow-next",
+          "frame": {
+            "x": 1218,
+            "y": 128,
+            "w": 79,
+            "h": 150
+          },
+          "src": "assets/story/ui/parlor-ui/arrow-next.webp",
+          "width": 79,
+          "height": 150,
+          "thumb": "assets/story/ui/parlor-ui/thumbs/arrow-next.webp",
+          "thumbWidth": 67,
+          "thumbHeight": 128,
+          "droppedHazePixels": 579
+        },
+        {
+          "id": "parlor-ui/arrow-skip",
+          "name": "arrow-skip",
+          "frame": {
+            "x": 1306,
+            "y": 135,
+            "w": 114,
+            "h": 128
+          },
+          "src": "assets/story/ui/parlor-ui/arrow-skip.webp",
+          "width": 114,
+          "height": 128,
+          "thumb": "assets/story/ui/parlor-ui/thumbs/arrow-skip.webp",
+          "thumbWidth": 114,
+          "thumbHeight": 128,
+          "droppedHazePixels": 1246
+        },
+        {
+          "id": "parlor-ui/closed-book",
+          "name": "closed-book",
+          "frame": {
+            "x": 38,
+            "y": 336,
+            "w": 284,
+            "h": 317
+          },
+          "src": "assets/story/ui/parlor-ui/closed-book.webp",
+          "width": 284,
+          "height": 317,
+          "thumb": "assets/story/ui/parlor-ui/thumbs/closed-book.webp",
+          "thumbWidth": 115,
+          "thumbHeight": 128,
+          "droppedHazePixels": 2000
+        },
+        {
+          "id": "parlor-ui/open-book",
+          "name": "open-book",
+          "frame": {
+            "x": 339,
+            "y": 366,
+            "w": 454,
+            "h": 293
+          },
+          "src": "assets/story/ui/parlor-ui/open-book.webp",
+          "width": 454,
+          "height": 293,
+          "thumb": "assets/story/ui/parlor-ui/thumbs/open-book.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 83,
+          "droppedHazePixels": 2482
+        },
+        {
+          "id": "parlor-ui/emerald-square-panel",
+          "name": "emerald-square-panel",
+          "frame": {
+            "x": 808,
+            "y": 370,
+            "w": 251,
+            "h": 245
+          },
+          "src": "assets/story/ui/parlor-ui/emerald-square-panel.webp",
+          "width": 251,
+          "height": 245,
+          "thumb": "assets/story/ui/parlor-ui/thumbs/emerald-square-panel.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 125,
+          "droppedHazePixels": 1859
+        },
+        {
+          "id": "parlor-ui/parchment-banner",
+          "name": "parchment-banner",
+          "frame": {
+            "x": 1082,
+            "y": 390,
+            "w": 342,
+            "h": 212
+          },
+          "src": "assets/story/ui/parlor-ui/parchment-banner.webp",
+          "width": 342,
+          "height": 212,
+          "thumb": "assets/story/ui/parlor-ui/thumbs/parchment-banner.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 79,
+          "droppedHazePixels": 1833
+        },
+        {
+          "id": "parlor-ui/parchment-card-panel",
+          "name": "parchment-card-panel",
+          "frame": {
+            "x": 45,
+            "y": 659,
+            "w": 229,
+            "h": 340
+          },
+          "src": "assets/story/ui/parlor-ui/parchment-card-panel.webp",
+          "width": 229,
+          "height": 340,
+          "thumb": "assets/story/ui/parlor-ui/thumbs/parchment-card-panel.webp",
+          "thumbWidth": 86,
+          "thumbHeight": 128,
+          "droppedHazePixels": 2052
+        },
+        {
+          "id": "parlor-ui/triple-slot-panel",
+          "name": "triple-slot-panel",
+          "frame": {
+            "x": 321,
+            "y": 740,
+            "w": 466,
+            "h": 221
+          },
+          "src": "assets/story/ui/parlor-ui/triple-slot-panel.webp",
+          "width": 466,
+          "height": 221,
+          "thumb": "assets/story/ui/parlor-ui/thumbs/triple-slot-panel.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 61,
+          "droppedHazePixels": 1990
+        },
+        {
+          "id": "parlor-ui/oval-portrait-frame",
+          "name": "oval-portrait-frame",
+          "frame": {
+            "x": 813,
+            "y": 640,
+            "w": 253,
+            "h": 371
+          },
+          "src": "assets/story/ui/parlor-ui/oval-portrait-frame.webp",
+          "width": 253,
+          "height": 371,
+          "thumb": "assets/story/ui/parlor-ui/thumbs/oval-portrait-frame.webp",
+          "thumbWidth": 87,
+          "thumbHeight": 128,
+          "droppedHazePixels": 3400
+        },
+        {
+          "id": "parlor-ui/crest-emblem",
+          "name": "crest-emblem",
+          "frame": {
+            "x": 1083,
+            "y": 676,
+            "w": 348,
+            "h": 345
+          },
+          "src": "assets/story/ui/parlor-ui/crest-emblem.webp",
+          "width": 348,
+          "height": 345,
+          "thumb": "assets/story/ui/parlor-ui/thumbs/crest-emblem.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 127,
+          "droppedHazePixels": 2677
+        }
+      ],
+      "status": "processed",
+      "warnings": []
+    },
+    {
+      "id": "rappahannock-river-map",
+      "title": "Sophia's Annotated Rappahannock River Map",
+      "group": "map",
+      "layout": {
+        "type": "single"
+      },
+      "source": {
+        "path": "art/sources/story/map/Sophia's Annotated Rappahannock River Map.png",
+        "sha256": "22fca1f8901cc947e6323e35ebf7c18b903ca4ac42ee9dedec75c8fd9aecb9d7",
+        "width": 1536,
+        "height": 1024,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.109
+      },
+      "verified": false,
+      "notes": null,
+      "sprites": [
+        {
+          "id": "rappahannock-river-map/rappahannock-river-map",
+          "name": "rappahannock-river-map",
+          "frame": {
+            "x": 6,
+            "y": 15,
+            "w": 1527,
+            "h": 985
+          },
+          "src": "assets/story/map/rappahannock-river-map.webp",
+          "width": 1527,
+          "height": 985,
+          "thumb": "assets/story/map/thumbs/rappahannock-river-map.webp",
+          "thumbWidth": 320,
+          "thumbHeight": 206
+        }
+      ],
+      "status": "processed",
+      "warnings": []
+    },
+    {
+      "id": "location-sealed-door-cellar",
+      "title": "Card Table Beneath the Sealed Door",
+      "group": "map",
+      "layout": {
+        "type": "single"
+      },
+      "source": {
+        "path": "art/sources/story/map/Card Table Beneath the Sealed Door.png",
+        "sha256": "590cc57dacabd212e5428d18271848f07d7d7b7d5c8e090439bacf4036da3118",
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.324
+      },
+      "verified": false,
+      "notes": "Isometric map tile (transparent), not a top-down table: the underground_tunnels board keeps a drawn surface until a top-down painting is supplied.",
+      "sprites": [
+        {
+          "id": "location-sealed-door-cellar/location-sealed-door-cellar",
+          "name": "location-sealed-door-cellar",
+          "frame": {
+            "x": 19,
+            "y": 9,
+            "w": 1217,
+            "h": 1235
+          },
+          "src": "assets/story/map/location-sealed-door-cellar.webp",
+          "width": 1217,
+          "height": 1235,
+          "thumb": "assets/story/map/thumbs/location-sealed-door-cellar.webp",
+          "thumbWidth": 315,
+          "thumbHeight": 320
+        }
+      ],
+      "status": "processed",
+      "warnings": []
+    },
+    {
+      "id": "location-cheryls-antique-shop",
+      "title": "Cheryl's Antique Shop",
+      "group": "map",
+      "layout": {
+        "type": "single"
+      },
+      "source": {
+        "path": "art/sources/story/map/Cheryl's Antique Shop.png",
+        "sha256": "99a29165dfa3dff82b136c0745f7c29db421db44c21c06400e41dfe4785230f7",
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.439
+      },
+      "verified": false,
+      "notes": null,
+      "sprites": [
+        {
+          "id": "location-cheryls-antique-shop/location-cheryls-antique-shop",
+          "name": "location-cheryls-antique-shop",
+          "frame": {
+            "x": 118,
+            "y": 16,
+            "w": 1046,
+            "h": 1221
+          },
+          "src": "assets/story/map/location-cheryls-antique-shop.webp",
+          "width": 1046,
+          "height": 1221,
+          "thumb": "assets/story/map/thumbs/location-cheryls-antique-shop.webp",
+          "thumbWidth": 274,
+          "thumbHeight": 320
+        }
+      ],
+      "status": "processed",
+      "warnings": []
+    },
+    {
+      "id": "location-masonic-lodge",
+      "title": "Historic Fredericksburg Masonic Lodge",
+      "group": "map",
+      "layout": {
+        "type": "single"
+      },
+      "source": {
+        "path": "art/sources/story/map/Historic Fredericksburg Masonic Lodge.png",
+        "sha256": "bcd0f1c503e790e3e6291ef3e355f9a526f8f84349f78b7a1a7b85ce568fe2cd",
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.363
+      },
+      "verified": false,
+      "notes": null,
+      "sprites": [
+        {
+          "id": "location-masonic-lodge/location-masonic-lodge",
+          "name": "location-masonic-lodge",
+          "frame": {
+            "x": 27,
+            "y": 22,
+            "w": 1218,
+            "h": 1188
+          },
+          "src": "assets/story/map/location-masonic-lodge.webp",
+          "width": 1218,
+          "height": 1188,
+          "thumb": "assets/story/map/thumbs/location-masonic-lodge.webp",
+          "thumbWidth": 320,
+          "thumbHeight": 312
+        }
+      ],
+      "status": "processed",
+      "warnings": []
+    },
+    {
+      "id": "location-jaks-cardistry-parlor",
+      "title": "Jak's Hidden Emerald Cardistry Parlor",
+      "group": "map",
+      "layout": {
+        "type": "single"
+      },
+      "source": {
+        "path": "art/sources/story/map/Jak’s Hidden Emerald Cardistry Parlor.png",
+        "sha256": "e6d9fd6a5105ac6da1a44cbd98e4bf875dbe35878a44ea23542d99e15de3bec8",
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.309
+      },
+      "verified": false,
+      "notes": null,
+      "sprites": [
+        {
+          "id": "location-jaks-cardistry-parlor/location-jaks-cardistry-parlor",
+          "name": "location-jaks-cardistry-parlor",
+          "frame": {
+            "x": 34,
+            "y": 20,
+            "w": 1199,
+            "h": 1232
+          },
+          "src": "assets/story/map/location-jaks-cardistry-parlor.webp",
+          "width": 1199,
+          "height": 1232,
+          "thumb": "assets/story/map/thumbs/location-jaks-cardistry-parlor.webp",
+          "thumbWidth": 311,
+          "thumbHeight": 320,
+          "touchesEdge": true
+        }
+      ],
+      "status": "processed",
+      "warnings": [
+        {
+          "level": "warning",
+          "code": "edge",
+          "message": "Artwork touches the image edge and may be cut off in the source."
+        }
+      ]
+    },
+    {
+      "id": "location-kenmore-mansion",
+      "title": "Kenmore Mansion Autumn Mystery",
+      "group": "map",
+      "layout": {
+        "type": "single"
+      },
+      "source": {
+        "path": "art/sources/story/map/Kenmore Mansion Autumn Mystery.png",
+        "sha256": "a558570e95eb996b6e3dd99c50a58648e4d748a60da4ca5034bd5cc5594feb30",
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.283
+      },
+      "verified": false,
+      "notes": null,
+      "sprites": [
+        {
+          "id": "location-kenmore-mansion/location-kenmore-mansion",
+          "name": "location-kenmore-mansion",
+          "frame": {
+            "x": 4,
+            "y": 70,
+            "w": 1246,
+            "h": 1106
+          },
+          "src": "assets/story/map/location-kenmore-mansion.webp",
+          "width": 1246,
+          "height": 1106,
+          "thumb": "assets/story/map/thumbs/location-kenmore-mansion.webp",
+          "thumbWidth": 320,
+          "thumbHeight": 284
+        }
+      ],
+      "status": "processed",
+      "warnings": []
+    },
+    {
+      "id": "location-neon-art-shop",
+      "title": "Neon monsters at the art shop",
+      "group": "map",
+      "layout": {
+        "type": "single"
+      },
+      "source": {
+        "path": "art/sources/story/map/Neon monsters at the art shop.png",
+        "sha256": "e9bbd05fbd7c500c71eb32845a8be93a95f8fde83a0e84f61918eeb86dad2ec2",
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.338
+      },
+      "verified": false,
+      "notes": null,
+      "sprites": [
+        {
+          "id": "location-neon-art-shop/location-neon-art-shop",
+          "name": "location-neon-art-shop",
+          "frame": {
+            "x": 25,
+            "y": 126,
+            "w": 1214,
+            "h": 1080
+          },
+          "src": "assets/story/map/location-neon-art-shop.webp",
+          "width": 1214,
+          "height": 1080,
+          "thumb": "assets/story/map/thumbs/location-neon-art-shop.webp",
+          "thumbWidth": 320,
+          "thumbHeight": 285
+        }
+      ],
+      "status": "processed",
+      "warnings": []
+    },
+    {
+      "id": "location-ranger-station",
+      "title": "Sophia's Riverside Ranger Station",
+      "group": "map",
+      "layout": {
+        "type": "single"
+      },
+      "source": {
+        "path": "art/sources/story/map/Sophia’s Riverside Ranger Station.png",
+        "sha256": "3b41277c21bd2a2dbbf86b0d13f07c44e7a322c0a7d26bb2082c5dcfc0596da3",
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.336
+      },
+      "verified": false,
+      "notes": null,
+      "sprites": [
+        {
+          "id": "location-ranger-station/location-ranger-station",
+          "name": "location-ranger-station",
+          "frame": {
+            "x": 12,
+            "y": 37,
+            "w": 1227,
+            "h": 1188
+          },
+          "src": "assets/story/map/location-ranger-station.webp",
+          "width": 1227,
+          "height": 1188,
+          "thumb": "assets/story/map/thumbs/location-ranger-station.webp",
+          "thumbWidth": 320,
+          "thumbHeight": 310
+        }
+      ],
+      "status": "processed",
+      "warnings": []
+    },
+    {
+      "id": "location-generals-spectral-parlor",
+      "title": "The General's Spectral Card Parlor",
+      "group": "map",
+      "layout": {
+        "type": "single"
+      },
+      "source": {
+        "path": "art/sources/story/map/The General's Spectral Card Parlor.png",
+        "sha256": "2efb12d6c6134311dc85ccba2622deb7c4c9993f66d8639bc4bdcb67baf6e0d4",
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.31
+      },
+      "verified": false,
+      "notes": null,
+      "sprites": [
+        {
+          "id": "location-generals-spectral-parlor/location-generals-spectral-parlor",
+          "name": "location-generals-spectral-parlor",
+          "frame": {
+            "x": 14,
+            "y": 13,
+            "w": 1227,
+            "h": 1234
+          },
+          "src": "assets/story/map/location-generals-spectral-parlor.webp",
+          "width": 1227,
+          "height": 1234,
+          "thumb": "assets/story/map/thumbs/location-generals-spectral-parlor.webp",
+          "thumbWidth": 318,
+          "thumbHeight": 320
+        }
+      ],
+      "status": "processed",
+      "warnings": []
+    },
+    {
+      "id": "location-intelligence-safehouse",
+      "title": "Vintage Brick Intelligence Safehouse",
+      "group": "map",
+      "layout": {
+        "type": "single"
+      },
+      "source": {
+        "path": "art/sources/story/map/Vintage Brick Intelligence Safehouse.png",
+        "sha256": "7f3299baebb8bb98ed55b8b965c7254458b3c7e32e88f24558f0242c9fb9987f",
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.302
+      },
+      "verified": false,
+      "notes": null,
+      "sprites": [
+        {
+          "id": "location-intelligence-safehouse/location-intelligence-safehouse",
+          "name": "location-intelligence-safehouse",
+          "frame": {
+            "x": 31,
+            "y": 26,
+            "w": 1202,
+            "h": 1224
+          },
+          "src": "assets/story/map/location-intelligence-safehouse.webp",
+          "width": 1202,
+          "height": 1224,
+          "thumb": "assets/story/map/thumbs/location-intelligence-safehouse.webp",
+          "thumbWidth": 314,
+          "thumbHeight": 320
+        }
+      ],
+      "status": "processed",
+      "warnings": []
+    },
+    {
+      "id": "cheryls-antique-store-receipt",
+      "title": "Cheryl's Antique Store Receipt",
+      "group": "illustrations",
+      "layout": {
+        "type": "single"
+      },
+      "source": {
+        "path": "art/sources/story/illustrations/Cheryl's Antique Store Receipt.png",
+        "sha256": "01f203695c077865e6d2ebf932980b35bfbabc8f3506814fd1fbe2c78a760072",
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.12
+      },
+      "verified": false,
+      "notes": null,
+      "sprites": [
+        {
+          "id": "cheryls-antique-store-receipt/cheryls-antique-store-receipt",
+          "name": "cheryls-antique-store-receipt",
+          "frame": {
+            "x": 19,
+            "y": 15,
+            "w": 985,
+            "h": 1505
+          },
+          "src": "assets/story/illustrations/cheryls-antique-store-receipt.webp",
+          "width": 985,
+          "height": 1505,
+          "thumb": "assets/story/illustrations/thumbs/cheryls-antique-store-receipt.webp",
+          "thumbWidth": 209,
+          "thumbHeight": 320
+        }
+      ],
+      "status": "processed",
+      "warnings": []
+    },
+    {
+      "id": "dantes-gw-commission-form",
+      "title": "Dante's G.W. Commission Form",
+      "group": "illustrations",
+      "layout": {
+        "type": "single"
+      },
+      "source": {
+        "path": "art/sources/story/illustrations/Dante’s G.W. Commission Form.png",
+        "sha256": "37a3eae4b6c0455372438af25de7bfabf2409454c4dfdca151bcddefb085edb2",
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.078
+      },
+      "verified": false,
+      "notes": null,
+      "sprites": [
+        {
+          "id": "dantes-gw-commission-form/dantes-gw-commission-form",
+          "name": "dantes-gw-commission-form",
+          "frame": {
+            "x": 7,
+            "y": 13,
+            "w": 1014,
+            "h": 1504
+          },
+          "src": "assets/story/illustrations/dantes-gw-commission-form.webp",
+          "width": 1014,
+          "height": 1504,
+          "thumb": "assets/story/illustrations/thumbs/dantes-gw-commission-form.webp",
+          "thumbWidth": 216,
+          "thumbHeight": 320
+        }
+      ],
+      "status": "processed",
+      "warnings": []
+    },
+    {
+      "id": "lodge-research-sketchbook-page",
+      "title": "Historical lodge research sketchbook page",
+      "group": "illustrations",
+      "layout": {
+        "type": "single"
+      },
+      "source": {
+        "path": "art/sources/story/illustrations/Historical lodge research sketchbook page.png",
+        "sha256": "ba8ae444c59bf4037afef8e5f84497f42bc73757ee317a7580aa31723223b386",
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.035
+      },
+      "verified": false,
+      "notes": null,
+      "sprites": [
+        {
+          "id": "lodge-research-sketchbook-page/lodge-research-sketchbook-page",
+          "name": "lodge-research-sketchbook-page",
+          "frame": {
+            "x": 0,
+            "y": 9,
+            "w": 1024,
+            "h": 1514
+          },
+          "src": "assets/story/illustrations/lodge-research-sketchbook-page.webp",
+          "width": 1024,
+          "height": 1514,
+          "thumb": "assets/story/illustrations/thumbs/lodge-research-sketchbook-page.webp",
+          "thumbWidth": 216,
+          "thumbHeight": 320,
+          "touchesEdge": true
+        }
+      ],
+      "status": "processed",
+      "warnings": [
+        {
+          "level": "warning",
+          "code": "edge",
+          "message": "Artwork touches the image edge and may be cut off in the source."
+        }
+      ]
+    },
+    {
+      "id": "ivory-letter-burgundy-seal",
+      "title": "Ivory Letter with Burgundy Wax Seal",
+      "group": "illustrations",
+      "layout": {
+        "type": "single"
+      },
+      "source": {
+        "path": "art/sources/story/illustrations/Ivory Letter with Burgundy Wax Seal.png",
+        "sha256": "9a8537b3faaaea3496b804c504e0cf11c35c773cab8a3d6eff0373e7e4a6d165",
+        "width": 1233,
+        "height": 1275,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.196
+      },
+      "verified": false,
+      "notes": null,
+      "sprites": [
+        {
+          "id": "ivory-letter-burgundy-seal/ivory-letter-burgundy-seal",
+          "name": "ivory-letter-burgundy-seal",
+          "frame": {
+            "x": 47,
+            "y": 57,
+            "w": 1155,
+            "h": 1181
+          },
+          "src": "assets/story/illustrations/ivory-letter-burgundy-seal.webp",
+          "width": 1155,
+          "height": 1181,
+          "thumb": "assets/story/illustrations/thumbs/ivory-letter-burgundy-seal.webp",
+          "thumbWidth": 313,
+          "thumbHeight": 320
+        }
+      ],
+      "status": "processed",
+      "warnings": []
+    },
+    {
+      "id": "jaks-cardistry-receipt",
+      "title": "Jak's Antique Cardistry Receipt",
+      "group": "illustrations",
+      "layout": {
+        "type": "single"
+      },
+      "source": {
+        "path": "art/sources/story/illustrations/Jak’s Antique Cardistry Receipt.png",
+        "sha256": "e127d429a4adb9696f3fb3bf829ee7c1c3b362fada8a1fbafb62896f80cc62b9",
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.389
+      },
+      "verified": false,
+      "notes": null,
+      "sprites": [
+        {
+          "id": "jaks-cardistry-receipt/jaks-cardistry-receipt",
+          "name": "jaks-cardistry-receipt",
+          "frame": {
+            "x": 163,
+            "y": 3,
+            "w": 697,
+            "h": 1523
+          },
+          "src": "assets/story/illustrations/jaks-cardistry-receipt.webp",
+          "width": 697,
+          "height": 1523,
+          "thumb": "assets/story/illustrations/thumbs/jaks-cardistry-receipt.webp",
+          "thumbWidth": 146,
+          "thumbHeight": 320
+        }
+      ],
+      "status": "processed",
+      "warnings": []
+    },
+    {
+      "id": "mrs-grays-thirteenth-hand-dossier",
+      "title": "Mrs. Gray's Thirteenth Hand Dossier",
+      "group": "illustrations",
+      "layout": {
+        "type": "single"
+      },
+      "source": {
+        "path": "art/sources/story/illustrations/Mrs. Gray’s Thirteenth Hand Dossier.png",
+        "sha256": "98475f671ea82c7a7a2e8f2788c63e708306ca6bcdeeeaa4368fa762899c0b52",
+        "width": 1448,
+        "height": 1086,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.129
+      },
+      "verified": false,
+      "notes": null,
+      "sprites": [
+        {
+          "id": "mrs-grays-thirteenth-hand-dossier/mrs-grays-thirteenth-hand-dossier",
+          "name": "mrs-grays-thirteenth-hand-dossier",
+          "frame": {
+            "x": 3,
+            "y": 33,
+            "w": 1445,
+            "h": 1019
+          },
+          "src": "assets/story/illustrations/mrs-grays-thirteenth-hand-dossier.webp",
+          "width": 1445,
+          "height": 1019,
+          "thumb": "assets/story/illustrations/thumbs/mrs-grays-thirteenth-hand-dossier.webp",
+          "thumbWidth": 320,
+          "thumbHeight": 226,
+          "touchesEdge": true
+        }
+      ],
+      "status": "processed",
+      "warnings": [
+        {
+          "level": "warning",
+          "code": "edge",
+          "message": "Artwork touches the image edge and may be cut off in the source."
+        }
+      ]
+    },
+    {
+      "id": "underground-four-suit-puzzle",
+      "title": "Underground four-suit puzzle diagram",
+      "group": "illustrations",
+      "layout": {
+        "type": "single"
+      },
+      "source": {
+        "path": "art/sources/story/illustrations/Underground four-suit puzzle diagram.png",
+        "sha256": "066f423701a6f2f4c3dc0dd3bea7167946f67891e3f52d94f797d4ab4a74a676",
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.137
+      },
+      "verified": false,
+      "notes": null,
+      "sprites": [
+        {
+          "id": "underground-four-suit-puzzle/underground-four-suit-puzzle",
+          "name": "underground-four-suit-puzzle",
+          "frame": {
+            "x": 28,
+            "y": 3,
+            "w": 970,
+            "h": 1516
+          },
+          "src": "assets/story/illustrations/underground-four-suit-puzzle.webp",
+          "width": 970,
+          "height": 1516,
+          "thumb": "assets/story/illustrations/thumbs/underground-four-suit-puzzle.webp",
+          "thumbWidth": 205,
+          "thumbHeight": 320
+        }
+      ],
+      "status": "processed",
+      "warnings": []
+    },
+    {
+      "id": "awakened-thirteenth-hand-card",
+      "title": "Awakened Thirteenth Hand Card",
+      "group": "illustrations",
+      "layout": {
+        "type": "single"
+      },
+      "source": {
+        "path": "art/sources/story/illustrations/Awakened Thirteenth Hand Card.png",
+        "sha256": "dcc58645f09c192bf4817fb3fb9080d7e9741ccb4ffa7f291d8ea786fc732227",
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.038
+      },
+      "verified": false,
+      "notes": null,
+      "sprites": [
+        {
+          "id": "awakened-thirteenth-hand-card/awakened-thirteenth-hand-card",
+          "name": "awakened-thirteenth-hand-card",
+          "frame": {
+            "x": 0,
+            "y": 23,
+            "w": 1024,
+            "h": 1486
+          },
+          "src": "assets/story/illustrations/awakened-thirteenth-hand-card.webp",
+          "width": 1024,
+          "height": 1486,
+          "thumb": "assets/story/illustrations/thumbs/awakened-thirteenth-hand-card.webp",
+          "thumbWidth": 221,
+          "thumbHeight": 320,
+          "touchesEdge": true
+        }
+      ],
+      "status": "processed",
+      "warnings": [
+        {
+          "level": "warning",
+          "code": "edge",
+          "message": "Artwork touches the image edge and may be cut off in the source."
+        }
+      ]
+    },
+    {
+      "id": "thirteenth-hand-antique-card",
+      "title": "The Thirteenth Hand Antique Card",
+      "group": "illustrations",
+      "layout": {
+        "type": "single"
+      },
+      "source": {
+        "path": "art/sources/story/illustrations/The Thirteenth Hand Antique Card.png",
+        "sha256": "6eb1841730873bf14bea8a3d6e788a04165dbaff8a43834b51327438a56712fc",
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.175
+      },
+      "verified": false,
+      "notes": null,
+      "sprites": [
+        {
+          "id": "thirteenth-hand-antique-card/thirteenth-hand-antique-card",
+          "name": "thirteenth-hand-antique-card",
+          "frame": {
+            "x": 44,
+            "y": 76,
+            "w": 937,
+            "h": 1395
+          },
+          "src": "assets/story/illustrations/thirteenth-hand-antique-card.webp",
+          "width": 937,
+          "height": 1395,
+          "thumb": "assets/story/illustrations/thumbs/thirteenth-hand-antique-card.webp",
+          "thumbWidth": 215,
+          "thumbHeight": 320
+        }
+      ],
+      "status": "processed",
+      "warnings": []
+    },
+    {
+      "id": "antique-walnut-masonic",
+      "title": "Antique Walnut Masonic Gameboard",
+      "group": "boards",
+      "layout": {
+        "type": "board"
+      },
+      "source": {
+        "path": "art/sources/story/boards/Antique Walnut Masonic Gameboard.png",
+        "sha256": "b86bc9c7099f445743b936117010a2bff4ce7c6aea9824a9eaf979b33dec6987",
+        "width": 1672,
+        "height": 941,
+        "mode": "RGB",
+        "hasAlpha": false,
+        "transparentShare": 0.0
+      },
+      "verified": false,
+      "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
+      "board": {
+        "background": "assets/story/boards/antique-walnut-masonic/background.webp",
+        "backgroundWidth": 1672,
+        "backgroundHeight": 941,
+        "preview": "assets/story/boards/antique-walnut-masonic/preview.webp",
+        "previewWidth": 480,
+        "previewHeight": 270,
+        "registered": true
+      },
+      "sprites": [],
+      "status": "processed",
+      "warnings": [],
+      "registeredAs": "masonic_lodge_no4"
+    },
+    {
+      "id": "cheryls-antique-shop",
+      "title": "Cheryl's Antique Shop Gameboard",
+      "group": "boards",
+      "layout": {
+        "type": "board"
+      },
+      "source": {
+        "path": "art/sources/story/boards/Cheryl’s Antique Shop Gameboard.png",
+        "sha256": "9ae699a3de594d865cdc85533fdb59f503681115ff4d57a7d04ba0ece109db18",
+        "width": 1672,
+        "height": 940,
+        "mode": "RGB",
+        "hasAlpha": false,
+        "transparentShare": 0.0
+      },
+      "verified": false,
+      "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
+      "board": {
+        "background": "assets/story/boards/cheryls-antique-shop/background.webp",
+        "backgroundWidth": 1672,
+        "backgroundHeight": 940,
+        "preview": "assets/story/boards/cheryls-antique-shop/preview.webp",
+        "previewWidth": 480,
+        "previewHeight": 270,
+        "registered": true
+      },
+      "sprites": [],
+      "status": "processed",
+      "warnings": [],
+      "registeredAs": "cheryls_antique_shop"
+    },
+    {
+      "id": "mrs-grays-olive-desk",
+      "title": "Mrs. Gray's Olive Safehouse Desk",
+      "group": "boards",
+      "layout": {
+        "type": "board"
+      },
+      "source": {
+        "path": "art/sources/story/boards/Mrs. Gray’s Olive Safehouse Desk.png",
+        "sha256": "a153548152d7e689cedaf09f82e792b3e9bc214b48e9b533bade7d5203881cdf",
+        "width": 1672,
+        "height": 941,
+        "mode": "RGB",
+        "hasAlpha": false,
+        "transparentShare": 0.0
+      },
+      "verified": false,
+      "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
+      "board": {
+        "background": "assets/story/boards/mrs-grays-olive-desk/background.webp",
+        "backgroundWidth": 1672,
+        "backgroundHeight": 941,
+        "preview": "assets/story/boards/mrs-grays-olive-desk/preview.webp",
+        "previewWidth": 480,
+        "previewHeight": 270,
+        "registered": true
+      },
+      "sprites": [],
+      "status": "processed",
+      "warnings": [],
+      "registeredAs": "mrs_gray_safehouse"
+    },
+    {
+      "id": "colonial-cellar-table",
+      "title": "Candlelit Colonial Virginia Cellar Table",
+      "group": "boards",
+      "layout": {
+        "type": "board"
+      },
+      "source": {
+        "path": "art/sources/story/boards/Candlelit Colonial Virginia Cellar Table.png",
+        "sha256": "cdf180dd1c3ad9c63fbcf63d0ab906bbf3103e6b5b4337e2f30bf4e8e319ff08",
+        "width": 1448,
+        "height": 1086,
+        "mode": "RGB",
+        "hasAlpha": false,
+        "transparentShare": 0.0
+      },
+      "verified": false,
+      "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
+      "board": {
+        "background": "assets/story/boards/colonial-cellar-table/background.webp",
+        "backgroundWidth": 1448,
+        "backgroundHeight": 1086,
+        "preview": "assets/story/boards/colonial-cellar-table/preview.webp",
+        "previewWidth": 480,
+        "previewHeight": 360,
+        "registered": true
+      },
+      "sprites": [],
+      "status": "processed",
+      "warnings": [],
+      "registeredAs": "washington_final_table"
+    },
+    {
+      "id": "germanna-library-desk",
+      "title": "Germanna Community College Library Desk",
+      "group": "boards",
+      "layout": {
+        "type": "board"
+      },
+      "source": {
+        "path": "art/sources/story/boards/Germanna Community College Library Desk.png",
+        "sha256": "c7907292047aa6e0e07bdbd7088719744bcfc1629a3abc23e84d723a6ac18268",
+        "width": 1448,
+        "height": 1086,
+        "mode": "RGB",
+        "hasAlpha": false,
+        "transparentShare": 0.0
+      },
+      "verified": false,
+      "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
+      "board": {
+        "background": "assets/story/boards/germanna-library-desk/background.webp",
+        "backgroundWidth": 1448,
+        "backgroundHeight": 1086,
+        "preview": "assets/story/boards/germanna-library-desk/preview.webp",
+        "previewWidth": 480,
+        "previewHeight": 360,
+        "registered": true
+      },
+      "sprites": [],
+      "status": "processed",
+      "warnings": [],
+      "registeredAs": "germanna_library"
+    },
+    {
+      "id": "kenmore-georgian-parlor",
+      "title": "Kenmore-inspired Georgian parlor table",
+      "group": "boards",
+      "layout": {
+        "type": "board"
+      },
+      "source": {
+        "path": "art/sources/story/boards/Kenmore-inspired Georgian parlor table.png",
+        "sha256": "641ae0b50536745f6305eaceef90e9114a968270a5dc7884ff02e2862ccdbd33",
+        "width": 1448,
+        "height": 1086,
+        "mode": "RGB",
+        "hasAlpha": false,
+        "transparentShare": 0.0
+      },
+      "verified": false,
+      "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
+      "board": {
+        "background": "assets/story/boards/kenmore-georgian-parlor/background.webp",
+        "backgroundWidth": 1448,
+        "backgroundHeight": 1086,
+        "preview": "assets/story/boards/kenmore-georgian-parlor/preview.webp",
+        "previewWidth": 480,
+        "previewHeight": 360,
+        "registered": true
+      },
+      "sprites": [],
+      "status": "processed",
+      "warnings": [],
+      "registeredAs": "kenmore_parlor"
+    },
+    {
+      "id": "umw-classroom-table",
+      "title": "Maple UMW Classroom Card Table",
+      "group": "boards",
+      "layout": {
+        "type": "board"
+      },
+      "source": {
+        "path": "art/sources/story/boards/Maple UMW Classroom Card Table.png",
+        "sha256": "77e06512c919c849a763fa5fe1b407a524c4324fd4f5cef8187ffb50d90aedfb",
+        "width": 1448,
+        "height": 1086,
+        "mode": "RGB",
+        "hasAlpha": false,
+        "transparentShare": 0.0
+      },
+      "verified": false,
+      "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
+      "board": {
+        "background": "assets/story/boards/umw-classroom-table/background.webp",
+        "backgroundWidth": 1448,
+        "backgroundHeight": 1086,
+        "preview": "assets/story/boards/umw-classroom-table/preview.webp",
+        "previewWidth": 480,
+        "previewHeight": 360,
+        "registered": true
+      },
+      "sprites": [],
+      "status": "processed",
+      "warnings": [],
+      "registeredAs": "umw_classroom"
+    },
+    {
+      "id": "smoke-shop-glass-counter",
+      "title": "Modern Smoke-Shop Glass Game Counter",
+      "group": "boards",
+      "layout": {
+        "type": "board"
+      },
+      "source": {
+        "path": "art/sources/story/boards/Modern Smoke-Shop Glass Game Counter.png",
+        "sha256": "0c946553a9be07376940b48e5105eb0daf626829eba09d020bf3df0ca3899a47",
+        "width": 1448,
+        "height": 1086,
+        "mode": "RGB",
+        "hasAlpha": false,
+        "transparentShare": 0.0
+      },
+      "verified": false,
+      "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
+      "board": {
+        "background": "assets/story/boards/smoke-shop-glass-counter/background.webp",
+        "backgroundWidth": 1448,
+        "backgroundHeight": 1086,
+        "preview": "assets/story/boards/smoke-shop-glass-counter/preview.webp",
+        "previewWidth": 480,
+        "previewHeight": 360,
+        "registered": true
+      },
+      "sprites": [],
+      "status": "processed",
+      "warnings": [],
+      "registeredAs": "ismokeshop_counter (adult-only)"
+    },
+    {
+      "id": "smoke-shop-counter-overhead",
+      "title": "Overhead smoke shop glass counter",
+      "group": "boards",
+      "layout": {
+        "type": "board"
+      },
+      "source": {
+        "path": "art/sources/story/boards/Overhead smoke shop glass counter.png",
+        "sha256": "e608be6c6c7add1fb02815d099288299a15c4617d700c2962e76faeb6902d2ab",
+        "width": 1448,
+        "height": 1086,
+        "mode": "RGB",
+        "hasAlpha": false,
+        "transparentShare": 0.0
+      },
+      "verified": false,
+      "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
+      "board": {
+        "background": "assets/story/boards/smoke-shop-counter-overhead/background.webp",
+        "backgroundWidth": 1448,
+        "backgroundHeight": 1086,
+        "preview": "assets/story/boards/smoke-shop-counter-overhead/preview.webp",
+        "previewWidth": 480,
+        "previewHeight": 360,
+        "registered": true
+      },
+      "sprites": [],
+      "status": "processed",
+      "warnings": [],
+      "registeredAs": "ismokeshop_counter_overhead (adult-only)"
+    },
+    {
+      "id": "engraved-georgian",
+      "title": "Engraved Georgian 52-card deck atlas",
+      "group": "decks",
+      "layout": {
+        "type": "audit",
+        "kind": "deck"
+      },
+      "source": {
+        "path": "art/sources/story/decks/Engraved Georgian 52-card deck atlas.png",
+        "sha256": "a369268590970e5c90295dfb56588eda87c7cba8e7ba7454d5da7dbf16e28b3d",
+        "width": 1846,
+        "height": 852,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.055
+      },
+      "verified": false,
+      "notes": "Built into a deck by scripts/art/extract_cards.py (public/assets/cards/).",
+      "audit": {
+        "kind": "deck",
+        "cardsFound": 32,
+        "faceSized": 12,
+        "typicalCard": {
+          "w": 265,
+          "h": 202
+        }
+      },
+      "sprites": [],
+      "status": "audit-only",
+      "warnings": [
+        {
+          "level": "warning",
+          "code": "deck-count",
+          "message": "Only 12 face-sized cards found; a deck needs 52."
+        }
+      ],
+      "registeredAs": "deck freemasonry (faces)"
+    },
+    {
+      "id": "spectral-washington",
+      "title": "Spectral Washington Colonial Playing Card Atlas",
+      "group": "decks",
+      "layout": {
+        "type": "audit",
+        "kind": "deck"
+      },
+      "source": {
+        "path": "art/sources/story/decks/Spectral Washington Colonial Playing Card Atlas.png",
+        "sha256": "16a9b84315ad8cba01c7f75721e7bdcf0b8fbbf85454fc304010091877ac5636",
+        "width": 1846,
+        "height": 852,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.049
+      },
+      "verified": false,
+      "notes": "Built into a deck by scripts/art/extract_cards.py (public/assets/cards/).",
+      "audit": {
+        "kind": "deck",
+        "cardsFound": 11,
+        "faceSized": 7,
+        "typicalCard": {
+          "w": 141,
+          "h": 203
+        }
+      },
+      "sprites": [],
+      "status": "audit-only",
+      "warnings": [
+        {
+          "level": "warning",
+          "code": "deck-count",
+          "message": "Only 7 face-sized cards found; a deck needs 52."
+        }
+      ],
+      "registeredAs": "deck washington_ghost (faces)"
+    },
+    {
+      "id": "inspire-botanical",
+      "title": "INSPIRE Botanical Cannabis Card Atlas",
+      "group": "decks",
+      "layout": {
+        "type": "audit",
+        "kind": "deck"
+      },
+      "source": {
+        "path": "art/sources/story/decks/INSPIRE Botanical Cannabis Card Atlas.png",
+        "sha256": "956e959824f6bc1ef80394a6b42b38c2e5d9188879e4f65362824622e7dba4a5",
+        "width": 1659,
+        "height": 948,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.14
+      },
+      "verified": false,
+      "notes": "Audited only: decks are built by scripts/art/extract_cards.py once registered.",
+      "audit": {
+        "kind": "deck",
+        "cardsFound": 7,
+        "faceSized": 4,
+        "typicalCard": {
+          "w": 1651,
+          "h": 190
+        }
+      },
+      "sprites": [],
+      "status": "audit-only",
+      "warnings": [
+        {
+          "level": "warning",
+          "code": "deck-count",
+          "message": "Only 4 face-sized cards found; a deck needs 52."
+        }
+      ]
+    },
+    {
+      "id": "navy-gold-square-compasses-back",
+      "title": "Antique navy-gold square-and-compasses card back",
+      "group": "decks",
+      "layout": {
+        "type": "audit",
+        "kind": "card-back"
+      },
+      "source": {
+        "path": "art/sources/story/decks/Antique navy-gold square-and-compasses card back.png",
+        "sha256": "f8d1234358aa73d75bdc2e7f1597201c7198f31bce0247e25e81e8505af3e856",
+        "width": 1060,
+        "height": 1484,
+        "mode": "RGB",
+        "hasAlpha": false,
+        "transparentShare": 0.0
+      },
+      "verified": false,
+      "notes": "Built into a deck by scripts/art/extract_cards.py (public/assets/cards/).",
+      "audit": {
+        "kind": "card-back",
+        "ratio": 0.714
+      },
+      "sprites": [],
+      "status": "audit-only",
+      "warnings": [
+        {
+          "level": "info",
+          "code": "back-margin",
+          "message": "Opaque image: the area around the card (if any) must be trimmed before use."
+        }
+      ],
+      "registeredAs": "deck freemasonry (back)"
+    },
+    {
+      "id": "spectral-tricorn-back",
+      "title": "Spectral tricorn card back",
+      "group": "decks",
+      "layout": {
+        "type": "audit",
+        "kind": "card-back"
+      },
+      "source": {
+        "path": "art/sources/story/decks/Spectral tricorn card back.png",
+        "sha256": "c642b7d8a008aeb3dc782311535abf520d7adcbd936eb979c068303664f455d3",
+        "width": 1060,
+        "height": 1484,
+        "mode": "RGB",
+        "hasAlpha": false,
+        "transparentShare": 0.0
+      },
+      "verified": false,
+      "notes": "Built into a deck by scripts/art/extract_cards.py (public/assets/cards/).",
+      "audit": {
+        "kind": "card-back",
+        "ratio": 0.714
+      },
+      "sprites": [],
+      "status": "audit-only",
+      "warnings": [
+        {
+          "level": "info",
+          "code": "back-margin",
+          "message": "Opaque image: the area around the card (if any) must be trimmed before use."
+        }
+      ],
+      "registeredAs": "deck washington_ghost (back)"
+    }
+  ]
+}

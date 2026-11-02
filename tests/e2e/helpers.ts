@@ -53,9 +53,14 @@ export async function seed(page: Page, data: Record<string, unknown>): Promise<v
   }, data);
 }
 
+/** Launches the app, skips the opening sequence if it is playing, and touches to start. */
 export async function enterParlor(page: Page): Promise<void> {
   await page.goto('./');
   const enter = page.getByRole('button', { name: 'Enter Parlor' });
+  const skip = page.locator('[data-action="skip-intro"]');
+  // Whichever shows first (both stay in the page; only one is visible at a time).
+  await expect(enter.or(skip).filter({ visible: true }).first()).toBeVisible({ timeout: 10_000 });
+  if (await skip.isVisible()) await skip.click().catch(() => undefined);
   await expect(enter).toBeVisible({ timeout: 10_000 });
   await enter.click();
   await expectScreen(page, 'MAIN_MENU');
@@ -88,8 +93,20 @@ export async function expectNoOverflow(page: Page, selector = `${CURRENT} button
   const result = await page.evaluate((sel) => {
     const vw = innerWidth;
     const vh = innerHeight;
+    // Controls inside a sideways scroller (pagers, tab strips, the music player's playlist row
+    // on short landscape screens) may sit past its edge, as long as the scroller itself is on screen.
+    const inScroller = (el: HTMLElement) => {
+      for (let n = el.parentElement; n && n !== document.body; n = n.parentElement) {
+        const ox = getComputedStyle(n).overflowX;
+        if (ox !== 'auto' && ox !== 'scroll' && ox !== 'hidden') continue;
+        if (n.scrollWidth <= n.clientWidth + 1) continue;
+        const r = n.getBoundingClientRect();
+        return r.left >= -1 && r.right <= vw + 1;
+      }
+      return false;
+    };
     const outside = [...document.querySelectorAll<HTMLElement>(sel)]
-      .filter((el) => el.offsetParent !== null && !el.closest('.pager-grid, .tabs-strip'))
+      .filter((el) => el.offsetParent !== null && !el.closest('.pager-grid, .tabs-strip') && !inScroller(el))
       .map((el) => ({ el, r: el.getBoundingClientRect() }))
       .filter(({ r }) => r.width > 0 && (r.left < -1 || r.top < -1 || r.right > vw + 1 || r.bottom > vh + 1))
       .map(({ el }) => el.textContent?.trim() || el.getAttribute('aria-label') || el.className);
@@ -99,3 +116,7 @@ export async function expectNoOverflow(page: Page, selector = `${CURRENT} button
   expect(result.outside, 'controls outside the viewport').toEqual([]);
   expect(result.scrollable, 'page scrolls').toBe(false);
 }
+
+/** A button in the open dialog (a dialog that is closing is already aria-hidden). */
+export const action = (page: Page, value: string) =>
+  page.locator(`.dialog-backdrop:not([aria-hidden]) [data-dialog-action="${value}"]`);

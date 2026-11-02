@@ -655,5 +655,6 @@
       "issue": "Six pips instead of seven (indices are correct).",
       "checks": ["pips"]
     }
-  ]
+  ],
+  "indexFixes": {}
 }

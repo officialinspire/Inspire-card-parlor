@@ -572,5 +572,6 @@
       "cards": [],
       "issue": "Both jokers are shorter than the other cards (they appear cut off by the bottom of the sheet). Jokers are not used by the five games."
     }
-  ]
+  ],
+  "indexFixes": {}
 }

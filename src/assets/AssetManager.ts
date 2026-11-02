@@ -1,7 +1,7 @@
 import type { CardCode } from '@/engine/Card';
 import { ALL_CARD_CODES } from '@/engine/Card';
 import type { DeckTheme } from '@/decks/DeckThemeManager';
-import { MATURE_ASSET_ROOT } from '@/decks/assets';
+import { MATURE_ASSET_ROOT, MATURE_BOARD_ROOT } from '@/decks/assets';
 import type { AtlasFrame, ImageFormat, ImageRef } from '@/decks/types';
 import { gridFrames, parseTexturePacker, type FrameMap } from './atlas';
 
@@ -70,6 +70,8 @@ export class AssetManager {
   #decks = new Map<string, DeckArt>();
   #pending = new Map<string, Promise<DeckArt>>();
   #listeners = new Set<(key: string) => void>();
+  /** While set, face sheets wait for it (backs load at once); see `deferFacesUntil`. */
+  #facesGate: Promise<unknown> | null = null;
   readonly opts: Required<AssetManagerOptions>;
 
   constructor(opts: AssetManagerOptions = {}) {
@@ -91,7 +93,10 @@ export class AssetManager {
   }
 
   url(basePath: string, file: string): string {
-    if (basePath.startsWith(MATURE_ASSET_ROOT) && !this.opts.matureAllowed()) {
+    if (
+      (basePath.startsWith(MATURE_ASSET_ROOT) || basePath.startsWith(MATURE_BOARD_ROOT)) &&
+      !this.opts.matureAllowed()
+    ) {
       throw new AssetBlockedError(`Mature assets are disabled (${basePath})`);
     }
     return `${this.opts.baseUrl}${basePath}${file}`;
@@ -99,7 +104,14 @@ export class AssetManager {
 
   /** Loads the first candidate that exists. Resolves null if none load. */
   loadImage(basePath: string, ref: ImageRef): Promise<LoadedImage | null> {
-    const urls = this.candidates(basePath, ref);
+    let urls: string[];
+    try {
+      urls = this.candidates(basePath, ref);
+    } catch (err) {
+      // Blocked adult-only artwork never loads; callers keep the drawn surface.
+      if (err instanceof AssetBlockedError) return Promise.resolve(null);
+      throw err;
+    }
     const key = urls.join('|');
     let p = this.#images.get(key);
     if (!p) {
@@ -117,6 +129,21 @@ export class AssetManager {
       this.#images.set(key, p);
     }
     return p;
+  }
+
+  /**
+   * Holds face sheets back until `gate` settles. During the opening only card
+   * backs are on screen, and a deck's face sheet (~330 KB) would share a slow
+   * connection with the title artwork; measured on a throttled phone it delayed
+   * Touch to Start by about 1.5 s. Decks asked for meanwhile publish their back
+   * first and their faces when the gate opens.
+   */
+  deferFacesUntil(gate: Promise<unknown>): void {
+    const held = gate.catch(() => undefined);
+    this.#facesGate = held;
+    void held.then(() => {
+      if (this.#facesGate === held) this.#facesGate = null;
+    });
   }
 
   /** Synchronous lookup for the renderer; undefined until `loadDeck` has finished. */
@@ -157,6 +184,15 @@ export class AssetManager {
 
     const { basePath, faces, back } = theme.assets;
     try {
+      // Opening: show the back now, the faces once the gate opens.
+      if (this.#facesGate && !('atlasFrame' in back)) {
+        const img = await this.loadImage(basePath, back);
+        if (img) {
+          this.#decks.set(theme.key, { ...art, back: { image: img } });
+          for (const l of this.#listeners) l(theme.key);
+        }
+        await this.#facesGate;
+      }
       if (faces.type === 'atlas') {
         const sheet = await this.loadImage(basePath, faces.image);
         if (sheet) {

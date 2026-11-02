@@ -10,6 +10,7 @@ import { FredericksburgDowntownDeck } from './definitions/fredericksburg_downtow
 import { EasternWoodlandsDeck } from './definitions/eastern_woodlands';
 import { SpycraftDeck } from './definitions/spycraft';
 import { FreemasonryDeck } from './definitions/freemasonry';
+import { WashingtonGhostDeck } from './definitions/washington_ghost';
 
 export type { DeckDefinition, DeckId } from './types';
 
@@ -36,6 +37,7 @@ export function registerDeck(deck: DeckDefinition): void {
   EasternWoodlandsDeck,
   SpycraftDeck,
   FreemasonryDeck,
+  WashingtonGhostDeck,
 ].forEach(registerDeck);
 
 export const DEFAULT_DECK_ID: DeckId = 'classic';

@@ -24,12 +24,32 @@ export interface PaginatorOptions<T> {
 }
 
 const MAX_DOTS = 9;
+// Fewest dots a row ever shows: first, last and the current page with a neighbour each side.
+const MIN_DOTS = 5;
+// A dot's target width, and what the two arrows and the row's gaps take beside them.
+const DOT_W = 30;
+const NAV_CHROME = 2 * 44 + 2 * 10;
+
+/** How many dots fit beside the arrows in a row this wide. */
+export function maxDotsFor(width: number): number {
+  return clamp(Math.floor((width - NAV_CHROME) / DOT_W), MIN_DOTS, MAX_DOTS);
+}
+
+/**
+ * Page dots to show: every page when they fit in `maxDots`, otherwise the ends
+ * plus the current neighbourhood, sized so the dots and their "…" gaps still fit.
+ */
+export function pageDots(page: number, pages: number, maxDots = MAX_DOTS): number[] {
+  if (pages <= maxDots) return Array.from({ length: pages }, (_, i) => i);
+  // Two "…" gaps take roughly one more dot's width: leave room for the ends and them.
+  return dotWindow(page, pages, Math.max(3, maxDots - 4));
+}
 
 /** Page dots to show when there are too many for one row: ends plus the current neighbourhood. */
-export function dotWindow(page: number, pages: number): number[] {
+export function dotWindow(page: number, pages: number, span = 5): number[] {
   const set = new Set([0, pages - 1]);
-  const from = clamp(page - 2, 0, pages - 5);
-  for (let i = from; i < from + 5; i++) set.add(i);
+  const from = clamp(page - Math.floor(span / 2), 0, pages - span);
+  for (let i = from; i < from + span; i++) set.add(i);
   return [...set].filter((i) => i >= 0 && i < pages).sort((a, b) => a - b);
 }
 
@@ -116,13 +136,18 @@ export function paginator<T>(opts: PaginatorOptions<T>) {
       ? 'minmax(0, 1fr)'
       : `minmax(${opts.minTileHeight}px, ${opts.maxTileHeight ?? Math.round(opts.minTileHeight * 1.6)}px)`;
     grid.classList.toggle('fill', !!opts.fill);
-    grid.replaceChildren(
-      ...opts.items.slice(page * perPage, (page + 1) * perPage).map((item, i) => {
-        const tile = opts.render(item, page * perPage + i);
-        tile.setAttribute('role', 'listitem');
-        return tile;
-      }),
+    const tiles = opts.items
+      .slice(page * perPage, (page + 1) * perPage)
+      .map((item, i) => opts.render(item, page * perPage + i));
+    // A tile that is itself a control (a button, a radio…) keeps its own role, so screen
+    // readers still announce it as one; the page is then a labelled group. Plain tiles
+    // (cards holding their own buttons) are list items in a list.
+    const interactive = tiles.some(
+      (t) => t.hasAttribute('role') || /^(BUTTON|A|INPUT|SELECT|TEXTAREA)$/.test(t.tagName),
     );
+    grid.setAttribute('role', interactive ? 'group' : 'list');
+    for (const t of tiles) if (!interactive) t.setAttribute('role', 'listitem');
+    grid.replaceChildren(...tiles);
     if (direction) {
       grid.classList.remove('page-in-left', 'page-in-right');
       void grid.offsetWidth;
@@ -132,8 +157,9 @@ export function paginator<T>(opts: PaginatorOptions<T>) {
     prev.disabled = page === 0;
     next.disabled = page >= pages - 1;
     status.textContent = `Page ${page + 1} of ${pages}`;
-    // Many pages: the first, the last and the current neighbourhood, so the row never overflows.
-    const shown = pages <= MAX_DOTS ? Array.from({ length: pages }, (_, i) => i) : dotWindow(page, pages);
+    // Many pages: the first, the last and the current neighbourhood, as many as the
+    // row has room for beside the arrows, so it never overflows a narrow phone.
+    const shown = pageDots(page, pages, maxDotsFor(viewport.clientWidth || el.clientWidth));
     dots.replaceChildren(
       ...shown
         .map((i, k) =>

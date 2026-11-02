@@ -1,19 +1,19 @@
-# Freemasonry — artwork drop folder
+# Freemasonry — extracted deck
 
-Status: **pending**
+Built by `scripts/art/extract_cards.py` from `art/sources/story/decks/Engraved Georgian 52-card deck atlas.png` (1846×852). Do not edit these files by hand; replace the source sheet and run `npm run art:cards`.
 
-Upload the commissioned artwork for this deck here, then set `assets.status` to `'ready'`
-and fill in `artist` in `src/decks/definitions/freemasonry.ts`.
+| File           | Contents                                                     |
+| -------------- | ------------------------------------------------------------ |
+| `faces.webp`   | 52 faces, 13 × 4 grid (A…K; ♠ ♥ ♦ ♣), 147×204 px cells       |
+| `back.webp`    | card back                                                    |
+| `preview.webp` | catalog preview fan                                          |
+| `atlas.json`   | source frame of every card, identity checks and review notes |
 
-## Card faces
+Source row order: spades, hearts, diamonds, clubs. Faces verified: 52/52.
 
-One sprite sheet, `faces.webp` (PNG accepted as a fallback). Grid of 13 columns × 4 rows: columns A, 2 … 10, J, Q, K; rows ♠ ♥ ♦ ♣. Any cell size works; all cells must be equal.
+## Artwork notes
 
-## Required files
-
-- face sprite sheet: `faces.webp` or `faces.png`
-- card back: `back.webp` or `back.png`
-- preview image: `preview.webp` or `preview.png`
-
-Check with `npm run validate:decks`. See `public/assets/cards/README.md` for other layouts
-(individual images, explicit frames, TexturePacker JSON) and alternate artwork.
+- 5S, 5H, 5D, 5C: Four pips instead of five (indices are correct).
+- 9S, 9H, 9D, 9C: Bottom-right index printed as "3"; corrected in the build with the card's own top-left index, rotated (see indexFixes).
+- KS: Bottom-right index printed as "J"; corrected in the build with the card's own top-left index, rotated (see indexFixes).
+- Sheet file name is "Engraved Georgian 52-card deck atlas"; its aces carry the square and compasses, so it is used as the Freemasonry deck faces with the navy-gold square-and-compasses back. Confirm this pairing.

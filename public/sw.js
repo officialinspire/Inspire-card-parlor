@@ -5,7 +5,11 @@
  * installs a fresh cache and deletes the old one.
  *
  * - Navigation: network first, falling back to the cached app.
- * - Same-origin files: cache first, refreshed in the background.
+ * - Data files (*.json: artwork lists, card atlases, the story manifest):
+ *   network first, cache as fallback. Their names don't change between
+ *   releases, so cache-first could hand new scripts last release's data.
+ * - Built scripts and styles carry a content hash in their names, and other
+ *   same-origin files (artwork): cache first, refreshed in the background.
  * - Google Fonts: cached once fetched, so text keeps its fonts offline.
  * - Music: left to the browser (range requests stream better uncached).
  */
@@ -35,6 +39,25 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('message', (event) => {
   if (event.data === 'version') event.ports[0]?.postMessage(CACHE);
 });
+
+const fromNetworkThenCache = (cacheName, req) =>
+  fetch(req)
+    .then((res) => {
+      if (res.ok) {
+        const copy = res.clone();
+        caches
+          .open(cacheName)
+          .then((c) => c.put(req, copy))
+          .catch(() => undefined);
+      }
+      return res;
+    })
+    .catch(() =>
+      caches
+        .open(cacheName)
+        .then((c) => c.match(req, { ignoreVary: true, ignoreSearch: true }))
+        .then((r) => r || Response.error()),
+    );
 
 const fromCacheThenRefresh = (cacheName, req) =>
   caches.open(cacheName).then((cache) =>
@@ -74,6 +97,11 @@ self.addEventListener('fetch', (event) => {
         })
         .catch(() => caches.match('./index.html', { ignoreSearch: true }).then((r) => r || Response.error())),
     );
+    return;
+  }
+
+  if (url.pathname.endsWith('.json')) {
+    event.respondWith(fromNetworkThenCache(CACHE, req));
     return;
   }
 

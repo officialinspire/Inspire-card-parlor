@@ -1,0 +1,1693 @@
+/* ===================== Story Mode: The Thirteenth Hand ===================== */
+/*
+ * The world map, chapter challenges, scenes, versus card, journal and results.
+ * Artwork (story sprites) is decorative throughout: every block also reads and
+ * works with no images at all.
+ */
+
+/* --- Shared portraits ------------------------------------------------------ */
+.scene-portrait,
+.versus-portrait,
+.mini-portrait {
+  position: relative;
+  display: grid;
+  place-items: end center;
+  flex: none;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 35%, color-mix(in srgb, var(--who) 45%, transparent), transparent 70%),
+    var(--surface-2);
+  border: 2px solid var(--gold-line);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--gold) 25%, transparent);
+}
+.scene-portrait .portrait-art,
+.versus-portrait .portrait-art,
+.mini-portrait .portrait-art {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 12%;
+}
+.portrait-monogram {
+  align-self: center;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.6em;
+  color: #fff8ee;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+.no-art {
+  background: var(--who);
+  place-items: center;
+}
+.scene-portrait .avatar,
+.versus-portrait .avatar {
+  --size: 100%;
+  width: 100%;
+  height: 100%;
+}
+.mini-portrait {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border-width: 1.5px;
+}
+.mini-portrait .portrait-monogram {
+  font-size: max(var(--fs-min), 0.8em);
+}
+.mini-portrait .avatar {
+  --size: 28px;
+}
+
+/* --- World map -------------------------------------------------------------- */
+.world-map {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  container: world-map / size;
+  border-radius: var(--radius-m);
+  padding: 10px;
+  background:
+    radial-gradient(ellipse at 50% 40%, transparent 55%, rgba(80, 52, 20, 0.28)),
+    repeating-linear-gradient(115deg, rgba(120, 90, 50, 0.05) 0 2px, transparent 2px 9px),
+    linear-gradient(#efe0bd, #e2cc9c);
+  box-shadow:
+    inset 0 0 0 1px rgba(110, 76, 36, 0.35),
+    inset 0 0 26px rgba(90, 60, 20, 0.25),
+    var(--elev-2);
+}
+.map-compass {
+  position: absolute;
+  right: 8px;
+  bottom: 6px;
+  width: 54px;
+  height: auto;
+  opacity: 0.55;
+  pointer-events: none;
+}
+.map-trail {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+@container world-map (min-aspect-ratio: 4 / 3) {
+  .map-trail {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+  }
+}
+.map-stop {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+}
+.map-tile {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 4px 6px;
+  border: 1.5px solid rgba(110, 76, 36, 0.35);
+  border-radius: var(--radius-s);
+  background: rgba(255, 250, 235, 0.45);
+  color: #3a2814;
+  font: inherit;
+  cursor: pointer;
+  transition:
+    transform var(--dur-fast) var(--ease-press),
+    box-shadow var(--dur-fast),
+    border-color var(--dur-fast);
+}
+.map-tile:active {
+  transform: scale(0.97);
+}
+.map-tile:focus-visible {
+  outline: 3px solid #3a2814;
+  outline-offset: 2px;
+}
+.map-tile-art {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  display: grid;
+  place-items: center;
+}
+.map-tile-art > img,
+.map-place-fallback {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 3px rgba(60, 35, 10, 0.3));
+}
+.map-place-fallback {
+  width: 70%;
+  aspect-ratio: 1;
+  border-radius: 12px;
+  background: var(--tint);
+}
+.map-badge {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: clamp(20px, 22%, 34px);
+}
+.map-badge-art {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
+}
+.map-num {
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #2f4a33;
+  color: #f6e7bf;
+  font-weight: 900;
+  font-size: max(var(--fs-min), 0.78em);
+  box-shadow: 0 0 0 1.5px #c9a248;
+}
+.map-name {
+  max-width: 100%;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(var(--fs-min), 2.6vmin, 14px);
+  line-height: 1.1;
+  text-align: center;
+  /* Whole words only (no mid-word breaks); a narrow tile switches to the narrower body face below. */
+  hyphens: manual;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+}
+.map-state {
+  font-size: max(var(--fs-min), 0.66em);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #6b5233;
+}
+.map-pips {
+  display: flex;
+  gap: 3px;
+}
+.map-pips i {
+  width: 7px;
+  height: 7px;
+  border-radius: 1.5px;
+  transform: rotate(45deg);
+  background: rgba(110, 76, 36, 0.3);
+}
+.map-pips i.on {
+  background: #b5832a;
+}
+.map-stop.available .map-tile {
+  border-color: #b5832a;
+  background: rgba(255, 248, 225, 0.75);
+  box-shadow: 0 0 0 2px rgba(201, 162, 72, 0.35);
+}
+.map-stop.current .map-tile {
+  box-shadow: 0 0 0 2px #c9a248;
+}
+/* The current stop breathes with an opacity-only glow (cheap to animate on phones). */
+.map-stop.current .map-tile::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  box-shadow: 0 0 18px rgba(201, 162, 72, 0.7);
+  pointer-events: none;
+  animation: map-glow 2.4s ease-in-out infinite;
+}
+@keyframes map-glow {
+  50% {
+    opacity: 0.25;
+  }
+}
+.map-stop.completed .map-tile {
+  border-color: rgba(47, 74, 51, 0.6);
+}
+.map-stop.locked .map-tile-art > img {
+  filter: grayscale(0.85) brightness(0.9);
+  opacity: 0.75;
+}
+.map-stop.locked .map-tile,
+.map-stop.undiscovered .map-tile {
+  cursor: not-allowed;
+  background: rgba(255, 250, 235, 0.25);
+}
+.map-stop.undiscovered .map-tile {
+  border-style: dashed;
+}
+.map-mystery {
+  width: 52%;
+  max-height: 100%;
+  object-fit: contain;
+  opacity: 0.7;
+}
+.map-stop.undiscovered .map-name {
+  font-style: italic;
+  font-weight: 700;
+  opacity: 0.75;
+}
+
+/* --- Chapter view ----------------------------------------------------------- */
+.chapter-hero-art {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: clamp(72px, 22vmin, 120px);
+  aspect-ratio: 1;
+  border-radius: var(--radius-m);
+  background: radial-gradient(circle, color-mix(in srgb, var(--tint) 40%, transparent), transparent 70%);
+}
+.chapter-hero-art > img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.chapter-hero-art .story-art-label {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+.challenge-card .tile-body {
+  min-width: 0;
+}
+.challenge-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 2px;
+}
+.challenge-opponents {
+  display: flex;
+}
+.challenge-opponents > * + * {
+  margin-left: -8px;
+}
+.challenge-rewards {
+  display: flex;
+  gap: 8px;
+  font-size: max(var(--fs-min), 0.78em);
+  font-weight: 800;
+  color: var(--ink-soft);
+}
+.challenge-rewards > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+.challenge-rewards .icon {
+  width: 13px;
+  height: 13px;
+  color: var(--gold-deep);
+}
+.challenge-state {
+  margin-left: auto;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  font-size: max(var(--fs-min), 0.74em);
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--gold-soft);
+  color: var(--gold-deep);
+  border: 1px solid var(--gold-line);
+}
+.challenge-state.replay {
+  background: color-mix(in srgb, var(--success) 18%, transparent);
+  color: var(--success-text);
+  border-color: color-mix(in srgb, var(--success) 40%, transparent);
+}
+.challenge-state.locked {
+  background: none;
+  color: var(--ink-faint);
+  border-color: var(--border);
+}
+[data-theme='night'] .challenge-state:not(.replay):not(.locked) {
+  color: var(--gold-text);
+}
+
+/* --- Scenes (dialogue engine) ---------------------------------------------- */
+.dialog-scene {
+  width: min(560px, 100%);
+}
+.scene {
+  container: scene / inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+/* The stage holds the scene's tallest panel (set when it opens); past this cap it scrolls inside. */
+.scene-stage {
+  min-height: clamp(120px, 26vh, 190px);
+  max-height: min(56vh, 420px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: flex;
+  cursor: pointer;
+  border-radius: var(--radius-m);
+  -webkit-user-select: none;
+  user-select: none;
+}
+.scene-stage:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+.scene-beat {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+}
+.scene-beat.enter {
+  animation: scene-in 220ms var(--ease);
+}
+@keyframes scene-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+.scene-portrait {
+  width: clamp(82px, 24vmin, 124px);
+  aspect-ratio: 3 / 4;
+  border-radius: 46% 46% 12px 12px;
+}
+.scene-beat.enter .scene-portrait {
+  animation: portrait-pop 260ms var(--ease-spring);
+}
+@keyframes portrait-pop {
+  from {
+    transform: scale(0.94);
+  }
+}
+.scene-main {
+  flex: 1;
+  min-width: 0;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.scene-box {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 6px;
+  padding: 10px 14px 12px;
+  border-radius: var(--radius-m);
+  background: linear-gradient(160deg, #1f3a2c, #15281f);
+  border: 2px solid #b8913f;
+  box-shadow: inset 0 0 0 1px rgba(255, 230, 160, 0.18);
+  color: #f3ead5;
+}
+.scene-nameplate {
+  align-self: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 6px;
+  max-width: 100%;
+  padding: 2px 10px;
+  border-radius: 6px;
+  background: linear-gradient(#f3e3b5, #dcc387);
+  border: 1.5px solid #8a6424;
+  color: #3a2814;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+}
+.scene-nameplate strong {
+  font-family: var(--font-display);
+  font-size: 0.95em;
+}
+/* The role wraps under the name rather than being cut off. */
+.scene-nameplate small {
+  font-size: max(var(--fs-min), 0.72em);
+  font-weight: 700;
+  color: #5a4220;
+}
+.scene-text {
+  margin: 0;
+  font-size: clamp(15px, 2.2vmin + 6px, 17px);
+  line-height: 1.5;
+  overflow-wrap: break-word;
+  hyphens: manual;
+}
+/* Narration: what you see and do — on parchment, with no speaker. */
+.scene-beat.is-narration .scene-box {
+  padding: 14px 16px;
+  background: linear-gradient(#f5ead0, #e8d6ab);
+  border-color: rgba(110, 76, 36, 0.5);
+  color: #3a2814;
+  text-align: center;
+}
+.scene-beat.is-narration .scene-text {
+  font-style: italic;
+}
+.scene-draft {
+  align-self: flex-end;
+  font-size: max(var(--fs-min), 0.66em);
+  font-weight: 900;
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  padding: 1px 6px;
+  border-radius: 4px;
+  border: 1px dashed currentColor;
+  opacity: 0.7;
+}
+.scene-found {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  padding: 6px 8px;
+  border-radius: var(--radius-s);
+  background: rgba(255, 255, 255, 0.35);
+  border: 1px solid rgba(110, 76, 36, 0.35);
+  text-align: left;
+}
+.scene-beat.is-speech .scene-found {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 230, 160, 0.3);
+}
+.scene-found img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+}
+.scene-found small {
+  display: block;
+  font-size: max(var(--fs-min), 0.7em);
+  font-weight: 800;
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+.scene-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+.scene-nav {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1.5px solid var(--gold-line);
+  background: var(--surface-2);
+  color: var(--ink);
+  cursor: pointer;
+}
+.scene-nav:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.scene-next {
+  width: auto;
+  padding: 0 14px 0 18px;
+  gap: 2px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius-pill);
+  font: inherit;
+  font-weight: 800;
+  background: var(--surface);
+  border-color: var(--gold);
+}
+.scene-count {
+  min-width: 4em;
+  text-align: center;
+  font-size: max(var(--fs-min), 0.8em);
+  font-weight: 800;
+  color: var(--ink-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Versus card ------------------------------------------------------------ */
+.dialog-versus {
+  width: min(520px, 100%);
+}
+.versus {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.versus-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.4fr);
+  align-items: center;
+  gap: 8px;
+}
+.versus.solo .versus-row {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+.versus-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.versus-you {
+  animation: versus-left 320ms var(--ease-spring);
+}
+.versus-them-group {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  animation: versus-right 320ms var(--ease-spring);
+}
+@keyframes versus-left {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+}
+@keyframes versus-right {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+}
+.versus-you-mark {
+  display: grid;
+  place-items: center;
+  width: clamp(72px, 20vmin, 110px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(201, 162, 72, 0.3), transparent 70%);
+}
+.you-crest {
+  width: 80%;
+  height: auto;
+}
+.versus-portrait {
+  width: clamp(76px, 22vmin, 120px);
+  aspect-ratio: 3 / 4;
+  border-radius: 46% 46% 12px 12px;
+}
+.versus-them-group.n2 .versus-portrait {
+  width: clamp(60px, 16vmin, 92px);
+}
+.versus-them-group.n3 .versus-portrait {
+  width: clamp(50px, 13vmin, 76px);
+}
+.versus-name {
+  max-width: 100%;
+  font-family: var(--font-display);
+  font-size: 0.92em;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.versus-vs {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.8em;
+  color: var(--gold-text);
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
+}
+.versus-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+}
+.versus-game {
+  font-size: max(var(--fs-min), 0.78em);
+  font-weight: 900;
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  color: var(--gold-deep);
+}
+[data-theme='night'] .versus-game {
+  color: var(--gold-text);
+}
+.versus-table {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink-faint);
+}
+.versus-deck {
+  --card-w: 34px;
+  display: inline-flex;
+}
+.versus-solo .versus-deck {
+  --card-w: clamp(54px, 16vmin, 80px);
+}
+
+/* --- Journal ---------------------------------------------------------------- */
+.journal {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  border-radius: var(--radius-m);
+  background:
+    linear-gradient(90deg, rgba(90, 60, 20, 0.12), transparent 6%, transparent 94%, rgba(90, 60, 20, 0.12)),
+    linear-gradient(#f4e8cb, #e9d7ab);
+  box-shadow:
+    inset 0 0 0 1px rgba(110, 76, 36, 0.35),
+    var(--elev-2);
+  color: #3a2814;
+}
+.journal .tile,
+.journal-objective {
+  --ink: #3a2814;
+  --ink-soft: #5b4426;
+  --ink-faint: #7d6440;
+}
+.journal-book-art {
+  position: absolute;
+  right: 8px;
+  top: 6px;
+  width: 64px;
+  height: auto;
+  opacity: 0.5;
+  pointer-events: none;
+}
+.journal-page {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  padding: 10px;
+  gap: 8px;
+}
+.journal-objective {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  padding-right: 70px;
+  border-radius: var(--radius-s);
+  border: 1px solid rgba(110, 76, 36, 0.35);
+  background: rgba(255, 255, 255, 0.35);
+}
+.journal-objective p {
+  margin: 0;
+}
+.journal-objective small {
+  display: block;
+  font-size: max(var(--fs-min), 0.7em);
+  font-weight: 900;
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  color: #8a6424;
+}
+.journal-objective-icon {
+  width: 34px;
+  height: auto;
+  flex: none;
+}
+.journal .tile {
+  background: rgba(255, 252, 240, 0.7);
+  border-color: rgba(110, 76, 36, 0.3);
+  color: #3a2814;
+}
+.journal-count,
+.journal-empty {
+  margin: 0;
+  font-size: max(var(--fs-min), 0.85em);
+  font-weight: 700;
+  color: #6b5233;
+}
+.clue-tile {
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 4px;
+  padding: 8px;
+  text-align: center;
+}
+.clue-tile.key {
+  box-shadow: inset 0 0 0 1.5px rgba(181, 131, 42, 0.6);
+}
+.clue-art {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  display: grid;
+  place-items: center;
+}
+.clue-art img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.clue-blank {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgba(110, 76, 36, 0.15);
+}
+.clue-tile .tile-title {
+  font-size: max(var(--fs-min), 0.86em);
+}
+.journal-chapter {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  padding: 10px 12px;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  overflow: hidden;
+}
+/* Three whole lines, never shrunk mid-line by the card: the rest is a tap away. */
+.journal-summary {
+  flex: none;
+  margin: 0;
+  font-size: max(var(--fs-min), 0.86em);
+  line-height: 1.4;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+}
+.scene-tile {
+  gap: 10px;
+  padding: 8px 12px;
+  text-align: left;
+}
+.dialog-clue {
+  width: min(560px, 100%);
+}
+.clue-detail {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: 14px;
+  align-items: center;
+}
+.clue-detail-art {
+  display: grid;
+  place-items: center;
+  max-height: 46vh;
+}
+.clue-detail-art img {
+  max-width: 100%;
+  max-height: 46vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+.clue-detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 6px;
+}
+@media (max-width: 480px) {
+  .clue-detail {
+    grid-template-columns: 1fr;
+  }
+  .clue-detail-art,
+  .clue-detail-art img {
+    max-height: 30vh;
+  }
+}
+
+/* --- Results ---------------------------------------------------------------- */
+.dialog-story-result .story-result {
+  display: flex;
+  /* Art beside the text (a shared rule stacks .story-result; phones stack it again below). */
+  flex-direction: row;
+  align-items: center;
+  gap: 14px;
+  text-align: left;
+  /* Room for the glow behind the art (it spreads 12% past its box), so the body doesn't scroll for it. */
+  padding-block: 12px;
+}
+.result-art {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: clamp(72px, 20vmin, 110px);
+  aspect-ratio: 1;
+}
+.result-fx {
+  position: absolute;
+  inset: -12%;
+  width: 124%;
+  height: 124%;
+  object-fit: contain;
+  opacity: 0.85;
+  animation: result-spin 1.2s var(--ease) both;
+}
+@keyframes result-spin {
+  from {
+    opacity: 0;
+    transform: scale(0.6) rotate(-20deg);
+  }
+}
+.result-emblem {
+  position: relative;
+  width: 78%;
+  height: auto;
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.3));
+}
+.result-loss .result-emblem {
+  filter: grayscale(0.4) drop-shadow(0 3px 4px rgba(0, 0, 0, 0.3));
+}
+.result-text {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.result-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.15em;
+  font-weight: 800;
+}
+.result-stamp {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-weight: 800;
+  color: var(--success-text);
+}
+.story-rewards li .reward-art {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+/* Phones: a small portrait beside the kicker and title; the rewards take the full width below. */
+@media (max-width: 420px) {
+  .dialog-story-result .story-result {
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr);
+    column-gap: 12px;
+    row-gap: 4px;
+    align-items: center;
+    padding-block: 6px;
+  }
+  .dialog-story-result .result-text {
+    display: contents;
+  }
+  .dialog-story-result .result-art {
+    grid-row: 1 / span 2;
+    width: 64px;
+  }
+  .dialog-story-result .result-text > :not(.tile-kicker):not(.result-title) {
+    grid-column: 1 / -1;
+  }
+  .dialog-story-result .result-text > .tile-kicker {
+    align-self: end;
+  }
+  .dialog-story-result .result-text > .result-title {
+    align-self: start;
+  }
+}
+
+/* --- Passport stamps with artwork ------------------------------------------ */
+.passport-stamps-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.stamp.has-art {
+  background: none;
+  border-color: transparent;
+  box-shadow: none;
+}
+.stamp.has-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform: rotate(-8deg);
+}
+.stamp small {
+  font-size: max(var(--fs-min), 0.7em);
+  opacity: 0.6;
+}
+.stamp.big.earned img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.passport-legacy {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 4px 6px;
+  margin: 0;
+  font-size: max(var(--fs-min), 0.72em);
+}
+.passport-legacy small {
+  font-weight: 800;
+  color: var(--ink-faint);
+}
+.legacy-stamp {
+  padding: 1px 8px;
+  border-radius: var(--radius-pill);
+  border: 1px dashed var(--gold-line);
+  color: var(--ink-soft);
+}
+
+/* --- Motion ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .scene-beat.enter,
+  .scene-beat.enter .scene-portrait,
+  .versus-you,
+  .versus-them-group,
+  .result-fx,
+  .map-stop.current .map-tile::after {
+    animation: none;
+  }
+}
+.reduced-motion .map-stop.current .map-tile::after {
+  animation: none;
+}
+
+/* The chapter header uses the location tile, not a wide painting. */
+.chapter-hero {
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+}
+.passport .stamp.earned.has-art {
+  width: 32px;
+  height: 32px;
+}
+
+/* The journal's tabs and pagers fill the page; nothing scrolls. */
+.journal-page > .tabs,
+.journal-clues {
+  flex: 1;
+  min-height: 0;
+}
+.journal-clues > .pager {
+  flex: 1;
+  min-height: 0;
+}
+
+/* Narrow headers: the Journal button keeps its icon and accessible name only. */
+@media (max-width: 520px) {
+  .story-journal-btn .btn-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .story-journal-btn {
+    min-width: 44px;
+    padding-inline: 10px;
+  }
+}
+
+/* Short landscape screens: scenes and the versus card lie side by side. */
+@media (orientation: landscape) and (max-height: 520px) {
+  .scene-stage {
+    min-height: 0;
+  }
+  .scene-portrait {
+    width: clamp(64px, 18vh, 96px);
+  }
+  .dialog-scene .story-brief {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 12px;
+  }
+  .dialog-scene .story-brief .story-rewards ul {
+    flex-wrap: nowrap;
+  }
+  .dialog-versus {
+    width: min(680px, 100%);
+  }
+  .versus {
+    flex-direction: row;
+    align-items: center;
+  }
+  .versus-row {
+    flex: 1.4;
+  }
+  .versus-info {
+    flex: 1;
+  }
+  .versus-portrait,
+  .versus-you-mark {
+    width: clamp(60px, 22vh, 96px);
+  }
+}
+
+/* Artwork fills its box without ever pushing the text out. */
+.map-tile-art > img,
+.clue-art > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  object-fit: contain;
+}
+.map-tile-art > .map-mystery {
+  inset: 8%;
+  width: 84%;
+  height: 84%;
+}
+.clue-art {
+  position: relative;
+}
+
+/* Story notes (unlike keyboard hints) show on every device. */
+.story-hint {
+  margin: 0;
+  font-size: max(var(--fs-min), 0.82em);
+  color: var(--ink-faint);
+}
+
+/* Short landscape: results and the chapter's closing panel lie flat. */
+@media (orientation: landscape) and (max-height: 520px) {
+  .result-art {
+    width: 60px;
+  }
+  .dialog-story-result .story-rewards ul,
+  .chapter-complete .story-rewards ul {
+    gap: 3px 4px;
+    font-size: max(var(--fs-min), 0.86em);
+  }
+  .chapter-complete {
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+  }
+  .chapter-complete .stamp.big {
+    flex: none;
+    width: 44px;
+    height: 44px;
+    margin: 0;
+  }
+  /* The results panel just listed these rewards; here the stamp and what opens next are enough. */
+  .chapter-complete > .story-rewards {
+    display: none;
+  }
+  .dialog-story-result .story-rewards li,
+  .chapter-complete .story-rewards li {
+    padding-block: 1px;
+  }
+}
+
+/* --- Field notes ------------------------------------------------------------ */
+.story-notes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.dialog-notes {
+  width: min(520px, 100%);
+}
+.info-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.info-card {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border-radius: var(--radius-s);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+.info-card.note {
+  border-style: dashed;
+}
+.info-art {
+  flex: none;
+  width: 56px;
+}
+.info-art img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+.info-text {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.info-text p {
+  margin: 0;
+  line-height: 1.45;
+}
+.info-source {
+  font-size: max(var(--fs-min), 0.78em);
+  color: var(--ink-faint);
+}
+
+/* --- The adventure continues… ------------------------------------------------ */
+.dialog-continues {
+  width: min(560px, 100%);
+}
+.continues {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.continues-art {
+  position: relative;
+  flex: none;
+  width: clamp(110px, 32vmin, 180px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-m);
+  background: radial-gradient(circle, rgba(181, 106, 216, 0.35), transparent 70%);
+  animation: continues-in 600ms var(--ease) both;
+}
+.continues-place {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 12px rgba(181, 106, 216, 0.5));
+}
+.continues-host {
+  position: absolute;
+  right: -6px;
+  bottom: -6px;
+  width: 38%;
+  aspect-ratio: 3 / 4;
+  border-radius: 46% 46% 10px 10px;
+}
+@keyframes continues-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+}
+.continues-text {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.continues-text p {
+  margin: 0;
+}
+.continues-title {
+  font-family: var(--font-display);
+  font-size: 1.3em;
+  font-weight: 800;
+}
+.continues-soon {
+  font-size: max(var(--fs-min), 0.86em);
+  color: var(--ink-faint);
+}
+@media (max-width: 480px) {
+  .continues {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .continues-art {
+    animation: none;
+  }
+}
+
+/* --- Map: a place that is coming soon ---------------------------------------- */
+.map-stop.preview .map-tile {
+  border-style: dashed;
+  border-color: rgba(181, 106, 216, 0.6);
+  background: rgba(255, 250, 235, 0.55);
+}
+.map-stop.preview .map-tile-art > img:not(.map-badge-art) {
+  filter: saturate(0.6) drop-shadow(0 0 8px rgba(181, 106, 216, 0.45));
+}
+.map-stop.preview .map-state {
+  color: #7a3f99;
+}
+
+/* --- Story effects (VFX atlas) ------------------------------------------------ */
+.vfx-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  pointer-events: none;
+  overflow: hidden;
+  contain: strict;
+}
+.vfx {
+  position: absolute;
+  object-fit: contain;
+  opacity: 0;
+  will-change: transform, opacity;
+  animation: vfx-pop 1100ms var(--ease) forwards;
+}
+.vfx-spectral {
+  animation-name: vfx-drift;
+  animation-duration: 1500ms;
+}
+.vfx-unlock {
+  animation-name: vfx-spin;
+}
+@keyframes vfx-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  30% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.15);
+  }
+}
+@keyframes vfx-spin {
+  0% {
+    opacity: 0;
+    transform: scale(0.6) rotate(-40deg);
+  }
+  35% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.1) rotate(20deg);
+  }
+}
+@keyframes vfx-drift {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.9);
+  }
+  40% {
+    opacity: 0.55;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-24px) scale(1.05);
+  }
+}
+
+/* Results: the opponent's reaction. */
+.result-portrait {
+  position: relative;
+  width: 76%;
+  aspect-ratio: 3 / 4;
+  border-radius: 46% 46% 10px 10px;
+}
+
+/* --- Low effects: decoration off, everything still readable ---------------------- */
+.low-effects .vfx-layer,
+.low-effects .result-fx,
+.reduced-motion .vfx-layer {
+  display: none;
+}
+.low-effects .map-stop.current .map-tile::after,
+.low-effects .scene-beat.enter,
+.low-effects .scene-beat.enter .scene-portrait,
+.low-effects .versus-you,
+.low-effects .versus-them-group,
+.low-effects .continues-art,
+.low-effects .stamp.big {
+  animation: none;
+}
+.low-effects .map-tile-art > img,
+.low-effects .continues-place {
+  filter: none;
+}
+
+/* A story character's face at the card table. */
+.avatar[data-art='story'] img {
+  object-fit: cover;
+  object-position: 50% 15%;
+}
+
+/* ===================== The four-suit door (Chapter 8) ===================== */
+.dialog-suit-puzzle {
+  width: min(480px, 100%);
+}
+.suit-puzzle {
+  display: grid;
+  gap: 14px;
+  justify-items: center;
+  text-align: center;
+}
+.suit-prompt {
+  margin: 0;
+  font-style: italic;
+  color: var(--ink-soft);
+}
+.suit-slots {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 64px));
+  gap: 10px;
+}
+.suit-slot {
+  aspect-ratio: 3 / 4;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-s, 8px);
+  border: 2px dashed color-mix(in srgb, var(--gold) 55%, transparent);
+  background: var(--surface-sunk);
+  font-size: 1.9em;
+  line-height: 1;
+}
+.suit-slot.filled {
+  border-style: solid;
+  border-color: var(--gold);
+  background: var(--surface);
+  animation: suit-set 260ms var(--ease) both;
+}
+.suit-marks {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  width: 100%;
+}
+.suit-mark {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  min-height: 64px;
+  padding: 8px 4px;
+  border-radius: var(--radius-m);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+  transition:
+    transform var(--dur-fast) var(--ease-press),
+    opacity var(--dur-fast);
+}
+.suit-mark:active {
+  transform: scale(0.95);
+}
+.suit-mark:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.suit-glyph {
+  font-size: 1.8em;
+  line-height: 1;
+}
+.suit-name {
+  font-size: max(var(--fs-min), 0.78em);
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+.suit-hearts .suit-glyph,
+.suit-diamonds .suit-glyph,
+.suit-slot.suit-hearts,
+.suit-slot.suit-diamonds {
+  color: #c0392b;
+}
+.suit-mark:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
+@keyframes suit-set {
+  from {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+}
+.reduced-motion .suit-slot.filled {
+  animation: none;
+}
+
+/* ===================== The finished story ===================== */
+.story-finished {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  padding: 8px 12px;
+  border-radius: var(--radius-m);
+  border: 1px solid color-mix(in srgb, var(--gold) 50%, transparent);
+  background: color-mix(in srgb, var(--gold) 12%, var(--surface));
+  color: var(--ink);
+}
+.story-finished-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-weight: 800;
+}
+.story-finished-text .icon {
+  width: 18px;
+  height: 18px;
+  color: var(--gold-text);
+}
+.story-finished-actions {
+  display: flex;
+  gap: 8px;
+}
+.dialog-rematches {
+  width: min(520px, 100%);
+}
+.rematch-list {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+.rematch {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.rematch-portrait {
+  flex: none;
+  width: 56px;
+  aspect-ratio: 3 / 4;
+  border-radius: 46% 46% 10px 10px;
+}
+.rematch-text {
+  display: grid;
+  gap: 2px;
+}
+.rematch-text small {
+  color: var(--ink-soft);
+}
+/* Short landscape phones: sockets beside the marks, so the puzzle fits without scrolling. */
+@media (max-height: 500px) {
+  .dialog-suit-puzzle {
+    width: min(620px, 100%);
+  }
+  .suit-puzzle {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 8px 14px;
+  }
+  .suit-prompt {
+    grid-column: 1 / -1;
+    font-size: 0.92em;
+  }
+  .suit-slots {
+    grid-template-columns: repeat(4, minmax(0, 44px));
+    gap: 6px;
+  }
+  .suit-slot {
+    font-size: 1.4em;
+  }
+  .suit-marks {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+  .suit-mark {
+    min-height: 44px;
+    grid-auto-flow: column;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+  }
+  .suit-glyph {
+    font-size: 1.3em;
+  }
+  .suit-tools {
+    grid-column: 1;
+    grid-row: 3;
+  }
+}
+
+/* Narrow scenes (phones in portrait): a small portrait beside the nameplate,
+   and the line itself gets the dialog's full width instead of a narrow column. */
+@container scene (max-width: 420px) {
+  .scene-beat.is-speech {
+    display: grid;
+    grid-template-columns: 52px minmax(0, 1fr);
+    align-items: end;
+    gap: 6px 8px;
+  }
+  .scene-beat.is-speech .scene-portrait {
+    width: 52px;
+    grid-row: 1;
+  }
+  .scene-beat.is-speech .scene-main {
+    display: contents;
+  }
+  .scene-beat.is-speech .scene-nameplate {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+  }
+  .scene-beat.is-speech .scene-box {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}
+
+/* Short landscape: a scene with a brief or rewards lies in two columns —
+   the lines on the left, what they lead to on the right — instead of
+   stacking into a body that has to scroll. */
+@media (orientation: landscape) and (max-height: 520px) {
+  .dialog-scene {
+    width: min(760px, 100%);
+  }
+  .dialog-scene .scene:has(> :not(.scene-stage):not(.scene-controls)) {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+    align-items: start;
+    gap: 6px 16px;
+  }
+  .dialog-scene .scene > .scene-stage,
+  .dialog-scene .scene > .scene-controls {
+    grid-column: 1;
+  }
+  .dialog-scene .scene > :not(.scene-stage):not(.scene-controls) {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+  }
+  .scene-stage {
+    max-height: calc(var(--app-h) - 170px);
+  }
+  .dialog-story-result,
+  .dialog-rematches {
+    width: min(720px, 100%);
+  }
+  .rematch-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .rematch-portrait {
+    width: 44px;
+  }
+}
+
+/* Short screens: the chapter's closing panel shows its stamp and what opens
+   next. Its rewards were just listed by the results panel before it. */
+@media (max-height: 700px) {
+  .chapter-complete > .story-rewards {
+    display: none;
+  }
+  .chapter-complete .stamp.big {
+    width: 56px;
+    height: 56px;
+  }
+}
+@media (max-width: 420px) {
+  .dialog-story-result .story-rewards ul {
+    gap: 4px;
+  }
+}
+
+.journal-chapter .tile-meta {
+  margin-top: auto;
+}
+/* The card's height is set by its page; the summary shows as many whole lines as fit. */
+.journal-chapter {
+  container: journal-card / size;
+}
+@container journal-card (max-height: 170px) {
+  .journal-summary {
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+}
+@container journal-card (max-height: 138px) {
+  .journal-summary {
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+  }
+}
+@container journal-card (max-height: 112px) {
+  .journal-summary {
+    display: none;
+  }
+}
+.dialog-summary .summary-detail {
+  display: grid;
+  gap: 8px;
+  color: var(--ink);
+  line-height: 1.55;
+}
+.dialog-summary .summary-detail p {
+  margin: 0;
+}
+
+/* Small phones: tile names in the narrower body face, so "Rappahannock" fits whole. */
+@media (max-width: 400px) {
+  .map-name {
+    font-family: var(--font-body);
+    font-weight: 900;
+    letter-spacing: -0.01em;
+  }
+}
+.journal-read {
+  display: inline-flex;
+  align-items: center;
+  margin-left: auto;
+  font-weight: 800;
+  font-size: max(var(--fs-min), 0.8em);
+  color: var(--accent-text);
+}
+.journal-read .icon {
+  width: 14px;
+  height: 14px;
+}
+.journal-chapter .tile-meta {
+  width: 100%;
+}

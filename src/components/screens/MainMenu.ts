@@ -2,8 +2,8 @@ import { h } from '@/utils/dom';
 import { APP } from '@/core/config';
 import { AppState } from '@/core/states';
 import { navigate, store } from '@/core/store';
-import { deckThemes, getDeck } from '@/decks';
-import { allBoards, getBoard } from '@/boards/registry';
+import { deckThemes, getDeck, visibleBoards } from '@/decks';
+import { getBoard } from '@/boards/registry';
 import { boardSwatch } from '@/boards/BoardRenderer';
 import { audio, getTrack, music } from '@/audio';
 import { openMusicPlayer } from '../musicPlayer';
@@ -15,23 +15,40 @@ import { brandLogo } from '../illustrations';
 import { environment } from '../environment';
 import { live } from '../live';
 import { cardBack } from '../Card';
+import { GAMES } from '@/games/registry';
+import { STORY_CHAPTERS } from '@/story/campaign';
+import { isPlayableChapter } from '@/story/world';
+import { isChapterComplete, storyOf } from '@/story/progress';
 import { button, creditsPill, fullscreenButton, iconButton } from '../ui';
+import { takeMenuReveal } from '../menuReveal';
 import { Disposer, type ScreenFactory } from '../Screen';
 
 interface MenuEntry {
   state: AppState;
   label: string;
+  /** Shown instead of the label on narrow tiles (phones). */
+  short?: string;
   icon: IconName;
   hint: string;
 }
 
-/** Secondary destinations, in menu order (Quick Play is the headline button above them). */
+/**
+ * The destinations under the featured Story Mode card, in menu order. Music
+ * opens the player over the menu (no screen of its own).
+ */
 export const MENU_ENTRIES: readonly MenuEntry[] = [
-  { state: AppState.STORY_MODE, label: 'Story Mode', icon: 'story', hint: 'The parlor’s tale' },
-  { state: AppState.COLLECTION, label: 'Deck Collection', icon: 'cards', hint: 'Decks, backs & art' },
-  { state: AppState.GAMEBOARDS, label: 'Gameboards', icon: 'board', hint: 'Tables & felts' },
-  { state: AppState.ACHIEVEMENTS, label: 'Achievements', icon: 'trophy', hint: 'Trophies' },
-  { state: AppState.STATISTICS, label: 'Statistics', icon: 'stats', hint: 'Your records' },
+  { state: AppState.GAME_SELECTION, label: 'Card Games', short: 'Games', icon: 'cards', hint: 'Five classic games' },
+  { state: AppState.COLLECTION, label: 'Collection', short: 'Decks', icon: 'binder', hint: 'Decks, backs & art' },
+  { state: AppState.GAMEBOARDS, label: 'Gameboards', short: 'Boards', icon: 'board', hint: 'Tables & felts' },
+  { state: AppState.PASSPORT, label: 'Passport', icon: 'passport', hint: 'Your progress' },
+  {
+    state: AppState.ACHIEVEMENTS,
+    label: 'Achievements',
+    short: 'Trophies',
+    icon: 'trophy',
+    hint: 'Medals & milestones',
+  },
+  { state: AppState.STATISTICS, label: 'Statistics', short: 'Stats', icon: 'stats', hint: 'Your records' },
   { state: AppState.SETTINGS, label: 'Settings', icon: 'settings', hint: 'Sound & display' },
 ];
 
@@ -77,7 +94,7 @@ function playerStatus(): HTMLElement {
     }),
     (s) => s.profile,
     (el, p) => {
-      const c = collectionProgress(p, deckThemes.list(), allBoards());
+      const c = collectionProgress(p, deckThemes.list(), visibleBoards());
       el.title = `Collection ${c.percent}% complete`;
       el.setAttribute('aria-label', `Collection ${c.percent}% complete — open Deck Collection`);
       el.dataset.value = String(c.percent);
@@ -137,6 +154,7 @@ function setupChips(): HTMLElement {
     (s) => s.selection.deckId,
     (el, id) => {
       const d = getDeck(deckThemes.safeDeckId(id));
+      el.setAttribute('aria-label', `Deck: ${d.name}. Change deck`);
       el.replaceChildren(
         h('span', { class: 'setup-visual' }, cardBack(d, 'chip-card')),
         h('span', { class: 'setup-text' }, h('small', null, 'Deck'), h('span', { 'data-value': 'deck' }, d.name)),
@@ -155,6 +173,7 @@ function setupChips(): HTMLElement {
     (s) => s.selection.boardId,
     (el, id) => {
       const b = getBoard(id);
+      el.setAttribute('aria-label', `Gameboard: ${b.name}. Change gameboard`);
       el.replaceChildren(
         h('span', { class: 'setup-visual' }, boardSwatch(b, { className: 'chip-board' })),
         h('span', { class: 'setup-text' }, h('small', null, 'Board'), h('span', { 'data-value': 'board' }, b.name)),
@@ -205,8 +224,11 @@ function nowPlaying(): HTMLElement {
   );
 }
 
-function quickPlay(): HTMLElement {
-  // A small fan of the selected deck rides on the button and opens on hover.
+/**
+ * The featured action: Story Mode, with where the player is in it. A small fan
+ * of the selected deck rides on the card and opens on hover.
+ */
+function storyFeature(): HTMLElement {
   const fan = live(
     h('span', { class: 'play-fan', 'aria-hidden': 'true' }),
     (s) => s.selection.deckId,
@@ -221,24 +243,69 @@ function quickPlay(): HTMLElement {
       );
     },
   );
-  const btn = button(
-    h(
-      'span',
-      { class: 'play-text' },
-      h('span', { class: 'play-label' }, 'Quick Play'),
-      h('span', { class: 'play-hint' }, 'Five classic card games'),
-    ),
-    () => navigate(AppState.GAME_SELECTION),
-    {
-      variant: 'gold',
-      size: 'lg',
-      icon: 'play',
-      class: 'menu-play',
-      attrs: { 'data-nav': AppState.GAME_SELECTION },
+  const text = live(
+    h('span', { class: 'play-text' }),
+    (s) => s.profile,
+    (el, p) => {
+      const story = storyOf(p);
+      // Only written chapters are playable; the counts cover those, not the outlines.
+      const playable = STORY_CHAPTERS.filter(isPlayableChapter);
+      const levels = new Set(playable.flatMap((c) => c.levels.map((l) => l.id)));
+      const cleared = story.completed.filter((id) => levels.has(id)).length;
+      const next = STORY_CHAPTERS.find((c) => !isChapterComplete(p, c));
+      const status = !next
+        ? 'The Thirteenth Hand is complete'
+        : isPlayableChapter(next)
+          ? `Chapter ${next.index} · ${next.title}`
+          : `Chapter ${next.index} coming soon`;
+      el.replaceChildren(
+        h('span', { class: 'play-label' }, story.completed.length ? 'Continue Story' : 'Story Mode'),
+        h('span', { class: 'play-hint', 'data-value': 'story-chapter' }, status),
+        h(
+          'span',
+          { class: 'play-progress', 'data-value': 'story-progress' },
+          `${cleared}/${levels.size} challenges · ${story.stamps.length}/${playable.length} stamps`,
+        ),
+      );
     },
   );
+  const btn = button(text, () => navigate(AppState.STORY_MODE), {
+    variant: 'gold',
+    size: 'lg',
+    icon: 'story',
+    class: 'menu-play menu-story',
+    attrs: { 'data-nav': AppState.STORY_MODE },
+  });
   btn.append(fan);
   return btn;
+}
+
+/** Straight back to the last game played, with the chosen deck and table. */
+function quickPlay(): HTMLElement {
+  return live(
+    h('button', {
+      type: 'button',
+      class: 'quick-play',
+      'data-action': 'quick-play',
+      onclick: () => {
+        const s = store.state;
+        const game = s.selection.gameId ?? 'klondike';
+        audio.play('shuffle');
+        store.dispatch({ type: 'SELECT_GAME', gameId: game });
+        store.dispatch({ type: 'START_GAME' });
+        navigate(AppState.GAMEPLAY);
+      },
+    }),
+    (s) => s.selection.gameId,
+    (el, id) => {
+      const game = GAMES.find((g) => g.id === (id ?? 'klondike'))!;
+      el.setAttribute('aria-label', `Quick Play: ${game.name}`);
+      el.replaceChildren(
+        icon('play'),
+        h('span', { class: 'quick-play-text' }, h('small', null, 'Quick Play'), h('span', null, game.name)),
+      );
+    },
+  );
 }
 
 export const MainMenuScreen: ScreenFactory = () => {
@@ -268,8 +335,8 @@ export const MainMenuScreen: ScreenFactory = () => {
       h(
         'div',
         { class: 'menu-panel' },
-        quickPlay(),
-        setupChips(),
+        storyFeature(),
+        h('div', { class: 'menu-quick' }, quickPlay(), setupChips()),
         h(
           'nav',
           { class: 'menu-grid', 'aria-label': 'Main menu' },
@@ -282,13 +349,42 @@ export const MainMenuScreen: ScreenFactory = () => {
                 h(
                   'span',
                   { class: 'menu-tile-text' },
-                  h('span', { class: 'menu-tile-label' }, e.label),
+                  h(
+                    'span',
+                    { class: 'menu-tile-label' },
+                    e.short
+                      ? [h('span', { class: 'label-full' }, e.label), h('span', { class: 'label-short' }, e.short)]
+                      : e.label,
+                  ),
                   h('span', { class: 'menu-tile-hint' }, e.hint),
                 ),
               ),
               () => navigate(e.state),
-              { variant: 'plain', class: 'menu-tile', attrs: { 'data-nav': e.state, style: `--i:${i}` } },
+              {
+                variant: 'plain',
+                class: 'menu-tile',
+                attrs: { 'data-nav': e.state, style: `--i:${i}`, 'aria-label': e.label },
+              },
             ),
+          ),
+          button(
+            h(
+              'span',
+              { class: 'menu-tile-content' },
+              h('span', { class: 'menu-tile-icon' }, icon('music')),
+              h(
+                'span',
+                { class: 'menu-tile-text' },
+                h('span', { class: 'menu-tile-label' }, 'Music'),
+                h('span', { class: 'menu-tile-hint' }, 'Playlists & tracks'),
+              ),
+            ),
+            () => void openMusicPlayer(),
+            {
+              variant: 'plain',
+              class: 'menu-tile',
+              attrs: { 'data-action': 'music-player', style: `--i:${MENU_ENTRIES.length}` },
+            },
           ),
         ),
       ),
@@ -305,6 +401,19 @@ export const MainMenuScreen: ScreenFactory = () => {
       ),
     ),
   );
+
+  // Arriving from the opening sequence: the riverfront rises out of black, once.
+  const reveal = takeMenuReveal();
+  if (reveal !== null) {
+    const veil = h('div', { class: 'menu-veil', 'aria-hidden': 'true', style: { '--reveal': `${reveal}ms` } });
+    el.classList.add('from-intro');
+    el.append(veil);
+    const done = setTimeout(() => {
+      veil.remove();
+      el.classList.remove('from-intro');
+    }, reveal + 100);
+    d.add(() => clearTimeout(done));
+  }
 
   return { el, unmount: () => d.dispose() };
 };

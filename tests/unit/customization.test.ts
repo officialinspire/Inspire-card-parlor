@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-import { allBoards, getBoard } from '@/boards/registry';
+import { ALL_LEVELS } from '@/story/campaign';
+import { allBoards, availableBoards, getBoard, isMatureBoard } from '@/boards/registry';
 import { applyBoard, ambientLayer, boardSwatch } from '@/boards/BoardRenderer';
 import { contrastRatio } from '@/utils/color';
 import { allDecks, getDeck, registerDeck } from '@/decks/registry';
@@ -30,7 +31,19 @@ const BOARD_IDS = [
   'artists_studio',
   'safehouse',
   'masonic_study',
+  // The Thirteenth Hand
+  'cheryls_antique_shop',
+  'mrs_gray_safehouse',
+  'masonic_lodge_no4',
+  'kenmore_parlor',
+  'underground_tunnels',
+  'washington_final_table',
+  'umw_classroom',
+  'germanna_library',
+  'ismokeshop_counter',
+  'ismokeshop_counter_overhead',
 ];
+const MATURE_BOARD_IDS = ['ismokeshop_counter', 'ismokeshop_counter_overhead'];
 
 /** A deck with collectible artwork: one bought with credits, one earned by level. */
 const collectible: DeckDefinition = {
@@ -85,9 +98,14 @@ function themes(
 }
 
 describe('gameboards', () => {
-  const UPLOADED_BOARDS = ['picnic_table', 'backroom_card_table', 'rappahannock_riverside'];
+  const UPLOADED_BOARDS = [
+    'picnic_table',
+    'backroom_card_table',
+    'rappahannock_riverside',
+    ...BOARD_IDS.slice(9).filter((id) => id !== 'underground_tunnels'),
+  ];
 
-  it('registers the nine boards with full metadata', () => {
+  it('registers every board (old ids kept) with full metadata', () => {
     expect(allBoards().map((b) => b.id)).toEqual(BOARD_IDS);
     for (const b of allBoards()) {
       expect(b.name, b.id).toBeTruthy();
@@ -96,13 +114,38 @@ describe('gameboards', () => {
       const uploaded = UPLOADED_BOARDS.includes(b.id);
       // Uploaded boards are credited to the commissioning studio; the rest have no invented credit.
       expect(b.artist.name, b.id).toBe(uploaded ? 'OFFICIAL INSPIRE' : null);
-      expect(b.assets.basePath).toBe(`assets/backgrounds/${b.id}/`);
+      // Adult-only boards live in the folder the family build removes.
+      expect(b.assets.basePath).toBe(
+        MATURE_BOARD_IDS.includes(b.id) ? `assets/backgrounds/mature/${b.id}/` : `assets/backgrounds/${b.id}/`,
+      );
+      expect(b.contentRating === 'mature', b.id).toBe(MATURE_BOARD_IDS.includes(b.id));
       expect(b.assets.status, b.id).toBe(uploaded ? 'ready' : 'pending');
       const u = b.unlock;
       if (u.type === 'story') expect(CHAPTERS.some((c) => c.id === u.value)).toBe(true);
       if (u.type === 'achievement') expect(ACHIEVEMENTS.some((a) => a.id === u.value)).toBe(true);
     }
     expect(getBoard('velvet-green').id).toBe('backroom_card_table');
+  });
+
+  it('keeps cream card stock readable on every painted board (3:1 after the scrim)', () => {
+    const darken = (hex: string, s: number) =>
+      '#' +
+      [1, 3, 5]
+        .map((i) =>
+          Math.round(parseInt(hex.slice(i, i + 2), 16) * (1 - s))
+            .toString(16)
+            .padStart(2, '0'),
+        )
+        .join('');
+    for (const b of allBoards().filter((x) => x.assets.status === 'ready' && BOARD_IDS.indexOf(x.id) >= 9))
+      expect(contrastRatio('#f5ecd8', darken(b.surface.base, b.art?.scrim ?? 0)), b.id).toBeGreaterThanOrEqual(3);
+  });
+
+  it('shows adult-only boards only when adult content is allowed', () => {
+    expect(availableBoards(false).some((b) => b.contentRating === 'mature')).toBe(false);
+    expect(availableBoards(true).map((b) => b.id)).toEqual(expect.arrayContaining(MATURE_BOARD_IDS));
+    for (const id of MATURE_BOARD_IDS) expect(isMatureBoard(id)).toBe(true);
+    expect(isMatureBoard('kenmore_parlor')).toBe(false);
   });
 
   it('keeps on-board text readable on every board (WCAG AA)', () => {
@@ -248,18 +291,20 @@ describe('favorites and completion', () => {
 
   it('computes collection completion over visible decks, artwork and boards', () => {
     const decks = allDecks().filter((d) => d.contentRating !== 'mature');
-    const fresh = collectionProgress(createDefaultProfile(), decks, allBoards());
+    const boards = availableBoards(false);
+    expect(boards).toHaveLength(BOARD_IDS.length - MATURE_BOARD_IDS.length);
+    const fresh = collectionProgress(createDefaultProfile(), decks, boards);
     // Classic, INSPIRE and the fixture (which copies Classic's default unlock).
     expect(fresh.decks).toEqual({ owned: 3, total: decks.length });
-    expect(fresh.boards).toEqual({ owned: 2, total: 9 });
+    expect(fresh.boards).toEqual({ owned: 2, total: boards.length });
     // The fixture's two pieces plus the Eastern Woodlands turtle back.
     expect(fresh.artwork).toEqual({ owned: 0, total: 3 });
-    expect(fresh.percent).toBe(Math.floor((5 / (decks.length + 9 + 3)) * 100));
+    expect(fresh.percent).toBe(Math.floor((5 / (decks.length + boards.length + 3)) * 100));
 
     const everything = {
       ...createDefaultProfile(),
       level: 99,
-      storyChapter: 99,
+      story: { ...createDefaultProfile().story, completed: ALL_LEVELS.map((l) => l.id) },
       unlockedAchievements: ACHIEVEMENTS.map((a) => a.id),
       ownedVariants: ['collectible_fixture@gilded', 'eastern_woodlands@turtle'],
     };

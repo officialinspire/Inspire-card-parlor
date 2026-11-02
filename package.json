@@ -1,8 +1,8 @@
 {
   "name": "inspire-card-parlor",
   "private": true,
-  "version": "1.0.0",
-  "description": "INSPIRE CARD PARLOR \u2014 a cozy collection of classic playing-card games by OFFICIAL INSPIRE.",
+  "version": "1.2.0",
+  "description": "INSPIRE CARD PARLOR — a cozy collection of classic playing-card games by OFFICIAL INSPIRE.",
   "type": "module",
   "author": "OFFICIAL INSPIRE (https://www.inspireclothing.art)",
   "scripts": {
@@ -18,14 +18,18 @@
     "test:e2e": "playwright test",
     "test:all": "npm run typecheck && npm run test && npm run test:e2e",
     "validate:decks": "tsx scripts/validate-decks.ts",
-    "validate": "npm run validate:decks && npm run format:check",
+    "validate:story": "tsx scripts/validate-story-art.ts",
+    "story:script": "tsx scripts/story/export-script.ts",
+    "validate": "npm run validate:decks && npm run validate:story && npm run format:check",
     "art:cards": "python3 scripts/art/extract_cards.py",
+    "art:story": "python3 scripts/art/story_assets.py",
     "art:images": "python3 scripts/art/build_images.py",
     "assets:placeholders": "tsx scripts/generate-placeholders.ts"
   },
   "devDependencies": {
     "@playwright/test": "^1.63.0",
     "@types/node": "^26.6.5",
+    "axe-core": "^4.10.3",
     "happy-dom": "^21.0.4",
     "prettier": "^3.9.10",
     "tsx": "^4.23.15",

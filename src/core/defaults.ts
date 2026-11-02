@@ -1,3 +1,4 @@
+import { CAMPAIGN_ID, CAMPAIGN_VERSION } from '@/story/ids';
 import type { GameId, GameStats, Profile, Selection, Settings } from './types';
 
 export const GAME_IDS: readonly GameId[] = ['klondike', 'spider', 'freecell', 'war', 'go-fish'];
@@ -7,12 +8,14 @@ export const DEFAULT_BOARD = 'backroom_card_table';
 export const DEFAULT_TRACK = 'parlor-menu';
 
 /** Bump when the saved profile's shape changes; `migrateProfile` upgrades older saves. */
-export const PROFILE_SCHEMA = 2;
+export const PROFILE_SCHEMA = 3;
 
 export const DEFAULT_SETTINGS: Settings = {
   masterVolume: 0.8,
   musicVolume: 0.5,
   sfxVolume: 0.7,
+  ambience: true,
+  ambienceVolume: 0.5,
   muted: false,
   musicMuted: false,
   musicTrack: DEFAULT_TRACK,
@@ -23,6 +26,9 @@ export const DEFAULT_SETTINGS: Settings = {
   haptics: true,
   theme: 'auto',
   reducedMotion: false,
+  lowEffects: false,
+  startupIntro: 'auto',
+  storySoundtrack: true,
   leftHanded: false,
   showHints: true,
   autoComplete: true,
@@ -58,7 +64,16 @@ export function createDefaultProfile(): Profile {
     journal: { counters: {}, seen: {} },
     schemaVersion: PROFILE_SCHEMA,
     storyChapter: 0,
-    story: { completed: [], rewarded: [], stamps: [], introsSeen: [], attempts: {} },
+    story: {
+      campaign: CAMPAIGN_ID,
+      version: CAMPAIGN_VERSION,
+      completed: [],
+      rewarded: [],
+      stamps: [],
+      introsSeen: [],
+      attempts: {},
+      evidence: [],
+    },
     favoriteDecks: [],
     ownedVariants: [],
     stats: Object.fromEntries(GAME_IDS.map((id) => [id, emptyStats()])) as Record<GameId, GameStats>,

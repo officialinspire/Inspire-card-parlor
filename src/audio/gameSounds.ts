@@ -7,7 +7,9 @@ import { audio, type Sfx } from './engine';
  *  - events raised during the same action (the same task) are merged, so a
  *    move that is both a `card_move` and a `valid_move` plays one sound;
  *  - an event repeated faster than its minimum gap is dropped (a 28-card deal
- *    patters instead of buzzing), and identical events never stack.
+ *    patters instead of buzzing), and identical events never stack;
+ *  - a run of the same sound close together gets gradually quieter (down to
+ *    55 %), so an auto-finish or a long deal sits back instead of nagging.
  *
  * Every event still reaches `onGameSound` listeners (and a `icp:sound` DOM
  * event), with `played` telling whether it made a sound.
@@ -37,6 +39,8 @@ export const GAME_SOUND_SFX: Record<GameSound, Sfx> = {
 
 /** Vibration that accompanies an event (when haptics are on and supported). */
 export const GAME_SOUND_HAPTIC: Partial<Record<GameSound, 'tap' | 'error' | 'impact' | 'celebrate'>> = {
+  // A card landing where it should: the lightest tap.
+  valid_move: 'tap',
   invalid_move: 'error',
   war_battle: 'impact',
   victory: 'celebrate',
@@ -74,12 +78,25 @@ type Listener = (e: GameSoundEvent) => void;
 const listeners = new Set<Listener>();
 let pending: GameSound[] = [];
 const lastPlayed = new Map<GameSound, number>();
-let player: (sfx: Sfx) => void = (sfx) => audio.play(sfx);
+let player: (sfx: Sfx, level: number) => void = (sfx, level) => audio.play(sfx, level);
+
+/** A run of the same event within this window plays a little softer each time. */
+const RUN_WINDOW = 450;
+const runs = new Map<GameSound, number>();
+/** Level for the next play of `event` (1, then 0.85, 0.72… never under 0.55). */
+export function repeatLevel(run: number): number {
+  return Math.max(0.55, Math.pow(0.85, run));
+}
 let buzzer: (kind: NonNullable<(typeof GAME_SOUND_HAPTIC)[GameSound]>) => void = () => undefined;
 
 /** Connects haptic output (kept separate so this module stays free of DOM/store imports). */
 export function setGameHaptics(fn: typeof buzzer): void {
   buzzer = fn;
+}
+
+/** A haptic with no sound of its own (picking up a card). Off unless haptics are on and supported. */
+export function gameHaptic(kind: NonNullable<(typeof GAME_SOUND_HAPTIC)[GameSound]>): void {
+  buzzer(kind);
 }
 let clock: () => number = () => (typeof performance !== 'undefined' ? performance.now() : Date.now());
 
@@ -106,7 +123,10 @@ export function flush(): void {
     let played = false;
     const superseded = [...present].some((other) => SUPERSEDES[other]?.includes(event));
     if (!handled.has(event) && !superseded && now - (lastPlayed.get(event) ?? -Infinity) >= MIN_GAP[event]) {
-      player(GAME_SOUND_SFX[event]);
+      const run = now - (lastPlayed.get(event) ?? -Infinity) < RUN_WINDOW ? (runs.get(event) ?? 0) + 1 : 0;
+      runs.set(event, run);
+      // Wins and achievements always play in full.
+      player(GAME_SOUND_SFX[event], event === 'victory' ? 1 : repeatLevel(run));
       const buzz = GAME_SOUND_HAPTIC[event];
       if (buzz) buzzer(buzz);
       lastPlayed.set(event, now);
@@ -121,15 +141,17 @@ export function flush(): void {
 }
 
 /** Test seam: replace the audio output and clock; returns a restore function. */
-export function __setSoundBackend(p: (sfx: Sfx) => void, c?: () => number): () => void {
+export function __setSoundBackend(p: (sfx: Sfx, level: number) => void, c?: () => number): () => void {
   const prev = { player, clock };
   player = p;
   if (c) clock = c;
   lastPlayed.clear();
+  runs.clear();
   pending = [];
   return () => {
     player = prev.player;
     clock = prev.clock;
     lastPlayed.clear();
+    runs.clear();
   };
 }

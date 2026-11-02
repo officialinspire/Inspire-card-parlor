@@ -11,7 +11,8 @@
   display: flex;
   flex-direction: column;
   flex: 1;
-  overflow: hidden;
+  /* Sized to fit; on a screen too short for it, it scrolls rather than cutting off the library. */
+  overflow-y: auto;
 }
 .music-player > .control-slider {
   min-height: 48px;
@@ -87,13 +88,14 @@
   text-overflow: ellipsis;
 }
 .mp-title small {
-  color: var(--ink-faint);
-  font-size: 0.82em;
+  /* On the sunk panel: the softer ink, not the faint one (4.5:1 or better). */
+  color: var(--ink-soft);
+  font-size: max(var(--fs-min), 0.82em);
 }
 .mp-time {
   grid-area: time;
   font-variant-numeric: tabular-nums;
-  font-size: 0.8em;
+  font-size: max(var(--fs-min), 0.8em);
   color: var(--ink-soft);
 }
 .mp-progress {
@@ -118,7 +120,7 @@
   gap: clamp(2px, 1.5vw, 10px);
 }
 .mp-transport .btn[aria-pressed='true'] {
-  color: var(--accent);
+  color: var(--accent-text);
   background: var(--accent-soft);
 }
 .mp-transport [data-repeat='one']::after {
@@ -143,8 +145,18 @@
   gap: 10px;
   min-width: 0;
 }
-/* Wide, short screens: controls beside the library. */
-@media (orientation: landscape) and (min-width: 700px) {
+/* Short landscape: the playlists scroll sideways in one row, so the track list keeps its height. */
+@media (orientation: landscape) and (max-height: 540px) {
+  .music-player .mp-categories {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent);
+  }
+}
+/* Wide, short screens (from a 667px phone on its side): controls beside the library. */
+@media (orientation: landscape) and (min-width: 600px) {
   .music-player {
     flex-direction: row;
     align-items: stretch;
@@ -174,13 +186,18 @@
   background: var(--surface-2, var(--surface));
   color: var(--ink-soft);
   font-weight: 800;
-  font-size: 0.8em;
+  font-size: max(var(--fs-min), 0.8em);
   cursor: pointer;
+}
+@media (pointer: coarse) {
+  .chip {
+    min-height: 36px;
+  }
 }
 .chip.active {
   border-color: var(--accent);
   background: var(--accent-soft);
-  color: var(--accent);
+  color: var(--accent-text);
 }
 .dialog-music .music-player {
   width: min(520px, 100%);
@@ -190,7 +207,9 @@
   background: none;
   color: inherit;
   font: inherit;
-  padding: 0;
+  /* A taller target than the line of text, without growing the footer. */
+  padding: 12px 0;
+  margin-block: -12px;
   min-width: 0;
   cursor: pointer;
   text-align: left;
@@ -312,7 +331,7 @@
 }
 .achievement-bar small,
 .achievement-date {
-  font-size: max(10px, 0.75em);
+  font-size: max(var(--fs-min), 0.75em);
   color: var(--ink-faint);
   white-space: nowrap;
   font-weight: 800;
@@ -343,7 +362,7 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 0.8em;
+  font-size: max(var(--fs-min), 0.8em);
   font-weight: 800;
   color: var(--ink-soft);
 }
@@ -467,7 +486,7 @@
   font-size: clamp(1.4em, 4.5vmin, 2em);
 }
 .passport-seal small {
-  font-size: max(10px, 0.65em);
+  font-size: max(var(--fs-min), 0.65em);
   letter-spacing: var(--label-track);
   text-transform: uppercase;
   font-weight: 800;
@@ -482,7 +501,7 @@
 .passport-name > small:first-child {
   letter-spacing: var(--label-track);
   text-transform: uppercase;
-  font-size: max(10px, 0.68em);
+  font-size: max(var(--fs-min), 0.68em);
   font-weight: 800;
   color: #5f8a6e;
 }
@@ -520,7 +539,7 @@
 }
 .passport-heading span {
   font-family: var(--font-body);
-  font-size: 0.85em;
+  font-size: max(var(--fs-min), 0.85em);
   color: #6a5f53;
 }
 .passport-page .passport {
@@ -568,7 +587,7 @@
 }
 .passport-latest small {
   color: #6a5f53;
-  font-size: max(10px, 0.78em);
+  font-size: max(var(--fs-min), 0.78em);
 }
 /* Narrow portrait screens: one page at a time, turned with the tabs. */
 @media (max-aspect-ratio: 4/5) and (max-width: 700px), (max-width: 560px) {
@@ -596,7 +615,7 @@
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
   .passport-stats .stat-value {
-    font-size: 0.88em;
+    font-size: max(var(--fs-min), 0.88em);
   }
   .passport-page {
     gap: 6px;
@@ -627,8 +646,8 @@
   border-radius: 8px;
 }
 .tile-extras {
-  font-size: max(10px, 0.72em);
-  color: var(--accent);
+  font-size: max(var(--fs-min), 0.72em);
+  color: var(--accent-text);
   font-weight: 800;
 }
 .binder .pager-viewport {
@@ -705,11 +724,11 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 0.8em;
+  font-size: max(var(--fs-min), 0.8em);
   color: var(--ink-faint);
 }
 .binder-status.owned {
-  color: var(--sage);
+  color: var(--sage-text);
 }
 .binder-status .icon {
   width: 14px;
@@ -726,4 +745,33 @@
 .gallery-head {
   flex-wrap: wrap;
   row-gap: 4px;
+}
+
+/* ===================== Story artwork ===================== */
+.story-art {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+/* Shown when a sprite is missing or fails to load: never mistaken for finished art. */
+.story-art-missing {
+  display: inline-grid;
+  place-items: center;
+  width: 100%;
+  max-width: 160px;
+  border: 1.5px dashed var(--ink-faint);
+  border-radius: var(--radius-xs);
+  background: repeating-linear-gradient(45deg, transparent 0 8px, rgba(127, 127, 127, 0.12) 8px 16px);
+  color: var(--ink-soft);
+  text-align: center;
+  padding: 4px;
+}
+.story-art-missing small {
+  font-size: max(var(--fs-min), 0.7em);
+  font-weight: 800;
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
 }

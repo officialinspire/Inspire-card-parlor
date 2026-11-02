@@ -122,7 +122,7 @@ export const PassportScreen: ScreenFactory = ({ store }) => {
     'section',
     { class: 'passport-page', 'data-passport-page': '2', 'aria-label': 'Stamps and achievements' },
     h('h3', { class: 'passport-heading' }, 'Stamps'),
-    passportStamps(store),
+    passportStamps(store, { legacy: true }),
     h(
       'div',
       { class: 'passport-achievements' },

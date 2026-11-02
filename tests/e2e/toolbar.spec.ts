@@ -148,6 +148,7 @@ test('sound hooks: shuffle and deal, valid and invalid moves, flips, one sound p
   await expect.poll(async () => (await sounds(page)).length).toBeGreaterThan(0);
   log = await sounds(page);
   const errorOrMove = log.filter((e) => e.played).map((e) => e.event);
+  if (errorOrMove.length > 2) console.log('SOUND-LOG', JSON.stringify(log));
   expect(errorOrMove.length).toBeGreaterThan(0);
   expect(errorOrMove.length).toBeLessThanOrEqual(2);
 });

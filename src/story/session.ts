@@ -23,3 +23,19 @@ export function takeStoryOutcome(): StoryOutcome | null {
   last = null;
   return o;
 }
+
+/**
+ * Where the player was in Story Mode when a challenge began: Story Mode
+ * reopens on that chapter, with that challenge in view, however the table
+ * was left (a finish, Back, Home or the browser's Back).
+ */
+let place: { chapterId: string; levelId: string } | null = null;
+export function setStoryReturn(p: { chapterId: string; levelId: string } | null): void {
+  place = p;
+}
+/** Returns the place once, then forgets it. */
+export function takeStoryReturn(): { chapterId: string; levelId: string } | null {
+  const p = place;
+  place = null;
+  return p;
+}

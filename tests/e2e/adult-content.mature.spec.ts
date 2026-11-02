@@ -76,3 +76,28 @@ test('adults can opt in; adult art never appears in ordinary previews; opting ou
   await clickNav(page, 'home', 'MAIN_MENU');
   await expect(page.locator(`${CURRENT} [data-value="deck"]`)).toHaveText('BlackJak Standard');
 });
+
+test('adult-only gameboards appear only after opting in, and opting out resets them', async ({ page, request }) => {
+  expect((await request.get('assets/backgrounds/mature/ismokeshop_counter/preview.webp')).ok()).toBe(true);
+  await seed(page, { profile: { level: 10 } });
+  await enterParlor(page);
+  await clickNav(page, 'GAMEBOARDS');
+  await expect(page.locator(`${CURRENT} [data-board="ismokeshop_counter"]`)).toHaveCount(0);
+  await clickNav(page, 'home', 'MAIN_MENU');
+
+  await openContentSettings(page);
+  await page.locator(`${CURRENT} [data-setting="matureContent"]`).click();
+  await answerAgeGate(page, 30);
+  await clickNav(page, 'home', 'MAIN_MENU');
+  await page.locator(`${CURRENT} .menu-grid [data-nav="GAMEBOARDS"]`).click();
+  await expectScreen(page, 'GAMEBOARDS');
+  const tile = await revealInPager(page, '[data-board="ismokeshop_counter"]');
+  await tile.locator('[data-select-board]').click();
+  await clickNav(page, 'home', 'MAIN_MENU');
+  await expect(page.locator(`${CURRENT} [data-value="board"]`)).toHaveText('iSmokeShop Counter');
+
+  await openContentSettings(page);
+  await page.locator(`${CURRENT} [data-setting="matureContent"]`).click();
+  await clickNav(page, 'home', 'MAIN_MENU');
+  await expect(page.locator(`${CURRENT} [data-value="board"]`)).toHaveText('Backroom Card Table');
+});

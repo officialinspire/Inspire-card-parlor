@@ -31,7 +31,8 @@ export type Action =
   | { type: 'DISMISS_NOTIFICATION'; id: number }
   | { type: 'SET_ORIENTATION'; orientation: RootState['orientation'] }
   | { type: 'SET_FULLSCREEN'; fullscreen: boolean }
-  | { type: 'SET_ONLINE'; online: boolean };
+  | { type: 'SET_ONLINE'; online: boolean }
+  | { type: 'NOW_PLAYING'; nowPlaying: RootState['nowPlaying'] };
 
 type Listener = (state: RootState, prev: RootState, action: Action) => void;
 
@@ -47,6 +48,7 @@ export function createInitialState(): RootState {
     settings: { ...DEFAULT_SETTINGS },
     profile: createDefaultProfile(),
     modals: [],
+    nowPlaying: null,
     notifications: [],
     orientation: 'portrait',
     fullscreen: false,
@@ -178,6 +180,8 @@ export function reduce(state: RootState, action: Action): RootState {
           storyLevelId: null,
         },
       };
+    case 'NOW_PLAYING':
+      return { ...state, nowPlaying: action.nowPlaying };
     case 'MODAL_OPENED':
       return { ...state, modals: [...state.modals.filter((m) => m.id !== action.modal.id), action.modal] };
     case 'MODAL_CLOSED':

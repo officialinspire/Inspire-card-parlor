@@ -34,3 +34,16 @@ export const setTableInfo = (info: { deckId: string; boardId: string } | null) =
   table = info;
 };
 export const tableInfo = () => table;
+
+/**
+ * Waits for an animation, but never longer than `ms`: a cancelled, throttled
+ * (hidden tab) or detached animation can't hold a turn up for ever.
+ */
+export const settle = (p: Promise<unknown>, ms: number) =>
+  Promise.race([
+    p.then(
+      () => undefined,
+      () => undefined,
+    ),
+    sleep(ms),
+  ]);

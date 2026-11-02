@@ -9,6 +9,9 @@ export interface Settings {
   masterVolume: number;
   musicVolume: number;
   sfxVolume: number;
+  /** Riverfront ambience (water, breeze, the town at night) behind the title and menu. */
+  ambience: boolean;
+  ambienceVolume: number;
   muted: boolean;
   /** Music off (sound effects stay on); the table toolbar's Music button. */
   musicMuted: boolean;
@@ -23,6 +26,15 @@ export interface Settings {
   haptics: boolean;
   theme: ThemeMode;
   reducedMotion: boolean;
+  /** Fewer decorative effects: no story particles, glows or ambient loops (for slower devices). */
+  lowEffects: boolean;
+  /**
+   * The opening sequence on launch. `auto`: the full intro on the first launch, then the brief one
+   * (title and Touch to Start); `full`: every launch; `brief`: always the brief one.
+   */
+  startupIntro: 'auto' | 'full' | 'brief';
+  /** Story Mode picks music for each place and scene (the player's own pick always wins). */
+  storySoundtrack: boolean;
   leftHanded: boolean;
   showHints: boolean;
   autoComplete: boolean;
@@ -73,10 +85,12 @@ export interface Profile {
   journal: Journal;
   /** Save format version, for safe migrations. */
   schemaVersion: number;
-  /** Story chapters completed (kept for older unlock rules; never lowered). */
+  /** Chapters of the current campaign completed in order (never lowered). */
   storyChapter: number;
-  /** The Card Parlor Chronicles: completed challenges, rewards paid out, passport stamps. */
+  /** The Thirteenth Hand: completed challenges, rewards paid out, passport stamps, evidence. */
   story: StoryProgress;
+  /** Progress in the first campaign (The Card Parlor Chronicles), archived when the campaign was replaced. */
+  legacyStory?: LegacyStoryArchive;
   /** Starred decks (shown first and under the Favorites filter). */
   favoriteDecks: string[];
   /** Collected alternate artwork, as "deckId@variantId". */
@@ -86,9 +100,13 @@ export interface Profile {
 }
 
 export interface StoryProgress {
-  /** Completed challenge ids ("chapter-1-3"). */
+  /** Campaign the ids below belong to ("thirteenth-hand"). Saves without it hold first-campaign ids. */
+  campaign?: string;
+  /** Campaign data version the progress was recorded against. */
+  version?: number;
+  /** Completed challenge ids ("th-1-3"). */
   completed: string[];
-  /** Reward grants already paid ("level:chapter-1-3", "chapter:chapter-1"), so nothing pays twice. */
+  /** Reward grants already paid ("level:th-1-3", "chapter:th-1"), so nothing pays twice. */
   rewarded: string[];
   /** Passport stamps earned. */
   stamps: string[];
@@ -96,6 +114,25 @@ export interface StoryProgress {
   introsSeen: string[];
   /** Tries per challenge. */
   attempts: Record<string, number>;
+  /** Evidence collected (src/story/evidence.ts). */
+  evidence?: string[];
+}
+
+/**
+ * The first campaign's progress, kept as it was when The Thirteenth Hand
+ * replaced it. Its ids ("chapter-2-4") never count as new-campaign wins.
+ */
+export interface LegacyStoryArchive {
+  campaign: 'card-parlor-chronicles';
+  /** Chapters completed in order (the old `storyChapter`). */
+  chaptersCompleted: number;
+  completed: string[];
+  rewarded: string[];
+  stamps: string[];
+  introsSeen: string[];
+  attempts: Record<string, number>;
+  /** When the archive was made (ms since epoch). */
+  archivedAt: number;
 }
 
 export interface TableChoice {
@@ -148,6 +185,8 @@ export interface RootState {
   profile: Profile;
   modals: ModalRef[];
   notifications: Notification[];
+  /** What the music engine is playing, and whether the story or the player chose it. */
+  nowPlaying: { track: string; source: 'story' | 'player' } | null;
   orientation: 'portrait' | 'landscape';
   fullscreen: boolean;
   online: boolean;

@@ -7,13 +7,14 @@ import { deckThemes, getDeck } from '@/decks';
 import { getGame } from '@/games/registry';
 import { CHAPTERS } from '@/story/chapters';
 import { getLevel, type StoryLevel } from '@/story/campaign';
-import { setActiveStoryLevel, setLastStoryOutcome } from '@/story/session';
+import { setActiveStoryLevel, setLastStoryOutcome, setStoryReturn } from '@/story/session';
 import { goFishPlayers } from '@/story/players';
 import { RULES } from '@/games/rules';
 import { nextSeed, saves, setTableInfo, useStorySlot } from '@/games/session';
 import { setPlayInProgress } from '@/progression/announcer';
 import { gameEvent } from '@/analytics/productEvents';
 import { PERSONALITIES, getPersonality } from '@/games/cpu/personalities';
+import { unlockedGhostOpponents } from '@/story/rematches';
 import { WarGame } from '@/games/war/WarGame';
 import { mountWar } from '@/games/war/WarView';
 import { GoFishGame } from '@/games/goFish/GoFishGame';
@@ -60,6 +61,15 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
   if (story) {
     useStorySlot(true);
     setActiveStoryLevel(story.id);
+    const chapterId = storyChapterId ?? CHAPTERS.find((c) => c.levels.some((l) => l.id === story.id))?.id;
+    if (chapterId) setStoryReturn({ chapterId, levelId: story.id });
+    // Only a straight return to Story Mode reopens the chapter; Home (or any other
+    // screen) leaves Story Mode to start on its map next time, as usual. Decided when
+    // the table closes: by then the store already holds the screen being opened (a
+    // store listener here would be disposed with the screen before it could fire).
+    d.add(() => {
+      if (store.state.screen !== AppState.STORY_MODE) setStoryReturn(null);
+    });
     d.add(() => {
       useStorySlot(false);
       setActiveStoryLevel(null);
@@ -118,7 +128,7 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
     const st = store.state.settings;
     board = getBoard(boardIdOf());
     applyBoard(el, stage, board, {
-      ambient: st.ambientAnimations && !st.reducedMotion,
+      ambient: st.ambientAnimations && !st.reducedMotion && !st.lowEffects,
       highContrast: st.highContrastTable,
     });
     const sub = el.querySelector('.screen-subtitle');
@@ -128,7 +138,8 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
   d.add(store.select((st) => st.selection.boardId, paintBoard));
   d.add(
     store.select(
-      (st) => `${st.settings.ambientAnimations}|${st.settings.highContrastTable}|${st.settings.reducedMotion}`,
+      (st) =>
+        `${st.settings.ambientAnimations}|${st.settings.highContrastTable}|${st.settings.reducedMotion}|${st.settings.lowEffects}`,
       paintBoard,
     ),
   );
@@ -299,6 +310,7 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
         outcome: 'loss',
         score: current.score,
         durationMs: current.elapsedMs,
+        key: `${gameId}:${current.seed}:${current.startedAt}`,
       });
     return ok;
   }
@@ -325,7 +337,10 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
         ? [
             segmented(
               'Opponent',
-              PERSONALITIES.map((p) => ({ value: p.id, label: p.name })),
+              // The ghosts join the table once the story is finished (their rematches).
+              [...PERSONALITIES, ...unlockedGhostOpponents(store.state.profile).map((id) => getPersonality(id))].map(
+                (p) => ({ value: p.id, label: p.name }),
+              ),
               s.warOpponent,
               (v) => {
                 set({ warOpponent: v });
@@ -427,7 +442,7 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
       onExit: () => {
         navigate(story ? AppState.STORY_MODE : AppState.MAIN_MENU);
       },
-      labels: story ? { again: 'Play again', exit: 'Story map' } : undefined,
+      labels: story ? { again: 'Play again', exit: 'Continue story' } : undefined,
     };
     if (gameId === 'war') view = mountWar({ ...common, game: WarGame.restore(table) });
     else if (gameId === 'go-fish') view = mountGoFish({ ...common, game: GoFishGame.restore(table) });
@@ -492,7 +507,13 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
         return mount(saved);
       }
       if (SOLITAIRE.includes(gameId!) && sd.moves > 0 && !sd.won) {
-        recordGameResult(store, { gameId: gameId!, outcome: 'loss', score: sd.score, durationMs: sd.elapsedMs });
+        recordGameResult(store, {
+          gameId: gameId!,
+          outcome: 'loss',
+          score: sd.score,
+          durationMs: sd.elapsedMs,
+          key: `${gameId}:${sd.seed}:${sd.startedAt}`,
+        });
       }
       await saves.delete(gameId!);
     }

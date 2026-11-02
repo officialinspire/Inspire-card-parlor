@@ -20,6 +20,8 @@ const DECKS = [
   'fredericksburg_downtown',
   'eastern_woodlands',
   'spycraft',
+  'freemasonry',
+  'washington_ghost',
 ];
 const BOARDS = ['backroom_card_table', 'picnic_table', 'rappahannock_riverside'];
 const GAMES = ['klondike', 'spider', 'freecell', 'war', 'go-fish'] as const;
@@ -50,9 +52,9 @@ async function openTable(page: Page, game: string, deck: string, board: string):
   if (await deal.isVisible()) await deal.click();
   await expect(page.locator(`${CURRENT} .card`).first()).toBeVisible();
   // One screen on stage (the previous table has slid away), the deal dialog
-  // faded out and the opening deal finished.
+  // faded out (with the brief shield over it that catches a double tap) and the opening deal finished.
   await expectScreen(page, 'GAMEPLAY');
-  await expect(page.locator('.dialog-backdrop')).toHaveCount(0);
+  await expect(page.locator('.dialog-backdrop, .dialog-shield')).toHaveCount(0);
   await expect(page.locator(`${CURRENT} [data-dealing]`)).toHaveCount(0);
   await settled(page);
 }
@@ -199,6 +201,22 @@ for (const board of BOARDS) {
       await play(page, [[deck, board]]);
     });
   }
+}
+
+/** The Thirteenth Hand boards (family edition), each in all five games on every layout. */
+const STORY_BOARDS = [
+  'cheryls_antique_shop',
+  'mrs_gray_safehouse',
+  'masonic_lodge_no4',
+  'kenmore_parlor',
+  'washington_final_table',
+  'umw_classroom',
+  'germanna_library',
+];
+for (const [i, board] of STORY_BOARDS.entries()) {
+  test(`${board}: all five games`, async ({ page }) => {
+    await play(page, [[DECKS[i % DECKS.length]!, board]]);
+  });
 }
 
 for (const [i, deck] of DECKS.entries()) {

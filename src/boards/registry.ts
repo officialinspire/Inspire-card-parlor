@@ -1,11 +1,11 @@
 import type { AssetStatus } from '@/decks/types';
-import { studioCredit } from '@/decks/assets';
+import { MATURE_BOARD_ROOT, studioCredit } from '@/decks/assets';
 import type { BoardDefinition } from './types';
 
 export type { BoardDefinition, AmbientKind } from './types';
 
-const assets = (id: string, status: AssetStatus = 'pending') => ({
-  basePath: `assets/backgrounds/${id}/`,
+const assets = (id: string, status: AssetStatus = 'pending', folder = 'assets/backgrounds/') => ({
+  basePath: `${folder}${id}/`,
   status,
   background: { path: 'background', formats: ['webp', 'png'] as ('webp' | 'png')[] },
   preview: { path: 'preview', formats: ['webp', 'png'] as ('webp' | 'png')[] },
@@ -15,6 +15,39 @@ const LIGHT_INK = '#fff8ee';
 const DARK_INK = '#2a231c';
 /** For mid-tone wood, where the regular dark ink falls just short of 4.5:1. */
 const DEEP_INK = '#140e08';
+
+/** Adult-only boards live here; the family build removes the folder (vite.config.ts). */
+const MATURE_BOARDS = MATURE_BOARD_ROOT;
+
+/**
+ * A board painted for The Thirteenth Hand (built by `npm run art:images` from
+ * art/sources/story/boards/). `base` is the measured colour of the painting's
+ * playing area after the scrim, used for contrast checks against card stock.
+ */
+const painted = (
+  b: Pick<
+    BoardDefinition,
+    'id' | 'name' | 'description' | 'rarity' | 'unlock' | 'ink' | 'ambient' | 'contentRating'
+  > & {
+    base: string;
+    rim: string;
+    scrim: number;
+    focus?: { portrait: string; landscape: string };
+  },
+): BoardDefinition => ({
+  id: b.id,
+  name: b.name,
+  description: b.description,
+  artist: studioCredit(),
+  rarity: b.rarity,
+  ...(b.contentRating ? { contentRating: b.contentRating } : {}),
+  unlock: b.unlock,
+  assets: assets(b.id, 'ready', b.contentRating === 'mature' ? MATURE_BOARDS : undefined),
+  surface: { base: b.base, felt: `linear-gradient(${b.base}, ${b.base})`, rim: b.rim },
+  ink: b.ink,
+  ambient: b.ambient,
+  art: { focus: b.focus ?? { portrait: '50% 50%', landscape: '50% 50%' }, scrim: b.scrim },
+});
 
 /**
  * Gameboards. Artwork is uploaded separately (see public/assets/backgrounds/);
@@ -78,7 +111,7 @@ const registry: BoardDefinition[] = [
     description: 'A woven game mat spread on the mossy bank of the Rappahannock.',
     artist: studioCredit(),
     rarity: 'rare',
-    unlock: { type: 'story', value: 'chapter-1' },
+    unlock: { type: 'story', value: 'th-2', legacy: 'chapter-1' },
     assets: assets('rappahannock_riverside', 'ready'),
     surface: {
       base: '#daac73',
@@ -169,6 +202,137 @@ const registry: BoardDefinition[] = [
     ink: LIGHT_INK,
     ambient: 'candle',
   },
+  // ----- The Thirteenth Hand -----
+  painted({
+    id: 'cheryls_antique_shop',
+    name: "Cheryl's Antique Shop",
+    description: 'A felt-topped counter among the clocks, cameos and curios of Cheryl’s shop.',
+    rarity: 'common',
+    unlock: { type: 'level', value: 3 },
+    base: '#792b11',
+    rim: '#3d1a0a',
+    ink: LIGHT_INK,
+    ambient: 'dust',
+    scrim: 0.04,
+  }),
+  painted({
+    id: 'mrs_gray_safehouse',
+    name: "Mrs. Gray's Safehouse",
+    description: 'An olive leather desk in a Cold War safehouse, dossiers pushed to the edge.',
+    rarity: 'rare',
+    unlock: { type: 'level', value: 7 },
+    base: '#45431e',
+    rim: '#1a1a10',
+    ink: LIGHT_INK,
+    ambient: 'dust',
+    scrim: 0.04,
+  }),
+  painted({
+    id: 'masonic_lodge_no4',
+    name: 'Masonic Lodge No. 4',
+    description: 'An antique walnut gameboard from the old Fredericksburg lodge.',
+    rarity: 'epic',
+    unlock: { type: 'level', value: 10 },
+    base: '#77270c',
+    rim: '#3a1406',
+    ink: LIGHT_INK,
+    ambient: 'candle',
+    scrim: 0.04,
+  }),
+  painted({
+    id: 'kenmore_parlor',
+    name: 'Kenmore Parlor',
+    description: 'Green baize on a Georgian table in a parlor inspired by Kenmore.',
+    rarity: 'rare',
+    unlock: { type: 'level', value: 5 },
+    base: '#5f6749',
+    rim: '#5a2d1c',
+    ink: LIGHT_INK,
+    ambient: 'dust',
+    scrim: 0.05,
+  }),
+  {
+    id: 'underground_tunnels',
+    name: 'Underground Tunnels',
+    description: 'A card table beneath the sealed door, deep in the brick tunnels.',
+    // The uploaded "Card Table Beneath the Sealed Door" is an isometric map tile
+    // (transparent background), not a top-down table, so this board keeps its
+    // drawn surface until a top-down painting is supplied.
+    artist: { name: null, note: 'Top-down board artwork pending upload.' },
+    rarity: 'epic',
+    unlock: { type: 'level', value: 9 },
+    assets: assets('underground_tunnels'),
+    surface: {
+      base: '#3a2418',
+      felt: 'radial-gradient(90% 70% at 50% 40%, rgba(255,170,90,.18), transparent 70%), repeating-linear-gradient(0deg, rgba(0,0,0,.25) 0 2px, transparent 2px 22px), repeating-linear-gradient(90deg, rgba(0,0,0,.18) 0 2px, transparent 2px 44px), linear-gradient(#4a2e1f, #2e1c12)',
+      rim: '#1c100a',
+    },
+    ink: LIGHT_INK,
+    ambient: 'candle',
+  },
+  painted({
+    id: 'washington_final_table',
+    name: "Washington's Final Table",
+    description: 'A candlelit colonial cellar table, set for the last hand with the General.',
+    rarity: 'legendary',
+    unlock: { type: 'story', value: 'th-9', legacy: 'chapter-7' },
+    base: '#764e31',
+    rim: '#27100a',
+    ink: LIGHT_INK,
+    ambient: 'candle',
+    scrim: 0.1,
+  }),
+  painted({
+    id: 'umw_classroom',
+    name: 'UMW Classroom',
+    description: 'A maple card table in a University of Mary Washington classroom.',
+    rarity: 'common',
+    unlock: { type: 'level', value: 3 },
+    // Light maple: a 30% scrim keeps cream cards at 3.5:1.
+    base: '#9d764b',
+    rim: '#24280a',
+    ink: DEEP_INK,
+    ambient: 'none',
+    scrim: 0.3,
+  }),
+  painted({
+    id: 'germanna_library',
+    name: 'Germanna Library',
+    description: 'A study desk in the Germanna Community College library.',
+    rarity: 'common',
+    unlock: { type: 'level', value: 2 },
+    base: '#a17347',
+    rim: '#48583a',
+    ink: DEEP_INK,
+    ambient: 'none',
+    scrim: 0.22,
+  }),
+  painted({
+    id: 'ismokeshop_counter',
+    name: 'iSmokeShop Counter',
+    description: 'A lit glass display counter at the iSmokeShop.',
+    contentRating: 'mature',
+    rarity: 'rare',
+    unlock: { type: 'level', value: 6 },
+    base: '#486c83',
+    rim: '#2a2a2a',
+    ink: LIGHT_INK,
+    ambient: 'sparkle',
+    scrim: 0.05,
+  }),
+  painted({
+    id: 'ismokeshop_counter_overhead',
+    name: 'iSmokeShop Counter (Overhead)',
+    description: 'The iSmokeShop glass counter seen from above.',
+    contentRating: 'mature',
+    rarity: 'rare',
+    unlock: { type: 'level', value: 6 },
+    base: '#445552',
+    rim: '#2a2a2a',
+    ink: LIGHT_INK,
+    ambient: 'sparkle',
+    scrim: 0.05,
+  }),
 ];
 
 export const DEFAULT_BOARD_ID = 'backroom_card_table';
@@ -179,6 +343,10 @@ export function registerBoard(board: BoardDefinition): void {
 }
 
 export const allBoards = (): BoardDefinition[] => registry;
+/** Boards the player may see: adult-only boards only when adult content is allowed. */
+export const availableBoards = (matureAllowed: boolean): BoardDefinition[] =>
+  registry.filter((b) => b.contentRating !== 'mature' || matureAllowed);
+export const isMatureBoard = (id: string) => registry.some((b) => b.id === id && b.contentRating === 'mature');
 export const hasBoard = (id: string) => registry.some((b) => b.id === id);
 export const getBoard = (id: string): BoardDefinition =>
   registry.find((b) => b.id === id) ?? registry.find((b) => b.id === DEFAULT_BOARD_ID)!;

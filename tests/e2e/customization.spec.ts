@@ -137,12 +137,22 @@ test('favorites, filters and collection completion', async ({ page }) => {
 test('deck details: artist, unlock status, gallery of any deck', async ({ page }) => {
   await enterParlor(page);
   await clickNav(page, 'COLLECTION');
-  await (await revealInPager(page, '[data-deck="freemasonry"]')).locator('.tile-main').click();
-  const detail = page.locator('[data-deck-detail="freemasonry"]');
+  await (await revealInPager(page, '[data-deck="yummyhole_standard"]')).locator('.tile-main').click();
+  const detail = page.locator('[data-deck-detail="yummyhole_standard"]');
   await expect(detail.locator('[data-artist]')).toContainText('Artist credit coming with the artwork');
-  await expect(detail.locator('[data-unlock="locked"]')).toContainText('Reach level 12');
+  await expect(detail.locator('[data-unlock="locked"]')).toContainText('Reach level 6');
+  await page.locator('[data-dialog-action="gallery"]').click();
+  await expect(page.locator(`${CURRENT} [data-gallery-deck]`)).toHaveValue('yummyhole_standard');
+  await page.locator(`${CURRENT} [data-tab="decks"]`).click();
+
+  // The Freemasonry deck now has its artwork: credited, still locked until level 12.
+  await (await revealInPager(page, '[data-deck="freemasonry"]')).locator('.tile-main').click();
+  const fm = page.locator('[data-deck-detail="freemasonry"]');
+  await expect(fm.locator('[data-artist]')).toContainText('OFFICIAL INSPIRE');
+  await expect(fm.locator('[data-unlock="locked"]')).toContainText('Reach level 12');
   await page.locator('[data-dialog-action="gallery"]').click();
   await expect(page.locator(`${CURRENT} [data-gallery-deck]`)).toHaveValue('freemasonry');
+  await expect(page.locator(`${CURRENT} .gallery-cell .card[data-art="atlas"]`).first()).toBeVisible();
   await expect(page.locator(`${CURRENT} .gallery-cell .card`).first()).toBeVisible();
 });
 
@@ -218,20 +228,28 @@ test('ambient layers and high contrast are optional', async ({ page }) => {
   await expect(page.locator(`${CURRENT} .ambient`)).toHaveCount(0);
 });
 
-test('all nine gameboards with credits, unlocks and ambient previews', async ({ page }) => {
+test('every family gameboard with credits, unlocks, previews and ambience', async ({ page }) => {
   await enterParlor(page);
   await clickNav(page, 'GAMEBOARDS');
   const ids = new Set<string>();
   const first = page.locator(`${CURRENT} [data-pager="dot-0"]`);
   if (await first.isVisible()) await first.click();
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 30; i++) {
     for (const el of await page.locator(`${CURRENT} [data-board]`).all())
       ids.add((await el.getAttribute('data-board'))!);
     const next = page.locator(`${CURRENT} [data-pager="next"]`);
     if (!(await next.isVisible()) || !(await next.isEnabled())) break;
     await next.click();
   }
-  expect(ids.size).toBe(9);
+  // 9 original boards + 8 Thirteenth Hand boards; the two adult-only boards are not listed.
+  expect(ids.size).toBe(17);
+  expect([...ids].some((id) => id.startsWith('ismokeshop'))).toBe(false);
+  // A new painted board: its preview image loads in the detail view.
+  await clickInPager(page, '[data-board="masonic_lodge_no4"]');
+  const lodge = page.locator('[data-board-detail="masonic_lodge_no4"]');
+  await expect(lodge.locator('[data-unlock="locked"]')).toContainText('Reach level 10');
+  await expect(lodge.locator('[data-artist]')).toContainText('OFFICIAL INSPIRE');
+  await page.keyboard.press('Escape');
   await clickInPager(page, '[data-board="masonic_study"]');
   const detail = page.locator('[data-board-detail="masonic_study"]');
   await expect(detail.locator('[data-unlock="locked"]')).toContainText('Reach level 12');

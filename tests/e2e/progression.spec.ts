@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { CURRENT, clickNav, enterParlor, expectNoOverflow, expectScreen, seed } from './helpers';
+import { CURRENT, clickInPager, clickNav, enterParlor, expectNoOverflow, expectScreen, seed } from './helpers';
 
 test.use({ serviceWorkers: 'block' });
 
@@ -56,8 +56,13 @@ test('music player: play/pause, next/previous, shuffle, repeat, playlists, volum
   await player.locator('[data-category="woodland-ambience"]').click();
   await expect(player.locator('[data-category="woodland-ambience"]')).toHaveAttribute('aria-checked', 'true');
   await expect(player.locator('[data-value="track-title"]')).toHaveText(/Woodland Hush|Turtle Creek/);
-  await expect(player.locator('.mp-tracks [data-track]')).toHaveCount(2);
-  await player.locator('[data-track="turtle-creek"]').click();
+  // Only this playlist's tracks are listed (paged on short screens).
+  const listed = await player
+    .locator('.mp-tracks [data-track]')
+    .evaluateAll((els) => els.map((e) => (e as HTMLElement).dataset.track));
+  expect(listed.length).toBeGreaterThan(0);
+  for (const id of listed) expect(['woodland-hush', 'turtle-creek']).toContain(id);
+  await clickInPager(page, '[data-track="turtle-creek"]');
   await expect(player.locator('[data-value="track-title"]')).toHaveText('Turtle Creek');
 
   const mute = player.locator('[data-action="music-mute"]');
@@ -152,6 +157,16 @@ test('an achievement earned at the table waits for the hand to end, then toasts'
   });
   await expectScreen(page, 'GAMEPLAY');
   await page.locator('[data-dialog-action="deal"]').click();
+  await page.evaluate(() => {
+    const w = window as unknown as { __TOASTS__: string[] };
+    w.__TOASTS__ = [];
+    new MutationObserver((ms) => {
+      for (const m of ms)
+        for (const n of m.addedNodes)
+          if (n instanceof HTMLElement && n.matches('.toast, .toast *') && n.classList.contains('toast'))
+            w.__TOASTS__.push(`${performance.now() | 0} ${n.dataset.achievement ?? ''} ${n.textContent?.slice(0, 50)}`);
+    }).observe(document.body, { childList: true, subtree: true });
+  });
   // Earn a secret mid-game: it unlocks now, but no toast interrupts play.
   for (let i = 0; i < 7; i++) await dispatch(page, { type: 'JOURNAL', update: { add: { 'logo.taps': 1 } } });
   await expect.poll(async () => (await state(page)).profile.unlockedAchievements).toContain('knock-knock');
@@ -162,7 +177,13 @@ test('an achievement earned at the table waits for the hand to end, then toasts'
     timeout: 90_000,
   });
   await page.locator(`${CURRENT} [data-action="auto"]`).click();
-  await toast;
+  await toast.catch(async (e) => {
+    console.log(
+      'TOASTS',
+      JSON.stringify(await page.evaluate(() => (window as unknown as { __TOASTS__: string[] }).__TOASTS__)),
+    );
+    throw e;
+  });
   await expect(page.locator('.dialog-result')).toBeVisible({ timeout: 10_000 });
   const p = (await state(page)).profile;
   expect(p.achievementDates['knock-knock']).toBeGreaterThan(0);
@@ -175,9 +196,17 @@ test('the passport shows level, experience, credits, records, stamps and achieve
       level: 6,
       credits: 999,
       stats: { klondike: { played: 9, won: 4, bestTimeMs: null, bestScore: null, currentStreak: 0, longestStreak: 2 } },
-      story: { completed: [], rewarded: [], stamps: ['hometown'], introsSeen: [], attempts: {} },
+      story: {
+        campaign: 'thirteenth-hand',
+        version: 1,
+        completed: [],
+        rewarded: [],
+        stamps: ['th-antique-shop'],
+        introsSeen: [],
+        attempts: {},
+      },
       journal: { counters: { 'deck.inspire': 5 }, seen: {} },
-      schemaVersion: 2,
+      schemaVersion: 3,
     },
   });
   await enterParlor(page);
@@ -193,7 +222,7 @@ test('the passport shows level, experience, credits, records, stamps and achieve
   await expect(book.locator('[data-value="xp"]')).toContainText('XP');
   const turn = page.locator(`${CURRENT} [data-turn="2"]`);
   if (await turn.isVisible()) await turn.click();
-  await expect(book.locator('[data-stamp="hometown"]')).toHaveClass(/earned/);
+  await expect(book.locator('[data-stamp="th-antique-shop"]')).toHaveClass(/earned/);
   await expect(book.locator('[data-value="achievements"]')).toContainText('/ 150');
   await expectNoOverflow(page);
   expect((await state(page)).profile.journal.seen.screens).toContain('PASSPORT');
@@ -234,7 +263,7 @@ test('an older save is upgraded safely: backed up, de-duplicated, and past progr
   });
   await enterParlor(page);
   const p = (await state(page)).profile;
-  expect(p.schemaVersion).toBe(2);
+  expect(p.schemaVersion).toBe(3);
   expect(p.unlockedDecks.filter((d) => d === 'classic')).toHaveLength(1);
   expect(p.unlockedAchievements.filter((a) => a === 'first-win')).toHaveLength(1);
   expect(p.unlockedAchievements).toEqual(expect.arrayContaining(['first-win', 'war-10', 'win-streak-5', 'wins-10']));
@@ -253,4 +282,61 @@ test('an older save is upgraded safely: backed up, de-duplicated, and past progr
   const again = (await state(page)).profile;
   expect(again.unlockedAchievements.length).toBe(new Set(again.unlockedAchievements).size);
   expect(again.achievementDates['war-10']).toBe(p.achievementDates['war-10']);
+});
+
+test('a save from the first story campaign loads: progress archived, everything earned kept, new campaign fresh', async ({
+  page,
+}) => {
+  await seed(page, {
+    profile: {
+      schemaVersion: 2,
+      credits: 777,
+      level: 8,
+      storyChapter: 2,
+      unlockedDecks: ['classic', 'inspire', 'jak_gold', 'fredericksburg_downtown'],
+      unlockedBoards: ['backroom_card_table', 'picnic_table', 'rappahannock_riverside', 'jak_golds_casino'],
+      unlockedAchievements: ['story-start', 'story-ch1', 'passport-first', 'story-ch2'],
+      story: {
+        completed: ['chapter-1-1', 'chapter-1-2', 'chapter-1-3', 'chapter-1-4', 'chapter-1-5', 'chapter-2-1'],
+        rewarded: ['level:chapter-1-1', 'chapter:chapter-1'],
+        stamps: ['hometown', 'casino'],
+        introsSeen: ['chapter-1', 'chapter-2'],
+        attempts: { 'chapter-1-1': 1 },
+      },
+    },
+  });
+  await enterParlor(page);
+  const p = (await state(page)).profile as unknown as {
+    credits: number;
+    unlockedDecks: string[];
+    unlockedBoards: string[];
+    unlockedAchievements: string[];
+    storyChapter: number;
+    story: { campaign: string; completed: string[]; stamps: string[] };
+    legacyStory: { chaptersCompleted: number; completed: string[]; stamps: string[] };
+  };
+  expect(p.credits).toBeGreaterThanOrEqual(777);
+  expect(p.unlockedDecks).toEqual(expect.arrayContaining(['jak_gold', 'fredericksburg_downtown']));
+  expect(p.unlockedBoards).toEqual(expect.arrayContaining(['rappahannock_riverside', 'jak_golds_casino']));
+  expect(p.unlockedAchievements).toEqual(expect.arrayContaining(['story-ch1', 'passport-first', 'story-ch2']));
+  expect(p.legacyStory.chaptersCompleted).toBe(2);
+  expect(p.legacyStory.stamps).toEqual(['hometown', 'casino']);
+  expect(p.legacyStory.completed).toHaveLength(6);
+  expect(p.story.campaign).toBe('thirteenth-hand');
+  expect(p.story.completed).toEqual([]);
+  expect(p.storyChapter).toBe(0);
+  const backup = await page.evaluate(() => localStorage.getItem('icp:profile-backup-v2'));
+  expect(backup).toContain('chapter-2-1');
+  // The new campaign starts at its first chapter; old wins open nothing in it.
+  await clickNav(page, 'STORY_MODE');
+  await expect(page.locator(`${CURRENT} [data-chapter="th-1"]`)).toHaveAttribute('data-state', 'available');
+  await expect(page.locator(`${CURRENT} [data-chapter="th-2"]`)).toHaveAttribute('data-state', 'locked');
+  // Reloading does not archive again or lose anything.
+  await page.waitForTimeout(400);
+  await page.reload();
+  await page.getByRole('button', { name: 'Enter Parlor' }).click();
+  await expectScreen(page, 'MAIN_MENU');
+  const again = (await state(page)).profile as unknown as typeof p;
+  expect(again.legacyStory).toEqual(p.legacyStory);
+  expect(again.unlockedAchievements.length).toBe(new Set(again.unlockedAchievements).size);
 });

@@ -1,0 +1,1159 @@
+{
+  "about": "Story artwork sources: layout and sprite names were read by inspecting each sheet (not assumed). Read by scripts/art/story_assets.py. Originals are never modified; sha256 proves it.",
+  "poseRows": [
+    {
+      "row": "portrait",
+      "poses": ["greet", "neutral", "talk", "think", "doubt", "surprise"]
+    },
+    {
+      "row": "cards",
+      "poses": ["deal", "fan", "shuffle", "reveal", "special", "signature"]
+    },
+    {
+      "row": "full",
+      "poses": ["stand", "arms-crossed", "gesture-a", "gesture-b", "gesture-c", "signature"]
+    }
+  ],
+  "sheets": [
+    {
+      "id": "cheryl",
+      "title": "Cheryl",
+      "source": "art/sources/story/characters/Cheryl’s Antique Parlor Character Sprites.png",
+      "group": "characters",
+      "layout": {
+        "type": "grid",
+        "cols": 6,
+        "rows": 3
+      },
+      "names": [
+        "portrait-greet",
+        "portrait-neutral",
+        "portrait-talk",
+        "portrait-think",
+        "portrait-doubt",
+        "portrait-surprise",
+        "cards-deal",
+        "cards-fan",
+        "cards-shuffle",
+        "cards-reveal",
+        "cards-special",
+        "cards-signature",
+        "full-stand",
+        "full-arms-crossed",
+        "full-gesture-a",
+        "full-gesture-b",
+        "full-gesture-c",
+        "full-signature"
+      ],
+      "notes": "18 poses in a 6x3 grid: expression portraits, card-handling busts, full-body poses. Pose names are positional slot conventions.",
+      "sha256": "3c3535e931be53c6608c86b53de1fca0a1490ed0db11753ea63f21ed93cf60ce",
+      "sourceSize": {
+        "width": 1536,
+        "height": 1024
+      },
+      "sourceMode": "RGBA"
+    },
+    {
+      "id": "sophia",
+      "title": "Sophia",
+      "source": "art/sources/story/characters/Sophia's Ranger Character Sprite Sheet.png",
+      "group": "characters",
+      "layout": {
+        "type": "grid",
+        "cols": 6,
+        "rows": 3
+      },
+      "names": [
+        "portrait-greet",
+        "portrait-neutral",
+        "portrait-talk",
+        "portrait-think",
+        "portrait-doubt",
+        "portrait-surprise",
+        "cards-deal",
+        "cards-fan",
+        "cards-shuffle",
+        "cards-reveal",
+        "cards-special",
+        "cards-signature",
+        "full-stand",
+        "full-arms-crossed",
+        "full-gesture-a",
+        "full-gesture-b",
+        "full-gesture-c",
+        "full-signature"
+      ],
+      "notes": "18 poses in a 6x3 grid: expression portraits, card-handling busts, full-body poses. Pose names are positional slot conventions.",
+      "sha256": "dd84ddf91650d2be991b56d2dc77ddf5396e46372d221ac59555d4c0b8d33a2b",
+      "sourceSize": {
+        "width": 1536,
+        "height": 1024
+      },
+      "sourceMode": "RGBA"
+    },
+    {
+      "id": "dante",
+      "title": "Dante",
+      "source": "art/sources/story/characters/Dante's Card Parlor Character Sprite Sheet.png",
+      "group": "characters",
+      "layout": {
+        "type": "grid",
+        "cols": 6,
+        "rows": 3
+      },
+      "names": [
+        "portrait-greet",
+        "portrait-neutral",
+        "portrait-talk",
+        "portrait-think",
+        "portrait-doubt",
+        "portrait-surprise",
+        "cards-deal",
+        "cards-fan",
+        "cards-shuffle",
+        "cards-reveal",
+        "cards-special",
+        "cards-signature",
+        "full-stand",
+        "full-arms-crossed",
+        "full-gesture-a",
+        "full-gesture-b",
+        "full-gesture-c",
+        "full-signature"
+      ],
+      "notes": "18 poses in a 6x3 grid: expression portraits, card-handling busts, full-body poses. Pose names are positional slot conventions.",
+      "sha256": "0822f507ed68502c7feead6d6653a9fb928d0962eea90e7dae643b364786c0fc",
+      "sourceSize": {
+        "width": 1536,
+        "height": 1024
+      },
+      "sourceMode": "RGBA"
+    },
+    {
+      "id": "steve-gonzales",
+      "title": "Steve Gonzales",
+      "source": "art/sources/story/characters/Steve Gonzales_ Serious Card Magician.png",
+      "group": "characters",
+      "layout": {
+        "type": "grid",
+        "cols": 6,
+        "rows": 3
+      },
+      "names": [
+        "portrait-greet",
+        "portrait-neutral",
+        "portrait-talk",
+        "portrait-think",
+        "portrait-doubt",
+        "portrait-surprise",
+        "cards-deal",
+        "cards-fan",
+        "cards-shuffle",
+        "cards-reveal",
+        "cards-special",
+        "cards-signature",
+        "full-stand",
+        "full-arms-crossed",
+        "full-gesture-a",
+        "full-gesture-b",
+        "full-gesture-c",
+        "full-signature"
+      ],
+      "notes": "18 poses in a 6x3 grid: expression portraits, card-handling busts, full-body poses. Pose names are positional slot conventions.",
+      "sha256": "25ccc04acf55664efc287ad2c987664301fbfd0fadce401fe07969e32438d7e8",
+      "sourceSize": {
+        "width": 1536,
+        "height": 1024
+      },
+      "sourceMode": "RGBA"
+    },
+    {
+      "id": "mrs-gray",
+      "title": "Mrs. Gray",
+      "source": "art/sources/story/characters/Mrs. Gray’s 18-Pose Spy Card Atlas.png",
+      "group": "characters",
+      "layout": {
+        "type": "grid",
+        "cols": 6,
+        "rows": 3
+      },
+      "names": [
+        "portrait-greet",
+        "portrait-neutral",
+        "portrait-talk",
+        "portrait-think",
+        "portrait-doubt",
+        "portrait-surprise",
+        "cards-deal",
+        "cards-fan",
+        "cards-shuffle",
+        "cards-reveal",
+        "cards-special",
+        "cards-signature",
+        "full-stand",
+        "full-arms-crossed",
+        "full-gesture-a",
+        "full-gesture-b",
+        "full-gesture-c",
+        "full-signature"
+      ],
+      "notes": "18 poses in a 6x3 grid: expression portraits, card-handling busts, full-body poses. Pose names are positional slot conventions.",
+      "sha256": "c6bb4e71812ceba9a386161bbd4bc64597af27e996981c34cc4afb2d2b345530",
+      "sourceSize": {
+        "width": 1536,
+        "height": 1024
+      },
+      "sourceMode": "RGBA"
+    },
+    {
+      "id": "mary-ball-washington",
+      "title": "Mary Ball Washington (ghost)",
+      "source": "art/sources/story/characters/Mary Ball Washington's Ghost Sprite Sheet.png",
+      "group": "characters",
+      "layout": {
+        "type": "grid",
+        "cols": 6,
+        "rows": 3
+      },
+      "names": [
+        "portrait-greet",
+        "portrait-neutral",
+        "portrait-talk",
+        "portrait-think",
+        "portrait-doubt",
+        "portrait-surprise",
+        "cards-deal",
+        "cards-fan",
+        "cards-shuffle",
+        "cards-reveal",
+        "cards-special",
+        "cards-signature",
+        "full-stand",
+        "full-arms-crossed",
+        "full-gesture-a",
+        "full-gesture-b",
+        "full-gesture-c",
+        "full-signature"
+      ],
+      "notes": "18 poses in a 6x3 grid: expression portraits, card-handling busts, full-body poses. Pose names are positional slot conventions.",
+      "sha256": "97b1dbd8768c761958bd7c3025cbcff1473d5416a6c6c4afddc13c8dd9ee07a3",
+      "sourceSize": {
+        "width": 1536,
+        "height": 1024
+      },
+      "sourceMode": "RGBA"
+    },
+    {
+      "id": "george-washington",
+      "title": "George Washington (ghost)",
+      "source": "art/sources/story/characters/George Washington’s Ghost, Card Game Final Boss.png",
+      "group": "characters",
+      "layout": {
+        "type": "grid",
+        "cols": 6,
+        "rows": 3
+      },
+      "names": [
+        "portrait-greet",
+        "portrait-neutral",
+        "portrait-talk",
+        "portrait-think",
+        "portrait-doubt",
+        "portrait-surprise",
+        "cards-deal",
+        "cards-fan",
+        "cards-shuffle",
+        "cards-reveal",
+        "cards-special",
+        "cards-signature",
+        "full-stand",
+        "full-arms-crossed",
+        "full-gesture-a",
+        "full-gesture-b",
+        "full-gesture-c",
+        "full-signature"
+      ],
+      "notes": "18 poses in a 6x3 grid: expression portraits, card-handling busts, full-body poses. Pose names are positional slot conventions.",
+      "sha256": "0491274038ee8371e73ed1cf61ec6ad901820a85ff9c6e3bd319742b10741908",
+      "sourceSize": {
+        "width": 1536,
+        "height": 1024
+      },
+      "sourceMode": "RGBA"
+    },
+    {
+      "id": "mystery-parlor",
+      "title": "Mystery parlor quest item atlas",
+      "source": "art/sources/story/items/Mystery parlor quest item atlas.png",
+      "group": "items",
+      "layout": {
+        "type": "grid",
+        "cols": 4,
+        "rows": 3
+      },
+      "names": [
+        "masonic-playing-card",
+        "masonic-card-back",
+        "torn-letter-fleur-seal",
+        "ornate-brass-key",
+        "leather-journal",
+        "torn-map-fragment",
+        "pocket-watch",
+        "magnifying-glass",
+        "tied-card-box",
+        "old-town-postcard",
+        "triangle-sigil-coin",
+        "blank-luggage-tag"
+      ],
+      "sha256": "de2abc70d5dc2c52ebe7d94a95f35293a584c5550c297ac955ddb837a2f304b4",
+      "sourceSize": {
+        "width": 1448,
+        "height": 1086
+      },
+      "sourceMode": "RGBA"
+    },
+    {
+      "id": "river-ranger",
+      "title": "Rappahannock River Ranger Quest Atlas",
+      "source": "art/sources/story/items/Rappahannock River Ranger Quest Atlas.png",
+      "group": "items",
+      "layout": {
+        "type": "grid",
+        "cols": 4,
+        "rows": 3
+      },
+      "names": [
+        "river-trail-map",
+        "field-journal",
+        "binoculars",
+        "brass-compass",
+        "box-turtle-card",
+        "heron-card",
+        "oak-leaf-acorn",
+        "river-stone",
+        "trail-marker-post",
+        "envelope-with-card",
+        "old-river-map",
+        "ranger-patch"
+      ],
+      "sha256": "448f47a511cc0203ab576951f9592663fec293aa40fb1265b31340dd299e5f62",
+      "sourceSize": {
+        "width": 1448,
+        "height": 1086
+      },
+      "sourceMode": "RGBA"
+    },
+    {
+      "id": "neon-art-supplies",
+      "title": "Neon fantasy art supply sprite atlas",
+      "source": "art/sources/story/items/Neon fantasy art supply sprite atlas.png",
+      "group": "items",
+      "layout": {
+        "type": "grid",
+        "cols": 4,
+        "rows": 3
+      },
+      "names": [
+        "monster-sketch-page",
+        "gw-commission-card",
+        "monster-card-back",
+        "monster-sketchbook",
+        "neon-markers",
+        "drawing-tablet",
+        "keyring-neon-tag",
+        "monster-card-box",
+        "rolled-poster",
+        "monster-sticker-sheet",
+        "monster-trading-card",
+        "purple-ink-bottle"
+      ],
+      "sha256": "7cf3aa6fc7decef9a363d614db24f76d4c7c18b3c261175ef0bac405f0e2f8ed",
+      "sourceSize": {
+        "width": 1448,
+        "height": 1086
+      },
+      "sourceMode": "RGBA"
+    },
+    {
+      "id": "jak-black-gold",
+      "title": "JAK's Black-Gold Quest Item Atlas",
+      "source": "art/sources/story/items/JAK’s Black-Gold Quest Item Atlas.png",
+      "group": "items",
+      "layout": {
+        "type": "grid",
+        "cols": 4,
+        "rows": 3
+      },
+      "names": [
+        "black-gold-card-box",
+        "red-card-fan",
+        "card-spring-cascade",
+        "gold-ace-of-spades",
+        "smartphone-recording",
+        "video-camera",
+        "stamped-certificate",
+        "black-gold-usb-drive",
+        "phone-tripod",
+        "gold-money-clip",
+        "admission-ticket",
+        "gold-card-trophy"
+      ],
+      "sha256": "2db58fe5a67999b95a35978aaed2d24f90448a2f8950fe75a7aba7a0d94d628a",
+      "sourceSize": {
+        "width": 1448,
+        "height": 1086
+      },
+      "sourceMode": "RGBA"
+    },
+    {
+      "id": "cold-war-spycraft",
+      "title": "Cold War Spycraft Quest Item Atlas",
+      "source": "art/sources/story/items/Cold War Spycraft Quest Item Atlas.png",
+      "group": "items",
+      "layout": {
+        "type": "grid",
+        "cols": 4,
+        "rows": 3
+      },
+      "names": [
+        "classified-folder",
+        "redacted-document",
+        "film-reel",
+        "id-badge",
+        "field-radio",
+        "black-notebook",
+        "cipher-ribbon",
+        "wax-sealed-envelope",
+        "reel-to-reel-recorder",
+        "key-13-tag",
+        "spycraft-ace-of-spades",
+        "surveillance-photo-folder"
+      ],
+      "sha256": "f6abf9b095afaa297438266e980492562e4f3e0e6e392c6bab2c41d983da65f9",
+      "sourceSize": {
+        "width": 1448,
+        "height": 1086
+      },
+      "sourceMode": "RGBA"
+    },
+    {
+      "id": "lodge-relics",
+      "title": "Antique Lodge Tools and Puzzle Relics",
+      "source": "art/sources/story/items/Antique Lodge Tools and Puzzle Relics.png",
+      "group": "items",
+      "layout": {
+        "type": "grid",
+        "cols": 4,
+        "rows": 3
+      },
+      "names": [
+        "square-and-compasses",
+        "try-square",
+        "compasses",
+        "measuring-rule",
+        "gavel",
+        "plumb-line",
+        "spirit-level",
+        "masonic-book",
+        "ornate-key",
+        "columned-parchment",
+        "carved-stone-tablet",
+        "sketch-notebook"
+      ],
+      "sha256": "0e073e78a62a2c33a937c95e8b2d1e3c7a5b544d03160a349271791501c22401",
+      "sourceSize": {
+        "width": 1448,
+        "height": 1086
+      },
+      "sourceMode": "RGBA"
+    },
+    {
+      "id": "kenmore-heirlooms",
+      "title": "Kenmore Heirloom Mystery Sprite Atlas",
+      "source": "art/sources/story/items/Kenmore Heirloom Mystery Sprite Atlas.png",
+      "group": "items",
+      "layout": {
+        "type": "grid",
+        "cols": 4,
+        "rows": 3
+      },
+      "names": [
+        "framed-mansion-painting",
+        "wax-sealed-letter",
+        "oval-portrait-locket",
+        "candlestick",
+        "carved-plaster-fragment",
+        "blue-willow-teacup",
+        "leather-book",
+        "iron-key",
+        "ghostly-locket",
+        "ribbon-tied-letters",
+        "glowing-queen-of-hearts",
+        "carved-wood-panel"
+      ],
+      "sha256": "f9a1d4a929bfe6d8eb5a6d0ecfcd6815c67ef04df321c73a7e5cc1272fa547ca",
+      "sourceSize": {
+        "width": 1448,
+        "height": 1086
+      },
+      "sourceMode": "RGBA"
+    },
+    {
+      "id": "map-icons",
+      "title": "Antique adventure map icons",
+      "source": "art/sources/story/map/Antique adventure map icon atlas.png",
+      "group": "map",
+      "layout": {
+        "type": "grid",
+        "cols": 4,
+        "rows": 3
+      },
+      "names": [
+        "padlock",
+        "map-pin-spade",
+        "wax-seal-check",
+        "compass-star",
+        "path-dots-diagonal",
+        "path-fork",
+        "blank-medallion",
+        "ghost-tricorn",
+        "quest-scroll-alert",
+        "card-pair",
+        "ornate-card-back",
+        "mystery-emblem"
+      ],
+      "notes": "The two path pieces are made of separate dots; grid assignment keeps each path whole.",
+      "sha256": "9824abec900d4583a5308d34623973b7010d72858d3379ef240a8cfc0e164c16",
+      "sourceSize": {
+        "width": 1447,
+        "height": 1087
+      },
+      "sourceMode": "RGBA"
+    },
+    {
+      "id": "passport-stamps",
+      "title": "Twelve Passport Stamps of Mystery",
+      "source": "art/sources/story/stamps/Twelve Passport Stamps of Mystery.png",
+      "group": "stamps",
+      "layout": {
+        "type": "grid",
+        "cols": 4,
+        "rows": 3
+      },
+      "names": [
+        "antique-clock-key",
+        "heron-river",
+        "neon-monster",
+        "cards-and-camera",
+        "sealed-dossier",
+        "square-and-compasses",
+        "kenmore-mansion",
+        "lantern-cellar",
+        "spectral-tricorn",
+        "three-stars",
+        "card-box",
+        "wax-seal-check"
+      ],
+      "sha256": "dff989a3e88b6d170488ac6d2d0b42d6e31839fd98e387b49e1a8bec8593bf31",
+      "sourceSize": {
+        "width": 1448,
+        "height": 1086
+      },
+      "sourceMode": "RGBA"
+    },
+    {
+      "id": "thirteenth-hand-vfx",
+      "title": "Thirteenth Hand VFX",
+      "source": "art/sources/story/effects/Thirteenth Hand VFX Sprite Atlas.png",
+      "group": "effects",
+      "layout": {
+        "type": "grid",
+        "cols": 4,
+        "rows": 3
+      },
+      "names": [
+        "card-fan-swirl",
+        "card-burst-scatter",
+        "ace-flash",
+        "confetti-suits",
+        "spectral-ring",
+        "spectral-wisp",
+        "spectral-card-frame",
+        "red-seal-splat",
+        "suit-wheel",
+        "rubble-burst",
+        "card-ring-sparkle",
+        "green-wax-ring"
+      ],
+      "notes": "Effects are made of many loose particles; grid assignment keeps each effect whole.",
+      "sha256": "d4ce6acb23b9d50f2821433c877ee44da3bf5c571825fd065c51a511067467cd",
+      "sourceSize": {
+        "width": 1448,
+        "height": 1086
+      },
+      "sourceMode": "RGBA"
+    },
+    {
+      "id": "parlor-ui",
+      "title": "Antique emerald card parlor UI",
+      "source": "art/sources/story/ui/Antique emerald card parlor UI atlas.png",
+      "group": "ui",
+      "layout": {
+        "type": "blobs",
+        "merge": 3,
+        "minArea": 900
+      },
+      "names": [
+        "emerald-panel",
+        "nameplate",
+        "parchment-panel",
+        "arrow-prev",
+        "arrow-next",
+        "arrow-skip",
+        "closed-book",
+        "open-book",
+        "emerald-square-panel",
+        "parchment-banner",
+        "parchment-card-panel",
+        "triple-slot-panel",
+        "oval-portrait-frame",
+        "crest-emblem"
+      ],
+      "notes": "Irregular layout (14 pieces in three rows); pieces are found by their transparent gaps, in reading order.",
+      "sha256": "17c288b149b5e6190648025dadd981e6e2be8090544d35a6b4c2cbb932d1d006",
+      "sourceSize": {
+        "width": 1448,
+        "height": 1086
+      },
+      "sourceMode": "RGBA"
+    },
+    {
+      "id": "rappahannock-river-map",
+      "title": "Sophia's Annotated Rappahannock River Map",
+      "source": "art/sources/story/map/Sophia's Annotated Rappahannock River Map.png",
+      "group": "map",
+      "layout": {
+        "type": "single"
+      },
+      "sha256": "22fca1f8901cc947e6323e35ebf7c18b903ca4ac42ee9dedec75c8fd9aecb9d7",
+      "sourceSize": {
+        "width": 1536,
+        "height": 1024
+      },
+      "sourceMode": "RGBA"
+    },
+    {
+      "id": "location-sealed-door-cellar",
+      "title": "Card Table Beneath the Sealed Door",
+      "source": "art/sources/story/map/Card Table Beneath the Sealed Door.png",
+      "group": "map",
+      "layout": {
+        "type": "single"
+      },
+      "sha256": "590cc57dacabd212e5428d18271848f07d7d7b7d5c8e090439bacf4036da3118",
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sourceMode": "RGBA",
+      "notes": "Isometric map tile (transparent), not a top-down table: the underground_tunnels board keeps a drawn surface until a top-down painting is supplied."
+    },
+    {
+      "id": "location-cheryls-antique-shop",
+      "title": "Cheryl's Antique Shop",
+      "source": "art/sources/story/map/Cheryl's Antique Shop.png",
+      "group": "map",
+      "layout": {
+        "type": "single"
+      },
+      "sha256": "99a29165dfa3dff82b136c0745f7c29db421db44c21c06400e41dfe4785230f7",
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sourceMode": "RGBA"
+    },
+    {
+      "id": "location-masonic-lodge",
+      "title": "Historic Fredericksburg Masonic Lodge",
+      "source": "art/sources/story/map/Historic Fredericksburg Masonic Lodge.png",
+      "group": "map",
+      "layout": {
+        "type": "single"
+      },
+      "sha256": "bcd0f1c503e790e3e6291ef3e355f9a526f8f84349f78b7a1a7b85ce568fe2cd",
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sourceMode": "RGBA"
+    },
+    {
+      "id": "location-jaks-cardistry-parlor",
+      "title": "Jak's Hidden Emerald Cardistry Parlor",
+      "source": "art/sources/story/map/Jak’s Hidden Emerald Cardistry Parlor.png",
+      "group": "map",
+      "layout": {
+        "type": "single"
+      },
+      "sha256": "e6d9fd6a5105ac6da1a44cbd98e4bf875dbe35878a44ea23542d99e15de3bec8",
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sourceMode": "RGBA"
+    },
+    {
+      "id": "location-kenmore-mansion",
+      "title": "Kenmore Mansion Autumn Mystery",
+      "source": "art/sources/story/map/Kenmore Mansion Autumn Mystery.png",
+      "group": "map",
+      "layout": {
+        "type": "single"
+      },
+      "sha256": "a558570e95eb996b6e3dd99c50a58648e4d748a60da4ca5034bd5cc5594feb30",
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sourceMode": "RGBA"
+    },
+    {
+      "id": "location-neon-art-shop",
+      "title": "Neon monsters at the art shop",
+      "source": "art/sources/story/map/Neon monsters at the art shop.png",
+      "group": "map",
+      "layout": {
+        "type": "single"
+      },
+      "sha256": "e9bbd05fbd7c500c71eb32845a8be93a95f8fde83a0e84f61918eeb86dad2ec2",
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sourceMode": "RGBA"
+    },
+    {
+      "id": "location-ranger-station",
+      "title": "Sophia's Riverside Ranger Station",
+      "source": "art/sources/story/map/Sophia’s Riverside Ranger Station.png",
+      "group": "map",
+      "layout": {
+        "type": "single"
+      },
+      "sha256": "3b41277c21bd2a2dbbf86b0d13f07c44e7a322c0a7d26bb2082c5dcfc0596da3",
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sourceMode": "RGBA"
+    },
+    {
+      "id": "location-generals-spectral-parlor",
+      "title": "The General's Spectral Card Parlor",
+      "source": "art/sources/story/map/The General's Spectral Card Parlor.png",
+      "group": "map",
+      "layout": {
+        "type": "single"
+      },
+      "sha256": "2efb12d6c6134311dc85ccba2622deb7c4c9993f66d8639bc4bdcb67baf6e0d4",
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sourceMode": "RGBA"
+    },
+    {
+      "id": "location-intelligence-safehouse",
+      "title": "Vintage Brick Intelligence Safehouse",
+      "source": "art/sources/story/map/Vintage Brick Intelligence Safehouse.png",
+      "group": "map",
+      "layout": {
+        "type": "single"
+      },
+      "sha256": "7f3299baebb8bb98ed55b8b965c7254458b3c7e32e88f24558f0242c9fb9987f",
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sourceMode": "RGBA"
+    },
+    {
+      "id": "cheryls-antique-store-receipt",
+      "title": "Cheryl's Antique Store Receipt",
+      "source": "art/sources/story/illustrations/Cheryl's Antique Store Receipt.png",
+      "group": "illustrations",
+      "layout": {
+        "type": "single"
+      },
+      "sha256": "01f203695c077865e6d2ebf932980b35bfbabc8f3506814fd1fbe2c78a760072",
+      "sourceSize": {
+        "width": 1024,
+        "height": 1536
+      },
+      "sourceMode": "RGBA"
+    },
+    {
+      "id": "dantes-gw-commission-form",
+      "title": "Dante's G.W. Commission Form",
+      "source": "art/sources/story/illustrations/Dante’s G.W. Commission Form.png",
+      "group": "illustrations",
+      "layout": {
+        "type": "single"
+      },
+      "sha256": "37a3eae4b6c0455372438af25de7bfabf2409454c4dfdca151bcddefb085edb2",
+      "sourceSize": {
+        "width": 1024,
+        "height": 1536
+      },
+      "sourceMode": "RGBA"
+    },
+    {
+      "id": "lodge-research-sketchbook-page",
+      "title": "Historical lodge research sketchbook page",
+      "source": "art/sources/story/illustrations/Historical lodge research sketchbook page.png",
+      "group": "illustrations",
+      "layout": {
+        "type": "single"
+      },
+      "sha256": "ba8ae444c59bf4037afef8e5f84497f42bc73757ee317a7580aa31723223b386",
+      "sourceSize": {
+        "width": 1024,
+        "height": 1536
+      },
+      "sourceMode": "RGBA"
+    },
+    {
+      "id": "ivory-letter-burgundy-seal",
+      "title": "Ivory Letter with Burgundy Wax Seal",
+      "source": "art/sources/story/illustrations/Ivory Letter with Burgundy Wax Seal.png",
+      "group": "illustrations",
+      "layout": {
+        "type": "single"
+      },
+      "sha256": "9a8537b3faaaea3496b804c504e0cf11c35c773cab8a3d6eff0373e7e4a6d165",
+      "sourceSize": {
+        "width": 1233,
+        "height": 1275
+      },
+      "sourceMode": "RGBA"
+    },
+    {
+      "id": "jaks-cardistry-receipt",
+      "title": "Jak's Antique Cardistry Receipt",
+      "source": "art/sources/story/illustrations/Jak’s Antique Cardistry Receipt.png",
+      "group": "illustrations",
+      "layout": {
+        "type": "single"
+      },
+      "sha256": "e127d429a4adb9696f3fb3bf829ee7c1c3b362fada8a1fbafb62896f80cc62b9",
+      "sourceSize": {
+        "width": 1024,
+        "height": 1536
+      },
+      "sourceMode": "RGBA"
+    },
+    {
+      "id": "mrs-grays-thirteenth-hand-dossier",
+      "title": "Mrs. Gray's Thirteenth Hand Dossier",
+      "source": "art/sources/story/illustrations/Mrs. Gray’s Thirteenth Hand Dossier.png",
+      "group": "illustrations",
+      "layout": {
+        "type": "single"
+      },
+      "sha256": "98475f671ea82c7a7a2e8f2788c63e708306ca6bcdeeeaa4368fa762899c0b52",
+      "sourceSize": {
+        "width": 1448,
+        "height": 1086
+      },
+      "sourceMode": "RGBA"
+    },
+    {
+      "id": "underground-four-suit-puzzle",
+      "title": "Underground four-suit puzzle diagram",
+      "source": "art/sources/story/illustrations/Underground four-suit puzzle diagram.png",
+      "group": "illustrations",
+      "layout": {
+        "type": "single"
+      },
+      "sha256": "066f423701a6f2f4c3dc0dd3bea7167946f67891e3f52d94f797d4ab4a74a676",
+      "sourceSize": {
+        "width": 1024,
+        "height": 1536
+      },
+      "sourceMode": "RGBA"
+    },
+    {
+      "id": "awakened-thirteenth-hand-card",
+      "title": "Awakened Thirteenth Hand Card",
+      "source": "art/sources/story/illustrations/Awakened Thirteenth Hand Card.png",
+      "group": "illustrations",
+      "layout": {
+        "type": "single"
+      },
+      "sha256": "dcc58645f09c192bf4817fb3fb9080d7e9741ccb4ffa7f291d8ea786fc732227",
+      "sourceSize": {
+        "width": 1024,
+        "height": 1536
+      },
+      "sourceMode": "RGBA"
+    },
+    {
+      "id": "thirteenth-hand-antique-card",
+      "title": "The Thirteenth Hand Antique Card",
+      "source": "art/sources/story/illustrations/The Thirteenth Hand Antique Card.png",
+      "group": "illustrations",
+      "layout": {
+        "type": "single"
+      },
+      "sha256": "6eb1841730873bf14bea8a3d6e788a04165dbaff8a43834b51327438a56712fc",
+      "sourceSize": {
+        "width": 1024,
+        "height": 1536
+      },
+      "sourceMode": "RGBA"
+    },
+    {
+      "id": "antique-walnut-masonic",
+      "title": "Antique Walnut Masonic Gameboard",
+      "source": "art/sources/story/boards/Antique Walnut Masonic Gameboard.png",
+      "group": "boards",
+      "layout": {
+        "type": "board"
+      },
+      "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
+      "sha256": "b86bc9c7099f445743b936117010a2bff4ce7c6aea9824a9eaf979b33dec6987",
+      "sourceSize": {
+        "width": 1672,
+        "height": 941
+      },
+      "sourceMode": "RGB",
+      "registeredAs": "masonic_lodge_no4"
+    },
+    {
+      "id": "cheryls-antique-shop",
+      "title": "Cheryl's Antique Shop Gameboard",
+      "source": "art/sources/story/boards/Cheryl’s Antique Shop Gameboard.png",
+      "group": "boards",
+      "layout": {
+        "type": "board"
+      },
+      "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
+      "sha256": "9ae699a3de594d865cdc85533fdb59f503681115ff4d57a7d04ba0ece109db18",
+      "sourceSize": {
+        "width": 1672,
+        "height": 940
+      },
+      "sourceMode": "RGB",
+      "registeredAs": "cheryls_antique_shop"
+    },
+    {
+      "id": "mrs-grays-olive-desk",
+      "title": "Mrs. Gray's Olive Safehouse Desk",
+      "source": "art/sources/story/boards/Mrs. Gray’s Olive Safehouse Desk.png",
+      "group": "boards",
+      "layout": {
+        "type": "board"
+      },
+      "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
+      "sha256": "a153548152d7e689cedaf09f82e792b3e9bc214b48e9b533bade7d5203881cdf",
+      "sourceSize": {
+        "width": 1672,
+        "height": 941
+      },
+      "sourceMode": "RGB",
+      "registeredAs": "mrs_gray_safehouse"
+    },
+    {
+      "id": "colonial-cellar-table",
+      "title": "Candlelit Colonial Virginia Cellar Table",
+      "source": "art/sources/story/boards/Candlelit Colonial Virginia Cellar Table.png",
+      "group": "boards",
+      "layout": {
+        "type": "board"
+      },
+      "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
+      "sha256": "cdf180dd1c3ad9c63fbcf63d0ab906bbf3103e6b5b4337e2f30bf4e8e319ff08",
+      "sourceSize": {
+        "width": 1448,
+        "height": 1086
+      },
+      "sourceMode": "RGB",
+      "registeredAs": "washington_final_table"
+    },
+    {
+      "id": "germanna-library-desk",
+      "title": "Germanna Community College Library Desk",
+      "source": "art/sources/story/boards/Germanna Community College Library Desk.png",
+      "group": "boards",
+      "layout": {
+        "type": "board"
+      },
+      "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
+      "sha256": "c7907292047aa6e0e07bdbd7088719744bcfc1629a3abc23e84d723a6ac18268",
+      "sourceSize": {
+        "width": 1448,
+        "height": 1086
+      },
+      "sourceMode": "RGB",
+      "registeredAs": "germanna_library"
+    },
+    {
+      "id": "kenmore-georgian-parlor",
+      "title": "Kenmore-inspired Georgian parlor table",
+      "source": "art/sources/story/boards/Kenmore-inspired Georgian parlor table.png",
+      "group": "boards",
+      "layout": {
+        "type": "board"
+      },
+      "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
+      "sha256": "641ae0b50536745f6305eaceef90e9114a968270a5dc7884ff02e2862ccdbd33",
+      "sourceSize": {
+        "width": 1448,
+        "height": 1086
+      },
+      "sourceMode": "RGB",
+      "registeredAs": "kenmore_parlor"
+    },
+    {
+      "id": "umw-classroom-table",
+      "title": "Maple UMW Classroom Card Table",
+      "source": "art/sources/story/boards/Maple UMW Classroom Card Table.png",
+      "group": "boards",
+      "layout": {
+        "type": "board"
+      },
+      "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
+      "sha256": "77e06512c919c849a763fa5fe1b407a524c4324fd4f5cef8187ffb50d90aedfb",
+      "sourceSize": {
+        "width": 1448,
+        "height": 1086
+      },
+      "sourceMode": "RGB",
+      "registeredAs": "umw_classroom"
+    },
+    {
+      "id": "smoke-shop-glass-counter",
+      "title": "Modern Smoke-Shop Glass Game Counter",
+      "source": "art/sources/story/boards/Modern Smoke-Shop Glass Game Counter.png",
+      "group": "boards",
+      "layout": {
+        "type": "board"
+      },
+      "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
+      "sha256": "0c946553a9be07376940b48e5105eb0daf626829eba09d020bf3df0ca3899a47",
+      "sourceSize": {
+        "width": 1448,
+        "height": 1086
+      },
+      "sourceMode": "RGB",
+      "registeredAs": "ismokeshop_counter (adult-only)"
+    },
+    {
+      "id": "smoke-shop-counter-overhead",
+      "title": "Overhead smoke shop glass counter",
+      "source": "art/sources/story/boards/Overhead smoke shop glass counter.png",
+      "group": "boards",
+      "layout": {
+        "type": "board"
+      },
+      "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
+      "sha256": "e608be6c6c7add1fb02815d099288299a15c4617d700c2962e76faeb6902d2ab",
+      "sourceSize": {
+        "width": 1448,
+        "height": 1086
+      },
+      "sourceMode": "RGB",
+      "registeredAs": "ismokeshop_counter_overhead (adult-only)"
+    },
+    {
+      "id": "engraved-georgian",
+      "title": "Engraved Georgian 52-card deck atlas",
+      "source": "art/sources/story/decks/Engraved Georgian 52-card deck atlas.png",
+      "group": "decks",
+      "layout": {
+        "type": "audit",
+        "kind": "deck"
+      },
+      "notes": "Built into a deck by scripts/art/extract_cards.py (public/assets/cards/).",
+      "sha256": "a369268590970e5c90295dfb56588eda87c7cba8e7ba7454d5da7dbf16e28b3d",
+      "sourceSize": {
+        "width": 1846,
+        "height": 852
+      },
+      "sourceMode": "RGBA",
+      "registeredAs": "deck freemasonry (faces)"
+    },
+    {
+      "id": "spectral-washington",
+      "title": "Spectral Washington Colonial Playing Card Atlas",
+      "source": "art/sources/story/decks/Spectral Washington Colonial Playing Card Atlas.png",
+      "group": "decks",
+      "layout": {
+        "type": "audit",
+        "kind": "deck"
+      },
+      "notes": "Built into a deck by scripts/art/extract_cards.py (public/assets/cards/).",
+      "sha256": "16a9b84315ad8cba01c7f75721e7bdcf0b8fbbf85454fc304010091877ac5636",
+      "sourceSize": {
+        "width": 1846,
+        "height": 852
+      },
+      "sourceMode": "RGBA",
+      "registeredAs": "deck washington_ghost (faces)"
+    },
+    {
+      "id": "inspire-botanical",
+      "title": "INSPIRE Botanical Cannabis Card Atlas",
+      "source": "art/sources/story/decks/INSPIRE Botanical Cannabis Card Atlas.png",
+      "group": "decks",
+      "layout": {
+        "type": "audit",
+        "kind": "deck"
+      },
+      "notes": "Audited only: decks are built by scripts/art/extract_cards.py once registered.",
+      "sha256": "956e959824f6bc1ef80394a6b42b38c2e5d9188879e4f65362824622e7dba4a5",
+      "sourceSize": {
+        "width": 1659,
+        "height": 948
+      },
+      "sourceMode": "RGBA"
+    },
+    {
+      "id": "navy-gold-square-compasses-back",
+      "title": "Antique navy-gold square-and-compasses card back",
+      "source": "art/sources/story/decks/Antique navy-gold square-and-compasses card back.png",
+      "group": "decks",
+      "layout": {
+        "type": "audit",
+        "kind": "card-back"
+      },
+      "notes": "Built into a deck by scripts/art/extract_cards.py (public/assets/cards/).",
+      "sha256": "f8d1234358aa73d75bdc2e7f1597201c7198f31bce0247e25e81e8505af3e856",
+      "sourceSize": {
+        "width": 1060,
+        "height": 1484
+      },
+      "sourceMode": "RGB",
+      "registeredAs": "deck freemasonry (back)"
+    },
+    {
+      "id": "spectral-tricorn-back",
+      "title": "Spectral tricorn card back",
+      "source": "art/sources/story/decks/Spectral tricorn card back.png",
+      "group": "decks",
+      "layout": {
+        "type": "audit",
+        "kind": "card-back"
+      },
+      "notes": "Built into a deck by scripts/art/extract_cards.py (public/assets/cards/).",
+      "sha256": "c642b7d8a008aeb3dc782311535abf520d7adcbd936eb979c068303664f455d3",
+      "sourceSize": {
+        "width": 1060,
+        "height": 1484
+      },
+      "sourceMode": "RGB",
+      "registeredAs": "deck washington_ghost (back)"
+    }
+  ]
+}

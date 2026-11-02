@@ -104,4 +104,24 @@ describe('announcements', () => {
     setPlayInProgress(false);
     expect(pendingAnnouncements()).toHaveLength(0);
   });
+
+  it('a burst is led by the achievement earned at the table, not older or routine ones', () => {
+    vi.useFakeTimers();
+    attachAnnouncer(store);
+    // Still waiting from boot when the hand starts…
+    announce({ kind: 'achievement', id: 'first-visit' });
+    announce({ kind: 'achievement', id: 'explore-passport' });
+    setPlayInProgress(true);
+    store.dispatch({ type: 'BOOT_READY' });
+    store.dispatch({ type: 'NAVIGATE', to: AppState.MAIN_MENU });
+    // …then one earned mid-hand, then the routine one as the game ends.
+    announce({ kind: 'achievement', id: 'knock-knock' });
+    announce({ kind: 'achievement', id: 'first-win' });
+    const before = store.state.notifications.length;
+    setPlayInProgress(false);
+    vi.advanceTimersByTime(800);
+    const shown = store.state.notifications.slice(before);
+    expect(shown[0]?.badge).toBe('knock-knock');
+    expect(shown[1]?.message).toBe('3 achievements earned');
+  });
 });

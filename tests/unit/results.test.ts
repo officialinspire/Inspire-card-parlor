@@ -56,7 +56,11 @@ describe('game results', () => {
       details: { warsLost: 0 },
       at: noon,
     });
-    expect(again.achievements).toEqual([]);
+    // Nothing already earned is paid again (a second game may earn new ones, e.g. by levelling up).
+    for (const id of r.achievements) expect(again.achievements).not.toContain(id);
+    expect(store.state.profile.unlockedAchievements.length).toBe(
+      new Set(store.state.profile.unlockedAchievements).size,
+    );
   });
 
   it('awards the Go Fish sweep for seven books', () => {

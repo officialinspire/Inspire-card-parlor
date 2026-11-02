@@ -6,6 +6,7 @@ import './base.css';
 import './components.css';
 import './screens.css';
 import './progression.css';
+import './story.css';
 
 /** Day runs 7:00–18:59 on the player's own clock; the parlor lights its lamps after that. */
 export function resolveTheme(mode: ThemeMode, hour = new Date().getHours()): 'day' | 'night' {
@@ -25,6 +26,7 @@ export function attachTheme(store: Store): void {
     const theme = resolveTheme(settings.theme);
     root.dataset.theme = theme;
     root.classList.toggle('reduced-motion', settings.reducedMotion);
+    root.classList.toggle('low-effects', settings.lowEffects);
     root.classList.toggle('left-handed', settings.leftHanded);
     root.dataset.orientation = orientation;
     root.dataset.online = String(online);

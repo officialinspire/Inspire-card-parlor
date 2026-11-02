@@ -1,253 +1,796 @@
-import type { GameId } from '@/core/types';
-import type { Difficulty } from '@/games/goFish/GoFishGame';
+import { CHARACTERS } from './cast';
+import {
+  NARRATOR,
+  type DialogueLine,
+  type PassportStamp,
+  type StoryChapter,
+  type StoryLevel,
+  type StoryObjective,
+  type StoryReward,
+} from './types';
+
+export * from './types';
+export { CHARACTERS };
 
 /**
- * THE CARD PARLOR CHRONICLES — the story campaign, as data.
+ * THE THIRTEENTH HAND — the story campaign, as data.
  *
- * Seven chapters of five challenges. A challenge is always a normal game on
+ * Nine chapters of five challenges. A challenge is always a normal game on
  * one of the five engines with a fixed set-up (options, deck, board and, for
  * solitaire and War, a verified deal) and an objective read from the game's
  * result. Story Mode never changes how a game is played.
  *
- * Every seeded deal below has been proven winnable (see src/story/verify.ts
- * and tests/unit/story.test.ts): solitaire seeds by the solver, War seeds by
- * simulating the whole game. Go Fish challenges are dealt fresh on each try
- * at an Easy table and their objectives are checked to be reachable.
+ * Every seeded deal has been proven winnable (src/story/verify.ts,
+ * tests/unit/story.test.ts): solitaire by the solver, War by simulating the
+ * whole game. Go Fish challenges are dealt fresh on each try at an Easy table,
+ * and their objectives are checked to be reachable.
+ *
+ * All nine chapters are written (`status: 'final'`). The `draft` status and
+ * its labels remain in the data model for future chapters: draft text is never
+ * put in a character's mouth and is labelled in the UI.
+ *
+ * Real history and the story's legend are kept apart: field notes of kind
+ * `history` carry a source, and notes of kind `note` say what is invented.
+ *
+ * Ids start with "th-" so they can never be mistaken for the first campaign's
+ * "chapter-N" ids (see ./legacy.ts).
  */
-
-export type StoryRewardKind = 'credits' | 'xp' | 'deck' | 'board' | 'variant' | 'stamp' | 'achievement';
-
-export type StoryReward =
-  | { kind: 'credits'; amount: number }
-  | { kind: 'xp'; amount: number }
-  | { kind: 'deck'; id: string }
-  | { kind: 'board'; id: string }
-  /** Alternate card art, as "deckId@variantId". */
-  | { kind: 'variant'; id: string }
-  | { kind: 'stamp'; id: string }
-  | { kind: 'achievement'; id: string };
-
-export type StoryObjective =
-  | { kind: 'win' }
-  /** Go Fish: lay down at least `min` books (winning is not required). */
-  | { kind: 'books'; min: number };
-
-export interface LevelSetup {
-  /** Fixed deal. Required for solitaire and War (verified winnable); Go Fish deals fresh. */
-  seed?: number;
-  options?: {
-    draw?: 1 | 3;
-    suits?: 1 | 2 | 4;
-    /** War opponent, or Go Fish opponents (personality ids). */
-    opponent?: string;
-    opponents?: string[];
-    difficulty?: Difficulty;
-  };
-  /** Theme for the table (does not unlock the deck or board). */
-  deckId: string;
-  boardId: string;
-}
-
-export interface DialogueLine {
-  /** Character id (CHARACTERS) or a CPU personality id. */
-  who: string;
-  text: string;
-}
-
-export interface StoryLevel {
-  id: string;
-  number: number;
-  title: string;
-  game: GameId;
-  objective: StoryObjective;
-  /** Short line shown on the level card. */
-  objectiveText: string;
-  setup: LevelSetup;
-  intro: DialogueLine[];
-  rewards: StoryReward[];
-  finale?: boolean;
-}
-
-export interface ChapterArtwork {
-  /** Painting behind the chapter card (public asset path), if any. */
-  backdrop?: string;
-  /** Decks whose real preview art is shown on the card. */
-  decks: string[];
-  /** Base colour for the card. */
-  tint: string;
-  /** Set while the chapter's own artwork has not been supplied. */
-  placeholder?: string;
-}
-
-export interface StoryChapter {
-  id: string;
-  index: number;
-  title: string;
-  location: string;
-  description: string;
-  hostId: string;
-  artwork: ChapterArtwork;
-  intro: DialogueLine[];
-  outro: DialogueLine[];
-  levels: StoryLevel[];
-  rewards: StoryReward[];
-  unlockRequirements: { chapter?: string; level?: number };
-}
-
-export interface Character {
-  id: string;
-  name: string;
-  role: string;
-  color: string;
-}
-
-export const CAMPAIGN_TITLE = 'The Card Parlor Chronicles';
-
-/** The parlor's regulars. Portraits are drawn as initials until character art is supplied. */
-export const CHARACTERS: readonly Character[] = [
-  { id: 'mae', name: 'Mae Holloway', role: 'Parlor owner', color: '#e2b866' },
-  { id: 'jules', name: 'Jules Arden', role: 'Card sharp', color: '#7fb8d8' },
-  { id: 'otto', name: 'Uncle Otto', role: 'Retired dealer', color: '#c98a5b' },
-  { id: 'ivy', name: 'Ivy Song', role: 'Pianist', color: '#d48bb0' },
-];
+export { CAMPAIGN_ID, CAMPAIGN_VERSION } from './ids';
+export const CAMPAIGN_TITLE = 'The Thirteenth Hand';
 
 const credits = (amount: number): StoryReward => ({ kind: 'credits', amount });
 const xp = (amount: number): StoryReward => ({ kind: 'xp', amount });
+const deck = (id: string): StoryReward => ({ kind: 'deck', id });
+const board = (id: string): StoryReward => ({ kind: 'board', id });
+const stamp = (id: string): StoryReward => ({ kind: 'stamp', id });
+const achievement = (id: string): StoryReward => ({ kind: 'achievement', id });
 
-/** Short-hand for a level; ids are "<chapter>-<n>". */
+/** A character's line. */
+const say = (who: string, text: string, pose?: string): DialogueLine => ({ who, text, ...(pose ? { pose } : {}) });
+/** Second-person narration; may reveal a piece of evidence. */
+const narrate = (text: string, discovers?: string): DialogueLine => ({
+  who: NARRATOR,
+  text,
+  narration: true,
+  ...(discovers ? { discovers } : {}),
+});
+
+/** Evidence revealed in a list of beats. */
+export const discoveriesIn = (lines: readonly DialogueLine[]) =>
+  lines.flatMap((l) => (l.discovers ? [l.discovers] : []));
+
+/** Short-hand for a level; ids are "<chapter>-<n>". Evidence found in its outro is part of its rewards. */
 function level(
   chapter: string,
   number: number,
-  l: Omit<StoryLevel, 'id' | 'number' | 'rewards' | 'objectiveText' | 'objective'> & {
+  l: Omit<StoryLevel, 'id' | 'number' | 'rewards' | 'objectiveText' | 'objective' | 'outro'> & {
     objective?: StoryObjective;
     rewards?: StoryReward[];
     objectiveText?: string;
+    outro?: DialogueLine[];
   },
 ): StoryLevel {
-  const base = 40 + number * 10;
+  const index = Number(chapter.slice(3));
+  const base = 30 + index * 5 + number * 10;
+  const outro = l.outro ?? [];
   return {
     ...l,
     id: `${chapter}-${number}`,
     number,
     objective: l.objective ?? { kind: 'win' },
     objectiveText: l.objectiveText ?? 'Win the game.',
-    rewards: l.rewards ?? [credits(base), xp(base + 20)],
+    outro,
+    rewards: [
+      ...(l.rewards ?? [credits(base), xp(base + 20)]),
+      ...discoveriesIn(outro).map((id): StoryReward => ({ kind: 'evidence', id })),
+    ],
   };
 }
 
 export const STORY_CHAPTERS: readonly StoryChapter[] = [
+  // ───────────────────────────── Chapter 1 (written) ─────────────────────────────
   {
-    id: 'chapter-1',
+    id: 'th-1',
     index: 1,
-    title: 'The Hometown',
-    location: 'Downtown Fredericksburg',
-    description: 'The parlor reopens on Caroline Street. Win over the neighbours, one table at a time.',
-    hostId: 'mae',
+    title: 'The Card Without a Suit',
+    locationId: 'cheryls-antique-shop',
+    location: 'Cheryl’s Antique Shop',
+    description: 'An estate-sale box, twelve old decks and one card that should not exist.',
+    hostId: 'cheryl',
+    cast: ['cheryl'],
+    status: 'final',
+    music: 'lamplight',
+    mysteryThread:
+      'The Thirteenth Hand card turns up in Lot 13 with a ledger of twelve recorded hands; its four corners are blank, waiting for suit marks. A postcard points to the River Station.',
+    beats: [
+      'You enter Cheryl’s shop as she is closing.',
+      'Cheryl shows you an estate-sale box; on top lies a card with no suit or rank, titled The Thirteenth Hand.',
+      'She will only talk to someone who can play: five games across the shop.',
+      'The box gives up a receipt (Lot 13), a ledger of twelve hands with the thirteenth blank, and a river postcard.',
+      'Under the lamp, the card shows four blank corners shaped for suit marks.',
+      'Cheryl sends you to Sophia at the River Station.',
+    ],
     artwork: {
-      backdrop: 'backgrounds/menu/day.webp',
-      decks: ['fredericksburg', 'fredericksburg_downtown'],
-      tint: '#c88a4a',
+      backdrop: 'backgrounds/cheryls_antique_shop/background.webp',
+      decks: ['fredericksburg', 'freemasonry'],
+      tint: '#7a5232',
+      locationSprite: 'location-cheryls-antique-shop/location-cheryls-antique-shop',
     },
     intro: [
-      { who: 'mae', text: 'Keys, lamps, a fresh deck. The parlor’s open again!' },
-      { who: 'mae', text: 'Win five tables and the whole street will know it.' },
+      narrate(
+        'You step into Cheryl’s Antique Shop. A bell rings over the door, and forty clocks disagree about the time.',
+      ),
+      say('cheryl', 'We close at five. It’s ten to.', 'portrait-neutral'),
+      narrate('On the counter you see an estate-sale box tied with string. A single card lies on top.'),
+      say('cheryl', 'Bought the whole lot for twenty dollars. Twelve old decks, a ledger, and that.', 'cards-reveal'),
+      narrate(
+        'You pick up the card. It has no suit and no number — only the words THE THIRTEENTH HAND, and four blank corners.',
+        'thirteenth-hand-card',
+      ),
+      say(
+        'cheryl',
+        'Before you ask: no, I don’t know what it’s worth. Nobody prints a card without a suit. Somebody wanted it noticed.',
+        'portrait-doubt',
+      ),
+      say('cheryl', 'You want to know more, you sit and play. I don’t talk shop with strangers who can’t shuffle.'),
     ],
-    outro: [{ who: 'mae', text: 'Look at that — a full house. Fredericksburg is ours again.' }],
+    outro: [
+      say('cheryl', 'The River Station is Sophia’s. Parks and Rec. She knows every heron on that river by name.'),
+      say(
+        'cheryl',
+        'Take the card. Bring it back in one piece. And keep the receipt for anything you buy.',
+        'portrait-greet',
+      ),
+      narrate('You tuck the card into your pocket and head for the river.'),
+    ],
     levels: [
-      level('chapter-1', 1, {
-        title: 'Riverfront Warm-Up',
+      level('th-1', 1, {
+        title: 'Price Check',
         game: 'war',
+        objectiveText: 'Win War against Cheryl.',
         setup: {
           seed: 2007,
-          options: { opponent: 'friendly_local' },
+          options: { opponent: 'cheryl' },
           deckId: 'fredericksburg',
-          boardId: 'picnic_table',
+          boardId: 'cheryls_antique_shop',
         },
-        intro: [{ who: 'mae', text: 'Start easy: high card wins. Show the regulars how it’s done.' }],
+        intro: [say('cheryl', 'War. No thinking required. I want to see if you flinch.')],
+        outro: [
+          narrate(
+            'Cheryl slides a receipt across the counter to you: Lot 13, one card box, contents as found.',
+            'estate-sale-receipt',
+          ),
+          say('cheryl', 'Lot thirteen. The auction house thought that was funny. I didn’t.'),
+        ],
       }),
-      level('chapter-1', 2, {
-        title: 'Caroline Street Klondike',
+      level('th-1', 2, {
+        title: 'Sorting the Box',
         game: 'klondike',
         objectiveText: 'Complete Klondike, Draw 1.',
-        setup: { seed: 1008, options: { draw: 1 }, deckId: 'fredericksburg', boardId: 'backroom_card_table' },
-        intro: [{ who: 'mae', text: 'A quiet morning game. Build the foundations, Ace to King.' }],
+        setup: { seed: 1008, options: { draw: 1 }, deckId: 'fredericksburg', boardId: 'cheryls_antique_shop' },
+        intro: [
+          narrate('The box holds twelve loose decks, all shuffled together. Cheryl hands you one to sort.'),
+          say('cheryl', 'Aces up. If it’s missing cards, I want to know.'),
+        ],
+        outro: [
+          narrate(
+            'Under the decks you find a leather ledger. Twelve hands of cards are written out in faded ink. The thirteenth line is blank.',
+            'ledger-of-twelve',
+          ),
+          say('cheryl', 'Somebody kept score. And somebody stopped.', 'portrait-think'),
+        ],
       }),
-      level('chapter-1', 3, {
-        title: 'Market Square Catch',
+      level('th-1', 3, {
+        title: 'Matched Sets',
         game: 'go-fish',
-        objectiveText: 'Win Go Fish against one opponent.',
+        objectiveText: 'Win Go Fish against Cheryl.',
         setup: {
-          options: { opponents: ['friendly_local'], difficulty: 'easy' },
-          deckId: 'fredericksburg_downtown',
-          boardId: 'picnic_table',
+          options: { opponents: ['cheryl'], difficulty: 'easy' },
+          deckId: 'fredericksburg',
+          boardId: 'cheryls_antique_shop',
         },
-        intro: [{ who: 'friendly_local', text: 'Market day! Fancy a hand of Go Fish?' }],
+        intro: [say('cheryl', 'Go Fish. Don’t laugh. It’s how I check a matched set.', 'cards-shuffle')],
+        outro: [
+          say('cheryl', 'Every deck in that box is complete. Fifty-two each. So where did the extra card come from?'),
+        ],
       }),
-      level('chapter-1', 4, {
-        title: 'The Old Mill Puzzle',
+      level('th-1', 4, {
+        title: 'The Locked Case',
         game: 'freecell',
         objectiveText: 'Solve this FreeCell deal.',
-        setup: { seed: 1001, deckId: 'fredericksburg_downtown', boardId: 'backroom_card_table' },
-        intro: [{ who: 'otto', text: 'Every card in view, nothing left to luck. Take your time.' }],
+        setup: { seed: 1001, deckId: 'fredericksburg', boardId: 'cheryls_antique_shop' },
+        intro: [
+          narrate('You notice that Cheryl’s display case has a puzzle lock: a FreeCell deal painted under the glass.'),
+          say('cheryl', 'My late husband’s idea of security. Solve it and I’ll show you what was in the lid.'),
+        ],
+        outro: [
+          narrate(
+            'You find an old postcard of the Rappahannock tucked in the box lid. A heron is sketched on the back, with two words: River Station.',
+            'river-postcard',
+          ),
+        ],
       }),
-      level('chapter-1', 5, {
-        title: 'Rappahannock Weave',
+      level('th-1', 5, {
+        title: 'Under the Lamp',
         game: 'spider',
         finale: true,
         objectiveText: 'Finale: clear one-suit Spider.',
-        setup: {
-          seed: 1035,
-          options: { suits: 1 },
-          deckId: 'fredericksburg_downtown',
-          boardId: 'rappahannock_riverside',
-        },
-        intro: [{ who: 'mae', text: 'Down by the river, one last spread. Eight runs, King to Ace.' }],
+        setup: { seed: 1035, options: { suits: 1 }, deckId: 'fredericksburg', boardId: 'cheryls_antique_shop' },
+        intro: [say('cheryl', 'One more. Spider. Then we look at that card under a proper lamp.')],
+        outro: [
+          narrate(
+            'You hold the card under the lamp. Its blank corners catch the light, each shaped for a suit mark — four of them, all missing.',
+          ),
+          say('cheryl', 'Four empty corners. Somebody wants this card finished.', 'portrait-think'),
+        ],
         rewards: [credits(120), xp(150)],
       }),
     ],
     rewards: [
-      { kind: 'deck', id: 'fredericksburg_downtown' },
-      { kind: 'board', id: 'rappahannock_riverside' },
-      { kind: 'stamp', id: 'hometown' },
-      { kind: 'achievement', id: 'passport-first' },
+      board('cheryls_antique_shop'),
+      stamp('th-antique-shop'),
+      achievement('passport-first'),
       credits(300),
       xp(200),
     ],
+    info: [
+      {
+        id: 'fredericksburg-1728',
+        kind: 'history',
+        title: 'Fredericksburg',
+        text: 'Fredericksburg was established in 1728 as a port on the Rappahannock River. Its historic downtown, including Caroline Street, is known today for its antique shops. Cheryl and her shop are fictional.',
+        source: 'City of Fredericksburg; Fredericksburg Area Museum',
+      },
+    ],
     unlockRequirements: {},
   },
+
+  // ───────────────────────────── Chapter 2 (written) ─────────────────────────────
   {
-    id: 'chapter-2',
+    id: 'th-2',
     index: 2,
-    title: 'Jak Gold’s Casino',
-    location: 'The BlackJak universe',
-    description: 'A golden invitation arrives. Jak Gold wants to see what the new parlor can do.',
-    hostId: 'jak_gold',
+    title: 'The Heron’s Bend',
+    locationId: 'rappahannock-river-station',
+    location: 'Rappahannock River Station',
+    description:
+      'A heron sketch, a trail marker nobody remembers, Sophia’s river map and a letter that never reached Dante.',
+    hostId: 'sophia',
+    cast: ['sophia'],
+    status: 'final',
+    music: 'river-dawn',
+    mysteryThread:
+      'The first suit mark — a club — is carved on an old trail marker at the heron’s bend. Sophia’s annotated river map shows four marks near the old waterfront, and a returned envelope ties the card to Dante.',
+    beats: [
+      'You walk the river path to Sophia’s ranger station.',
+      'Sophia recognises the heron in the postcard sketch as one she logs every morning at the same bend.',
+      'She mentions a man who filmed her lobby and asked for the visitor logs: Jak.',
+      'The wildlife log and an unlisted trail marker carved with a club turn up clues.',
+      'Sophia lends you her annotated river map: four marks circled near the old waterfront.',
+      'An envelope addressed to Dante at iSMOKESHOP came back to the station with a heron card inside. Sophia sends you to Dante.',
+    ],
     artwork: {
-      backdrop: 'backgrounds/backroom_card_table/background.webp',
-      decks: ['jak_gold', 'inspire'],
-      tint: '#2c2a3a',
+      backdrop: 'backgrounds/rappahannock_riverside/background.webp',
+      decks: ['eastern_woodlands'],
+      tint: '#33452d',
+      locationSprite: 'location-ranger-station/location-ranger-station',
     },
     intro: [
-      { who: 'jak_gold', text: 'So you’re the one reopening the old parlor. Cute.' },
-      { who: 'jak_gold', text: 'Five tables at my place. Beat them and I’ll deal you in.' },
+      narrate(
+        'You follow the river path to the Rappahannock River Station. A heron stands in the shallows, unbothered.',
+      ),
+      say(
+        'sophia',
+        'Morning. If you’re here about the heron, she’s fine. She just likes the attention.',
+        'portrait-greet',
+      ),
+      narrate('You show Sophia the postcard and the card.'),
+      say(
+        'sophia',
+        'That sketch is a great blue heron, drawn at this bend. We log her every morning. Whoever drew it has stood right here.',
+        'portrait-think',
+      ),
+      say(
+        'sophia',
+        'Last week a man with a phone on a stick filmed our lobby and asked for our visitor logs. Jak something. He said it was his constitutional right. It was also my lunch break.',
+        'portrait-doubt',
+      ),
+      say('sophia', 'I have a shift to finish. Play a few hands while I work, and I’ll pull the logs.'),
     ],
-    outro: [{ who: 'jak_gold', text: 'Not bad, newcomer. The house remembers a winner.' }],
+    outro: [
+      say(
+        'sophia',
+        'Somebody sent Dante a heron card, and it came back here. That’s not a coincidence.',
+        'portrait-think',
+      ),
+      say(
+        'sophia',
+        'Go see him. And if you run into the man with the phone on a stick, you didn’t hear about the logs from me.',
+      ),
+      narrate('You fold the map into your pocket and set off for Dante’s shop.'),
+    ],
     levels: [
-      level('chapter-2', 1, {
-        title: 'High Card at the Door',
-        game: 'war',
-        setup: { seed: 2030, options: { opponent: 'jak_gold' }, deckId: 'jak_gold', boardId: 'backroom_card_table' },
-        intro: [{ who: 'jak_gold', text: 'Doorman’s game. Flip and pray.' }],
+      level('th-2', 1, {
+        title: 'Lunch Break',
+        game: 'go-fish',
+        objective: { kind: 'books', min: 3 },
+        objectiveText: 'Lay down 3 books against Sophia.',
+        setup: {
+          options: { opponents: ['sophia'], difficulty: 'easy' },
+          deckId: 'eastern_woodlands',
+          boardId: 'rappahannock_riverside',
+        },
+        intro: [
+          say(
+            'sophia',
+            'Lunch break. Twenty minutes. Go Fish is about all I can teach in twenty minutes.',
+            'cards-deal',
+          ),
+        ],
+        outro: [
+          narrate(
+            'You read the wildlife log over Sophia’s shoulder: the same heron, at the same bend, every morning for years.',
+            'field-journal-page',
+          ),
+          say('sophia', 'Consistent. Herons usually are. People aren’t.'),
+        ],
+        info: [
+          {
+            id: 'great-blue-heron',
+            kind: 'wildlife',
+            title: 'Great blue heron',
+            text: 'The great blue heron is the largest heron in North America. It hunts by standing still in shallow water, then striking fast. Herons live along the Rappahannock all year.',
+            source: 'Cornell Lab of Ornithology, All About Birds',
+            sprite: 'river-ranger/heron-card',
+          },
+        ],
       }),
-      level('chapter-2', 2, {
+      level('th-2', 2, {
+        title: 'Trail Markers',
+        game: 'klondike',
+        objectiveText: 'Complete Klondike, Draw 1.',
+        setup: { seed: 3101, options: { draw: 1 }, deckId: 'eastern_woodlands', boardId: 'rappahannock_riverside' },
+        intro: [
+          narrate('You walk the river trail with Sophia toward the heron’s bend.'),
+          say('sophia', 'Sort these while I check the markers. Patience is most of this job.'),
+        ],
+        outro: [
+          narrate(
+            'At the heron’s bend, an old trail marker leans toward the water. Carved into it is a small club — the exact size of one blank corner on your card.',
+            'club-mark',
+          ),
+          say('sophia', 'That marker is older than I am. It isn’t on our trail inventory.', 'portrait-surprise'),
+        ],
+        info: [
+          {
+            id: 'fall-line',
+            kind: 'history',
+            title: 'The fall line',
+            text: 'Fredericksburg grew where the Rappahannock drops over rocky rapids at the fall line — the farthest point ocean-going ships could sail upstream. The town was established in 1728 as a river port.',
+            source: 'City of Fredericksburg; Fredericksburg Area Museum',
+            sprite: 'river-ranger/river-stone',
+          },
+        ],
+      }),
+      level('th-2', 3, {
+        title: 'The Archive Drawer',
+        game: 'freecell',
+        objectiveText: 'Solve this FreeCell deal.',
+        setup: { seed: 1016, deckId: 'eastern_woodlands', boardId: 'rappahannock_riverside' },
+        intro: [say('sophia', 'If that marker is old, it’ll be on an old map. Archive drawer. Bring patience.')],
+        outro: [
+          narrate(
+            'Sophia spreads her own annotated map of the river trail across the desk and lets you take it. Near the old waterfront, four small marks are circled in pencil.',
+            'sophia-river-map',
+          ),
+          say(
+            'sophia',
+            'Those four marks were on the survey I traced it from. They don’t match anything I know — and one of them is a club.',
+            'portrait-think',
+          ),
+        ],
+        info: [
+          {
+            id: 'american-shad',
+            kind: 'wildlife',
+            title: 'American shad',
+            text: 'Each spring, American shad swim up the Rappahannock from the ocean to spawn. Removing the Embrey Dam at Fredericksburg in 2004 reopened miles of river to them and other migrating fish.',
+            source: 'Friends of the Rappahannock; U.S. Fish and Wildlife Service',
+          },
+        ],
+      }),
+      level('th-2', 4, {
+        title: 'High Water',
+        game: 'spider',
+        objectiveText: 'Clear one-suit Spider.',
+        setup: { seed: 1002, options: { suits: 1 }, deckId: 'eastern_woodlands', boardId: 'rappahannock_riverside' },
+        intro: [
+          say(
+            'sophia',
+            'The river’s up. While we wait it out, the lost-and-found needs sorting. Thirty years of everything.',
+          ),
+        ],
+        outro: [
+          narrate(
+            'In the lost-and-found you find an envelope addressed to Dante at iSMOKESHOP, stamped Return to Sender. Inside is a card with a heron on it.',
+            'returned-envelope',
+          ),
+          say(
+            'sophia',
+            'Dante? He painted the mural for our kids’ program. Good kid. Terrible handwriting.',
+            'portrait-greet',
+          ),
+        ],
+        info: [
+          {
+            id: 'bald-eagle',
+            kind: 'wildlife',
+            title: 'Bald eagles',
+            text: 'Bald eagles nest along the Rappahannock. The Chesapeake Bay region, which the river feeds, has one of the largest bald eagle populations on the Atlantic coast.',
+            source: 'Center for Conservation Biology, William & Mary',
+            sprite: 'river-ranger/binoculars',
+          },
+        ],
+      }),
+      level('th-2', 5, {
+        title: 'End of Shift',
+        game: 'war',
+        finale: true,
+        objectiveText: 'Finale: win War against Sophia.',
+        setup: {
+          seed: 2001,
+          options: { opponent: 'sophia' },
+          deckId: 'eastern_woodlands',
+          boardId: 'rappahannock_riverside',
+        },
+        intro: [say('sophia', 'End of shift. One quick game of War — loser files the incident report.', 'cards-deal')],
+        outro: [say('sophia', 'One suit found, three to go. I’ll watch the river. You watch that card.')],
+        rewards: [credits(130), xp(160)],
+        info: [
+          {
+            id: 'rappahannock-name',
+            kind: 'history',
+            title: 'The river’s name',
+            text: 'The river shares its name with the Rappahannock people. The Rappahannock Tribe, based in Virginia’s Northern Neck, was federally recognized in 2018.',
+            source: 'Rappahannock Tribe; U.S. Bureau of Indian Affairs',
+          },
+        ],
+      }),
+    ],
+    rewards: [
+      board('rappahannock_riverside'),
+      deck('eastern_woodlands'),
+      stamp('th-river-station'),
+      credits(350),
+      xp(230),
+    ],
+    info: [
+      {
+        id: 'eastern-woodlands-deck',
+        kind: 'note',
+        title: 'About the Eastern Woodlands deck',
+        text: 'The Eastern Woodlands deck is a visual theme: the wildlife, plants and rivers of the region. The clues and mysteries in this story are fiction; they do not represent Native spirituality or traditions.',
+      },
+    ],
+    unlockRequirements: { chapter: 'th-1' },
+  },
+
+  // ───────────────────────────── Chapter 3 (written) ─────────────────────────────
+  {
+    id: 'th-3',
+    index: 3,
+    title: 'Neon Commission',
+    locationId: 'ismokeshop',
+    location: 'iSMOKESHOP',
+    description: 'Dante has been paid, in one-dollar bills, to paint George Washington as thirteen neon monsters.',
+    hostId: 'dante',
+    cast: ['dante'],
+    status: 'final',
+    music: 'tape-deck',
+    mysteryThread:
+      'A client signing only “G. W.” paid Dante in one-dollar bills to paint George Washington as thirteen neon monsters. Under black light, the client’s reference sketch hides the second mark — a heart — and the payments trace back to the card-case maker Jak Gold uses.',
+    beats: [
+      'You find Dante at his art counter, surrounded by neon monster sketches.',
+      'The returned heron card was his: he mailed it to the client’s P.O. box using the River Station, where he was painting a mural, as his return address.',
+      'An anonymous order: thirteen card designs of George Washington as a neon monster, paid in advance in one-dollar bills, signed “G. W.”',
+      'Dante gives you his first finished design, General Monsterton, holding twelve cards and one blank one.',
+      'Under black light, the reference sketch shows a heart drawn in invisible ink — the second mark.',
+      'Dante, cheerfully clueless about Freemasonry, knows the payments came through Jak Gold’s card-case maker, and sends you to Jak.',
+    ],
+    artwork: {
+      backdrop: 'backgrounds/artists_studio/background.webp',
+      decks: ['dantes_world'],
+      tint: '#2a1240',
+      locationSprite: 'location-neon-art-shop/location-neon-art-shop',
+    },
+    intro: [
+      narrate(
+        'You push open the door of iSMOKESHOP. Behind the glass counter, every inch of wall is covered in neon monsters with too many eyes.',
+      ),
+      say(
+        'dante',
+        'Hi! Welcome! Wait — you’ve got the look. You’re not here for a lighter. You’re here for a mystery.',
+        'portrait-greet',
+      ),
+      narrate('You set the returned envelope on the counter. Dante’s face drops, then lights right back up.'),
+      say(
+        'dante',
+        'My heron card! I mailed that to a P.O. box that doesn’t exist. I used the River Station as my return address — I was painting their mural that week.',
+        'portrait-surprise',
+      ),
+      say('dante', 'The client asked for it back. Then the client stopped existing. Classic client.', 'portrait-talk'),
+      say(
+        'dante',
+        'Help me catch up on my sketch pile and I’ll show you the weirdest job I’ve ever taken. And I once painted a lizard wizard on a food truck.',
+        'cards-fan',
+      ),
+    ],
+    outro: [
+      say(
+        'dante',
+        'The ones came packed in a custom card case, stamped by the maker. The fancy one Jak Gold uses — he never stops talking about it.',
+        'portrait-think',
+      ),
+      say(
+        'dante',
+        'Jak has a back room off Caroline Street. Ring light, tripod, opinions. Tell him Dante says hi. Actually, don’t. He’ll film it.',
+        'portrait-greet',
+      ),
+      narrate('You tuck the glowing sketch away with the card. Two corners marked, two to go.'),
+    ],
+    levels: [
+      level('th-3', 1, {
+        title: 'Monster Sketches',
+        game: 'klondike',
+        objectiveText: 'Complete Klondike, Draw 1.',
+        setup: { seed: 1013, options: { draw: 1 }, deckId: 'dantes_world', boardId: 'artists_studio' },
+        intro: [
+          narrate(
+            'Dante drops a stack of monster sketches on the counter, sorted into suits that do not exist. You start sorting them into real ones.',
+          ),
+          say('dante', 'Every monster needs a home. Aces up, like a civilised person.', 'cards-shuffle'),
+        ],
+        outro: [
+          narrate(
+            'Under the last sketch you find an order form, typed and paid in advance. The client is listed only as “G. W.”',
+            'commission-form',
+          ),
+          say(
+            'dante',
+            'Thirteen card designs. Theme: George Washington, but as a neon monster. Paid in one-dollar bills. Every single bill had the same guy on it.',
+            'portrait-talk',
+          ),
+          say('dante', 'I thought it was a bit. It might not be a bit.', 'portrait-think'),
+        ],
+        info: [
+          {
+            id: 'day-glo',
+            kind: 'history',
+            title: 'Colours that glow',
+            text: 'Daylight fluorescent paint — the colours that blaze under a black light on 1960s posters — was developed in the 1930s by brothers Bob and Joe Switzer, who went on to found the Day-Glo company.',
+            source: 'American Chemical Society, National Historic Chemical Landmarks',
+            sprite: 'neon-art-supplies/neon-markers',
+          },
+        ],
+      }),
+      level('th-3', 2, {
+        title: 'Colour Clash',
+        game: 'war',
+        objectiveText: 'Win War against Dante.',
+        setup: { seed: 2026, options: { opponent: 'dante' }, deckId: 'dantes_world', boardId: 'artists_studio' },
+        intro: [
+          say(
+            'dante',
+            'War! My deck against your deck. Mine has monsters. Yours also has my monsters. I lent it to you. I’m very generous.',
+            'cards-deal',
+          ),
+        ],
+        outro: [
+          say(
+            'dante',
+            'Psychedelic poster art is my whole thing. Those 1960s concert posters with lettering you have to stare at to read? They make you slow down and actually look.',
+            'portrait-talk',
+          ),
+          say(
+            'dante',
+            'That’s what this commission feels like. Something you’re supposed to stare at.',
+            'portrait-think',
+          ),
+        ],
+        info: [
+          {
+            id: 'concert-posters',
+            kind: 'history',
+            title: 'Posters you have to read slowly',
+            text: 'In the mid-1960s, San Francisco concert posters — such as Wes Wilson’s for the Fillmore Auditorium — used swirling hand lettering that was hard to read on purpose, so people stopped to look.',
+            source: 'Fine Arts Museums of San Francisco',
+            sprite: 'neon-art-supplies/rolled-poster',
+          },
+        ],
+      }),
+      level('th-3', 3, {
+        title: 'The Commission',
+        game: 'freecell',
+        objectiveText: 'Solve this FreeCell deal.',
+        setup: { seed: 1018, deckId: 'dantes_world', boardId: 'artists_studio' },
+        intro: [
+          narrate(
+            'Dante pulls out the client’s reference sketch for you: a stiff, old-fashioned portrait of George Washington holding a hand of cards.',
+          ),
+          say(
+            'dante',
+            'The brief says “capture my vigor.” My vigor. Who writes a brief in the first person?',
+            'portrait-doubt',
+          ),
+        ],
+        outro: [
+          narrate(
+            'Dante hands you his first finished design: General Monsterton, a three-eyed George Washington in neon blue, holding twelve cards. You notice that the thirteenth card in his hand is blank.',
+            'monster-card',
+          ),
+          say('dante', 'Keep it. Proof I was here before this got weird. Well. Weirder.', 'portrait-greet'),
+        ],
+      }),
+      level('th-3', 4, {
+        title: 'Monster Pond',
+        game: 'go-fish',
+        objectiveText: 'Win Go Fish against Dante.',
+        setup: {
+          options: { opponents: ['dante'], difficulty: 'easy' },
+          deckId: 'dantes_world',
+          boardId: 'artists_studio',
+        },
+        intro: [say('dante', 'Paint’s drying. Go Fish while we wait. Monsters love a pond.', 'cards-deal')],
+        outro: [
+          say(
+            'dante',
+            'People ask me what a psychonaut is. It’s an explorer of the inner world — a German writer, Ernst Jünger, used the word decades ago. For me, it’s sketchbooks. Way cheaper than a rocket.',
+            'portrait-talk',
+          ),
+          say(
+            'dante',
+            'Freemasons, though? No idea. Are they the ones with the little red hats? Wait, that’s the Shriners. I think. Don’t quote me.',
+            'portrait-doubt',
+          ),
+        ],
+      }),
+      level('th-3', 5, {
+        title: 'The Hidden Heart',
+        game: 'spider',
+        finale: true,
+        objectiveText: 'Finale: clear one-suit Spider.',
+        setup: { seed: 1003, options: { suits: 1 }, deckId: 'dantes_world', boardId: 'artists_studio' },
+        intro: [
+          narrate(
+            'Dante kills the lights and switches on a black light. The reference sketch in front of you starts to glow in places the ink should not be.',
+          ),
+          say('dante', 'Okay. That’s either a clue or a very old smoothie stain.', 'portrait-surprise'),
+        ],
+        outro: [
+          narrate(
+            'Under the black light, a heart appears in the lace of Washington’s cuff, drawn in invisible ink. You hold up your card: the heart is the exact size of its second blank corner.',
+            'heart-mark',
+          ),
+          say(
+            'dante',
+            'A hidden heart! In a portrait of George Washington! This is the most romantic crime I’ve ever been part of.',
+            'portrait-surprise',
+          ),
+        ],
+        rewards: [credits(140), xp(170)],
+      }),
+    ],
+    rewards: [deck('dantes_world'), board('artists_studio'), stamp('th-neon-monster'), credits(400), xp(260)],
+    info: [
+      {
+        id: 'about-dantes-counter',
+        kind: 'note',
+        title: 'About this chapter',
+        text: 'Dante’s chapter happens at his art counter and is about his artwork. The anonymous commission, the client and the hidden heart are invented for the story.',
+      },
+    ],
+    unlockRequirements: { chapter: 'th-2' },
+  },
+
+  // ───────────────────────────── Chapter 4 (written) ─────────────────────────────
+  {
+    id: 'th-4',
+    index: 4,
+    title: 'On the Record',
+    locationId: 'jaks-backroom-parlor',
+    location: 'Jak’s Backroom Card Parlor',
+    description: 'Jak has filmed, filed and flourished his way to a reply nobody meant him to read.',
+    hostId: 'jak_gold',
+    cast: ['jak_gold'],
+    status: 'final',
+    music: 'high-roller',
+    mysteryThread:
+      'Jak’s public-records request came back almost entirely redacted, except for one name: Operation Thirteenth Hand. A receipt shows “G. W.” sent a custom card case to an unmarked office, and Jak’s slow-motion footage reveals the third mark — a diamond hidden in the card’s edge.',
+    beats: [
+      'You find Jak mid-video, narrating to his camera in a back room off Caroline Street.',
+      'He filmed the River Station lobby while chasing a records request about “unexplained activity” in the old cellars.',
+      'Among his papers: a receipt for a custom card case ordered by “G. W.”, paid in ones, shipped to an office with no name on the door.',
+      'The reply to his request is almost all black bars; one phrase survives: OPERATION THIRTEENTH HAND.',
+      'Jak films the card in a spring flourish at 240 frames a second; frame by frame, a diamond appears inside its edge — the third mark.',
+      'Jak sends you to the unmarked office: he is banned from the stairwell, and you are not.',
+    ],
+    artwork: {
+      backdrop: 'backgrounds/backroom_card_table/background.webp',
+      decks: ['jak_gold'],
+      tint: '#2c2a3a',
+      locationSprite: 'location-jaks-cardistry-parlor/location-jaks-cardistry-parlor',
+    },
+    intro: [
+      narrate(
+        'You knock on a back-room door off Caroline Street. A ring light snaps on in your face. So does a camera.',
+      ),
+      say(
+        'jak_gold',
+        'For the record: I’m Jak Gold, it’s today, and you have entered a space I am lawfully filming. Welcome to the parlor!',
+      ),
+      say('jak_gold', 'Dante sent you? Dante texted me eleven monster emojis. I inferred.'),
+      narrate('You show Jak the card. He stops talking, which, you sense, is rare.'),
+      say('jak_gold', 'That card is in my records request. Sit down. Deal in. I explain better with my hands busy.'),
+    ],
+    outro: [
+      say(
+        'jak_gold',
+        'Three corners: club, heart, diamond. The spade is at that address — I’d bet my best deck on it. I’m banned from the stairwell, legally speaking. You aren’t.',
+      ),
+      say('jak_gold', 'If anyone asks, I’m not following you. I’m filming in a public place you happen to be in.'),
+      narrate('You leave Jak rewatching his footage and head for the door with no name on it.'),
+    ],
+    levels: [
+      level('th-4', 1, {
+        title: 'Rolling',
+        game: 'war',
+        objectiveText: 'Win War against Jak Gold.',
+        setup: { seed: 2030, options: { opponent: 'jak_gold' }, deckId: 'jak_gold', boardId: 'backroom_card_table' },
+        intro: [say('jak_gold', 'War. Pure chance, zero skill, so nobody can say I cheated on camera. Rolling.')],
+        outro: [
+          say(
+            'jak_gold',
+            'Six months ago I asked the city, in writing, about “unexplained activity” in the old cellars under downtown. Cheap question. Weird answer.',
+          ),
+          say(
+            'jak_gold',
+            'First, nothing. Then a reply with more black ink than words. That’s when I started filming everybody’s lobby. Including your ranger’s. She was not a fan.',
+          ),
+        ],
+        info: [
+          {
+            id: 'cardistry',
+            kind: 'note',
+            title: 'Cardistry',
+            text: 'Cardistry is the performance art of card flourishes — cuts, spins, springs and fans done for their beauty, not to fool anyone. Unlike magic, it hides nothing. It grew into a worldwide community through online videos.',
+            sprite: 'jak-black-gold/card-spring-cascade',
+          },
+        ],
+      }),
+      level('th-4', 2, {
         title: 'Three-Card Draw',
         game: 'klondike',
         objectiveText: 'Complete Klondike, Draw 3.',
         setup: { seed: 1010, options: { draw: 3 }, deckId: 'jak_gold', boardId: 'backroom_card_table' },
-        intro: [{ who: 'jak_gold', text: 'Three at a time, like the pros. Keep up.' }],
+        intro: [
+          narrate(
+            'Jak hands you three practice decks shuffled together and asks you to sort them while he rehearses a one-handed cut.',
+          ),
+          say('jak_gold', 'Three at a time. Like my records requests.'),
+        ],
+        outro: [
+          narrate(
+            'Among Jak’s paperwork you find a receipt for a custom card case, ordered from his own card-case maker by a customer who signed as “G. W.”',
+            'cardistry-receipt',
+          ),
+          say('jak_gold', 'G. W.? My case guy said that customer paid in ones. Every bill, same face.'),
+          say(
+            'jak_gold',
+            'Two cases. One to Dante’s shop, stuffed with ones. One to an office above a shuttered storefront, no name on the door. I’ve filmed that door twice. It’s a very boring door.',
+          ),
+        ],
       }),
-      level('chapter-2', 3, {
-        title: 'Fishing for Chips',
+      level('th-4', 3, {
+        title: 'Public Records',
         game: 'go-fish',
         objective: { kind: 'books', min: 3 },
         objectiveText: 'Lay down 3 books against Jak Gold.',
@@ -256,387 +799,1293 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
           deckId: 'jak_gold',
           boardId: 'backroom_card_table',
         },
-        intro: [{ who: 'jak_gold', text: 'Go Fish? In my casino? Fine. Bank three books.' }],
+        intro: [say('jak_gold', 'Go Fish. You ask, I disclose. Or I don’t. Like a government agency.')],
+        outro: [
+          narrate(
+            'Jak spreads out the reply to his request for you. Whole paragraphs are blacked out. One phrase survived: OPERATION THIRTEENTH HAND.',
+            'redacted-reply',
+          ),
+          say(
+            'jak_gold',
+            'They redacted everything except the name. Either somebody was sloppy, or somebody wanted it read.',
+          ),
+        ],
+        info: [
+          {
+            id: 'foia-1966',
+            kind: 'history',
+            title: 'Freedom of Information',
+            text: 'The federal Freedom of Information Act became law in 1966. Agencies may withhold some information under nine exemptions — one reason released records often arrive with black bars.',
+            source: 'FOIA.gov (U.S. Department of Justice)',
+            sprite: 'cold-war-spycraft/redacted-document',
+          },
+        ],
       }),
-      level('chapter-2', 4, {
-        title: 'The Vault',
+      level('th-4', 4, {
+        title: 'Redacted',
         game: 'freecell',
-        objectiveText: 'Crack this FreeCell deal.',
-        setup: { seed: 1016, deckId: 'inspire', boardId: 'backroom_card_table' },
-        intro: [{ who: 'jules', text: 'Psst — the vault’s a FreeCell lock. Four cells, no luck.' }],
+        objectiveText: 'Solve this FreeCell deal.',
+        setup: { seed: 3310, deckId: 'jak_gold', boardId: 'backroom_card_table' },
+        intro: [
+          say(
+            'jak_gold',
+            'Every black bar has a width. Measure the gaps and you can guess the words. That’s not paranoia. That’s arithmetic.',
+          ),
+          narrate('You read the reply line by line while Jak measures black bars with a steel ruler.'),
+        ],
+        outro: [
+          say(
+            'jak_gold',
+            'Here’s what made it through: “four marks,” “waterfront,” and “thirteenth hand — not concluded.” Not concluded. Somebody never finished something.',
+          ),
+        ],
       }),
-      level('chapter-2', 5, {
-        title: 'All In',
-        game: 'war',
-        finale: true,
-        objectiveText: 'Finale: take every card from Jak Gold.',
-        setup: { seed: 2035, options: { opponent: 'jak_gold' }, deckId: 'jak_gold', boardId: 'backroom_card_table' },
-        intro: [{ who: 'jak_gold', text: 'All fifty-two on the felt. Winner takes the deck.' }],
-        rewards: [credits(140), xp(170)],
-      }),
-    ],
-    rewards: [
-      { kind: 'deck', id: 'jak_gold' },
-      { kind: 'board', id: 'jak_golds_casino' },
-      { kind: 'stamp', id: 'casino' },
-      credits(400),
-      xp(250),
-    ],
-    unlockRequirements: { chapter: 'chapter-1' },
-  },
-  {
-    id: 'chapter-3',
-    index: 3,
-    title: 'Dante’s World',
-    location: 'Neon Monster country',
-    description: 'A deck of grinning neon monsters turns up in the lost and found. It wants to play.',
-    hostId: 'jules',
-    artwork: { backdrop: 'backgrounds/menu/night.webp', decks: ['dantes_world'], tint: '#2a1240' },
-    intro: [
-      { who: 'jules', text: 'This deck winked at me. Cards shouldn’t wink.' },
-      { who: 'jules', text: 'Play its five games and maybe it’ll settle down.' },
-    ],
-    outro: [{ who: 'jules', text: 'It’s purring now. I think it likes you.' }],
-    levels: [
-      level('chapter-3', 1, {
-        title: 'Eye of the Spider',
+      level('th-4', 5, {
+        title: 'Slow Motion',
         game: 'spider',
-        objectiveText: 'Clear one-suit Spider.',
-        setup: { seed: 1003, options: { suits: 1 }, deckId: 'dantes_world', boardId: 'backroom_card_table' },
-        intro: [{ who: 'jules', text: 'Eight runs. Don’t stare back at the eyeballs.' }],
-      }),
-      level('chapter-3', 2, {
-        title: 'Monster Pond',
-        game: 'go-fish',
-        objective: { kind: 'books', min: 3 },
-        objectiveText: 'Lay down 3 books against two opponents.',
-        setup: {
-          options: { opponents: ['friendly_local', 'strategic'], difficulty: 'easy' },
-          deckId: 'dantes_world',
-          boardId: 'picnic_table',
-        },
-        intro: [{ who: 'friendly_local', text: 'Something in this pond has teeth. Three books and we’re out.' }],
-      }),
-      level('chapter-3', 3, {
-        title: 'Neon Columns',
-        game: 'klondike',
-        objectiveText: 'Complete Klondike, Draw 1.',
-        setup: { seed: 1013, options: { draw: 1 }, deckId: 'dantes_world', boardId: 'backroom_card_table' },
-        intro: [{ who: 'jules', text: 'Seven glowing columns. Red on black, black on red.' }],
-      }),
-      level('chapter-3', 4, {
-        title: 'Clash of the Kings',
-        game: 'war',
-        setup: {
-          seed: 2026,
-          options: { opponent: 'strategic' },
-          deckId: 'dantes_world',
-          boardId: 'rappahannock_riverside',
-        },
-        intro: [{ who: 'strategic', text: 'Your monsters against mine. May the higher card win.' }],
-      }),
-      level('chapter-3', 5, {
-        title: 'Monster Mash',
-        game: 'freecell',
         finale: true,
-        objectiveText: 'Finale: solve the monsters’ FreeCell.',
-        setup: { seed: 1018, deckId: 'dantes_world', boardId: 'backroom_card_table' },
-        intro: [{ who: 'jules', text: 'Last one. Put every monster back in its suit.' }],
+        objectiveText: 'Finale: clear one-suit Spider.',
+        setup: { seed: 3415, options: { suits: 1 }, deckId: 'jak_gold', boardId: 'backroom_card_table' },
+        intro: [
+          say(
+            'jak_gold',
+            'Let me borrow the card. One flourish. Spring, cascade, catch. My phone shoots two hundred and forty frames a second.',
+          ),
+          narrate(
+            'You hand Jak the card. It flies between his hands with fifty-two others and lands back on top of the deck.',
+          ),
+        ],
+        outro: [
+          narrate(
+            'Jak plays the footage back for you frame by frame. As the card bends mid-spring, a diamond shows inside its edge — printed so it appears only when the card flexes.',
+            'diamond-mark',
+          ),
+          say(
+            'jak_gold',
+            'Edge work. Old card cheats marked the edges of cards so they could read them from the side. This one marked itself for whoever bends it right.',
+          ),
+          say('jak_gold', 'I need a minute. That’s the best footage I’ve ever shot and I can’t post it.'),
+        ],
         rewards: [credits(150), xp(180)],
       }),
     ],
-    rewards: [{ kind: 'deck', id: 'dantes_world' }, { kind: 'stamp', id: 'dantes-world' }, credits(450), xp(280)],
-    unlockRequirements: { chapter: 'chapter-2' },
+    rewards: [
+      deck('jak_gold'),
+      board('jak_golds_casino'),
+      stamp('th-cards-camera'),
+      achievement('halfway-home'),
+      credits(450),
+      xp(280),
+    ],
+    unlockRequirements: { chapter: 'th-3' },
   },
+
+  // ───────────────────────────── Chapter 5 (written) ─────────────────────────────
   {
-    id: 'chapter-4',
-    index: 4,
-    title: 'The Woodlands',
-    location: 'Eastern Woodland Virginia',
-    description: 'Uncle Otto takes the cards upriver, into the forests and along the Rappahannock.',
-    hostId: 'otto',
+    id: 'th-5',
+    index: 5,
+    title: 'Operation Thirteenth Hand',
+    locationId: 'mrs-gray-safehouse',
+    location: 'Mrs. Gray’s Intelligence Safehouse',
+    description: 'A woman with no first name, a dossier with no happy ending, and a legend somebody borrowed.',
+    hostId: 'mrs_gray',
+    cast: ['mrs_gray'],
+    status: 'final',
+    music: 'window-rain',
+    mysteryThread:
+      'In the story, Operation Thirteenth Hand was a fictional 1962 investigation of a phantom card game in the cellars, using a local legend — a game George Washington never finished — as its cover. Its dossier maps the four marks around the old waterfront, and its sealed ace of spades holds the fourth mark. Its consultant was a Freemason from Lodge No. 4.',
+    beats: [
+      'You climb to the unmarked office; Mrs. Gray has been expecting someone with the card.',
+      'She explains dead drops: the four marks on Sophia’s map were used as one.',
+      'Her predecessor opened Operation Thirteenth Hand (fiction) in 1962 after reports of a card game in the cellars played by someone who left no footprints.',
+      'The dossier: survey photos pin each mark to a spot near the old waterfront; the legend of the unfinished game was the operation’s cover story.',
+      'The operation’s consultant was a Freemason from Lodge No. 4; Steve Gonzales keeps that research now.',
+      'The sealed ace of spades carries the fourth mark, the spade.',
+    ],
     artwork: {
-      backdrop: 'backgrounds/rappahannock_riverside/background.webp',
-      decks: ['eastern_woodlands'],
-      tint: '#33452d',
+      backdrop: 'backgrounds/mrs_gray_safehouse/background.webp',
+      decks: ['spycraft'],
+      tint: '#1d2328',
+      locationSprite: 'location-intelligence-safehouse/location-intelligence-safehouse',
     },
     intro: [
-      { who: 'otto', text: 'Pack light. We’re playing under the trees today.' },
-      { who: 'otto', text: 'Mind the river; it’s been known to take a card or two.' },
+      narrate('You climb the stairs above the shuttered storefront. The door with no name opens before you can knock.'),
+      say(
+        'mrs_gray',
+        'You’re late. A card case arrived here three days ago, signed “G. W.” Who is G. W.?',
+        'portrait-neutral',
+      ),
+      narrate('You show her the card with its three marked corners. She studies it without touching it.'),
+      say(
+        'mrs_gray',
+        'Do you know how long this office has waited for someone to walk in with that?',
+        'portrait-think',
+      ),
+      say(
+        'mrs_gray',
+        'The Hardigan boys sat in that chair once and asked me questions. They didn’t like the answers either. Sit.',
+        'portrait-doubt',
+      ),
     ],
-    outro: [{ who: 'otto', text: 'Fine playing. The woods will keep a seat for you.' }],
+    outro: [
+      say(
+        'mrs_gray',
+        'Go to the lodge. Ask Steve about the order. Ask Steve about anything, really. He answers at length.',
+        'portrait-talk',
+      ),
+      say('mrs_gray', 'This conversation didn’t happen. I’ll know if you say it did.', 'portrait-neutral'),
+      narrate('You walk down the stairs with four marked corners and no idea which one goes first.'),
+    ],
     levels: [
-      level('chapter-4', 1, {
-        title: 'Trailhead Klondike',
-        game: 'klondike',
-        objectiveText: 'Complete Klondike, Draw 1.',
-        setup: { seed: 1017, options: { draw: 1 }, deckId: 'eastern_woodlands', boardId: 'rappahannock_riverside' },
-        intro: [{ who: 'otto', text: 'A gentle start. Let the deck show you the trail.' }],
-      }),
-      level('chapter-4', 2, {
-        title: 'Bear Creek Battle',
-        game: 'war',
-        setup: {
-          seed: 2001,
-          options: { opponent: 'friendly_local' },
-          deckId: 'eastern_woodlands',
-          boardId: 'rappahannock_riverside',
-        },
-        intro: [{ who: 'friendly_local', text: 'Out here, even War feels friendly.' }],
-      }),
-      level('chapter-4', 3, {
-        title: 'The Heron’s Web',
-        game: 'spider',
-        objectiveText: 'Clear one-suit Spider.',
-        setup: { seed: 1002, options: { suits: 1 }, deckId: 'eastern_woodlands', boardId: 'rappahannock_riverside' },
-        intro: [{ who: 'otto', text: 'Patience, like the heron. Eight runs.' }],
-      }),
-      level('chapter-4', 4, {
-        title: 'Riverbank Fishing',
-        game: 'go-fish',
-        objectiveText: 'Win Go Fish against one opponent.',
-        setup: {
-          options: { opponents: ['friendly_local'], difficulty: 'easy' },
-          deckId: 'eastern_woodlands',
-          boardId: 'rappahannock_riverside',
-        },
-        intro: [{ who: 'otto', text: 'Real fishing’s slow. This kind is faster.' }],
-      }),
-      level('chapter-4', 5, {
-        title: 'Campfire FreeCell',
+      level('th-5', 1, {
+        title: 'Dead Drop',
         game: 'freecell',
+        objectiveText: 'Solve this FreeCell deal.',
+        setup: { seed: 1017, deckId: 'spycraft', boardId: 'mrs_gray_safehouse' },
+        intro: [
+          say(
+            'mrs_gray',
+            'A dead drop is a place two people use so they never have to meet. This deal is one. Solve it.',
+            'cards-deal',
+          ),
+        ],
+        outro: [
+          say(
+            'mrs_gray',
+            'The four marks on your ranger’s map weren’t decoration. Someone used them as a dead drop. A club at the river, a heart downtown. You see the pattern.',
+            'portrait-talk',
+          ),
+          say('mrs_gray', 'I’m not saying who. I’m asking you who.', 'portrait-doubt'),
+        ],
+        info: [
+          {
+            id: 'hollow-nickel',
+            kind: 'history',
+            title: 'The hollow nickel',
+            text: 'In 1953 a Brooklyn newspaper boy dropped a nickel that split open to reveal a tiny photograph of coded numbers. The “hollow nickel” case eventually led the FBI to the Soviet spy Rudolf Abel in 1957.',
+            source: 'FBI, “Hollow Nickel/Rudolph Abel” (fbi.gov)',
+            sprite: 'cold-war-spycraft/film-reel',
+          },
+        ],
+      }),
+      level('th-5', 2, {
+        title: 'Interview',
+        game: 'war',
+        objectiveText: 'Win War against Mrs. Gray.',
+        setup: { seed: 2010, options: { opponent: 'mrs_gray' }, deckId: 'spycraft', boardId: 'mrs_gray_safehouse' },
+        intro: [say('mrs_gray', 'War. I’ll ask the questions. You’ll turn the cards.', 'portrait-neutral')],
+        outro: [
+          say(
+            'mrs_gray',
+            'Operation Thirteenth Hand. My predecessor opened the file in 1962: reports of a card game in the cellars under the old town, played by someone who left no footprints.',
+            'portrait-think',
+          ),
+          say(
+            'mrs_gray',
+            'They found a card with blank corners and a legend. They closed the file as “unexplained.” I inherited it with the desk. I have never liked that word.',
+            'portrait-doubt',
+          ),
+        ],
+      }),
+      level('th-5', 3, {
+        title: 'Cipher Draw',
+        game: 'klondike',
+        objectiveText: 'Complete Klondike, Draw 3.',
+        setup: { seed: 3205, options: { draw: 3 }, deckId: 'spycraft', boardId: 'mrs_gray_safehouse' },
+        intro: [
+          narrate(
+            'Mrs. Gray hands you a deck from the operation’s files. A few cards have pinholes in them. She watches to see if you notice.',
+          ),
+          say('mrs_gray', 'Sort it. Tell me what doesn’t belong. Or don’t, and I’ll learn something about you anyway.'),
+        ],
+        outro: [
+          narrate(
+            'Mrs. Gray slides a gray folder across the desk to you, stamped THIRTEENTH HAND. Inside are survey photos of four suit marks, each pinned to a spot near the old waterfront.',
+            'thirteenth-hand-dossier',
+          ),
+          say(
+            'mrs_gray',
+            'The operation needed a cover story, so it borrowed a local legend: a card game George Washington never finished. Twelve hands played. The thirteenth never dealt.',
+            'portrait-talk',
+          ),
+          say('mrs_gray', 'A legend, of course. Mostly.', 'portrait-think'),
+        ],
+        info: [
+          {
+            id: 'map-decks',
+            kind: 'history',
+            title: 'Escape-map playing cards',
+            text: 'During World War II, the United States Playing Card Company helped make special decks for Allied prisoners of war. Soaked in water, the cards peeled apart to reveal pieces of an escape map.',
+            source: 'The National WWII Museum',
+            sprite: 'cold-war-spycraft/classified-folder',
+          },
+        ],
+      }),
+      level('th-5', 4, {
+        title: 'Debrief',
+        game: 'go-fish',
+        objective: { kind: 'books', min: 3 },
+        objectiveText: 'Lay down 3 books against Mrs. Gray.',
+        setup: {
+          options: { opponents: ['mrs_gray'], difficulty: 'easy' },
+          deckId: 'spycraft',
+          boardId: 'mrs_gray_safehouse',
+        },
+        intro: [say('mrs_gray', 'Debrief. You ask me for cards. I decide what you’re cleared to know.', 'cards-deal')],
+        outro: [
+          say(
+            'mrs_gray',
+            'The operation had a consultant: a Freemason from Lodge No. 4. He knew the history cold, and refused to believe a word of the legend.',
+            'portrait-think',
+          ),
+          say(
+            'mrs_gray',
+            'The lodge still keeps his notes. The man who reads them now is Steve Gonzales. Media work in Washington, a Norwich man, takes history seriously. You’ll like him. I’m still deciding.',
+            'portrait-talk',
+          ),
+        ],
+      }),
+      level('th-5', 5, {
+        title: 'The Ace of Spades',
+        game: 'spider',
         finale: true,
-        objectiveText: 'Finale: solve FreeCell by the fire.',
-        setup: { seed: 1003, deckId: 'eastern_woodlands', boardId: 'rappahannock_riverside' },
-        intro: [{ who: 'otto', text: 'One more by firelight, then home.' }],
+        objectiveText: 'Finale: clear one-suit Spider.',
+        setup: { seed: 1009, options: { suits: 1 }, deckId: 'spycraft', boardId: 'mrs_gray_safehouse' },
+        intro: [
+          narrate('You reach the last folder in the dossier. It is sealed, and the seal is a playing card.'),
+          say(
+            'mrs_gray',
+            'Finish this, and you may break the seal. I’ve waited a long time to watch someone else’s face when they do.',
+            'portrait-neutral',
+          ),
+        ],
+        outro: [
+          narrate(
+            'You break the seal. It is an ace of spades with an engraved centre — and in its corner, the fourth mark, cut to fit your card.',
+            'spade-mark',
+          ),
+          say(
+            'mrs_gray',
+            'Four marks. Four corners. And still no order to set them in. That’s what the lodge is for.',
+            'portrait-surprise',
+          ),
+        ],
+        info: [
+          {
+            id: 'ace-of-spades-duty',
+            kind: 'history',
+            title: 'Why the ace of spades is fancy',
+            text: 'For well over a century, British card makers had to use an ace of spades printed by the government to show that the tax on playing cards had been paid. That is one reason the ace of spades is still the most decorated card in the deck.',
+            source: 'The British Museum; Worshipful Company of Makers of Playing Cards',
+            sprite: 'cold-war-spycraft/spycraft-ace-of-spades',
+          },
+        ],
         rewards: [credits(160), xp(190)],
       }),
     ],
     rewards: [
-      { kind: 'deck', id: 'eastern_woodlands' },
-      { kind: 'variant', id: 'eastern_woodlands@turtle' },
-      { kind: 'board', id: 'woodland_clearing' },
-      { kind: 'stamp', id: 'woodlands' },
-      { kind: 'achievement', id: 'halfway-home' },
+      deck('spycraft'),
+      board('mrs_gray_safehouse'),
+      board('safehouse'),
+      stamp('th-dossier'),
+      achievement('story-ch5'),
       credits(500),
       xp(300),
     ],
-    unlockRequirements: { chapter: 'chapter-3' },
+    unlockRequirements: { chapter: 'th-4' },
   },
+
+  // ───────────────────────────── Chapter 6 (written) ─────────────────────────────
   {
-    id: 'chapter-5',
-    index: 5,
-    title: 'The Safehouse',
-    location: 'A back room with no name on the door',
-    description: 'Someone has been leaving coded cards under the parlor door. Time to answer.',
-    hostId: 'jules',
-    artwork: { backdrop: 'backgrounds/menu/night.webp', decks: ['spycraft'], tint: '#1d2328' },
-    intro: [
-      { who: 'jules', text: 'Coded cards. Fingerprint aces. Somebody’s testing us.' },
-      { who: 'jules', text: 'We play their five games, we find the safehouse.' },
-    ],
-    outro: [{ who: 'jules', text: 'Message received. And our new friends want a rematch.' }],
-    levels: [
-      level('chapter-5', 1, {
-        title: 'Dead Drop',
-        game: 'freecell',
-        objectiveText: 'Solve this FreeCell deal.',
-        setup: { seed: 1017, deckId: 'spycraft', boardId: 'backroom_card_table' },
-        intro: [{ who: 'jules', text: 'The drop is a FreeCell. Clean, quiet, no witnesses.' }],
-      }),
-      level('chapter-5', 2, {
-        title: 'Codebreaker',
-        game: 'war',
-        setup: { seed: 2010, options: { opponent: 'strategic' }, deckId: 'spycraft', boardId: 'backroom_card_table' },
-        intro: [{ who: 'strategic', text: 'Every card a cipher. Every war a negotiation.' }],
-      }),
-      level('chapter-5', 3, {
-        title: 'Cipher Draw',
-        game: 'klondike',
-        objectiveText: 'Complete Klondike, Draw 3.',
-        setup: { seed: 1013, options: { draw: 3 }, deckId: 'spycraft', boardId: 'backroom_card_table' },
-        intro: [{ who: 'jules', text: 'Three cards at a time. The pattern’s in there.' }],
-      }),
-      level('chapter-5', 4, {
-        title: 'Debrief',
-        game: 'go-fish',
-        objective: { kind: 'books', min: 3 },
-        objectiveText: 'Lay down 3 books against the Strategist.',
-        setup: {
-          options: { opponents: ['strategic'], difficulty: 'easy' },
-          deckId: 'spycraft',
-          boardId: 'backroom_card_table',
-        },
-        intro: [{ who: 'strategic', text: 'Questions, questions. Got any sevens?' }],
-      }),
-      level('chapter-5', 5, {
-        title: 'The Web of Eight',
-        game: 'spider',
-        finale: true,
-        objectiveText: 'Finale: clear one-suit Spider.',
-        setup: { seed: 1009, options: { suits: 1 }, deckId: 'spycraft', boardId: 'backroom_card_table' },
-        intro: [{ who: 'jules', text: 'The safehouse door has eight locks. Spider opens them all.' }],
-        rewards: [credits(170), xp(200)],
-      }),
-    ],
-    rewards: [
-      { kind: 'deck', id: 'spycraft' },
-      { kind: 'board', id: 'safehouse' },
-      { kind: 'stamp', id: 'safehouse' },
-      credits(550),
-      xp(320),
-    ],
-    unlockRequirements: { chapter: 'chapter-4' },
-  },
-  {
-    id: 'chapter-6',
+    id: 'th-6',
     index: 6,
-    title: 'The Builders',
-    location: 'The old lodge on Princess Anne Street',
-    description: 'Uncle Otto’s old friends keep a study full of compasses, squares and very old card tables.',
-    hostId: 'otto',
+    title: 'Square and Compasses',
+    locationId: 'masonic-lodge-no4',
+    location: 'Fredericksburg Masonic Lodge No. 4',
+    description: 'Steve Gonzales separates what happened at the lodge in 1752 from what someone invented later.',
+    hostId: 'steve_gonzales',
+    cast: ['steve_gonzales', 'sophia'],
+    status: 'final',
+    music: 'silent-study-hours',
+    mysteryThread:
+      'Steve separates documented history (Washington’s initiation here in 1752, the Capitol cornerstone, the Culper Ring) from the story’s legend: the card’s suit cipher is not Masonic. With compasses, Sophia’s map and the dossier’s survey, he reads the order the card was made to be set in — spade, diamond, heart, club, downstream — and raking light raises two words from the ledger’s blank line: KENMORE — ASK MOTHER.',
+    beats: [
+      'You meet Steve Gonzales on the steps of the historic lodge where George Washington was made a Mason in 1752.',
+      'Steve sets the ground rules: the lodge and Washington’s Masonic history are real; the card, the legend and the cipher are not Masonic.',
+      'Masonic symbols have public meanings (the square, the compasses, the level), and none of them is a playing card.',
+      'Sophia arrives to check Steve’s sources. They hold up, to her mild annoyance.',
+      'Compasses, Sophia’s map and the dossier’s survey give the order: you followed the marks upriver; the card reads downstream — spade, diamond, heart, club.',
+      'Steve’s raking light raises an impression on the ledger’s blank thirteenth line: KENMORE — ASK MOTHER.',
+    ],
     artwork: {
-      decks: ['classic'],
+      backdrop: 'backgrounds/masonic_lodge_no4/background.webp',
+      decks: ['freemasonry'],
       tint: '#24304a',
-      placeholder: 'Freemasonry artwork coming soon',
+      locationSprite: 'location-masonic-lodge/location-masonic-lodge',
     },
     intro: [
-      { who: 'otto', text: 'The builders measure twice and deal once.' },
-      { who: 'otto', text: 'Their deck isn’t finished yet, so we’ll use the house cards.' },
+      narrate(
+        'You stop outside Fredericksburg Masonic Lodge No. 4. A tall man in a dark coat is waiting on the steps with a camera bag and a very old book.',
+      ),
+      say(
+        'steve_gonzales',
+        'You must be the one with the card. Steve Gonzales. Mrs. Gray called. She doesn’t call.',
+        'portrait-greet',
+      ),
+      say(
+        'steve_gonzales',
+        'Ground rules. This lodge is real. George Washington was made a Mason here on November 4, 1752. He was twenty.',
+        'portrait-talk',
+      ),
+      say(
+        'steve_gonzales',
+        'Your card, the legend, the cipher — none of that is Masonic. Today I show you exactly where the history stops and the story starts.',
+        'portrait-think',
+      ),
+      say('steve_gonzales', 'And then, I think, which order those suits go in. Vamos.', 'cards-reveal'),
     ],
-    outro: [{ who: 'otto', text: 'Square and level. They’ve given you a key to the study.' }],
+    outro: [
+      say(
+        'steve_gonzales',
+        'So. History: Washington was made a Mason here, laid a cornerstone, ran spies. Legend: a ghost, a card and a game he never finished. Keep them in separate pockets.',
+        'portrait-talk',
+      ),
+      say(
+        'steve_gonzales',
+        'Mrs. Gray says the marks lead to tunnels. When you need a guide down there, call me. Bring the ranger’s map.',
+        'portrait-neutral',
+      ),
+      narrate('You leave the lodge with Steve’s diagram in your pocket and the name of a house in your head.'),
+    ],
     levels: [
-      level('chapter-6', 1, {
+      level('th-6', 1, {
         title: 'Cornerstone',
         game: 'klondike',
         objectiveText: 'Complete Klondike, Draw 1.',
-        setup: { seed: 1021, options: { draw: 1 }, deckId: 'classic', boardId: 'backroom_card_table' },
-        intro: [{ who: 'otto', text: 'Lay the first stone: Aces up.' }],
+        setup: { seed: 1021, options: { draw: 1 }, deckId: 'freemasonry', boardId: 'masonic_lodge_no4' },
+        intro: [
+          say(
+            'steve_gonzales',
+            'Masons talk about cornerstones: the first stone you build on. Washington laid the Capitol’s in 1793, in a Masonic ceremony. Documented. Now lay yours.',
+            'portrait-talk',
+          ),
+        ],
+        outro: [
+          say(
+            'steve_gonzales',
+            'The square stands for acting fairly; the compasses, for keeping yourself within bounds. Public symbols with public meanings. Any library will tell you.',
+            'portrait-neutral',
+          ),
+          say(
+            'steve_gonzales',
+            'Nobody ever taught a Masonic lesson with a playing card. That’s your first sign the cipher is borrowed costume.',
+            'portrait-doubt',
+          ),
+        ],
+        info: [
+          {
+            id: 'capitol-cornerstone',
+            kind: 'history',
+            title: 'The Capitol cornerstone',
+            text: 'On September 18, 1793, George Washington laid the cornerstone of the United States Capitol in a ceremony conducted by Freemasons.',
+            source: 'Architect of the Capitol',
+            sprite: 'lodge-relics/carved-stone-tablet',
+          },
+        ],
       }),
-      level('chapter-6', 2, {
+      level('th-6', 2, {
         title: 'Level and Plumb',
         game: 'war',
+        objectiveText: 'Win War against Steve Gonzales.',
         setup: {
           seed: 2021,
-          options: { opponent: 'friendly_local' },
-          deckId: 'classic',
-          boardId: 'backroom_card_table',
+          options: { opponent: 'steve_gonzales' },
+          deckId: 'freemasonry',
+          boardId: 'masonic_lodge_no4',
         },
-        intro: [{ who: 'friendly_local', text: 'Straight and fair: the higher card builds.' }],
+        intro: [
+          say(
+            'steve_gonzales',
+            'The level reminds us we meet as equals. War is the most level game there is. Nobody gets to be clever.',
+            'cards-shuffle',
+          ),
+        ],
+        outro: [
+          say(
+            'steve_gonzales',
+            'Before media and visual effects, I studied at Norwich — the oldest private military college in the country. Intelligence history sticks to you.',
+            'portrait-talk',
+          ),
+          say(
+            'steve_gonzales',
+            'Washington ran real spies: the Culper Ring, codes, invisible ink. If he’d wanted to hide something, he’d have done better than four suits on a card.',
+            'portrait-think',
+          ),
+        ],
+        info: [
+          {
+            id: 'norwich',
+            kind: 'history',
+            title: 'Norwich University',
+            text: 'Norwich University in Vermont, founded in 1819 by Captain Alden Partridge, is the oldest private military college in the United States and is recognized as the birthplace of ROTC.',
+            source: 'Norwich University',
+          },
+        ],
       }),
-      level('chapter-6', 3, {
-        title: 'The Compass Rose',
-        game: 'freecell',
-        objectiveText: 'Solve this FreeCell deal.',
-        setup: { seed: 1009, deckId: 'classic', boardId: 'backroom_card_table' },
-        intro: [{ who: 'otto', text: 'Four cells, four corners. Plan every move.' }],
-      }),
-      level('chapter-6', 4, {
-        title: 'Lodge Night',
+      level('th-6', 3, {
+        title: 'Sources',
         game: 'go-fish',
         objective: { kind: 'books', min: 3 },
-        objectiveText: 'Lay down 3 books against two opponents.',
+        objectiveText: 'Lay down 3 books against Steve and Sophia.',
         setup: {
-          options: { opponents: ['friendly_local', 'strategic'], difficulty: 'easy' },
-          deckId: 'classic',
-          boardId: 'picnic_table',
+          options: { opponents: ['steve_gonzales', 'sophia'], difficulty: 'easy' },
+          deckId: 'freemasonry',
+          boardId: 'masonic_lodge_no4',
         },
-        intro: [{ who: 'otto', text: 'Members’ night. Bring three books to the table.' }],
+        intro: [
+          narrate('The door opens behind you and Sophia walks in, carrying a pencil and a look you recognise.'),
+          say(
+            'sophia',
+            'Mrs. Gray says you’re consulting a Freemason. I’m here to check his footnotes.',
+            'portrait-doubt',
+          ),
+          say('steve_gonzales', 'Ranger. Welcome. Please check everything.', 'portrait-greet'),
+        ],
+        outro: [
+          say('sophia', 'His dates are right. His sources are real. I hate it a little.', 'portrait-think'),
+          say('steve_gonzales', 'Nobody has asked for my bibliography in years. I’m moved.', 'portrait-greet'),
+          say('sophia', 'Don’t be.', 'portrait-neutral'),
+        ],
+        info: [
+          {
+            id: 'pigpen-cipher',
+            kind: 'history',
+            title: 'The real “Masonic cipher”',
+            text: 'The pigpen cipher, which swaps letters for shapes taken from a grid, was used by some Freemasons in the 1700s and is often called the Masonic cipher. It is publicly documented — and it uses no playing cards.',
+            source: 'Scottish Rite Masonic Museum & Library',
+            sprite: 'lodge-relics/columned-parchment',
+          },
+          {
+            id: 'shriners',
+            kind: 'history',
+            title: 'The red hats',
+            text: 'The red fez Dante remembered belongs to the Shriners, a fraternity whose members are Freemasons. Since 1922 the Shriners have run a network of children’s hospitals.',
+            source: 'Shriners International; Shriners Children’s',
+          },
+        ],
       }),
-      level('chapter-6', 5, {
+      level('th-6', 4, {
+        title: 'The Cipher',
+        game: 'freecell',
+        objectiveText: 'Solve this FreeCell deal.',
+        setup: { seed: 1009, deckId: 'freemasonry', boardId: 'masonic_lodge_no4' },
+        intro: [
+          say(
+            'steve_gonzales',
+            'Now the good part. Sophia’s map, Mrs. Gray’s survey, my compasses. Hold that corner down.',
+            'portrait-think',
+          ),
+          narrate('You pin Sophia’s map flat while Steve lays the dossier’s survey photos over it, one on each mark.'),
+        ],
+        outro: [
+          narrate(
+            'Steve sets his compasses on the lodge and swings them across the map for you. The four marks sit on the corners of a square: the spade to the north, then the diamond, the heart and the club, following the river downstream.',
+            'lodge-sketchbook-page',
+          ),
+          say(
+            'steve_gonzales',
+            'You came upriver: club, heart, diamond, spade. The card reads downstream. Spade, diamond, heart, club.',
+            'portrait-surprise',
+          ),
+          say(
+            'steve_gonzales',
+            'Whoever made this knew the town, the river, and just enough about Masons to borrow our tools. Not our secrets. We don’t have the kind they wanted.',
+            'portrait-talk',
+          ),
+        ],
+      }),
+      level('th-6', 5, {
         title: 'The Keystone',
         game: 'spider',
         finale: true,
         objectiveText: 'Finale: clear one-suit Spider.',
-        setup: { seed: 1014, options: { suits: 1 }, deckId: 'classic', boardId: 'backroom_card_table' },
-        intro: [{ who: 'otto', text: 'The keystone holds the arch. Eight runs hold this one.' }],
-        rewards: [credits(180), xp(210)],
-      }),
-    ],
-    rewards: [{ kind: 'board', id: 'masonic_study' }, { kind: 'stamp', id: 'builders' }, credits(600), xp(340)],
-    unlockRequirements: { chapter: 'chapter-5' },
-  },
-  {
-    id: 'chapter-7',
-    index: 7,
-    title: 'Artist’s Alley',
-    location: 'The studios behind the parlor',
-    description: 'The people who draw the cards open their studios for one night only.',
-    hostId: 'ivy',
-    artwork: {
-      backdrop: 'backgrounds/picnic_table/background.webp',
-      decks: ['inspire', 'classic'],
-      tint: '#c8643f',
-    },
-    intro: [
-      { who: 'ivy', text: 'Every deck you’ve played started on someone’s drawing table.' },
-      { who: 'ivy', text: 'Tonight the studios are open. Let’s play in all of them.' },
-    ],
-    outro: [
-      { who: 'ivy', text: 'That’s the whole alley. The parlor’s story is yours now.' },
-      { who: 'mae', text: 'Welcome home, partner.' },
-    ],
-    levels: [
-      level('chapter-7', 1, {
-        title: 'Open Studio',
-        game: 'go-fish',
-        objective: { kind: 'books', min: 2 },
-        objectiveText: 'Lay down 2 books against three opponents.',
-        setup: {
-          options: { opponents: ['jak_gold', 'friendly_local', 'strategic'], difficulty: 'easy' },
-          deckId: 'inspire',
-          boardId: 'picnic_table',
-        },
-        intro: [{ who: 'ivy', text: 'Everybody’s here! A big table of Go Fish to start.' }],
-      }),
-      level('chapter-7', 2, {
-        title: 'Ink and Paper',
-        game: 'klondike',
-        objectiveText: 'Complete Klondike, Draw 3.',
-        setup: { seed: 1018, options: { draw: 3 }, deckId: 'inspire', boardId: 'picnic_table' },
-        intro: [{ who: 'ivy', text: 'Black and white INSPIRE cards. Clean lines only.' }],
-      }),
-      level('chapter-7', 3, {
-        title: 'Print Run',
-        game: 'war',
-        setup: { seed: 2024, options: { opponent: 'jak_gold' }, deckId: 'classic', boardId: 'picnic_table' },
-        intro: [{ who: 'jak_gold', text: 'Even I started with a standard deck. Prove it still bites.' }],
-      }),
-      level('chapter-7', 4, {
-        title: 'The Proof Sheet',
-        game: 'freecell',
-        objectiveText: 'Solve this FreeCell deal.',
-        setup: { seed: 1019, deckId: 'inspire', boardId: 'picnic_table' },
-        intro: [{ who: 'ivy', text: 'Check every card on the proof before it goes to print.' }],
-      }),
-      level('chapter-7', 5, {
-        title: 'Gallery Opening',
-        game: 'spider',
-        finale: true,
-        objectiveText: 'Finale: clear one-suit Spider.',
-        setup: { seed: 1001, options: { suits: 1 }, deckId: 'inspire', boardId: 'picnic_table' },
-        intro: [{ who: 'ivy', text: 'Last piece for the gallery wall. Make it count.' }],
-        rewards: [credits(200), xp(240)],
+        setup: { seed: 1014, options: { suits: 1 }, deckId: 'freemasonry', boardId: 'masonic_lodge_no4' },
+        intro: [
+          say(
+            'steve_gonzales',
+            'One more thing. The ledger’s blank thirteenth line. Blank to the eye, maybe. I light film for a living.',
+            'portrait-neutral',
+          ),
+          narrate(
+            'Steve angles a light panel low across the ledger, so every dent in the paper casts a shadow toward you.',
+          ),
+        ],
+        outro: [
+          narrate(
+            'In the raking light, you see letters pressed into the blank line, written once with a dry pen: KENMORE — ASK MOTHER.',
+            'ledger-impression',
+          ),
+          say('steve_gonzales', 'Kenmore. Betty Washington Lewis’s house. And “Mother” would be…', 'portrait-surprise'),
+          say('steve_gonzales', 'No. Well. Maybe. Bring good manners. She’ll expect them.', 'portrait-think'),
+        ],
+        rewards: [credits(170), xp(200)],
       }),
     ],
     rewards: [
-      { kind: 'board', id: 'artists_studio' },
-      { kind: 'stamp', id: 'artists-alley' },
-      { kind: 'achievement', id: 'chronicles-complete' },
+      deck('freemasonry'),
+      board('masonic_lodge_no4'),
+      board('masonic_study'),
+      stamp('th-square-compasses'),
+      credits(550),
+      xp(320),
+    ],
+    info: [
+      {
+        id: 'lodge-history-vs-story',
+        kind: 'note',
+        title: 'History and story',
+        text: 'Washington’s initiation at the Fredericksburg lodge in 1752 is documented history. The card, its suit cipher, the legend and the lodge’s part in the mystery are invented for the story; no secret card ceremony is a real Masonic practice.',
+      },
+    ],
+    unlockRequirements: { chapter: 'th-5' },
+  },
+
+  // ───────────────────────────── Chapter 7 (written) ─────────────────────────────
+  {
+    id: 'th-7',
+    index: 7,
+    title: 'A Mother’s Opinion',
+    locationId: 'kenmore',
+    location: 'Kenmore',
+    description: 'At her daughter’s house, Mary Ball Washington’s ghost has a few things to say about her son.',
+    hostId: 'mary_ball_washington',
+    cast: ['mary_ball_washington'],
+    status: 'final',
+    music: 'midnight-tea',
+    mysteryThread:
+      'At Kenmore — her daughter Betty’s house, not hers — Mary Ball Washington’s ghost tells the story’s version of the legend: twelve hands of cards with her son, scored in her own ledger, and George walking away before the thirteenth because he was losing. She gives you a letter for him and the iron key to the cellar door where he waits.',
+    beats: [
+      'You visit Kenmore, the home of Fielding Lewis and Betty Washington Lewis, famous for its plaster ceilings.',
+      'Mary Ball Washington’s ghost is visiting her daughter’s house; she corrects you that her own was on Charles Street.',
+      'She tells the legend: she kept the score in the ledger; George left before the thirteenth hand because he was losing.',
+      'She seals a letter to George: “You owe me a hand.”',
+      'She entrusts you with the iron key to a cellar door on the old waterfront, and warns that George never concedes gracefully.',
+    ],
+    artwork: {
+      backdrop: 'backgrounds/kenmore_parlor/background.webp',
+      decks: ['fredericksburg'],
+      tint: '#4a3a52',
+      locationSprite: 'location-kenmore-mansion/location-kenmore-mansion',
+    },
+    intro: [
+      narrate(
+        'You step into Kenmore’s parlor. Sculpted plaster leaves bloom across the ceiling above you. Beneath it, a woman in a lace cap is already seated at the card table.',
+      ),
+      say('mary_ball_washington', 'You are standing on my daughter’s floor. Wipe your feet.', 'portrait-neutral'),
+      narrate('You show her the card and the ledger’s last line. She does not look surprised.'),
+      say(
+        'mary_ball_washington',
+        '“Ask Mother.” Of course he wrote that. A grown man, a general, and still sending people to ask Mother.',
+        'portrait-talk',
+      ),
+      say(
+        'mary_ball_washington',
+        'Before we go on: I did not live here. This was Betty’s house — Betty and Fielding’s. Mine was on Charles Street, a short walk away. Do get it right.',
+        'portrait-doubt',
+      ),
+      say(
+        'mary_ball_washington',
+        'Now sit. I do not discuss family business with people who cannot hold their cards properly.',
+        'cards-deal',
+      ),
+    ],
+    outro: [
+      say(
+        'mary_ball_washington',
+        'Take your friends: the ranger’s map, the man with the camera, the Mason, the boy with the glowing paint. George will try to frighten you. He is very bad at it.',
+        'portrait-think',
+      ),
+      say('mary_ball_washington', 'I may look in at the end. Not to help. To watch.', 'portrait-neutral'),
+      narrate(
+        'You leave Kenmore with an iron key, a sealed letter and the distinct feeling of having been politely scolded.',
+      ),
+    ],
+    levels: [
+      level('th-7', 1, {
+        title: 'Plaster Ceilings',
+        game: 'klondike',
+        objectiveText: 'Complete Klondike, Draw 3.',
+        setup: { seed: 3206, options: { draw: 3 }, deckId: 'fredericksburg', boardId: 'kenmore_parlor' },
+        intro: [
+          say(
+            'mary_ball_washington',
+            'Betty’s ceilings took the plasterers months. You may sort cards while you admire them. Quietly.',
+            'portrait-talk',
+          ),
+        ],
+        outro: [
+          say(
+            'mary_ball_washington',
+            'Fielding spent nearly everything they had making guns for the Revolution. People remember the ceilings. I remember the bills.',
+            'portrait-think',
+          ),
+        ],
+        info: [
+          {
+            id: 'fredericksburg-gunnery',
+            kind: 'history',
+            title: 'The Fredericksburg gunnery',
+            text: 'During the Revolutionary War, Fielding Lewis helped run the Fredericksburg Gun Manufactory to arm Virginia’s troops, spending much of his own fortune on it.',
+            source: 'George Washington Foundation (Kenmore)',
+            sprite: 'kenmore-heirlooms/carved-plaster-fragment',
+          },
+        ],
+      }),
+      level('th-7', 2, {
+        title: 'Family History',
+        game: 'go-fish',
+        objective: { kind: 'books', min: 3 },
+        objectiveText: 'Lay down 3 books against Mary Ball Washington.',
+        setup: {
+          options: { opponents: ['mary_ball_washington'], difficulty: 'easy' },
+          deckId: 'fredericksburg',
+          boardId: 'kenmore_parlor',
+        },
+        intro: [
+          say('mary_ball_washington', 'Go Fish. A child’s game. George played it badly as a child, too.', 'cards-deal'),
+        ],
+        outro: [
+          say(
+            'mary_ball_washington',
+            'Very well, the legend. George and I played cards at this table. Twelve hands. I kept the score in that ledger — somebody in this family had to.',
+            'portrait-talk',
+          ),
+          say(
+            'mary_ball_washington',
+            'He was losing. Before the thirteenth hand, he remembered urgent business in Williamsburg. On a Sunday.',
+            'portrait-doubt',
+          ),
+        ],
+        info: [
+          {
+            id: 'washington-cards',
+            kind: 'history',
+            title: 'Washington at cards',
+            text: 'George Washington enjoyed cards. His account books record small sums he won and lost at games such as loo and whist.',
+            source: 'George Washington’s Mount Vernon',
+            sprite: 'mystery-parlor/leather-journal',
+          },
+        ],
+      }),
+      level('th-7', 3, {
+        title: 'A Mother’s War',
+        game: 'war',
+        objectiveText: 'Win War against Mary Ball Washington.',
+        setup: {
+          seed: 3506,
+          options: { opponent: 'mary_ball_washington' },
+          deckId: 'fredericksburg',
+          boardId: 'kenmore_parlor',
+        },
+        intro: [
+          say(
+            'mary_ball_washington',
+            'War. My son made a career of it. Let us see whether you have the stomach.',
+            'portrait-neutral',
+          ),
+        ],
+        outro: [
+          say(
+            'mary_ball_washington',
+            'You play as if you mean it. Good. He never could abide anyone who meant it more than he did.',
+            'portrait-think',
+          ),
+          say(
+            'mary_ball_washington',
+            'He is down there, under the town, waiting for someone to bring that card and finish what he ran from. He would rather haunt a cellar than lose to his mother.',
+            'portrait-talk',
+          ),
+        ],
+      }),
+      level('th-7', 4, {
+        title: 'Letters',
+        game: 'freecell',
+        objectiveText: 'Solve this FreeCell deal.',
+        setup: { seed: 1019, deckId: 'fredericksburg', boardId: 'kenmore_parlor' },
+        intro: [
+          narrate(
+            'Mary’s ghost sets a bundle of ribbon-tied letters beside you. Each is addressed in the same firm hand: To George.',
+          ),
+          say('mary_ball_washington', 'Sort my cards, and I shall sort my thoughts.', 'portrait-think'),
+        ],
+        outro: [
+          narrate(
+            'She chooses one letter, seals it with wax and hands it to you. On the front: George. On the back: You owe me a hand.',
+            'mary-letter',
+          ),
+          say('mary_ball_washington', 'Give him that when he begins to sulk. He will begin to sulk.', 'portrait-doubt'),
+        ],
+        info: [
+          {
+            id: 'meditation-rock',
+            kind: 'history',
+            title: 'Meditation Rock',
+            text: 'Mary Ball Washington died in 1789 and is buried in Fredericksburg near Meditation Rock, a spot where, by tradition, she went to read and pray. A monument to her was dedicated there in 1894.',
+            source: 'Washington Heritage Museums',
+          },
+        ],
+      }),
+      level('th-7', 5, {
+        title: 'The Iron Key',
+        game: 'spider',
+        finale: true,
+        objectiveText: 'Finale: clear one-suit Spider.',
+        setup: { seed: 3405, options: { suits: 1 }, deckId: 'fredericksburg', boardId: 'kenmore_parlor' },
+        intro: [
+          say(
+            'mary_ball_washington',
+            'One more. Then I shall decide whether you are fit to carry the key.',
+            'portrait-neutral',
+          ),
+        ],
+        outro: [
+          narrate(
+            'Mary’s ghost places an iron key in your palm. It is cold, and heavier than it looks.',
+            'kenmore-iron-key',
+          ),
+          say(
+            'mary_ball_washington',
+            'The cellar door on the old waterfront. He chose it because it is damp and dramatic. Both are his favourite qualities.',
+            'portrait-talk',
+          ),
+          say(
+            'mary_ball_washington',
+            'And if he cheats — he will try — remind him who taught him to count.',
+            'portrait-greet',
+          ),
+        ],
+        rewards: [credits(180), xp(210)],
+      }),
+    ],
+    rewards: [deck('fredericksburg'), board('kenmore_parlor'), stamp('th-kenmore'), credits(600), xp(340)],
+    unlockRequirements: { chapter: 'th-6' },
+  },
+
+  // ───────────────────────────── Chapter 8 (written) ─────────────────────────────
+  {
+    id: 'th-8',
+    index: 8,
+    title: 'Four Suits Below',
+    locationId: 'underground-tunnels',
+    location: 'The Underground Tunnels',
+    description: 'Jak, Steve and Dante, one sealed door, and four suits that have to go in the right order.',
+    hostId: 'steve_gonzales',
+    cast: ['steve_gonzales', 'jak_gold', 'dante'],
+    status: 'final',
+    music: 'fxbg-after-dark',
+    mysteryThread:
+      'Under the old town, the iron key opens the way to a door with four suit-shaped sockets. Jak’s theory (new deck order) is wrong; Steve’s diagram is right. You set the marks spade, diamond, heart, club, thirteen tumblers fall from king to ace, and the door opens on a candlelit card room.',
+    beats: [
+      'The iron key opens a cellar door on the old waterfront; Jak, Steve and Dante are waiting at the bottom of the steps.',
+      'A junction splits four ways, one arch per suit; Steve’s diagram picks the spade arch, and Dante marks the way back in neon.',
+      'Behind a curtain of roots, Dante spots a door with four sockets shaped like suits.',
+      'Jak insists on new deck order (spades, diamonds, clubs, hearts); Steve disagrees.',
+      'Dante draws a glowing map of the way down.',
+      'You set the four marks in the order you have worked out; thirteen tumblers fall from king to ace, and the door opens.',
+    ],
+    artwork: {
+      backdrop: 'backgrounds/menu/night.webp',
+      decks: ['spycraft', 'dantes_world'],
+      tint: '#2b2420',
+      locationSprite: 'location-sealed-door-cellar/location-sealed-door-cellar',
+    },
+    intro: [
+      narrate(
+        'At the old waterfront, the iron key turns in a cellar door that sticks, then gives. Three flashlights are waiting for you at the bottom of the steps.',
+      ),
+      say('jak_gold', 'We’re rolling. For the record: privately owned cellar, permission granted by a ghost, via you.'),
+      say('dante', 'I brought neon markers! If we get lost, we’ll be lost beautifully.', 'portrait-surprise'),
+      say(
+        'steve_gonzales',
+        'Brick barrel vaults. Old work. Stay together, touch nothing, and nobody say the word “treasure.”',
+        'portrait-neutral',
+      ),
+      say('jak_gold', 'Treasure.'),
+      say('steve_gonzales', 'Every time.', 'portrait-doubt'),
+    ],
+    outro: [
+      say(
+        'steve_gonzales',
+        'This is as far as we go. Mrs. Gray’s file says the game was between two players, and the card is in your hand.',
+        'portrait-think',
+      ),
+      say('jak_gold', 'I’ll be right out here. Respectfully filming a door.'),
+      say('dante', 'Tell him I finished his commission! He’ll want to know! Probably!', 'portrait-greet'),
+      narrate('You step through the door alone, the card warm in your hand.'),
+    ],
+    levels: [
+      level('th-8', 1, {
+        title: 'Down the Steps',
+        game: 'freecell',
+        objectiveText: 'Solve this FreeCell deal.',
+        setup: { seed: 3300, deckId: 'inspire', boardId: 'underground_tunnels' },
+        intro: [
+          narrate(
+            'You reach a junction where the tunnel splits four ways. A suit is carved into the keystone of each arch.',
+          ),
+          say(
+            'steve_gonzales',
+            'Four ways, four suits. A free cell is where you park what you can’t use yet. Same with doubts.',
+            'portrait-think',
+          ),
+        ],
+        outro: [
+          narrate(
+            'You take the spade arch first, as Steve’s diagram says. Dante tags the corner with a glowing arrow so you can find your way back.',
+          ),
+          say('dante', 'That’s a monster arrow. It has a face. It believes in you.', 'portrait-greet'),
+        ],
+      }),
+      level('th-8', 2, {
+        title: 'Three Guides',
+        game: 'go-fish',
+        objective: { kind: 'books', min: 2 },
+        objectiveText: 'Lay down 2 books against Jak, Steve and Dante.',
+        setup: {
+          options: { opponents: ['jak_gold', 'steve_gonzales', 'dante'], difficulty: 'easy' },
+          deckId: 'inspire',
+          boardId: 'underground_tunnels',
+        },
+        intro: [
+          narrate(
+            'You stop to rest by lantern light. Jak deals four hands onto an upturned crate without looking at the cards.',
+          ),
+          say('jak_gold', 'Four players, one deck, nobody cheats. I’m filming the cards, not the faces.'),
+        ],
+        outro: [
+          say('steve_gonzales', 'Jak reads cards. I read history. Dante reads… what, exactly?', 'portrait-talk'),
+          say('dante', 'Vibes. And walls. That wall has a door-shaped vibe.', 'portrait-think'),
+          narrate(
+            'You look where Dante is pointing. Behind a curtain of roots is a door with four empty sockets, each shaped like a suit.',
+          ),
+        ],
+      }),
+      level('th-8', 3, {
+        title: 'Echoes',
+        game: 'war',
+        objectiveText: 'Win War against Jak Gold.',
+        setup: { seed: 2024, options: { opponent: 'jak_gold' }, deckId: 'inspire', boardId: 'underground_tunnels' },
+        intro: [
+          say('jak_gold', 'While Steve measures the door: War. Best way I know to stop thinking about the ceiling.'),
+        ],
+        outro: [
+          say(
+            'jak_gold',
+            'My theory: the door wants new deck order. Spades, diamonds, clubs, hearts. Every fresh deck comes out of the box that way.',
+          ),
+          say(
+            'steve_gonzales',
+            'Your theory has a factory in it. That door is older than the factory.',
+            'portrait-doubt',
+          ),
+          say('jak_gold', 'Noted. Disagreed. Filed.'),
+        ],
+        info: [
+          {
+            id: 'new-deck-order',
+            kind: 'history',
+            title: 'New deck order',
+            text: 'Bicycle decks from the United States Playing Card Company come sealed in “new deck order”: ace to king of spades, ace to king of diamonds, then king to ace of clubs and king to ace of hearts. Magicians and cardists rely on it.',
+            source: 'United States Playing Card Company (Bicycle)',
+            sprite: 'jak-black-gold/red-card-fan',
+          },
+        ],
+      }),
+      level('th-8', 4, {
+        title: 'The Lantern Path',
+        game: 'klondike',
+        objectiveText: 'Complete Klondike, Draw 3.',
+        setup: { seed: 1018, options: { draw: 3 }, deckId: 'inspire', boardId: 'underground_tunnels' },
+        intro: [
+          say(
+            'dante',
+            'My markers are fading. Quick — follow the arrows before they stop believing in us.',
+            'portrait-talk',
+          ),
+        ],
+        outro: [
+          narrate(
+            'Dante hands you the sketch he has been drawing all the way down: a glowing map of every turn, with a small monster waving at each one.',
+            'neon-tunnel-map',
+          ),
+          say(
+            'dante',
+            'So we can find our way out. Or so the next people can find us. Both good outcomes.',
+            'portrait-greet',
+          ),
+        ],
+      }),
+      level('th-8', 5, {
+        title: 'The Four-Suit Door',
+        game: 'spider',
+        finale: true,
+        objectiveText: 'Finale: set the four marks, then clear one-suit Spider.',
+        setup: { seed: 1001, options: { suits: 1 }, deckId: 'inspire', boardId: 'underground_tunnels' },
+        intro: [
+          say(
+            'steve_gonzales',
+            'This is the door. Four sockets, four marks, and your card carries all of them. You set the order.',
+            'portrait-neutral',
+          ),
+          narrate(
+            'You hold the Thirteenth Hand card up to the door. Its four marked corners line up with the sockets.',
+          ),
+        ],
+        puzzle: {
+          prompt: 'You hold the card to the door. In which order do you set the four marks?',
+          answer: ['spades', 'diamonds', 'hearts', 'clubs'],
+          hints: [
+            say(
+              'jak_gold',
+              'Didn’t budge. New deck order, maybe? Spades, diamonds, clubs, hearts. Works on every deck I’ve ever opened.',
+            ),
+            say(
+              'dante',
+              'What about the order you found them in? Club, heart, diamond, spade? Or is that backwards… oh.',
+              'portrait-think',
+            ),
+            say(
+              'steve_gonzales',
+              'Read the diagram. You came upriver. The card reads downstream, starting in the north.',
+              'portrait-think',
+            ),
+            say(
+              'steve_gonzales',
+              'Spade, diamond, heart, club. Downstream from the north. Trust the river.',
+              'portrait-talk',
+            ),
+          ],
+          solved: [
+            narrate(
+              'You set the marks one after another: spade, diamond, heart, club. Behind the door, something heavy begins to turn.',
+            ),
+            say(
+              'steve_gonzales',
+              'That’s the order. Now the tumblers — thirteen of them, king down to ace, in one long run.',
+              'portrait-surprise',
+            ),
+          ],
+        },
+        outro: [
+          narrate(
+            'You hear thirteen tumblers fall, king to ace. The door swings open on a candlelit card room.',
+            'four-suit-puzzle',
+          ),
+          say('jak_gold', 'I didn’t film any of that. I was too busy having feelings.'),
+          say('steve_gonzales', 'Madre mía.', 'portrait-surprise'),
+          say('dante', 'There’s a guy in there. A see-through guy. In a tricorn hat.', 'portrait-surprise'),
+        ],
+        rewards: [credits(190), xp(220)],
+      }),
+    ],
+    rewards: [board('underground_tunnels'), stamp('th-lantern-cellar'), credits(650), xp(360)],
+    unlockRequirements: { chapter: 'th-7' },
+  },
+
+  // ───────────────────────────── Chapter 9 (written) ─────────────────────────────
+  {
+    id: 'th-9',
+    index: 9,
+    title: 'The Thirteenth Hand',
+    locationId: 'washington-spectral-parlor',
+    location: 'Washington’s Spectral Card Parlor',
+    description:
+      'George Washington’s ghost has waited a very long time to finish this game. He does not plan to lose it.',
+    hostId: 'george_washington',
+    cast: ['george_washington', 'mary_ball_washington'],
+    status: 'final',
+    music: 'shadows-of-the-occult',
+    mysteryThread:
+      'The legend resolves: George Washington’s ghost — who planted the card, sketched the heron and commissioned Dante, all to lure a challenger — has waited to play the thirteenth hand he walked away from. You win it, his mother’s letter ends the sulking, and the card awakens with all four corners filled.',
+    beats: [
+      'You enter a card room lit by candles that never burn down; George Washington’s ghost greets you with ceremony and pride.',
+      'He admits (as the story’s legend) that he walked away from his mother’s card table before the thirteenth hand, and has waited ever since.',
+      'He planted the card in Lot 13, sketched the heron and paid Dante in his own face — all to bring a challenger to his table.',
+      'Five escalating games; the twelfth hand from the ledger returns; his mother arrives for the last.',
+      'You win the thirteenth hand. He demands a recount until you give him Mary’s letter: “You owe me a hand.”',
+      'The card awakens. The game is finished, and a rematch is promised.',
+    ],
+    artwork: {
+      backdrop: 'backgrounds/washington_final_table/background.webp',
+      decks: ['washington_ghost'],
+      tint: '#1c2a3a',
+      locationSprite: 'location-generals-spectral-parlor/location-generals-spectral-parlor',
+    },
+    intro: [
+      narrate(
+        'You step into a card room that should not fit under the town. The candles burn without shrinking. At the head of the table, a tall ghost in a blue coat rises to meet you.',
+      ),
+      say(
+        'george_washington',
+        'At last! A challenger! Do you know how long I have waited? Two hundred and — never mind how long.',
+        'portrait-greet',
+      ),
+      narrate('You show him General Monsterton, Dante’s three-eyed neon portrait of him.'),
+      say('george_washington', 'Three eyes. Magnificent. Precisely the vigor I asked for.', 'portrait-surprise'),
+      say(
+        'george_washington',
+        'Yes, it was I. The card in Lot 13, the heron, the commission. A general recruits. Twelve hands were played in my mother’s parlor. I was called away before the thirteenth.',
+        'portrait-think',
+      ),
+      say('george_washington', 'Tonight we finish it. Five games. I intend to win all five.', 'cards-signature'),
+    ],
+    outro: [
+      say(
+        'george_washington',
+        'Keep the card. It is finished now, as the game is. And take my deck. I shan’t need it until the rematch.',
+        'portrait-greet',
+      ),
+      say('george_washington', 'There will be a rematch.', 'cards-signature'),
+      say('mary_ball_washington', 'There will be a nap, George.', 'portrait-doubt'),
+      narrate(
+        'The candles go out together. When your eyes adjust, you are standing in an empty cellar, holding a card that glows faintly at the corners.',
+      ),
+    ],
+    levels: [
+      level('th-9', 1, {
+        title: 'The General’s Welcome',
+        game: 'war',
+        objectiveText: 'Win War against George Washington’s ghost.',
+        setup: {
+          seed: 2035,
+          options: { opponent: 'george_washington' },
+          deckId: 'washington_ghost',
+          boardId: 'washington_final_table',
+        },
+        intro: [say('george_washington', 'We begin with War. I have some experience.', 'cards-deal')],
+        outro: [
+          say(
+            'george_washington',
+            'A warm-up. I allowed you that. It was strategy. I was famous for strategy.',
+            'portrait-doubt',
+          ),
+        ],
+        info: [
+          {
+            id: 'crossing-the-delaware',
+            kind: 'history',
+            title: 'The Delaware crossing',
+            text: 'On the night of December 25–26, 1776, Washington led his army across the icy Delaware River and surprised the Hessian garrison at Trenton the next morning.',
+            source: 'George Washington’s Mount Vernon',
+          },
+        ],
+      }),
+      level('th-9', 2, {
+        title: 'Spectral Draw',
+        game: 'klondike',
+        objectiveText: 'Complete Klondike, Draw 3.',
+        setup: { seed: 3200, options: { draw: 3 }, deckId: 'washington_ghost', boardId: 'washington_final_table' },
+        intro: [
+          narrate('The cards deal themselves in front of you, three at a time, drifting into place like snow.'),
+          say(
+            'george_washington',
+            'Patience. A soldier’s game. The winter at Valley Forge was mostly patience. And soup.',
+            'portrait-talk',
+          ),
+        ],
+        outro: [
+          say(
+            'george_washington',
+            'Hm. You are steadier than my generals. Do not tell them I said so. They are also ghosts, and they gossip.',
+            'portrait-think',
+          ),
+        ],
+        info: [
+          {
+            id: 'valley-forge',
+            kind: 'history',
+            title: 'Valley Forge',
+            text: 'The Continental Army camped at Valley Forge, Pennsylvania, through the winter of 1777–78. Baron von Steuben drilled the troops there, and the army marched out in June 1778 better trained.',
+            source: 'National Park Service, Valley Forge National Historical Park',
+          },
+        ],
+      }),
+      level('th-9', 3, {
+        title: 'The Twelfth Hand',
+        game: 'freecell',
+        objectiveText: 'Solve this FreeCell deal.',
+        setup: { seed: 3302, deckId: 'washington_ghost', boardId: 'washington_final_table' },
+        intro: [
+          narrate(
+            'You recognise the deal in front of you: the twelfth hand from the ledger, laid out exactly as it was written.',
+          ),
+          say(
+            'george_washington',
+            'Mother kept that ledger. Mother keeps everything. Including grudges.',
+            'portrait-doubt',
+          ),
+        ],
+        outro: [
+          say(
+            'george_washington',
+            'You solved the twelfth hand. I lost that one, originally. I maintain the candle was in my eyes.',
+            'portrait-surprise',
+          ),
+        ],
+      }),
+      level('th-9', 4, {
+        title: 'No Retreat',
+        game: 'spider',
+        objectiveText: 'Clear one-suit Spider.',
+        setup: { seed: 3400, options: { suits: 1 }, deckId: 'washington_ghost', boardId: 'washington_final_table' },
+        intro: [
+          say(
+            'george_washington',
+            'Spider. A long game, and no retreat. I am, historically, a great believer in a well-timed retreat. Not tonight.',
+            'portrait-neutral',
+          ),
+        ],
+        outro: [
+          say('george_washington', 'Four games to you. This is becoming —', 'portrait-doubt'),
+          narrate('A cold draft crosses the room. Every candle leans toward the door behind you.'),
+          say('george_washington', 'Mother?', 'portrait-surprise'),
+        ],
+        info: [
+          {
+            id: 'long-island-retreat',
+            kind: 'history',
+            title: 'A famous retreat',
+            text: 'After losing the Battle of Long Island in August 1776, Washington moved his whole army across the East River to Manhattan in a single night, hidden by darkness and fog.',
+            source: 'George Washington’s Mount Vernon',
+          },
+        ],
+      }),
+      level('th-9', 5, {
+        title: 'The Thirteenth Hand',
+        game: 'go-fish',
+        finale: true,
+        objectiveText: 'Finale: win the thirteenth hand against George Washington’s ghost.',
+        setup: {
+          options: { opponents: ['george_washington'], difficulty: 'easy' },
+          deckId: 'washington_ghost',
+          boardId: 'washington_final_table',
+        },
+        intro: [
+          say(
+            'mary_ball_washington',
+            'Don’t stop on my account, George. I’m only here to watch you finish something.',
+            'portrait-neutral',
+          ),
+          say('george_washington', 'Mother. You look… well. Considering.', 'portrait-doubt'),
+          narrate(
+            'You lay the Thirteenth Hand card face up in the middle of the table. All four of its corners are marked.',
+          ),
+          say(
+            'george_washington',
+            'Thirteen ranks, thirteen books. Whoever lays down more wins the thirteenth hand — and the card.',
+            'cards-signature',
+          ),
+        ],
+        outro: [
+          narrate(
+            'You lay down your last book. The Thirteenth Hand card begins to glow at all four corners: spade, diamond, heart and club.',
+            'awakened-card',
+          ),
+          say('george_washington', 'I demand a recount. And a rematch. And —', 'portrait-surprise'),
+          narrate('You hand George the letter from his mother. He reads the back, and goes quiet.'),
+          say('george_washington', '“You owe me a hand.” …I suppose I did.', 'portrait-doubt'),
+          say('mary_ball_washington', 'Well played. Both of you. Mostly the one who is alive.', 'portrait-greet'),
+          say(
+            'george_washington',
+            'The game is finished. Two centuries of sulking, concluded. I feel… lighter. Which, for a ghost, is saying something.',
+            'portrait-think',
+          ),
+        ],
+        rewards: [credits(220), xp(260)],
+      }),
+    ],
+    rewards: [
+      deck('washington_ghost'),
+      board('washington_final_table'),
+      stamp('th-spectral-tricorn'),
+      achievement('chronicles-complete'),
       credits(800),
       xp(400),
     ],
-    unlockRequirements: { chapter: 'chapter-6' },
+    info: [
+      {
+        id: 'about-the-legend',
+        kind: 'note',
+        title: 'About the legend',
+        text: 'Washington really did play cards and record his winnings and losses. The unfinished game, the ghosts, the card and the spectral parlor are a legend invented for this story.',
+      },
+    ],
+    unlockRequirements: { chapter: 'th-8' },
   },
 ];
 
-/** Passport stamps, one per chapter. */
-export const STAMPS: readonly { id: string; chapter: string; label: string }[] = STORY_CHAPTERS.flatMap((c) =>
-  c.rewards.flatMap((r) => (r.kind === 'stamp' ? [{ id: r.id, chapter: c.id, label: c.title }] : [])),
+/**
+ * The campaign's last scene, played once the thirteenth hand is won (and
+ * replayable from the journal). It opens the ghost rematches.
+ */
+export const EPILOGUE: readonly DialogueLine[] = [
+  narrate(
+    'A week later, you bring the card back to Cheryl’s shop, where it all began. It sits under the lamp in a frame nobody can afford.',
+  ),
+  say('cheryl', 'I priced it. Then I un-priced it. Then I put up a sign: NOT FOR SALE. DON’T ASK.', 'portrait-doubt'),
+  say(
+    'sophia',
+    'The heron’s still at the bend. I logged her this morning. Some things are allowed to stay a mystery.',
+    'portrait-greet',
+  ),
+  say(
+    'dante',
+    'All thirteen monster cards are done! The client paid the final invoice. In ones. Obviously.',
+    'portrait-surprise',
+  ),
+  say(
+    'jak_gold',
+    'My video’s up: “I Have No Footage of a Ghost (Proof).” The comments are mostly about my flourish. As they should be.',
+  ),
+  say(
+    'mrs_gray',
+    'File closed. Reason: concluded. I’ve wanted to type that word for a very long time.',
+    'portrait-neutral',
+  ),
+  say(
+    'steve_gonzales',
+    'I’ve added a page to the lodge’s research: history in one column, legend in the other. Sophia approved it. Twice.',
+    'portrait-talk',
+  ),
+  narrate(
+    'On your way out, you find an envelope on the counter, sealed in blue wax. Inside are a single dollar bill and a note in a very confident hand.',
+  ),
+  say('george_washington', 'Best of thirteen? — G. W.', 'cards-signature'),
+  narrate('You smile. Somewhere under the town, a candle lights itself. Ghost rematches are open.'),
+];
+
+export const EPILOGUE_TITLE = 'Epilogue: Not for Sale';
+
+/** Passport stamps, one per chapter, with their artwork. */
+const STAMP_SPRITES: Record<string, string> = {
+  'th-antique-shop': 'passport-stamps/antique-clock-key',
+  'th-river-station': 'passport-stamps/heron-river',
+  'th-neon-monster': 'passport-stamps/neon-monster',
+  'th-cards-camera': 'passport-stamps/cards-and-camera',
+  'th-dossier': 'passport-stamps/sealed-dossier',
+  'th-square-compasses': 'passport-stamps/square-and-compasses',
+  'th-kenmore': 'passport-stamps/kenmore-mansion',
+  'th-lantern-cellar': 'passport-stamps/lantern-cellar',
+  'th-spectral-tricorn': 'passport-stamps/spectral-tricorn',
+};
+
+export const STAMPS: readonly PassportStamp[] = STORY_CHAPTERS.flatMap((c) =>
+  c.rewards.flatMap((r) =>
+    r.kind === 'stamp' ? [{ id: r.id, chapter: c.id, label: c.location, sprite: STAMP_SPRITES[r.id] ?? '' }] : [],
+  ),
 );
-
 export const ALL_LEVELS: readonly StoryLevel[] = STORY_CHAPTERS.flatMap((c) => c.levels);
-
 export const getChapter = (id: string) => STORY_CHAPTERS.find((c) => c.id === id);
 export const getLevel = (id: string) => ALL_LEVELS.find((l) => l.id === id);
 export const chapterOfLevel = (levelId: string) => STORY_CHAPTERS.find((c) => c.levels.some((l) => l.id === levelId));
+export const isCampaignLevelId = (id: string) => ALL_LEVELS.some((l) => l.id === id);
