@@ -136,13 +136,18 @@ export function paginator<T>(opts: PaginatorOptions<T>) {
       ? 'minmax(0, 1fr)'
       : `minmax(${opts.minTileHeight}px, ${opts.maxTileHeight ?? Math.round(opts.minTileHeight * 1.6)}px)`;
     grid.classList.toggle('fill', !!opts.fill);
-    grid.replaceChildren(
-      ...opts.items.slice(page * perPage, (page + 1) * perPage).map((item, i) => {
-        const tile = opts.render(item, page * perPage + i);
-        tile.setAttribute('role', 'listitem');
-        return tile;
-      }),
+    const tiles = opts.items
+      .slice(page * perPage, (page + 1) * perPage)
+      .map((item, i) => opts.render(item, page * perPage + i));
+    // A tile that is itself a control (a button, a radio…) keeps its own role, so screen
+    // readers still announce it as one; the page is then a labelled group. Plain tiles
+    // (cards holding their own buttons) are list items in a list.
+    const interactive = tiles.some(
+      (t) => t.hasAttribute('role') || /^(BUTTON|A|INPUT|SELECT|TEXTAREA)$/.test(t.tagName),
     );
+    grid.setAttribute('role', interactive ? 'group' : 'list');
+    for (const t of tiles) if (!interactive) t.setAttribute('role', 'listitem');
+    grid.replaceChildren(...tiles);
     if (direction) {
       grid.classList.remove('page-in-left', 'page-in-right');
       void grid.offsetWidth;

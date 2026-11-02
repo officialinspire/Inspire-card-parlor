@@ -2,6 +2,7 @@ import { h } from '@/utils/dom';
 import type { Store } from '@/core/store';
 import { button, iconButton, type ButtonVariant } from './ui';
 import { icon, type IconName } from './icons';
+import { sweepLive } from './live';
 
 export interface DialogAction<T> {
   label: string;
@@ -116,6 +117,7 @@ export function openDialog<T>(opts: DialogOptions<T>): Promise<T> {
       const finish = () => {
         backdrop.remove();
         if (!host.childElementCount) host.hidden = true;
+        sweepLive();
       };
       backdrop.addEventListener('transitionend', finish, { once: true });
       setTimeout(finish, 260);

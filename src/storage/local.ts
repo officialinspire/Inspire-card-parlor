@@ -1,3 +1,5 @@
+import { reportWrite } from './health';
+
 const PREFIX = 'icp:';
 
 /** Small, exception-safe LocalStorage wrapper for settings and profile data. */
@@ -10,11 +12,16 @@ export const local = {
       return fallback;
     }
   },
-  set<T>(key: string, value: T): void {
+  /** Returns false (and reports it) when the device refuses the write. */
+  set<T>(key: string, value: T): boolean {
     try {
       localStorage.setItem(PREFIX + key, JSON.stringify(value));
+      reportWrite('progress', true);
+      return true;
     } catch {
-      /* storage full or blocked (private mode) — progress stays in memory */
+      // Storage full or blocked (private mode): progress stays in memory, and the player is told.
+      reportWrite('progress', false);
+      return false;
     }
   },
   remove(key: string): void {

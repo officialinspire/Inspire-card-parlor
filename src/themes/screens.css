@@ -2126,7 +2126,7 @@
 }
 .tool-btn[aria-pressed='true'],
 .tool-btn[aria-expanded='true'] {
-  color: var(--accent);
+  color: var(--accent-text);
 }
 .tool-btn[data-action='music'][aria-pressed='true'] {
   color: var(--ink-soft);
@@ -2226,7 +2226,7 @@
   background: var(--gold-soft);
 }
 .more-item[aria-pressed='true'] {
-  color: var(--accent);
+  color: var(--accent-text);
 }
 /* Paused: the table rests under a veil. */
 .table-pause {
@@ -4832,4 +4832,14 @@ button.board-tile .tile-title {
 }
 .reduced-motion .menu-veil {
   animation-duration: 150ms;
+}
+/* Keyboard play: the cursor over a card or an empty pile (only while the table has keyboard focus). */
+.sol-board:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: -2px;
+}
+.sol-board .kb-cursor {
+  outline: 3px solid var(--gold-bright);
+  outline-offset: 2px;
+  border-radius: calc(var(--card-w) * 0.09);
 }

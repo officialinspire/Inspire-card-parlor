@@ -46,7 +46,7 @@ export const StatisticsScreen: ScreenFactory = ({ store }) => {
               'div',
               null,
               h('strong', null, `Level ${lp.level}`),
-              progressBar(lp.ratio),
+              progressBar(lp.ratio, 'Experience to the next level'),
               h('small', null, `${lp.current} / ${lp.needed} XP`),
             ),
           ),

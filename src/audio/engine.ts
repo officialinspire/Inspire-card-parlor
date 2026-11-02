@@ -82,12 +82,24 @@ class AudioEngine {
   }
 
   /** Must be called from a user gesture (tap/click/key). */
+  /** Set when the browser refused to create an audio context; sound stays off, play continues. */
+  #broken = false;
+
   async unlock(): Promise<void> {
     if (!this.#ctx) {
       const Ctor =
         window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-      if (!Ctor) return;
-      const ctx = (this.#ctx = new Ctor());
+      if (!Ctor || this.#broken) return;
+      let ctx: AudioContext;
+      try {
+        ctx = new Ctor();
+      } catch (err) {
+        // No sound on this device (blocked, or too many audio contexts): the game plays on silently.
+        this.#broken = true;
+        console.warn('[audio] unavailable:', err);
+        return;
+      }
+      this.#ctx = ctx;
       this.#master = ctx.createGain();
       this.#limiter = ctx.createDynamicsCompressor();
       this.#limiter.threshold.value = -10;

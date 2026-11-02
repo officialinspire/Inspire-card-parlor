@@ -75,6 +75,7 @@
   --ink-faint: #71665a; /* 4.4–5.2:1 on the day surfaces */
 
   --accent: #b4562f; /* terracotta: 4.6:1 with --accent-ink, and as text on --surface */
+  --accent-text: var(--accent); /* accent-coloured text on surfaces */
   --accent-edge: #8a3c22;
   --accent-ink: #fff8ee;
   --accent-soft: rgba(200, 100, 63, 0.14);
@@ -84,6 +85,7 @@
   --sky: #6f8fae;
   --danger: #b8432f;
   --danger-edge: #8b2e1e;
+  --danger-ink: #fff8ee;
   --success: #4f8a5f;
 
   --rarity-common: #5f564b;
@@ -167,6 +169,8 @@
   --ink-faint: #a7a3b3; /* 4.5–6.3:1 on the night surfaces */
 
   --accent: #e07a52;
+  /* As text, the night accent is lifted: #e07a52 is 4.3:1 on --surface; this is 5.2:1 (6.0:1 sunk). */
+  --accent-text: #ec8d68;
   --accent-edge: #a8502f;
   --accent-ink: #1f1a16;
   --accent-soft: rgba(224, 122, 82, 0.16);
@@ -176,6 +180,8 @@
   --sky: #8eaed0;
   --danger: #e0654f;
   --danger-edge: #9d3a28;
+  /* Text on --danger: light ink is only 3.2:1 on this red; dark ink is 5.1:1. */
+  --danger-ink: #1f1a16;
   --success: #86b597;
 
   --rarity-common: #b9b1a4;

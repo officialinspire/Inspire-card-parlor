@@ -1,6 +1,7 @@
 import type { Store } from '@/core/store';
 import type { AppState } from '@/core/states';
 import type { Screen, ScreenRegistry } from './Screen';
+import { sweepLive } from './live';
 
 /**
  * Swaps screens in response to `state.screen`, running a short
@@ -52,10 +53,17 @@ export class ScreenManager {
       const el = old.screen.el;
       el.setAttribute('aria-hidden', 'true');
       el.inert = true;
-      if (reduced) el.remove();
-      else {
+      // Once the old screen is gone, its live widgets let go of the store (and so of the screen).
+      if (reduced) {
+        el.remove();
+        sweepLive();
+      } else {
         el.classList.add(`leave-${dir}`);
-        const remove = () => el.remove();
+        const remove = () => {
+          if (!el.isConnected) return;
+          el.remove();
+          sweepLive();
+        };
         el.addEventListener('transitionend', remove, { once: true });
         setTimeout(remove, 600);
       }

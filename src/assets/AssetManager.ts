@@ -70,6 +70,8 @@ export class AssetManager {
   #decks = new Map<string, DeckArt>();
   #pending = new Map<string, Promise<DeckArt>>();
   #listeners = new Set<(key: string) => void>();
+  /** While set, face sheets wait for it (backs load at once); see `deferFacesUntil`. */
+  #facesGate: Promise<unknown> | null = null;
   readonly opts: Required<AssetManagerOptions>;
 
   constructor(opts: AssetManagerOptions = {}) {
@@ -129,6 +131,21 @@ export class AssetManager {
     return p;
   }
 
+  /**
+   * Holds face sheets back until `gate` settles. During the opening only card
+   * backs are on screen, and a deck's face sheet (~330 KB) would share a slow
+   * connection with the title artwork; measured on a throttled phone it delayed
+   * Touch to Start by about 1.5 s. Decks asked for meanwhile publish their back
+   * first and their faces when the gate opens.
+   */
+  deferFacesUntil(gate: Promise<unknown>): void {
+    const held = gate.catch(() => undefined);
+    this.#facesGate = held;
+    void held.then(() => {
+      if (this.#facesGate === held) this.#facesGate = null;
+    });
+  }
+
   /** Synchronous lookup for the renderer; undefined until `loadDeck` has finished. */
   getDeckArt(key: string): DeckArt | undefined {
     return this.#decks.get(key);
@@ -167,6 +184,15 @@ export class AssetManager {
 
     const { basePath, faces, back } = theme.assets;
     try {
+      // Opening: show the back now, the faces once the gate opens.
+      if (this.#facesGate && !('atlasFrame' in back)) {
+        const img = await this.loadImage(basePath, back);
+        if (img) {
+          this.#decks.set(theme.key, { ...art, back: { image: img } });
+          for (const l of this.#listeners) l(theme.key);
+        }
+        await this.#facesGate;
+      }
       if (faces.type === 'atlas') {
         const sheet = await this.loadImage(basePath, faces.image);
         if (sheet) {

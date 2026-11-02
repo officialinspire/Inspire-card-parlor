@@ -13,7 +13,7 @@ import { attachProductAnalytics } from '@/analytics/productEvents';
 import { recentEvents } from '@/analytics/posthog';
 import { attachInstallPrompt } from '@/utils/install';
 import { attachTheme } from '@/themes/theme';
-import { attachDeckThemes } from '@/decks';
+import { assetManager, attachDeckThemes } from '@/decks';
 import { ScreenManager } from '@/components/ScreenManager';
 import { attachDialogs } from '@/components/Dialog';
 import { attachNotifications } from '@/components/Notifications';
@@ -28,6 +28,10 @@ import { setActiveStoryLevel } from '@/story/session';
 import { recordGameResult } from '@/progression/results';
 import { ALL_LEVELS } from '@/story/campaign';
 import { APP } from './config';
+import { attachErrorHandling, errorLog } from './errors';
+import { onStorageHealth } from '@/storage/health';
+import { notify } from '@/components/Notifications';
+import { liveCount } from '@/components/live';
 
 /** BOOT: wire every subsystem to the store, build the shell, then start loading. */
 export async function startApp(mount: HTMLElement): Promise<void> {
@@ -76,21 +80,54 @@ export async function startApp(mount: HTMLElement): Promise<void> {
     if (e.key === 'f' || e.key === 'F') void fullscreen.toggle();
   });
 
-  // Block pinch/double-tap zoom gestures on iOS for a native feel.
-  document.addEventListener('gesturestart', (e) => e.preventDefault());
+  // Double-tap zoom stays off (it fights card taps); pinch zoom stays available for anyone
+  // who needs larger text. The card tables opt out of browser gestures themselves.
   document.addEventListener('dblclick', (e) => e.preventDefault(), { passive: false });
+  attachErrorHandling(stage);
+  // Saving: tell the player once when the device stops keeping progress, and when it recovers.
+  onStorageHealth((area, ok) => {
+    if (ok) notify('Saving works again.', { kind: 'success', sound: false });
+    else
+      notify(
+        area === 'games'
+          ? 'This game can’t be saved on this device right now (storage is full or blocked). You can keep playing; finish before closing the tab.'
+          : 'Your progress can’t be saved on this device right now (storage is full or blocked, e.g. a private window). You can keep playing, but it may not be kept after you close the tab.',
+        { kind: 'warning', duration: 9000, title: 'Not saving' },
+      );
+  });
 
   track('boot', { version: APP.version });
+  // Card faces wait for the opening to finish loading (the title shows only backs).
+  let opened!: () => void;
+  assetManager.deferFacesUntil(new Promise<void>((r) => (opened = r)));
   navigate(AppState.INITIALIZATION);
   // Story artwork is decorative: fetch its small manifest once the browser is idle (Story Mode
   // also asks for it when opened), never during boot work. No image is decoded until shown.
   const idle = (fn: () => void) =>
     'requestIdleCallback' in window ? requestIdleCallback(fn, { timeout: 4000 }) : setTimeout(fn, 1500);
   idle(() => void loadStoryArt());
-  await runBoot(store);
+  try {
+    await runBoot(store);
+  } finally {
+    opened();
+  }
 
   if (import.meta.env.PROD && 'serviceWorker' in navigator) {
-    navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`).catch(() => undefined);
+    // A new release's worker takes over as soon as it installs and deletes the old offline
+    // copy. Pages are fetched network-first, so the page that sees this already runs the
+    // new release (verified with a simulated deploy; see docs/PERFORMANCE_AND_ACCESSIBILITY_QA.md).
+    const hadController = !!navigator.serviceWorker.controller;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (hadController)
+        notify('The parlor has been updated to the newest version.', {
+          kind: 'info',
+          sound: false,
+          duration: 7000,
+        });
+    });
+    navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`).catch((err: unknown) => {
+      console.warn('[offline] service worker not registered:', err);
+    });
   }
 
   // Expose the store for debugging and end-to-end tests.
@@ -102,6 +139,10 @@ export async function startApp(mount: HTMLElement): Promise<void> {
       analytics: recentEvents,
       // The music engine's state (track, voices still sounding) for audio tests.
       audio: () => ({ track: audio.track.id, playing: audio.playing, voices: audio.voiceCount }),
+      // Uncaught errors and rejected promises seen this session (none are swallowed).
+      errors: () => ({ ...errorLog }),
+      // Live widgets still subscribed to the store (must stay bounded: screens let go when they leave).
+      liveWidgets: liveCount,
       // The riverfront ambience: scene, level, instances (live + fading), loop sources, timers.
       ambience: ambienceState,
       // The audio context's state ('running', 'suspended'…), or null before the first gesture.

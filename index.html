@@ -2,10 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#000000" />
     <meta
       name="description"
@@ -89,6 +86,144 @@
   <body>
     <div id="app" aria-live="polite"></div>
     <noscript>INSPIRE CARD PARLOR requires JavaScript to play.</noscript>
+    <!--
+      Recovery: if the game's script can't load or start (a broken download, an old
+      offline copy that no longer matches, a fatal error), show a way out instead of
+      a black screen. Repair clears the offline copy only; saved progress is untouched.
+    -->
+    <div id="recover" role="alertdialog" aria-labelledby="recover-title" aria-describedby="recover-text" hidden>
+      <h1 id="recover-title">The parlor didn&rsquo;t open</h1>
+      <p id="recover-text">Something stopped the game from starting. Your saved progress is safe on this device.</p>
+      <div class="recover-actions">
+        <button type="button" id="recover-reload">Try again</button>
+        <button type="button" id="recover-repair">Repair offline files</button>
+      </div>
+      <p class="recover-note">Repair downloads a fresh copy of the game. It needs a connection.</p>
+    </div>
+    <style>
+      #recover {
+        position: fixed;
+        inset: 0;
+        z-index: 2147483647;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: 24px 16px;
+        background: #14100c;
+        color: #fff8ee;
+        font:
+          16px/1.5 system-ui,
+          sans-serif;
+        text-align: center;
+      }
+      #recover[hidden] {
+        display: none;
+      }
+      #recover h1 {
+        margin: 0;
+        font-size: 1.4rem;
+      }
+      #recover p {
+        margin: 0;
+        max-width: 32rem;
+      }
+      #recover .recover-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+      }
+      #recover button {
+        min-height: 48px;
+        min-width: 160px;
+        padding: 10px 18px;
+        border: 2px solid #e7c873;
+        border-radius: 12px;
+        background: #e7c873;
+        color: #14100c;
+        font: inherit;
+        font-weight: 700;
+      }
+      #recover #recover-repair {
+        background: transparent;
+        color: #fff8ee;
+      }
+      #recover button:focus-visible {
+        outline: 3px solid #fff8ee;
+        outline-offset: 3px;
+      }
+      #recover .recover-note {
+        font-size: 0.875rem;
+        opacity: 0.8;
+      }
+    </style>
+    <script>
+      (function () {
+        var shown = false;
+        function show(reason) {
+          if (shown) return;
+          shown = true;
+          var el = document.getElementById('recover');
+          el.hidden = false;
+          el.setAttribute('data-reason', String(reason || 'unknown'));
+          document.documentElement.setAttribute('data-booted', '');
+          var b = document.getElementById('recover-reload');
+          b && b.focus();
+        }
+        function repair() {
+          var jobs = [];
+          try {
+            if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations)
+              jobs.push(
+                navigator.serviceWorker.getRegistrations().then(function (rs) {
+                  return Promise.all(
+                    rs.map(function (r) {
+                      return r.unregister();
+                    }),
+                  );
+                }),
+              );
+            if (window.caches && caches.keys)
+              jobs.push(
+                caches.keys().then(function (ks) {
+                  return Promise.all(
+                    ks
+                      .filter(function (k) {
+                        return k.indexOf('icp') === 0;
+                      })
+                      .map(function (k) {
+                        return caches.delete(k);
+                      }),
+                  );
+                }),
+              );
+          } catch (e) {}
+          Promise.all(jobs).then(reload, reload);
+        }
+        function reload() {
+          location.replace(location.pathname + '?fresh=' + Date.now() + location.hash);
+        }
+        document.getElementById('recover-reload').addEventListener('click', reload);
+        document.getElementById('recover-repair').addEventListener('click', repair);
+        window.__icpRecover = show;
+        window.__icpRepair = repair;
+        // The game's own script failed to download.
+        addEventListener(
+          'error',
+          function (e) {
+            var t = e.target;
+            if (t && t.tagName === 'SCRIPT' && !window.__icpAlive) show('script');
+          },
+          true,
+        );
+        // Downloaded but never started (an error before the game could take over).
+        setTimeout(function () {
+          if (!window.__icpAlive) show('timeout');
+        }, 30000);
+      })();
+    </script>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

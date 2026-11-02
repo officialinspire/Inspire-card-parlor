@@ -300,6 +300,21 @@ export const SettingsScreen: ScreenFactory = ({ store }) => {
             },
             { variant: 'danger', attrs: { 'data-action': 'reset' } },
           ),
+          button(
+            'Repair offline files',
+            async () => {
+              const ok = await confirmDialog({
+                title: 'Repair offline files?',
+                message:
+                  'The game’s offline copy will be cleared and downloaded fresh. Use this if something looks out of date or broken after an update. Your progress, collection and settings are kept.',
+                confirmLabel: 'Repair and reload',
+                cancelLabel: 'Cancel',
+              });
+              if (!ok) return;
+              (window as Window & { __icpRepair?: () => void }).__icpRepair?.();
+            },
+            { variant: 'secondary', icon: 'restart', attrs: { 'data-action': 'repair-offline' } },
+          ),
           button('Artwork credits', () => void showCredits(), {
             variant: 'secondary',
             attrs: { 'data-action': 'credits' },

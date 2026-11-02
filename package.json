@@ -29,6 +29,7 @@
   "devDependencies": {
     "@playwright/test": "^1.63.0",
     "@types/node": "^26.6.5",
+    "axe-core": "^4.10.3",
     "happy-dom": "^21.0.4",
     "prettier": "^3.9.10",
     "tsx": "^4.23.15",

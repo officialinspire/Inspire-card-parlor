@@ -120,7 +120,7 @@
   gap: clamp(2px, 1.5vw, 10px);
 }
 .mp-transport .btn[aria-pressed='true'] {
-  color: var(--accent);
+  color: var(--accent-text);
   background: var(--accent-soft);
 }
 .mp-transport [data-repeat='one']::after {
@@ -197,7 +197,7 @@
 .chip.active {
   border-color: var(--accent);
   background: var(--accent-soft);
-  color: var(--accent);
+  color: var(--accent-text);
 }
 .dialog-music .music-player {
   width: min(520px, 100%);
@@ -647,7 +647,7 @@
 }
 .tile-extras {
   font-size: max(var(--fs-min), 0.72em);
-  color: var(--accent);
+  color: var(--accent-text);
   font-weight: 800;
 }
 .binder .pager-viewport {

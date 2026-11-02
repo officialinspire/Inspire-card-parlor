@@ -108,7 +108,7 @@ export function mountGoFish(ctx: GoFishViewContext) {
     pondCount,
   );
   const status = h('p', { class: 'gf-status', 'aria-live': 'polite', 'data-status-text': '' });
-  const myBooks = h('div', { class: 'gf-books', 'aria-label': 'Your books' });
+  const myBooks = h('div', { class: 'gf-books', role: 'group', 'aria-label': 'Your books' });
   const hand = h('div', { class: 'gf-hand', role: 'group', 'aria-label': 'Your hand' });
   const askBtn = button('Ask', () => void humanTurn(), { icon: 'play', attrs: { 'data-action': 'ask' } });
   // Table toolbar: Pause, Hint, New Game.

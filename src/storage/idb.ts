@@ -2,6 +2,8 @@
  * Minimal promise-based IndexedDB key/value store. Used for larger records
  * such as saved games, replays and the analytics event log.
  */
+import { reportWrite } from './health';
+
 const DB_NAME = 'inspire-card-parlor';
 const DB_VERSION = 1;
 export const STORES = ['saves', 'events', 'cache'] as const;
@@ -32,11 +34,31 @@ async function run<T>(
   fn: (s: IDBObjectStore) => IDBRequest,
 ): Promise<T | undefined> {
   const db = await open();
-  if (!db) return undefined;
+  const writing = mode === 'readwrite' && store === 'saves';
+  if (!db) {
+    if (writing) reportWrite('games', false);
+    return undefined;
+  }
   return new Promise((resolve) => {
-    const req = fn(db.transaction(store, mode).objectStore(store));
-    req.onsuccess = () => resolve(req.result as T);
-    req.onerror = () => resolve(undefined);
+    try {
+      const tx = db.transaction(store, mode);
+      const req = fn(tx.objectStore(store));
+      req.onsuccess = () => resolve(req.result as T);
+      req.onerror = () => resolve(undefined);
+      if (writing) {
+        tx.oncomplete = () => reportWrite('games', true);
+        // Quota exceeded and similar failures abort the transaction.
+        tx.onabort = tx.onerror = () => {
+          reportWrite('games', false);
+          resolve(undefined);
+        };
+      }
+    } catch {
+      // The database was closed (another tab upgraded it, or the browser evicted it).
+      dbPromise = null;
+      if (writing) reportWrite('games', false);
+      resolve(undefined);
+    }
   });
 }
 

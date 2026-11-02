@@ -47,6 +47,7 @@ function serviceWorkerManifest(version: string): Plugin {
     'assets/cards/classic/faces.webp',
     'assets/cards/classic/back.webp',
     'assets/artwork.json',
+    'assets/story/manifest.json',
     'assets/icons/icon-192.png',
     'assets/icons/icon-512.png',
     'assets/icons/apple-touch-icon.png',

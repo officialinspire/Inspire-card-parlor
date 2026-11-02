@@ -119,7 +119,9 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
   ctx.tools.primary.append(pauseBtn, undoBtn, hintBtn, newBtn, finishBtn);
   ctx.tools.more.append(moreItem('restart', 'Restart this deal', () => void restart(), 'restart'));
 
-  const el = h('div', { class: 'solitaire' }, board);
+  // Keyboard play reports where its cursor is, and what happened, to screen readers.
+  const kbStatus = h('p', { class: 'sr-only', 'aria-live': 'polite', 'data-kb-status': '' });
+  const el = h('div', { class: 'solitaire' }, board, kbStatus);
   ctx.surface.replaceChildren(el);
   ctx.surface.classList.add('table-surface-game');
 
@@ -289,6 +291,7 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
       }
     }
     if (flipped && !dealing) gameSound('card_flip');
+    paintCursor();
     renderHud();
   }
 
@@ -764,6 +767,113 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
     }
     if (index >= 0 && game.canPick(pile, index)) select();
   }
+
+  // ----- Keyboard play: a cursor over the piles -----
+  //
+  // Tab to the table, then: ←/→ move between piles (top row, then the columns),
+  // ↑/↓ move through a column's face-up run, Enter or Space acts like a tap
+  // (select, move the selection there, or deal from the stock), Escape lets go.
+  board.tabIndex = 0;
+  board.setAttribute(
+    'aria-description',
+    'Arrow keys move between piles and cards. Enter or Space picks up or places cards. Escape cancels. U undo, H hint, P pause.',
+  );
+  let cursor: { pile: string; index: number } | null = null;
+  let kbClock = 0;
+  const pileOrder = () =>
+    [...game.table.piles.values()].sort((a, b) => {
+      const A = pileOrigin(a);
+      const B = pileOrigin(b);
+      return A.y - B.y || A.x - B.x;
+    });
+  const pileName = (p: Pile) => {
+    const n = Number(p.id.split(':')[1] ?? 0) + 1;
+    if (p.kind === 'tableau') return `Column ${n}`;
+    if (p.kind === 'foundation') return `Foundation ${n}`;
+    if (p.kind === 'cell') return `Free cell ${n}`;
+    if (p.kind === 'stock') return 'Stock';
+    return 'Waste';
+  };
+  const topIndex = (p: Pile) => (p.isEmpty ? -1 : p.size - 1);
+  /** Face-up cards the cursor can stop on in a pile (just the top one outside the columns). */
+  const stops = (p: Pile): number[] => {
+    if (p.isEmpty) return [-1];
+    if (p.kind !== 'tableau') return [p.size - 1];
+    const out: number[] = [];
+    for (let i = 0; i < p.size; i++) if (p.at(i)!.faceUp) out.push(i);
+    return out.length ? out : [p.size - 1];
+  };
+  function describe(): string {
+    if (!cursor || !metrics) return '';
+    const p = game.pile(cursor.pile);
+    const card = cursor.index >= 0 ? p.at(cursor.index) : undefined;
+    const what = !card
+      ? p.kind === 'stock' && klondike && !klondike.waste.isEmpty
+        ? 'empty, Enter turns the waste back over'
+        : 'empty'
+      : card.faceUp
+        ? `${card.label}${p.kind === 'tableau' && cursor.index < p.size - 1 ? ` and ${p.size - 1 - cursor.index} below` : ''}`
+        : p.kind === 'stock'
+          ? `${p.size} cards, Enter deals`
+          : 'face-down card';
+    const held = selection ? `Holding ${game.pile(selection.pile).at(selection.index)?.label ?? 'cards'}. ` : '';
+    return `${held}${pileName(p)}: ${what}.`;
+  }
+  function paintCursor(): void {
+    for (const x of board.querySelectorAll('.kb-cursor')) x.classList.remove('kb-cursor');
+    if (!cursor || !board.hasAttribute('data-kb')) return;
+    const p = game.table.piles.get(cursor.pile);
+    if (!p) {
+      cursor = null;
+      return;
+    }
+    if (cursor.index > p.size - 1) cursor.index = topIndex(p);
+    if (cursor.index < 0 && !p.isEmpty) cursor.index = topIndex(p);
+    const card = cursor.index >= 0 ? p.at(cursor.index) : undefined;
+    (card ? els.get(keyOf(card))?.el : slots.get(p.id))?.classList.add('kb-cursor');
+  }
+  const say = (text: string) => {
+    kbStatus.textContent = '';
+    requestAnimationFrame(() => (kbStatus.textContent = text));
+  };
+  board.addEventListener('keydown', (e) => {
+    if (store.state.modals.length || e.altKey || e.ctrlKey || e.metaKey) return;
+    const keys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Enter', ' ', 'Escape'];
+    if (!keys.includes(e.key) || e.target !== board) return;
+    e.preventDefault();
+    e.stopPropagation(); // Space here acts on the cursor, not the table-wide "deal" key
+    if (paused || busy || game.data.won || !metrics) return;
+    board.setAttribute('data-kb', '');
+    const order = pileOrder();
+    if (!cursor) {
+      const first = order.find((p) => p.kind === 'tableau') ?? order[0]!;
+      cursor = { pile: first.id, index: topIndex(first) };
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+      const i = order.findIndex((p) => p.id === cursor!.pile);
+      const next = order[(i + (e.key === 'ArrowRight' ? 1 : order.length - 1)) % order.length]!;
+      cursor = { pile: next.id, index: topIndex(next) };
+    } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+      const st = stops(game.pile(cursor.pile));
+      const at = Math.max(0, st.indexOf(cursor.index));
+      cursor.index = st[Math.max(0, Math.min(st.length - 1, at + (e.key === 'ArrowUp' ? -1 : 1)))]!;
+    } else if (e.key === 'Escape') {
+      selection = null;
+      render();
+      return say(`Nothing held. ${describe()}`);
+    } else {
+      const before = game.data.moves;
+      kbClock += 1000; // keyboard presses never count as a double tap
+      tap(cursor.pile, cursor.index, { timeStamp: kbClock } as PointerEvent);
+      render();
+      return say(`${game.data.moves !== before ? 'Moved. ' : ''}${describe()}`);
+    }
+    render();
+    say(describe());
+  });
+  board.addEventListener('blur', () => {
+    board.removeAttribute('data-kb');
+    paintCursor();
+  });
 
   // Keyboard
   const onKey = (e: KeyboardEvent) => {
