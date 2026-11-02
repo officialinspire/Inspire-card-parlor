@@ -308,8 +308,8 @@ test('a save from the first story campaign loads: progress archived, everything 
   expect(backup).toContain('chapter-2-1');
   // The new campaign starts at its first chapter; old wins open nothing in it.
   await clickNav(page, 'STORY_MODE');
-  await expect(page.locator(`${CURRENT} [data-chapter="th-1"]`)).not.toHaveClass(/locked/);
-  await expect(page.locator(`${CURRENT} [data-chapter="th-2"]`)).toHaveClass(/locked/);
+  await expect(page.locator(`${CURRENT} [data-chapter="th-1"]`)).toHaveAttribute('data-state', 'available');
+  await expect(page.locator(`${CURRENT} [data-chapter="th-2"]`)).toHaveAttribute('data-state', 'locked');
   // Reloading does not archive again or lose anything.
   await page.waitForTimeout(400);
   await page.reload();

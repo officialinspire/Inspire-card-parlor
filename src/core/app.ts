@@ -20,6 +20,9 @@ import { SCREENS } from '@/components/screens';
 import { AppState } from './states';
 import { goBack, navigate, store } from './store';
 import { runBoot } from './boot';
+import { loadStoryArt } from '@/story/art';
+import { setActiveStoryLevel } from '@/story/session';
+import { recordGameResult } from '@/progression/results';
 import { ALL_LEVELS } from '@/story/campaign';
 import { APP } from './config';
 
@@ -58,8 +61,9 @@ export async function startApp(mount: HTMLElement): Promise<void> {
     const s = store.state.screen;
     // Escape / Backspace act as "back" everywhere except the hub and splash.
     if ((e.key === 'Escape' || e.key === 'Backspace') && s !== AppState.MAIN_MENU && s !== AppState.INITIALIZATION) {
-      // Gameplay owns its own back (it asks before leaving the table).
-      if (s === AppState.GAMEPLAY)
+      // Gameplay owns its own back (it asks before leaving the table); Story Mode steps back
+      // through its own views (journal → chapter → map) before leaving.
+      if (s === AppState.GAMEPLAY || s === AppState.STORY_MODE)
         document.querySelector<HTMLElement>('.screen:not([aria-hidden]) [data-nav="back"]')?.click();
       else goBack();
     }
@@ -72,6 +76,8 @@ export async function startApp(mount: HTMLElement): Promise<void> {
 
   track('boot', { version: APP.version });
   navigate(AppState.INITIALIZATION);
+  // Story artwork is decorative: start loading its manifest now, never wait for it.
+  void loadStoryArt();
   await runBoot(store);
 
   if (import.meta.env.PROD && 'serviceWorker' in navigator) {
@@ -85,6 +91,20 @@ export async function startApp(mount: HTMLElement): Promise<void> {
       navigate,
       // Product events captured this session (what would be sent to PostHog).
       analytics: recentEvents,
+      // Records a finished story game (as if played), so tests can reach any result screen.
+      storyResult: (levelId: string, outcome: 'win' | 'loss') => {
+        const level = ALL_LEVELS.find((l) => l.id === levelId);
+        if (!level) return;
+        setActiveStoryLevel(levelId);
+        recordGameResult(store, {
+          gameId: level.game,
+          outcome,
+          durationMs: 60_000,
+          score: outcome === 'win' && level.game === 'go-fish' ? 7 : 0,
+          details: level.game === 'go-fish' ? { books: outcome === 'win' ? 7 : 0 } : {},
+        });
+        setActiveStoryLevel(null);
+      },
       // The campaign's challenges, so tests can launch each one.
       story: ALL_LEVELS.map((l) => ({
         id: l.id,

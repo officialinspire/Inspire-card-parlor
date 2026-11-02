@@ -6,6 +6,7 @@ import './base.css';
 import './components.css';
 import './screens.css';
 import './progression.css';
+import './story.css';
 
 /** Day runs 7:00–18:59 on the player's own clock; the parlor lights its lamps after that. */
 export function resolveTheme(mode: ThemeMode, hour = new Date().getHours()): 'day' | 'night' {

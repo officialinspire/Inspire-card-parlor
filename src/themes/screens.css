@@ -3970,10 +3970,10 @@ button.board-tile .tile-title {
 .chapter-card.done {
   border-color: var(--gold-line);
 }
-.chapter-card.locked .story-art {
+.chapter-card.locked .chapter-art {
   filter: grayscale(0.9) brightness(0.8);
 }
-.story-art {
+.chapter-art {
   position: relative;
   flex: 1;
   min-height: 90px;
@@ -3985,7 +3985,7 @@ button.board-tile .tile-title {
     var(--tint);
   border-bottom: 1px solid var(--border);
 }
-.story-art.large {
+.chapter-art.large {
   min-height: 0;
   height: 100%;
   border-radius: var(--radius-m);
@@ -4015,7 +4015,7 @@ button.board-tile .tile-title {
   }
 }
 /* Builders: clearly labelled until its artwork is supplied. */
-.story-art.placeholder {
+.chapter-art.placeholder {
   background: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.05) 0 10px, transparent 10px 20px), var(--tint);
 }
 .story-art-label {

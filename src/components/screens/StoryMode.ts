@@ -1,27 +1,21 @@
 import { h } from '@/utils/dom';
 import { AppState } from '@/core/states';
 import { navigate } from '@/core/store';
-import { getDeck } from '@/decks/registry';
-import { getBoard } from '@/boards/registry';
 import { getGame } from '@/games/registry';
-import { getPersonality, PERSONALITIES } from '@/games/cpu/personalities';
 import { audio } from '@/audio';
-import { cssUrl } from '@/boards/BoardRenderer';
+import { loadStoryArt } from '@/story/art';
 import {
   CAMPAIGN_TITLE,
+  STAMPS,
   STORY_CHAPTERS,
   getChapter,
   getLevel,
-  type DialogueLine,
   type StoryChapter,
   type StoryLevel,
-  type StoryReward,
 } from '@/story/campaign';
 import { getCharacter } from '@/story/chapters';
 import {
   chapterProgress,
-  describeReward,
-  isChapterComplete,
   isChapterUnlocked,
   isLevelComplete,
   isLevelUnlocked,
@@ -31,216 +25,90 @@ import {
   type StoryOutcome,
 } from '@/story/progress';
 import { takeStoryOutcome } from '@/story/session';
-import { avatar } from '../Avatar';
+import { levelAfter, type ReplayableScene } from '@/story/world';
+import type { MapStop } from '@/story/world';
 import { openDialog } from '../Dialog';
 import { icon } from '../icons';
 import { celebrate, notify } from '../Notifications';
-import { passportStamps as passport } from '../passportStamps';
+import { passportStamps } from '../passportStamps';
 import { paginator } from '../Paginator';
-import { badge, button, progressBar, screenFrame } from '../ui';
+import { button, progressBar, screenFrame } from '../ui';
 import { Disposer, type ScreenFactory } from '../Screen';
-
-const asset = (path: string) => cssUrl(`${import.meta.env.BASE_URL}assets/${path}`);
-const deckPreview = (deckId: string) => `${import.meta.env.BASE_URL}${getDeck(deckId).assets.basePath}preview.webp`;
-
-const rewardNames = { deck: (id: string) => getDeck(id).name, board: (id: string) => getBoard(id).name };
-const rewardText = (r: StoryReward) => describeReward(r, rewardNames);
-
-/** A speaker's portrait: CPU opponents use their avatar, the regulars a monogram. */
-function portrait(who: string): HTMLElement {
-  if (PERSONALITIES.some((p) => p.id === who)) return avatar(getPersonality(who), 'story-portrait');
-  const c = getCharacter(who);
-  return h(
-    'span',
-    { class: 'story-portrait monogram', style: { '--who': c?.color ?? '#888' }, 'aria-hidden': 'true' },
-    c?.name[0] ?? '?',
-  );
-}
+import { journalView } from '../story/journal';
+import { worldMapView } from '../story/map';
+import { rewardList, storyResult } from '../story/results';
+import { playScene } from '../story/scene';
+import { portrait, sprite } from '../story/sprites';
+import { opponentsOf, versus } from '../story/versus';
 
 /**
- * Compact dialogue: one line at a time with Next, or Skip to the end.
- * Resolves with the chosen action's value.
+ * Story Mode: THE THIRTEENTH HAND.
+ *
+ * One screen with three views — the world map, a chapter's challenges and
+ * the quest journal — and its own back: journal → chapter → map → menu
+ * (the header's Back, Escape and Backspace all step back one view). Scenes,
+ * the versus card and results are dialogs over these views, so leaving one
+ * never loses progress: everything is saved as it happens.
+ *
+ * Nothing here names a character or place: it all comes from the campaign data.
  */
-async function dialogue<T extends string>(opts: {
-  title: string;
-  lines: DialogueLine[];
-  extra?: Node | null;
-  actions: { label: string; value: T; variant?: 'ghost' | 'primary' | 'gold'; icon?: 'play' | 'check' }[];
-  dismissValue: T;
-}): Promise<T> {
-  let i = 0;
-  const speaker = h('div', { class: 'story-line', 'aria-live': 'polite' });
-  const next = button('Next', () => show(i + 1), {
-    variant: 'ghost',
-    size: 'sm',
-    class: 'story-next',
-    attrs: { 'data-dialogue': 'next' },
-  });
-  const show = (n: number) => {
-    i = Math.min(n, opts.lines.length - 1);
-    const line = opts.lines[i]!;
-    const c = getCharacter(line.who);
-    speaker.replaceChildren(
-      portrait(line.who),
-      h('div', { class: 'story-bubble' }, h('strong', null, c?.name ?? line.who), h('p', null, line.text)),
-    );
-    next.hidden = i >= opts.lines.length - 1;
-  };
-  show(0);
-  return openDialog<T>({
-    title: opts.title,
-    class: 'dialog-story',
-    body: h(
-      'div',
-      { class: 'story-dialogue', 'data-dialogue-lines': String(opts.lines.length) },
-      speaker,
-      h('div', { class: 'story-dialogue-nav' }, next),
-      opts.extra ?? null,
-    ),
-    dismissValue: opts.dismissValue,
-    actions: opts.actions,
-  });
-}
-
-function rewardList(rewards: readonly StoryReward[], label: string): HTMLElement | null {
-  if (!rewards.length) return null;
-  return h(
-    'div',
-    { class: 'story-rewards', 'data-rewards': '' },
-    h('small', null, label),
-    h('ul', null, ...rewards.map((r) => h('li', { 'data-reward': r.kind }, rewardIcon(r), rewardText(r)))),
-  );
-}
-
-function rewardIcon(r: StoryReward): Node {
-  const map: Record<StoryReward['kind'], Parameters<typeof icon>[0]> = {
-    credits: 'credits',
-    xp: 'star',
-    deck: 'cards',
-    board: 'board',
-    variant: 'cards',
-    stamp: 'check',
-    achievement: 'trophy',
-    evidence: 'hint',
-  };
-  return icon(map[r.kind]);
-}
-
-/** Five pips showing a chapter's progress. */
-function pips(done: number, total: number): HTMLElement {
-  return h(
-    'span',
-    { class: 'story-pips', role: 'img', 'aria-label': `${done} of ${total} challenges complete` },
-    ...Array.from({ length: total }, (_, i) => h('i', { class: i < done ? 'on' : '' })),
-  );
-}
-
-/** The chapter's illustration: its painting (if any) with the real deck art laid over it. */
-function chapterArt(chapter: StoryChapter, large = false): HTMLElement {
-  const art = chapter.artwork;
-  return h(
-    'span',
-    {
-      class: `story-art${large ? ' large' : ''}${art.placeholder ? ' placeholder' : ''}`,
-      style: { '--tint': art.tint, ...(art.backdrop ? { '--backdrop': asset(art.backdrop) } : {}) },
-      'aria-hidden': 'true',
-    },
-    h(
-      'span',
-      { class: 'story-art-decks' },
-      ...art.decks
-        .slice(0, 2)
-        .map((d, i) =>
-          h('img', { src: deckPreview(d), alt: '', loading: 'lazy', decoding: 'async', style: { '--i': String(i) } }),
-        ),
-    ),
-    art.placeholder ? h('span', { class: 'story-art-label', 'data-placeholder': '' }, art.placeholder) : null,
-  );
-}
+type View = { kind: 'map' } | { kind: 'chapter'; id: string } | { kind: 'journal'; from: View };
 
 export const StoryModeScreen: ScreenFactory = ({ store }) => {
   const d = new Disposer();
   const profile = () => store.state.profile;
-  let view: { el: HTMLElement; destroy(): void } | null = null;
   const root = h('div', { class: 'story-root' });
+  let view: View = { kind: 'map' };
+  let mounted: { el: HTMLElement; destroy(): void } | null = null;
 
-  // ----- Chapter list -----
-  function chapterList(): { el: HTMLElement; destroy(): void } {
-    const reached = STORY_CHAPTERS.findIndex((c) => !isChapterComplete(profile(), c));
-    const pager = paginator({
-      items: STORY_CHAPTERS,
-      minTileWidth: 260,
-      minTileHeight: 210,
-      maxTileHeight: 320,
-      label: 'Chapters',
-      initialIndex: Math.max(0, reached),
-      render: (ch) => {
-        const unlocked = isChapterUnlocked(profile(), ch);
-        const prog = chapterProgress(profile(), ch);
-        const done = prog.done === prog.total;
-        return h(
-          'button',
-          {
-            type: 'button',
-            class: `tile chapter-card${unlocked ? '' : ' locked'}${done ? ' done' : ''}`,
-            'data-chapter': ch.id,
-            'aria-label': `Chapter ${ch.index}: ${ch.title}${unlocked ? `, ${prog.done} of ${prog.total} complete` : ', locked'}`,
-            onclick: () => {
-              if (!unlocked)
-                return void notify(`Finish Chapter ${ch.index - 1} to open ${ch.title}.`, {
-                  kind: 'warning',
-                  icon: 'lock',
-                });
-              audio.play('tap');
-              void openChapter(ch);
-            },
-          },
-          chapterArt(ch),
-          h(
-            'span',
-            { class: 'chapter-card-body' },
-            h('span', { class: 'tile-kicker' }, `Chapter ${ch.index} · ${ch.location}`),
-            h('span', { class: 'tile-title' }, ch.title),
-            unlocked
-              ? h(
-                  'span',
-                  { class: 'chapter-card-meta' },
-                  pips(prog.done, prog.total),
-                  done ? badge('Stamped', 'badge-done') : null,
-                )
-              : h('span', { class: 'tile-lock' }, icon('lock'), `Finish Chapter ${ch.index - 1}`),
-          ),
-        );
-      },
+  // ----- Views -----
+  const journalButton = () =>
+    button('Journal', () => go({ kind: 'journal', from: view }), {
+      variant: 'ghost',
+      size: 'sm',
+      icon: 'binder',
+      class: 'story-journal-btn',
+      attrs: { 'data-action': 'journal' },
     });
+
+  function mapView() {
     const el = screenFrame({
       title: 'Story Mode',
       subtitle: CAMPAIGN_TITLE,
-      body: h('div', { class: 'stack story-stack' }, passport(store), pager.el),
+      actions: [journalButton()],
+      body: h('div', { class: 'stack story-stack' }, passportStamps(store), worldMapView(profile(), onStop)),
     });
-    return { el, destroy: pager.destroy };
+    el.dataset.storyView = 'map';
+    return { el, destroy: () => undefined };
   }
 
-  // ----- One chapter: its challenges -----
-  function chapterView(ch: StoryChapter): { el: HTMLElement; destroy(): void } {
+  function chapterView(ch: StoryChapter) {
     const prog = chapterProgress(profile(), ch);
     const next = nextLevel(profile(), ch);
     const pager = paginator({
       items: ch.levels,
-      minTileWidth: 240,
-      minTileHeight: 118,
-      maxTileHeight: 168,
+      minTileWidth: 250,
+      minTileHeight: 132,
+      maxTileHeight: 190,
+      gap: 10,
       label: 'Challenges',
       initialIndex: Math.max(
         0,
         ch.levels.findIndex((l) => l.id === next?.id),
       ),
-      render: (lv) => levelTile(ch, lv),
+      render: (lv) => challengeCard(ch, lv),
     });
     const hero = h(
       'div',
       { class: 'chapter-hero' },
-      chapterArt(ch, true),
+      h(
+        'span',
+        { class: 'chapter-hero-art', style: { '--tint': ch.artwork.tint }, 'aria-hidden': 'true' },
+        sprite(ch.artwork.locationSprite, { thumb: true, alt: '' }),
+        ch.artwork.placeholder
+          ? h('span', { class: 'story-art-label', 'data-placeholder': '' }, ch.artwork.placeholder)
+          : null,
+      ),
       h(
         'div',
         { class: 'chapter-hero-text' },
@@ -257,48 +125,56 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
           button('Story so far', () => void chapterIntro(ch), {
             variant: 'ghost',
             size: 'sm',
+            icon: 'story',
             attrs: { 'data-action': 'chapter-intro' },
           }),
-          rewardPeek(ch),
+          button('Rewards', () => void chapterRewards(ch), {
+            variant: 'ghost',
+            size: 'sm',
+            icon: 'trophy',
+            attrs: { 'data-action': 'chapter-rewards' },
+          }),
         ),
       ),
     );
     const el = screenFrame({
       title: `${ch.index}. ${ch.title}`,
       subtitle: ch.location,
-      back: () => show(chapterList()),
+      back: () => go({ kind: 'map' }),
+      actions: [journalButton()],
       body: h('div', { class: 'stack story-stack' }, hero, pager.el),
     });
     el.dataset.chapterView = ch.id;
+    el.dataset.storyView = 'chapter';
     return { el, destroy: pager.destroy };
   }
 
-  function rewardPeek(ch: StoryChapter): HTMLElement {
-    return button(
-      'Chapter rewards',
-      () =>
-        void openDialog({
-          title: `${ch.title}: rewards`,
-          icon: 'trophy',
-          body: rewardList(ch.rewards, 'For finishing all five challenges') ?? '',
-          dismissValue: undefined,
-          actions: [{ label: 'Close', value: undefined }],
-        }),
-      { variant: 'ghost', size: 'sm', attrs: { 'data-action': 'chapter-rewards' } },
-    );
+  function journalScreen(from: View) {
+    const j = journalView(store, (scene) => void replay(scene));
+    const el = screenFrame({ title: 'Journal', subtitle: CAMPAIGN_TITLE, back: () => go(from), body: j.el });
+    el.dataset.storyView = 'journal';
+    return { el, destroy: j.destroy };
   }
 
-  function levelTile(ch: StoryChapter, lv: StoryLevel): HTMLElement {
+  /** A challenge card: game, objective, opponents, rewards and its state. */
+  function challengeCard(ch: StoryChapter, lv: StoryLevel): HTMLElement {
     const unlocked = isLevelUnlocked(profile(), lv);
     const done = isLevelComplete(profile(), lv.id);
     const game = getGame(lv.game);
+    const opponents = opponentsOf(lv);
+    const credits = lv.rewards.find((r) => r.kind === 'credits');
+    const xp = lv.rewards.find((r) => r.kind === 'xp');
+    const clues = lv.rewards.filter((r) => r.kind === 'evidence').length;
+    const state = done ? 'Replay' : unlocked ? 'Start' : 'Locked';
     return h(
       'button',
       {
         type: 'button',
-        class: `tile level-tile${unlocked ? '' : ' locked'}${done ? ' done' : ''}${lv.finale ? ' finale' : ''}`,
+        class: `tile level-tile challenge-card${unlocked ? '' : ' locked'}${done ? ' done' : ''}${lv.finale ? ' finale' : ''}`,
         'data-level': lv.id,
-        'aria-label': `Challenge ${lv.number}: ${lv.title}. ${lv.objectiveText}${done ? ' Complete.' : unlocked ? '' : ' Locked.'}`,
+        'aria-label': `Challenge ${lv.number}: ${lv.title}. ${game?.name ?? lv.game}. ${lv.objectiveText}${
+          opponents.length ? ` Against ${opponents.map((o) => getCharacter(o)?.name ?? o).join(', ')}.` : ''
+        } ${done ? 'Complete — replay.' : unlocked ? 'Start.' : 'Locked.'}`,
         onclick: () => {
           if (!unlocked)
             return void notify('Finish the challenge before this one first.', { kind: 'warning', icon: 'lock' });
@@ -310,27 +186,77 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
       h(
         'span',
         { class: 'tile-body' },
-        h('span', { class: 'tile-kicker' }, lv.finale ? 'Finale' : `Challenge ${lv.number}`),
+        h(
+          'span',
+          { class: 'tile-kicker' },
+          `${lv.finale ? 'Finale' : `Challenge ${lv.number}`} · ${game?.name ?? lv.game}`,
+        ),
         h('span', { class: 'tile-title' }, lv.title),
         h('span', { class: 'level-objective', 'data-objective': '' }, lv.objectiveText),
         h(
           'span',
-          { class: 'tile-meta' },
-          game ? badge(game.name) : null,
-          lv.setup.seed !== undefined ? badge('Verified deal', 'badge-soft') : null,
-          done
-            ? badge('Done', 'badge-done')
-            : !unlocked
-              ? h('span', { class: 'tile-lock' }, icon('lock'), 'Locked')
-              : null,
+          { class: 'challenge-meta' },
+          opponents.length
+            ? h(
+                'span',
+                { class: 'challenge-opponents', 'aria-hidden': 'true' },
+                ...opponents.map((o) => portrait(o, undefined, 'mini-portrait')),
+              )
+            : null,
+          h(
+            'span',
+            { class: 'challenge-rewards', 'aria-hidden': 'true' },
+            credits?.kind === 'credits' ? h('span', null, icon('credits'), String(credits.amount)) : null,
+            xp?.kind === 'xp' ? h('span', null, icon('star'), String(xp.amount)) : null,
+            clues ? h('span', { 'data-clues': String(clues) }, icon('hint'), String(clues)) : null,
+          ),
+          h(
+            'span',
+            { class: `challenge-state ${state.toLowerCase()}`, 'data-challenge-state': state.toLowerCase() },
+            state,
+          ),
         ),
       ),
     );
   }
 
-  // ----- Dialogue, launching, outcomes -----
+  function render(): void {
+    mounted?.destroy();
+    mounted =
+      view.kind === 'map'
+        ? mapView()
+        : view.kind === 'chapter'
+          ? chapterView(getChapter(view.id)!)
+          : journalScreen(view.from);
+    root.replaceChildren(mounted.el);
+  }
+
+  function go(v: View): void {
+    view = v;
+    render();
+  }
+
+  // ----- Actions -----
+  function onStop(stop: MapStop): void {
+    if (stop.state === 'undiscovered')
+      return void notify('Keep following the clues to find this place.', { kind: 'info', icon: 'hint' });
+    if (stop.state === 'locked')
+      return void notify(`Finish Chapter ${stop.chapter.index - 1} to open ${stop.chapter.location}.`, {
+        kind: 'warning',
+        icon: 'lock',
+      });
+    audio.play('tap');
+    void openChapter(stop.chapter);
+  }
+
+  async function openChapter(ch: StoryChapter): Promise<void> {
+    if (!isChapterUnlocked(profile(), ch)) return;
+    go({ kind: 'chapter', id: ch.id });
+    if (!storyOf(profile()).introsSeen.includes(ch.id)) await chapterIntro(ch);
+  }
+
   async function chapterIntro(ch: StoryChapter): Promise<void> {
-    await dialogue({
+    await playScene({
       title: `Chapter ${ch.index}: ${ch.title}`,
       lines: ch.intro,
       actions: [
@@ -339,128 +265,132 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
       ],
       dismissValue: 'ok',
     });
-    store.dispatch({ type: 'UPDATE_PROFILE', patch: markIntroSeen(profile(), ch.id) });
+    // Seen (even when skipped): it is offered again from the chapter and the journal.
+    const patch = markIntroSeen(profile(), ch.id);
+    if (Object.keys(patch).length) store.dispatch({ type: 'UPDATE_PROFILE', patch });
   }
 
-  async function openChapter(ch: StoryChapter): Promise<void> {
-    show(chapterView(ch));
-    if (!storyOf(profile()).introsSeen.includes(ch.id)) await chapterIntro(ch);
-  }
-
-  async function startLevel(ch: StoryChapter, lv: StoryLevel): Promise<void> {
-    const game = getGame(lv.game);
-    const choice = await dialogue<'play' | 'cancel'>({
-      title: lv.title,
-      lines: lv.intro,
-      extra: h(
-        'div',
-        { class: 'story-brief' },
-        h('p', { class: 'story-objective', 'data-objective': '' }, icon('check'), lv.objectiveText),
-        h(
-          'p',
-          { class: 'story-setup' },
-          `${game?.name ?? lv.game} · ${getDeck(lv.setup.deckId).name} · ${getBoard(lv.setup.boardId).name}`,
-        ),
-        isLevelComplete(profile(), lv.id)
-          ? h('p', { class: 'ask-hint' }, 'Already complete — play again any time, just for fun.')
-          : rewardList(lv.rewards, 'Rewards'),
-      ),
-      actions: [
-        { label: 'Not now', value: 'cancel', variant: 'ghost' },
-        { label: 'Play', value: 'play', variant: 'gold', icon: 'play' },
-      ],
-      dismissValue: 'cancel',
+  function chapterRewards(ch: StoryChapter): Promise<void> {
+    return openDialog<void>({
+      title: `${ch.title}: rewards`,
+      icon: 'trophy',
+      body: rewardList(ch.rewards, 'For finishing all five challenges') ?? '',
+      dismissValue: undefined,
+      actions: [{ label: 'Close', value: undefined }],
     });
-    if (choice !== 'play') return;
+  }
+
+  /** Intro scene → versus card → the table. Backing out at any step returns to the chapter. */
+  async function startLevel(ch: StoryChapter, lv: StoryLevel, skipIntro = false): Promise<void> {
+    if (!skipIntro) {
+      const choice = await playScene<'play' | 'cancel'>({
+        title: lv.title,
+        lines: lv.intro,
+        extra: h(
+          'div',
+          { class: 'story-brief' },
+          h('p', { class: 'story-objective', 'data-objective': '' }, icon('check'), lv.objectiveText),
+          isLevelComplete(profile(), lv.id)
+            ? h('p', { class: 'story-hint' }, 'Already complete — play again any time, just for fun.')
+            : rewardList(lv.rewards, 'Rewards'),
+        ),
+        actions: [
+          { label: 'Not now', value: 'cancel', variant: 'ghost' },
+          { label: 'Ready', value: 'play', variant: 'gold', icon: 'play' },
+        ],
+        dismissValue: 'cancel',
+      });
+      if (choice !== 'play') return;
+    }
+    if ((await versus(lv)) !== 'play') return;
     store.dispatch({ type: 'SELECT_STORY_LEVEL', levelId: lv.id, chapterId: ch.id });
     navigate(AppState.GAMEPLAY);
   }
 
+  /** Back from a challenge: its closing scene, then the results, then wherever the player chooses. */
   async function showOutcome(o: StoryOutcome): Promise<void> {
     const ch = getChapter(o.chapterId)!;
     const lv = getLevel(o.levelId)!;
-    show(chapterView(ch));
-    if (!o.met) {
-      const again = await openDialog<'retry' | 'later'>({
-        title: 'Not this time',
-        icon: 'info',
-        class: 'dialog-story-result',
-        body: h(
-          'div',
-          { class: 'story-result', 'data-story-result': 'retry' },
-          h('p', null, `${lv.title}: ${lv.objectiveText}`),
-          h(
-            'p',
-            { class: 'ask-hint' },
-            lv.setup.seed !== undefined ? 'This deal can be won — try it again.' : 'A fresh deal is waiting.',
-          ),
-        ),
-        dismissValue: 'later',
-        actions: [
-          { label: 'Later', value: 'later', variant: 'ghost' },
-          { label: 'Try again', value: 'retry', icon: 'play' },
-        ],
-      });
-      if (again === 'retry') {
-        store.dispatch({ type: 'SELECT_STORY_LEVEL', levelId: lv.id, chapterId: ch.id });
-        navigate(AppState.GAMEPLAY);
-      }
-      return;
-    }
-    if (o.firstClear) {
+    go({ kind: 'chapter', id: ch.id });
+    if (o.met && o.firstClear) {
       audio.play('levelup');
-      notify(lv.title, { kind: 'celebrate', title: 'Challenge complete', icon: 'star', duration: 4200, sound: false });
+      if (lv.outro.length)
+        await playScene({
+          title: lv.title,
+          lines: lv.outro,
+          actions: [
+            { label: 'Skip', value: 'skip', variant: 'ghost' },
+            { label: 'Continue', value: 'ok' },
+          ],
+          dismissValue: 'ok',
+          className: 'scene-outro',
+        });
     }
-    await openDialog({
-      title: o.firstClear ? 'Challenge complete!' : 'Well played!',
-      icon: 'trophy',
-      class: 'dialog-story-result',
-      body: h(
-        'div',
-        { class: 'story-result', 'data-story-result': 'complete' },
-        h('p', null, lv.title),
-        rewardList(o.levelRewards, 'You earned') ??
-          h('p', { class: 'ask-hint' }, 'Rewards for this challenge were already collected.'),
-      ),
-      dismissValue: undefined,
-      actions: [{ label: o.chapterComplete ? 'Continue' : 'Back to the chapter', value: undefined }],
-    });
-    if (o.chapterComplete) await chapterComplete(ch, o);
-    show(chapterView(ch));
+    const choice = await storyResult(o);
+    if (o.met && o.chapterComplete && choice !== 'retry') {
+      await chapterComplete(ch, o);
+      return go({ kind: 'map' });
+    }
+    switch (choice) {
+      case 'retry':
+        return startLevel(ch, lv, true);
+      case 'map':
+        return go({ kind: 'map' });
+      case 'continue': {
+        const next = levelAfter(lv.id);
+        if (next && isLevelUnlocked(profile(), next)) return startLevel(ch, next);
+        return go({ kind: 'chapter', id: ch.id });
+      }
+      default:
+        return go({ kind: 'chapter', id: ch.id });
+    }
   }
 
   async function chapterComplete(ch: StoryChapter, o: StoryOutcome): Promise<void> {
-    celebrate('Passport stamped', ch.title, 'trophy');
-    const stampIndex = STORY_CHAPTERS.indexOf(ch) + 1;
-    const next = STORY_CHAPTERS[stampIndex];
-    await dialogue({
+    celebrate('Passport stamped', ch.location, 'trophy');
+    const next = STORY_CHAPTERS[ch.index];
+    const stamp = o.chapterRewards.find((r) => r.kind === 'stamp');
+    await playScene({
       title: `Chapter ${ch.index} complete`,
       lines: ch.outro,
       extra: h(
         'div',
         { class: 'chapter-complete', 'data-chapter-complete': ch.id },
-        h('span', { class: 'stamp big earned', 'aria-hidden': 'true' }, String(stampIndex)),
+        h(
+          'span',
+          { class: 'stamp big earned', 'aria-hidden': 'true' },
+          (stamp && sprite(STAMPS.find((x) => x.id === stamp.id)?.sprite, { thumb: true, alt: '' })) ??
+            String(ch.index),
+        ),
         rewardList(o.chapterRewards, 'Chapter rewards'),
         next
-          ? h('p', { class: 'ask-hint' }, `Chapter ${next.index}, ${next.title}, is open.`)
-          : h('p', { class: 'ask-hint' }, 'You have finished the Chronicles!'),
+          ? h('p', { class: 'story-hint' }, `A new place is open on the map: ${next.location}.`)
+          : h('p', { class: 'story-hint' }, 'The thirteenth hand is played. The mystery is solved.'),
       ),
       actions: [
         { label: 'Skip', value: 'skip', variant: 'ghost' },
-        { label: next ? 'Onward' : 'The end', value: 'ok', variant: 'gold' },
+        { label: next ? 'To the map' : 'The end', value: 'ok', variant: 'gold' },
       ],
       dismissValue: 'ok',
     });
   }
 
-  function show(v: { el: HTMLElement; destroy(): void }): void {
-    view?.destroy();
-    view = v;
-    root.replaceChildren(v.el);
+  async function replay(scene: ReplayableScene): Promise<void> {
+    await playScene({
+      title: scene.title,
+      lines: scene.lines,
+      actions: [{ label: 'Close', value: 'ok' }],
+      dismissValue: 'ok',
+      className: 'scene-replay',
+    });
   }
 
-  show(chapterList());
-  d.add(() => view?.destroy());
+  render();
+  // Story art arrives after the first paint: redraw once it is in (it is optional).
+  void loadStoryArt().then((m) => {
+    if (m && root.isConnected !== false) render();
+  });
+  d.add(() => mounted?.destroy());
 
   return {
     el: root,

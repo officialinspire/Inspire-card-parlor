@@ -193,6 +193,8 @@ export interface Evidence {
   description: string;
   /** Story sprite id for its picture, when one exists. */
   sprite?: string;
+  /** Key clues drive the mystery; optional ones add colour. */
+  importance: 'key' | 'optional';
   status: ContentStatus;
 }
 

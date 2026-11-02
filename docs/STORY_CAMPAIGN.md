@@ -130,3 +130,55 @@ bump `CAMPAIGN_VERSION` in `src/story/ids.ts` and add a migration step.
   built yet. The data is ready for it.
 - Old passport stamps are kept in the archive, but the passport only shows the
   nine new stamps.
+
+## Story Mode screens
+
+Story Mode is one screen with three views and its own back stack: journal →
+chapter → map → main menu. The header's Back button, Escape and Backspace all
+go back one view.
+
+Scenes, the versus card and results open as dialogs over these views. Progress
+is saved as it happens, so leaving any of them loses nothing. The screens read
+everything from the campaign data; no character or place is written into a
+component.
+
+| Piece                       | Code                                                               | Artwork used                                                                      |
+| --------------------------- | ------------------------------------------------------------------ | --------------------------------------------------------------------------------- |
+| World map                   | `src/components/story/map.ts`, state rules in `src/story/world.ts` | Nine location tiles; padlock, map pin, wax seal and mystery-emblem icons; compass |
+| Chapter and challenge cards | `src/components/screens/StoryMode.ts`                              | Location tile; opponent portraits                                                 |
+| Dialogue engine             | `src/components/story/scene.ts`                                    | Expression sheets (the pose changes with each line)                               |
+| Versus card                 | `src/components/story/versus.ts`                                   | Opponent portraits, crest emblem, real deck back                                  |
+| Quest journal               | `src/components/story/journal.ts`                                  | Quest-item and illustration sprites; quest scroll and open book                   |
+| Results                     | `src/components/story/results.ts`                                  | Crest emblem, quest scroll, suit confetti, spectral wisp                          |
+| Passport stamps             | `src/components/passportStamps.ts`                                 | The nine chapter stamps                                                           |
+
+**Map states.** Chapter 1 is open from the start. The next place is
+_discovered but locked_. Places beyond that are _undiscovered_, with their name
+and art hidden. Finished places are _completed_ and can still be revisited.
+
+**Dialogue.**
+
+- Narration is shown on parchment with no portrait and no speaker.
+- Characters speak beside their portrait, under a nameplate.
+- To advance, tap the scene or press →, Space or Enter; ← or the Back button
+  goes back. Skip ends the scene.
+- Beats that reveal a clue show it, marked "Added to your journal".
+- Scenes already seen can be replayed from the journal.
+
+**Failure-safe artwork.**
+
+- Every sprite is decorative.
+- If the manifest or an image is missing, the screens fall back to shapes,
+  monograms and plain text, and play continues. A Playwright test blocks all
+  story artwork and still plays a challenge.
+
+**Asset check (Prompt 22).**
+
+- All 51 source images listed in the manifest exist, as do every sprite and
+  thumbnail.
+- There is no illustrated base map of Fredericksburg. The only map art is
+  Sophia's annotated river trail map, which shows no town geography. The world
+  map therefore uses the brief's fallback: the location tiles on a parchment
+  trail in story order, which makes no claim about where the places are. Pan
+  and zoom are not needed, because all nine places fit every layout.
+- Jak Gold still has no expression sheet, so his opponent avatar stands in.

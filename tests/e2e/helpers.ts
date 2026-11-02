@@ -99,3 +99,7 @@ export async function expectNoOverflow(page: Page, selector = `${CURRENT} button
   expect(result.outside, 'controls outside the viewport').toEqual([]);
   expect(result.scrollable, 'page scrolls').toBe(false);
 }
+
+/** A button in the open dialog (a dialog that is closing is already aria-hidden). */
+export const action = (page: Page, value: string) =>
+  page.locator(`.dialog-backdrop:not([aria-hidden]) [data-dialog-action="${value}"]`);

@@ -21,6 +21,7 @@ export const EVIDENCE: readonly Evidence[] = [
     description:
       'An antique playing card with no suit and no rank, titled “The Thirteenth Hand”. Its four corners are blank where suit marks should be.',
     sprite: 'thirteenth-hand-antique-card/thirteenth-hand-antique-card',
+    importance: 'key',
     status: 'final',
   },
   {
@@ -30,6 +31,7 @@ export const EVIDENCE: readonly Evidence[] = [
     kind: 'document',
     description: 'Cheryl’s receipt for the box: “Lot 13 — one card box, contents as found. Paid in full.”',
     sprite: 'cheryls-antique-store-receipt/cheryls-antique-store-receipt',
+    importance: 'optional',
     status: 'final',
   },
   {
@@ -40,6 +42,7 @@ export const EVIDENCE: readonly Evidence[] = [
     description:
       'A leather ledger from the box. Twelve hands of cards are recorded in faded ink; the thirteenth line is blank.',
     sprite: 'mystery-parlor/leather-journal',
+    importance: 'key',
     status: 'final',
   },
   {
@@ -50,6 +53,7 @@ export const EVIDENCE: readonly Evidence[] = [
     description:
       'An old postcard of the Rappahannock. Someone has sketched a heron on the back in pencil and written: “River Station.”',
     sprite: 'mystery-parlor/old-town-postcard',
+    importance: 'key',
     status: 'final',
   },
 
@@ -62,6 +66,7 @@ export const EVIDENCE: readonly Evidence[] = [
     description:
       'A page from the station’s wildlife log: the same heron, logged at the same bend of the river, every morning.',
     sprite: 'river-ranger/field-journal',
+    importance: 'optional',
     status: 'final',
   },
   {
@@ -72,6 +77,7 @@ export const EVIDENCE: readonly Evidence[] = [
     description:
       'A small club (♣) carved into an old trail marker at the heron’s bend. It matches one blank corner of the card exactly.',
     sprite: 'river-ranger/trail-marker-post',
+    importance: 'key',
     status: 'final',
   },
   {
@@ -82,6 +88,7 @@ export const EVIDENCE: readonly Evidence[] = [
     description:
       'An envelope from the station’s lost-and-found, addressed to Dante at iSMOKESHOP and marked “Return to sender”. Inside: a card with a heron on it.',
     sprite: 'river-ranger/envelope-with-card',
+    importance: 'key',
     status: 'final',
   },
   {
@@ -92,6 +99,7 @@ export const EVIDENCE: readonly Evidence[] = [
     description:
       'A hand-drawn map of the river and the old town. Four small marks sit near the waterfront; Sophia cannot match them to any survey she knows.',
     sprite: 'river-ranger/old-river-map',
+    importance: 'key',
     status: 'final',
   },
 
@@ -103,6 +111,7 @@ export const EVIDENCE: readonly Evidence[] = [
     kind: 'document',
     description: 'Draft: an anonymous order for thirteen neon monster card designs, paid in advance.',
     sprite: 'dantes-gw-commission-form/dantes-gw-commission-form',
+    importance: 'key',
     status: 'draft',
   },
   {
@@ -112,6 +121,7 @@ export const EVIDENCE: readonly Evidence[] = [
     kind: 'object',
     description: 'Draft: a heart (♥) hidden in the reference sketch the commission asked Dante to copy.',
     sprite: 'neon-art-supplies/monster-sketch-page',
+    importance: 'key',
     status: 'draft',
   },
 
@@ -123,6 +133,7 @@ export const EVIDENCE: readonly Evidence[] = [
     kind: 'document',
     description: 'Draft: a receipt for a custom card case, ordered under the same name as the commission.',
     sprite: 'jaks-cardistry-receipt/jaks-cardistry-receipt',
+    importance: 'optional',
     status: 'draft',
   },
   {
@@ -132,6 +143,7 @@ export const EVIDENCE: readonly Evidence[] = [
     kind: 'recording',
     description: 'Draft: Jak’s slow-motion footage of a flourish shows a diamond (♦) printed inside the card’s edge.',
     sprite: 'jak-black-gold/smartphone-recording',
+    importance: 'key',
     status: 'draft',
   },
 
@@ -143,6 +155,7 @@ export const EVIDENCE: readonly Evidence[] = [
     kind: 'document',
     description: 'Draft: a fictional dossier. The operation borrowed an old local legend as cover.',
     sprite: 'mrs-grays-thirteenth-hand-dossier/mrs-grays-thirteenth-hand-dossier',
+    importance: 'key',
     status: 'draft',
   },
   {
@@ -152,6 +165,7 @@ export const EVIDENCE: readonly Evidence[] = [
     kind: 'card',
     description: 'Draft: the ace of spades from the dossier, with a spade (♠) matching the last blank corner.',
     sprite: 'cold-war-spycraft/spycraft-ace-of-spades',
+    importance: 'key',
     status: 'draft',
   },
 
@@ -164,6 +178,7 @@ export const EVIDENCE: readonly Evidence[] = [
     description:
       'Draft: Steve’s notes separating the lodge’s documented history from the cipher invented by the legend’s later borrowers.',
     sprite: 'lodge-research-sketchbook-page/lodge-research-sketchbook-page',
+    importance: 'optional',
     status: 'draft',
   },
 
@@ -175,6 +190,7 @@ export const EVIDENCE: readonly Evidence[] = [
     kind: 'object',
     description: 'Draft: an iron key Mary Ball Washington’s ghost entrusts to you.',
     sprite: 'kenmore-heirlooms/iron-key',
+    importance: 'key',
     status: 'draft',
   },
 
@@ -186,6 +202,7 @@ export const EVIDENCE: readonly Evidence[] = [
     kind: 'object',
     description: 'Draft: the sealed door’s four-suit lock, opened with all four marks.',
     sprite: 'underground-four-suit-puzzle/underground-four-suit-puzzle',
+    importance: 'key',
     status: 'draft',
   },
 
@@ -197,6 +214,7 @@ export const EVIDENCE: readonly Evidence[] = [
     kind: 'card',
     description: 'Draft: the Thirteenth Hand card with all four corners filled, after the final game.',
     sprite: 'awakened-thirteenth-hand-card/awakened-thirteenth-hand-card',
+    importance: 'key',
     status: 'draft',
   },
 ];
