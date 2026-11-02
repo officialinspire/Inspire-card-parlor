@@ -157,6 +157,16 @@ test('an achievement earned at the table waits for the hand to end, then toasts'
   });
   await expectScreen(page, 'GAMEPLAY');
   await page.locator('[data-dialog-action="deal"]').click();
+  await page.evaluate(() => {
+    const w = window as unknown as { __TOASTS__: string[] };
+    w.__TOASTS__ = [];
+    new MutationObserver((ms) => {
+      for (const m of ms)
+        for (const n of m.addedNodes)
+          if (n instanceof HTMLElement && n.matches('.toast, .toast *') && n.classList.contains('toast'))
+            w.__TOASTS__.push(`${performance.now() | 0} ${n.dataset.achievement ?? ''} ${n.textContent?.slice(0, 50)}`);
+    }).observe(document.body, { childList: true, subtree: true });
+  });
   // Earn a secret mid-game: it unlocks now, but no toast interrupts play.
   for (let i = 0; i < 7; i++) await dispatch(page, { type: 'JOURNAL', update: { add: { 'logo.taps': 1 } } });
   await expect.poll(async () => (await state(page)).profile.unlockedAchievements).toContain('knock-knock');
@@ -167,7 +177,13 @@ test('an achievement earned at the table waits for the hand to end, then toasts'
     timeout: 90_000,
   });
   await page.locator(`${CURRENT} [data-action="auto"]`).click();
-  await toast;
+  await toast.catch(async (e) => {
+    console.log(
+      'TOASTS',
+      JSON.stringify(await page.evaluate(() => (window as unknown as { __TOASTS__: string[] }).__TOASTS__)),
+    );
+    throw e;
+  });
   await expect(page.locator('.dialog-result')).toBeVisible({ timeout: 10_000 });
   const p = (await state(page)).profile;
   expect(p.achievementDates['knock-knock']).toBeGreaterThan(0);

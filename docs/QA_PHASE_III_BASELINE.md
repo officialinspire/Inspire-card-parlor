@@ -51,16 +51,16 @@ above.
 
 ## Gate results
 
-| Check                    | Result                                                                                                   |
-| ------------------------ | -------------------------------------------------------------------------------------------------------- |
-| `npm run typecheck`      | pass                                                                                                     |
-| `npm run test`           | 409 / 409 pass, 21 files (2 tests added in this phase)                                                   |
-| `npm run validate:decks` | 12 decks, 0 errors                                                                                       |
-| `npm run validate:story` | 51 sheets, 279 sprites, 0 errors, 39 artwork warnings (listed in `ART_ASSET_AUDIT.md`)                   |
-| `npm run format:check`   | pass                                                                                                     |
-| `npm run build`          | pass                                                                                                     |
-| `npm run test:e2e`       | full run in progress at this commit; result recorded in the next commit                                  |
-| CI on the release commit | Run 45 (`2dbb16d`) **passed**, the first green CI since run 37. Earlier red runs are fixed (D-07, D-08). |
+| Check                    | Result                                                                                                                                        |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `npm run typecheck`      | pass                                                                                                                                          |
+| `npm run test`           | 409 / 409 pass, 21 files (2 tests added in this phase)                                                                                        |
+| `npm run validate:decks` | 12 decks, 0 errors                                                                                                                            |
+| `npm run validate:story` | 51 sheets, 279 sprites, 0 errors, 39 artwork warnings (listed in `ART_ASSET_AUDIT.md`)                                                        |
+| `npm run format:check`   | pass                                                                                                                                          |
+| `npm run build`          | pass                                                                                                                                          |
+| `npm run test:e2e`       | 718 passed, 158 skipped (by design: project-specific tests), **2 failed**: D-05 test on desktop and tablet-landscape (58.6 min, on `6cf228a`) |
+| CI on the release commit | Run 45 (`2dbb16d`) **passed**, the first green CI since run 37. Earlier red runs are fixed (D-07, D-08).                                      |
 
 The audit found **0 console errors, 0 page errors, 0 failed requests and 0
 HTTP errors** on all 27 screens at all 8 viewports, and no page-level scroll on
@@ -68,26 +68,26 @@ any navigation screen.
 
 ## Defect summary
 
-| ID   | Sev | Area                       | Title                                                                                                                | Status                       |
-| ---- | --- | -------------------------- | -------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
-| D-01 | P1  | Games: Spider              | 10th column and stock run off the felt on 320 px phones                                                              | **Fixed**                    |
-| D-02 | P1  | Navigation: pagination     | Pager arrows pushed off screen at 320 px when a gallery has many pages                                               | **Fixed**                    |
-| D-03 | P2  | Main menu: phone landscape | Labels truncate on short landscape phones ("Collec…", "Klon…", music title 11 px wide)                               | **Fixed**                    |
-| D-04 | P2  | Main menu: 320 px          | Status pills slide under the logo                                                                                    | **Fixed**                    |
-| D-05 | P2  | Achievements               | The achievement earned at the table could be hidden behind older queued toasts                                       | **Fixed** (this phase)       |
-| D-06 | P2  | Release / deploy           | GitHub Pages not enabled; the public URL returns 404                                                                 | Open: needs a repo admin     |
-| D-07 | P2  | CI                         | Small-phone music track list tests failed in CI (run 38 onward)                                                      | **Fixed** (`2dbb16d`)        |
-| D-08 | P3  | Tests                      | War first-round e2e raced the 650 ms sweep                                                                           | **Fixed** (`8349adc`)        |
-| D-09 | P3  | Tests                      | Quick-play reload test exceeds the 30 s budget under load                                                            | **Fixed** (marked slow)      |
-| D-10 | P3  | Tests                      | FreeCell full tap game: one tap not registered (desktop, under load)                                                 | Open: root cause unconfirmed |
-| D-11 | P3  | Tests                      | Klondike sound-hooks test: 6 sounds where ≤2 expected (phone landscape)                                              | Open: diagnostic added       |
-| D-12 | P3  | Tests                      | Go Fish keyboard ask and deck placeholder-art tests: rare failures under load                                        | Open: not reproduced         |
-| D-13 | P3  | Story header (≤360 px)     | Story map and chapter titles truncate to "S…" / "2…" beside four buttons                                             | Open                         |
-| D-14 | P3  | Settings → Music           | Track chips are 30 px tall (below 44 px target)                                                                      | Open                         |
-| D-15 | P3  | Settings → Data            | inspireclothing.art link is 16–20 px tall                                                                            | Open                         |
-| D-16 | P3  | Main menu: 320 px portrait | Continue Story title partly under the card fan; Quick Play chips truncate                                            | Open                         |
-| D-17 | P3  | Release                    | `window.__ICP__` test hooks ship in production                                                                       | Open (documented)            |
-| D-18 | P3  | Content / art              | Known art gaps: no Jak expression sheet, no Fredericksburg base map, Yummyhole placeholder decks, Chapters 3–9 draft | Open (documented)            |
+| ID   | Sev | Area                       | Title                                                                                                                | Status                                    |
+| ---- | --- | -------------------------- | -------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| D-01 | P1  | Games: Spider              | 10th column and stock run off the felt on 320 px phones                                                              | **Fixed**                                 |
+| D-02 | P1  | Navigation: pagination     | Pager arrows pushed off screen at 320 px when a gallery has many pages                                               | **Fixed**                                 |
+| D-03 | P2  | Main menu: phone landscape | Labels truncate on short landscape phones ("Collec…", "Klon…", music title 11 px wide)                               | **Fixed**                                 |
+| D-04 | P2  | Main menu: 320 px          | Status pills slide under the logo                                                                                    | **Fixed**                                 |
+| D-05 | P2  | Achievements               | The achievement earned at the table could be hidden behind older queued toasts                                       | Improved; e2e still fails under full load |
+| D-06 | P2  | Release / deploy           | GitHub Pages not enabled; the public URL returns 404                                                                 | Open: needs a repo admin                  |
+| D-07 | P2  | CI                         | Small-phone music track list tests failed in CI (run 38 onward)                                                      | **Fixed** (`2dbb16d`)                     |
+| D-08 | P3  | Tests                      | War first-round e2e raced the 650 ms sweep                                                                           | **Fixed** (`8349adc`)                     |
+| D-09 | P3  | Tests                      | Quick-play reload test exceeds the 30 s budget under load                                                            | **Fixed** (marked slow)                   |
+| D-10 | P3  | Tests                      | FreeCell full tap game: one tap not registered (desktop, under load)                                                 | Open: root cause unconfirmed              |
+| D-11 | P3  | Tests                      | Klondike sound-hooks test: 6 sounds where ≤2 expected (phone landscape)                                              | Open: diagnostic added                    |
+| D-12 | P3  | Tests                      | Go Fish keyboard ask and deck placeholder-art tests: rare failures under load                                        | Open: not reproduced                      |
+| D-13 | P3  | Story header (≤360 px)     | Story map and chapter titles truncate to "S…" / "2…" beside four buttons                                             | Open                                      |
+| D-14 | P3  | Settings → Music           | Track chips are 30 px tall (below 44 px target)                                                                      | Open                                      |
+| D-15 | P3  | Settings → Data            | inspireclothing.art link is 16–20 px tall                                                                            | Open                                      |
+| D-16 | P3  | Main menu: 320 px portrait | Continue Story title partly under the card fan; Quick Play chips truncate                                            | Open                                      |
+| D-17 | P3  | Release                    | `window.__ICP__` test hooks ship in production                                                                       | Open (documented)                         |
+| D-18 | P3  | Content / art              | Known art gaps: no Jak expression sheet, no Fredericksburg base map, Yummyhole placeholder decks, Chapters 3–9 draft | Open (documented)                         |
 
 There are no open P0 or P1 defects.
 
@@ -173,7 +173,7 @@ There are no open P0 or P1 defects.
   28 px rings. It now starts at x = 80, after the logo ends at 78.
 - **Reference:** `docs/qa/phase-iii/menu-320x568-before-after.jpg`.
 
-### D-05 (P2, fixed this phase): table achievement hidden by older toasts
+### D-05 (P2, partly fixed): table achievement hidden by other toasts
 
 - **Steps:**
   1. Start a fresh profile, so the boot achievements are queued.
@@ -192,7 +192,19 @@ There are no open P0 or P1 defects.
   - Achievements still waiting from before the deal can't take the slot.
   - Neither can the routine ones that arrive as the hand ends.
   - The unit test covers both cases: it fails under either earlier rule.
-  - The e2e test passes in all 6 projects.
+- **Still open:**
+  - The e2e test passes in all 6 projects when run alone.
+  - It also passed 6/6 with 8 workers on the desktop and tablet-landscape
+    projects.
+  - It **failed on desktop and tablet-landscape in the last full suite run**:
+    the game ended with "Victory!", but no `knock-knock` medal toast appeared
+    within 90 s.
+  - That run's trace was overwritten before it could be read, so the root cause
+    is not confirmed.
+  - The test now logs every toast it saw (`TOASTS`) when it fails.
+- **Next step:** Read the `TOASTS` line from the next failure. Possible causes
+  are a different lead achievement, or a toast dropped while the result dialog
+  opens.
 - **Note:** This supersedes the "War loss toast" item in the 1.1.0 release
   notes. Losing was never the cause.
 
@@ -305,7 +317,7 @@ There are no open P0 or P1 defects.
 | 7   | Deck and board galleries               | Pass after D-02.                                                                                      | audit; `decks.spec`, `tables.spec`, `customization.spec` |
 | 8   | The five game engines                  | Pass after D-01. All five deal and render at all 8 viewports.                                         | audit; `games.spec`, `solitaire*.spec`                   |
 | 9   | Touch input                            | Pass (suite); D-10 open (P3, test-only).                                                              | `solitaire.spec`, `games.spec` (touch projects)          |
-| 10  | Quests, XP, unlocks and achievements   | Pass; D-05 fixed.                                                                                     | `progression.spec`, `demo.spec`, unit tests              |
+| 10  | Quests, XP, unlocks and achievements   | D-05 open (P2).                                                                                       | `progression.spec`, `demo.spec`, unit tests              |
 | 11  | Music, SFX and mute                    | Pass: one track at a time, mute is respected, the player's pick wins.                                 | `story-audio.spec`, `toolbar.spec`, unit `music.test`    |
 | 12  | Save/load and legacy migration         | Pass: archive, remap, rewards paid once.                                                              | unit migrate tests; `progression.spec`                   |
 | 13  | PWA and offline                        | Pass locally: precache, offline reload, sub-path build. Not checked on the public URL (D-06).         | `pwa.spec`, `assets.pages.spec`                          |
@@ -314,10 +326,12 @@ There are no open P0 or P1 defects.
 
 ## Remaining QA backlog (priority order)
 
-1. D-06: enable GitHub Pages (admin). Then verify the public URL, including
+1. D-05: read the `TOASTS` diagnostic from the next failure and fix the
+   cause.
+2. D-06: enable GitHub Pages (admin). Then verify the public URL, including
    offline install.
-2. D-10 and D-11: make the tap and sound tests wait on state, not time.
-3. D-13 and D-16: story header and 320 px menu polish.
-4. D-14 and D-15: 44 px targets in Settings.
-5. D-17: gate the test hooks behind a build flag.
-6. D-18: art for Jak's expressions and a base map, before Chapter 3 content.
+3. D-10 and D-11: make the tap and sound tests wait on state, not time.
+4. D-13 and D-16: story header and 320 px menu polish.
+5. D-14 and D-15: 44 px targets in Settings.
+6. D-17: gate the test hooks behind a build flag.
+7. D-18: art for Jak's expressions and a base map, before Chapter 3 content.
