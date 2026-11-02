@@ -753,7 +753,7 @@ button.tile:active {
   height: 36px;
 }
 /* Narrow card: the label takes its own line; slider and value share the next. */
-@container (max-width: 320px) {
+@container (max-width: 250px) {
   .control-slider .control-label {
     flex-basis: 100%;
   }

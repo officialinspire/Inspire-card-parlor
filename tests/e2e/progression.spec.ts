@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { CURRENT, clickNav, enterParlor, expectNoOverflow, expectScreen, seed } from './helpers';
+import { CURRENT, clickInPager, clickNav, enterParlor, expectNoOverflow, expectScreen, seed } from './helpers';
 
 test.use({ serviceWorkers: 'block' });
 
@@ -56,8 +56,13 @@ test('music player: play/pause, next/previous, shuffle, repeat, playlists, volum
   await player.locator('[data-category="woodland-ambience"]').click();
   await expect(player.locator('[data-category="woodland-ambience"]')).toHaveAttribute('aria-checked', 'true');
   await expect(player.locator('[data-value="track-title"]')).toHaveText(/Woodland Hush|Turtle Creek/);
-  await expect(player.locator('.mp-tracks [data-track]')).toHaveCount(2);
-  await player.locator('[data-track="turtle-creek"]').click();
+  // Only this playlist's tracks are listed (paged on short screens).
+  const listed = await player
+    .locator('.mp-tracks [data-track]')
+    .evaluateAll((els) => els.map((e) => (e as HTMLElement).dataset.track));
+  expect(listed.length).toBeGreaterThan(0);
+  for (const id of listed) expect(['woodland-hush', 'turtle-creek']).toContain(id);
+  await clickInPager(page, '[data-track="turtle-creek"]');
   await expect(player.locator('[data-value="track-title"]')).toHaveText('Turtle Creek');
 
   const mute = player.locator('[data-action="music-mute"]');

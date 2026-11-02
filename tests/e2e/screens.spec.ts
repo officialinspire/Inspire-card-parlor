@@ -63,7 +63,8 @@ test('settings: every tab renders and the music track can be picked', async ({ p
   }
   await page.locator(`${CURRENT} [data-tab="music"]`).click();
   await page.locator(`${CURRENT} [data-category="midnight-solitaire"]`).click();
-  await page.locator(`${CURRENT} [data-track="midnight-tea"]`).click();
+  // The track list pages on short screens: bring the track into view first.
+  await clickInPager(page, '[data-track="midnight-tea"]');
   await expect(page.locator(`${CURRENT} [data-track="midnight-tea"]`)).toHaveAttribute('aria-checked', 'true');
   await clickNav(page, 'home', 'MAIN_MENU');
   await expect(page.locator(`${CURRENT} [data-value="music"]`)).toHaveText('Midnight Tea');

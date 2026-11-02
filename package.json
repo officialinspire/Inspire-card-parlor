@@ -1,8 +1,8 @@
 {
   "name": "inspire-card-parlor",
   "private": true,
-  "version": "1.0.0",
-  "description": "INSPIRE CARD PARLOR \u2014 a cozy collection of classic playing-card games by OFFICIAL INSPIRE.",
+  "version": "1.1.0",
+  "description": "INSPIRE CARD PARLOR — a cozy collection of classic playing-card games by OFFICIAL INSPIRE.",
   "type": "module",
   "author": "OFFICIAL INSPIRE (https://www.inspireclothing.art)",
   "scripts": {
