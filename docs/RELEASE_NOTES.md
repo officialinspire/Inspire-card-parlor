@@ -1,9 +1,31 @@
 # Release notes
 
-## Unreleased — The Thirteenth Hand, complete
+## 1.2.0 — The Thirteenth Hand, complete
 
-All nine chapters are written and playable, on the development branch.
-Nothing is merged or deployed.
+The full nine-chapter story, published to GitHub Pages, together with the
+polish since 1.1.0:
+
+- **Opening:** a cinematic start (black → OFFICIAL INSPIRE presents → title
+  → Touch to Start → the menu rising from black).
+- **Riverfront ambience and effects:** day and night ambience, with effects
+  painted onto the menu paintings.
+- **Layout and readability:** repaired type, contrast and layout on every
+  screen size.
+- **Card tables:**
+  - more robust card input;
+  - opponents react with their own expressions;
+  - every game pays its rewards once.
+- **Performance:** a memory leak fixed (old screens are no longer kept), and a
+  faster start on slow connections.
+- **Recovery:** a recovery screen instead of a blank page, and "Repair
+  offline files" in Settings.
+- **Accessibility:** solitaire can be played from the keyboard, and pinch
+  zoom is allowed.
+
+Details are in `docs/AMBIENCE.md`, `docs/GAMEPLAY_INTERACTION.md`,
+`docs/PERFORMANCE_AND_ACCESSIBILITY_QA.md` and `docs/STARTUP_SEQUENCE.md`.
+
+### The story
 
 - **Chapters 3–9.** Dante's neon commission, Jak's records request, Mrs.
   Gray's dossier, Steve at Lodge No. 4, Mary Ball Washington at Kenmore, the
