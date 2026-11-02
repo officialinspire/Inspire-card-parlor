@@ -74,16 +74,6 @@ export const SettingsScreen: ScreenFactory = ({ store }) => {
             ),
             'haptics',
           ),
-          button('Test sound', () => audio.play('chime'), { variant: 'secondary', sfx: null, icon: 'music' }),
-        ),
-    },
-    {
-      id: 'music',
-      label: 'Music',
-      render: () =>
-        h(
-          'div',
-          { class: 'settings-panel settings-music' },
           tagged(
             toggle(
               'Story soundtrack',
@@ -93,8 +83,13 @@ export const SettingsScreen: ScreenFactory = ({ store }) => {
             ),
             'storySoundtrack',
           ),
-          musicPlayer(),
+          button('Test sound', () => audio.play('chime'), { variant: 'secondary', sfx: null, icon: 'music' }),
         ),
+    },
+    {
+      id: 'music',
+      label: 'Music',
+      render: () => h('div', { class: 'settings-panel settings-music' }, musicPlayer()),
     },
     {
       id: 'display',
