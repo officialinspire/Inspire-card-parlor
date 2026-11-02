@@ -119,9 +119,11 @@ expression-sheet poses that Story Mode already uses:
   closing scene. Skipping a scene can't lose a discovery.
 - A loss only counts an attempt. Retrying can't lower progress.
 
-**Return to the chapter:** leaving a challenge returns to its chapter, with
-that challenge on screen. This holds for a finish, Back, Home or the
-browser's Back (`setStoryReturn` in `src/story/session.ts`).
+**Return to the chapter:** going straight back from a challenge to Story
+Mode reopens its chapter, with that challenge on screen. This holds for a
+finish, the table's Back, or the browser's Back (`setStoryReturn` in
+`src/story/session.ts`). Home goes to the main menu, and Story Mode then
+opens on its map as usual.
 
 **Result dialogs:** the solitaire win dialog now shows XP and credits, like
 War and Go Fish.

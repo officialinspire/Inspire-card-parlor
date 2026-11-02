@@ -392,4 +392,14 @@ test('a story challenge left part-way returns to its chapter, with that challeng
   await expectScreen(page, 'MAIN_MENU');
   await clickNav(page, 'STORY_MODE');
   await expect(page.locator(`${CURRENT} [data-story-view="map"]`)).toBeVisible();
+  // Leaving the table with Home goes to the menu; Story Mode then opens on its map.
+  await page.evaluate(() => {
+    const icp = (window as unknown as { __ICP__: { store: { dispatch(a: unknown): void } } }).__ICP__;
+    icp.store.dispatch({ type: 'SELECT_STORY_LEVEL', levelId: 'th-1-1', chapterId: 'th-1' });
+    icp.store.dispatch({ type: 'NAVIGATE', to: 'GAMEPLAY' });
+  });
+  await expectScreen(page, 'GAMEPLAY');
+  await clickNav(page, 'home', 'MAIN_MENU');
+  await clickNav(page, 'STORY_MODE');
+  await expect(page.locator(`${CURRENT} [data-story-view="map"]`)).toBeVisible();
 });
