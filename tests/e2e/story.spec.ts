@@ -299,7 +299,7 @@ test('journal: objective, clues to inspect, chapter summaries, scene replay; bac
   await openChapter(page, 'th-2');
   await page.locator(`${CURRENT} [data-action="journal"]`).click();
   expect(await view(page)).toBe('journal');
-  await expect(page.locator(`${CURRENT} [data-journal-objective]`)).toContainText('Field Notes');
+  await expect(page.locator(`${CURRENT} [data-journal-objective]`)).toContainText('Lunch Break');
   await expect(page.locator(`${CURRENT} [data-clue-count]`)).toHaveText('4 clues found');
   await expectNoOverflow(page);
   // Inspect a clue: its artwork large, its text as real text.
