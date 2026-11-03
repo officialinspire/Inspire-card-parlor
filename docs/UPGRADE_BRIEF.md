@@ -396,6 +396,15 @@ save format changed.
   - A finale's results list overflowed at 320×568. Credits and XP from the
     challenge and its chapter now show as one total each (nine items become
     seven).
+- **Tests:**
+  - unit tests: 486 passed (new: every chapter has a palette in both themes;
+    result totals; Dante's pose order);
+  - `npm run validate` (decks, story art, format): 0 errors; the 39 artwork
+    warnings are the known ones in the audit;
+  - story, layout and story-art e2e on phone-portrait, small-phone,
+    phone-landscape and desktop: 56 passed, 8 skipped (by design);
+  - after the 320×568 results fix, story and campaign e2e on small-phone
+    and phone-portrait: 25 passed, 1 skipped.
 - **Source and pipeline defect fixed:** Dante's expression row is drawn in a
   different order from the other sheets, so his "think" lines showed alarm
   and his "surprise" lines a grin. The names in `art/story/sources.json`

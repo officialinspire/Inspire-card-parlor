@@ -959,6 +959,24 @@
   }
 }
 
+/* Small, short phones (320×568): a finale's whole list fits without scrolling. */
+@media (max-width: 420px) and (max-height: 620px) {
+  .dialog-story-result .story-result {
+    grid-template-columns: 48px minmax(0, 1fr);
+    padding-block: 0;
+  }
+  .dialog-story-result .result-art {
+    width: 48px;
+  }
+  .dialog-story-result .story-rewards ul {
+    gap: 3px 4px;
+    font-size: max(var(--fs-min), 0.86em);
+  }
+  .dialog-story-result .story-rewards li {
+    padding-block: 1px;
+  }
+}
+
 /* --- Passport stamps with artwork ------------------------------------------ */
 .passport-stamps-wrap {
   display: flex;
