@@ -161,33 +161,27 @@ test('an achievement earned at the table waits for the hand to end, then toasts'
   });
   await expectScreen(page, 'GAMEPLAY');
   await page.locator('[data-dialog-action="deal"]').click();
-  await page.evaluate(() => {
-    const w = window as unknown as { __TOASTS__: string[] };
-    w.__TOASTS__ = [];
-    new MutationObserver((ms) => {
-      for (const m of ms)
-        for (const n of m.addedNodes)
-          if (n instanceof HTMLElement && n.matches('.toast, .toast *') && n.classList.contains('toast'))
-            w.__TOASTS__.push(`${performance.now() | 0} ${n.dataset.achievement ?? ''} ${n.textContent?.slice(0, 50)}`);
+  // Deal resolves before IndexedDB finishes saving and mount marks the hand in progress.
+  const auto = page.locator(`${CURRENT} [data-action="auto"]`);
+  await expect(auto).toBeEnabled();
+  const badge = '.toast-achievement[data-achievement="knock-knock"]';
+  await page.evaluate((selector) => {
+    const w = window as unknown as { __knockToasts: number };
+    w.__knockToasts = 0;
+    new MutationObserver((records) => {
+      for (const record of records)
+        for (const node of record.addedNodes) if (node instanceof Element && node.matches(selector)) w.__knockToasts++;
     }).observe(document.body, { childList: true, subtree: true });
-  });
+  }, badge);
   // Earn a secret mid-game: it unlocks now, but no toast interrupts play.
   for (let i = 0; i < 7; i++) await dispatch(page, { type: 'JOURNAL', update: { add: { 'logo.taps': 1 } } });
   await expect.poll(async () => (await state(page)).profile.unlockedAchievements).toContain('knock-knock');
   await page.waitForTimeout(800);
-  await expect(page.locator('.toast-achievement')).toHaveCount(0);
-  // Finish the game: the held toast appears when it ends.
-  const toast = page.waitForSelector('.toast-achievement[data-achievement="knock-knock"] svg.medal', {
-    timeout: 90_000,
-  });
-  await page.locator(`${CURRENT} [data-action="auto"]`).click();
-  await toast.catch(async (e) => {
-    console.log(
-      'TOASTS',
-      JSON.stringify(await page.evaluate(() => (window as unknown as { __TOASTS__: string[] }).__TOASTS__)),
-    );
-    throw e;
-  });
+  const toastCount = () => page.evaluate(() => (window as unknown as { __knockToasts: number }).__knockToasts);
+  expect(await toastCount()).toBe(0);
+  await auto.click();
+  await expect(page.locator(`${badge} svg.medal`)).toBeVisible({ timeout: 30_000 });
+  expect(await toastCount()).toBe(1);
   await expect(page.locator('.dialog-result')).toBeVisible({ timeout: 10_000 });
   const p = (await state(page)).profile;
   expect(p.achievementDates['knock-knock']).toBeGreaterThan(0);

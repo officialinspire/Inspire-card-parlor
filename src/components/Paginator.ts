@@ -109,6 +109,8 @@ export function paginator<T>(opts: PaginatorOptions<T>) {
   let layout: GridLayout = { cols: 1, rows: 1, perPage: 1, pages: 1 };
   let page = 0;
   let pendingIndex = opts.initialIndex ?? -1;
+  /** The grid and page last laid out by `measure`. */
+  let drawnKey = '';
 
   // Space the page controls take (44px buttons + 10px gap), reserved only when there are several pages.
   const NAV_SPACE = 54;
@@ -126,6 +128,10 @@ export function paginator<T>(opts: PaginatorOptions<T>) {
     if (layout.pages > 1) layout = computeGrid(w, total - NAV_SPACE, opts.items.length, o);
     page = clamp(Math.floor(first / layout.perPage), 0, layout.pages - 1);
     pendingIndex = -1;
+    // Same grid, same page: keep the tiles (and whatever has focus in them).
+    const key = `${layout.cols}x${layout.rows}:${page}:${maxDotsFor(w)}`;
+    if (key === drawnKey) return;
+    drawnKey = key;
     draw();
   }
 
@@ -235,7 +241,22 @@ export function paginator<T>(opts: PaginatorOptions<T>) {
     }
   });
 
-  const ro = new ResizeObserver(() => measure());
+  // Re-lay out on the next frame, and only when the size really changed: laying out
+  // inside the observer's own callback can resize the box it watches, which the
+  // browser reports as "ResizeObserver loop completed with undelivered notifications".
+  let lastSize = '';
+  let frame = 0;
+  const ro = new ResizeObserver((entries) => {
+    const r = entries[entries.length - 1]?.contentRect;
+    const size = r ? `${Math.round(r.width)}x${Math.round(r.height)}` : '';
+    if (size === lastSize) return;
+    lastSize = size;
+    cancelAnimationFrame(frame);
+    frame = requestAnimationFrame(() => {
+      frame = 0;
+      measure();
+    });
+  });
   ro.observe(viewport);
 
   return {
@@ -248,6 +269,7 @@ export function paginator<T>(opts: PaginatorOptions<T>) {
     },
     destroy: () => {
       ro.disconnect();
+      cancelAnimationFrame(frame);
       releaseLive(el);
     },
   };

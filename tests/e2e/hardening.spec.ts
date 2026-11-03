@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
-import { CURRENT, clickNav, enterParlor, expectScreen, seed } from './helpers';
+import { CURRENT, clickNav, enterParlor, expectScreen, playGame, seed } from './helpers';
 import { layoutIssues } from './layout-checks';
 
 /**
@@ -186,6 +186,19 @@ test('an unexpected error is logged and told once; the game carries on', async (
   // Still playable.
   await clickNav(page, 'SETTINGS');
   await expect(page.locator('#recover')).toBeHidden();
+});
+
+test('the selection screens log no console errors (no ResizeObserver loop)', async ({ page }) => {
+  const logged: string[] = [];
+  page.on('console', (m) => m.type() === 'error' && logged.push(m.text()));
+  await seed(page, { settings: { musicPaused: true } });
+  await enterParlor(page);
+  await clickNav(page, 'GAME_SELECTION');
+  await playGame(page, 'klondike');
+  await clickNav(page, 'BOARD_SELECTION');
+  // Let resize-driven layout settle on each screen it passed through.
+  await page.waitForTimeout(800);
+  expect(logged.filter((t) => /ResizeObserver/.test(t))).toEqual([]);
 });
 
 test('no sound at all (the browser refuses audio) never blocks play', async ({ page }) => {
