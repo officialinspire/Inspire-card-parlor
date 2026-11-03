@@ -24,8 +24,16 @@ const REWARD_ICON: Record<StoryReward['kind'], IconName> = {
   evidence: 'hint',
 };
 
-/** A list of rewards; clues show their artwork. */
-export function rewardList(rewards: readonly StoryReward[], label: string): HTMLElement | null {
+/**
+ * A list of rewards; clues show their artwork. Before a challenge is played,
+ * `known` lists the clues already found: any other clue is shown only as "A
+ * new clue", so its name and picture stay a surprise.
+ */
+export function rewardList(
+  rewards: readonly StoryReward[],
+  label: string,
+  known?: readonly string[],
+): HTMLElement | null {
   if (!rewards.length) return null;
   return h(
     'div',
@@ -36,6 +44,8 @@ export function rewardList(rewards: readonly StoryReward[], label: string): HTML
       null,
       ...rewards.map((r) => {
         const clue = r.kind === 'evidence' ? getEvidence(r.id) : undefined;
+        if (clue && known && !known.includes(clue.id))
+          return h('li', { 'data-reward': r.kind, 'data-unseen': '' }, icon(REWARD_ICON[r.kind]), 'A new clue');
         return h(
           'li',
           { 'data-reward': r.kind },

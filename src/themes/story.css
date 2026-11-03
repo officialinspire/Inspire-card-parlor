@@ -1590,6 +1590,13 @@
     grid-column: 1;
     grid-row: 3;
   }
+  .suit-clues {
+    grid-column: 2;
+    grid-row: 3;
+  }
+  .suit-clues small {
+    display: none;
+  }
 }
 
 /* Tall phones have room for a larger face beside the nameplate. */
@@ -1976,4 +1983,148 @@
 }
 :root.low-effects[data-story-place] .scene-box {
   --pl-box-glow: 0 0 0 transparent;
+}
+
+/* =========================== Where you left off ======================== */
+/* The journal's recap: three short lines (last clue, open question, next),
+   with Continue beside them. Lines clamp so it never pushes the pages away. */
+.journal-recap {
+  align-items: center;
+}
+.recap-lines {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+.journal-recap .recap-head {
+  margin-bottom: 1px;
+}
+.recap-line {
+  margin: 0;
+  font-size: max(var(--fs-min), 0.86em);
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+.recap-label {
+  font-weight: 900;
+  margin-right: 6px;
+  color: #8a6424;
+}
+.recap-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 800;
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  min-height: 0;
+}
+.recap-link:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+.journal-recap > .btn {
+  flex: none;
+}
+/* Short screens: the open question is the line that gives way. */
+@media (max-height: 640px) {
+  .recap-line {
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+  }
+}
+@media (max-height: 560px) {
+  .journal-recap [data-recap-question] {
+    display: none;
+  }
+}
+
+/* The map's "Next" strip: the next challenge, what it asks and earns, and Continue. */
+.story-next {
+  display: flex;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 8px 12px;
+  border-radius: var(--radius-m);
+  border: 1px solid color-mix(in srgb, var(--gold) 50%, transparent);
+  background: color-mix(in srgb, var(--gold) 10%, var(--surface));
+  color: var(--ink);
+}
+.story-next-text {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  display: grid;
+  gap: 1px;
+}
+.story-next-text small {
+  font-size: max(var(--fs-min), 0.72em);
+  font-weight: 900;
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  color: var(--gold-text);
+}
+.story-next-text strong {
+  font-size: 0.95em;
+  line-height: 1.25;
+}
+.story-next-pays {
+  font-size: max(var(--fs-min), 0.8em);
+  color: var(--ink-soft);
+}
+.story-next > .btn {
+  flex: none;
+}
+@media (max-height: 640px) {
+  .story-next-pays {
+    display: none;
+  }
+}
+
+/* The clue viewer's readings, and the clues it connects to. */
+.clue-reading {
+  margin: 6px 0 0;
+}
+.clue-related {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  margin-top: 8px;
+}
+.clue-related small {
+  font-weight: 900;
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  font-size: max(var(--fs-min), 0.7em);
+  color: var(--ink-faint);
+}
+.clue-related .recap-link {
+  min-height: 32px;
+}
+
+/* The door puzzle: the clues already found, one tap away. */
+.suit-clues {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px 6px;
+}
+.suit-clues small {
+  width: 100%;
+  text-align: center;
+  font-weight: 900;
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  font-size: max(var(--fs-min), 0.7em);
+  color: var(--ink-faint);
 }

@@ -2001,6 +2001,8 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
         puzzle: {
           prompt: 'You hold the card to the door. In which order do you set the four marks?',
           answer: ['spades', 'diamonds', 'hearts', 'clubs'],
+          // Earned clues the picker offers to look at again (none is required).
+          clues: ['lodge-sketchbook-page', 'sophia-river-map', 'thirteenth-hand-dossier'],
           hints: [
             say(
               'jak_gold',

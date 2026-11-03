@@ -171,3 +171,67 @@ export function replayableScenes(profile: Profile): ReplayableScene[] {
     return scenes;
   });
 }
+
+/**
+ * What a challenge actually asks, in words the player can act on. Go Fish
+ * "books" objectives are met by laying down enough books: winning the hand
+ * is not required (see `objectiveMet`).
+ */
+export function objectiveNote(level: StoryLevel): string | null {
+  return level.objective.kind === 'books'
+    ? `You don’t have to win: ${level.objective.min} book${level.objective.min === 1 ? '' : 's'} is enough.`
+    : null;
+}
+
+/** Clues found so far, in the order they were found. */
+function earnedClues(profile: Profile): Evidence[] {
+  return (storyOf(profile).evidence ?? []).flatMap((id) => {
+    const e = EVIDENCE.find((x) => x.id === id);
+    return e ? [e] : [];
+  });
+}
+
+/** The clues a found clue connects to, among those already found (never a future one). */
+export function relatedFound(profile: Profile, clue: Evidence): Evidence[] {
+  const found = new Set(storyOf(profile).evidence ?? []);
+  return (clue.related ?? []).flatMap((id) => {
+    const e = found.has(id) ? EVIDENCE.find((x) => x.id === id) : undefined;
+    return e ? [e] : [];
+  });
+}
+
+/** What to do next, from the save: never a place or clue not reached yet. */
+export type NextAction =
+  | { kind: 'challenge'; chapter: StoryChapter; level: StoryLevel }
+  | { kind: 'preview'; chapter: StoryChapter }
+  | { kind: 'finished' };
+
+/**
+ * "Where you left off": the last clue found, the question it (or an earlier
+ * clue) still leaves open, and the next thing to do. Worked out from the
+ * save's completed challenges and clues; nothing extra is stored.
+ */
+export interface Recap {
+  lastClue: Evidence | null;
+  /** Open while the clue that answers it hasn't been found. */
+  question: { text: string; from: Evidence } | null;
+  next: NextAction;
+}
+
+export function recapOf(profile: Profile): Recap {
+  const earned = earnedClues(profile);
+  const found = new Set(earned.map((e) => e.id));
+  let question: Recap['question'] = null;
+  for (let i = earned.length - 1; i >= 0 && !question; i--) {
+    const e = earned[i]!;
+    if (e.question && !(e.answeredBy && found.has(e.answeredBy))) question = { text: e.question, from: e };
+  }
+  const objective = currentObjective(profile);
+  const preview = STORY_CHAPTERS.find((c) => locationState(profile, c) === 'preview');
+  const next: NextAction = objective
+    ? { kind: 'challenge', chapter: objective.chapter, level: objective.level }
+    : preview
+      ? { kind: 'preview', chapter: preview }
+      : { kind: 'finished' };
+  return { lastClue: earned.at(-1) ?? null, question, next };
+}

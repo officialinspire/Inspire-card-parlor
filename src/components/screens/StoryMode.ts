@@ -29,7 +29,8 @@ import {
 } from '@/story/progress';
 import { takeStoryOutcome, takeStoryReturn } from '@/story/session';
 import { GHOST_REMATCHES, rematchesUnlocked, type GhostRematch } from '@/story/rematches';
-import { isPlayableChapter, levelAfter, type ReplayableScene } from '@/story/world';
+import { isPlayableChapter, levelAfter, objectiveNote, recapOf, type ReplayableScene } from '@/story/world';
+import { getEvidence } from '@/story/evidence';
 import type { InfoCard } from '@/story/campaign';
 import { adventureContinues } from '../story/continues';
 import { isPuzzleSolved, markPuzzleSolved, solveSuitPuzzle } from '../story/puzzle';
@@ -47,7 +48,7 @@ import { paginator } from '../Paginator';
 import { button, iconButton, progressBar, screenFrame } from '../ui';
 import { openMusicPlayer } from '../musicPlayer';
 import { Disposer, type ScreenFactory } from '../Screen';
-import { journalView } from '../story/journal';
+import { inspectClue, journalView } from '../story/journal';
 import { worldMapView } from '../story/map';
 import { rewardList, storyResult } from '../story/results';
 import { playScene } from '../story/scene';
@@ -107,12 +108,60 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
         'div',
         { class: 'stack story-stack' },
         passportStamps(store),
-        rematchesUnlocked(profile()) ? finishedBanner() : null,
+        rematchesUnlocked(profile()) ? finishedBanner() : continueStrip(),
         worldMapView(profile(), onStop),
       ),
     });
     el.dataset.storyView = 'map';
     return { el, destroy: () => undefined };
+  }
+
+  /**
+   * The next challenge, on the map: where, what it asks and what it pays,
+   * with Continue. (Replays of finished challenges are in their chapter;
+   * rematches open once the story is finished.)
+   */
+  function continueStrip(): HTMLElement | null {
+    const next = recapOf(profile()).next;
+    if (next.kind !== 'challenge') return null;
+    const { chapter: ch, level: lv } = next;
+    const credits = lv.rewards.find((r) => r.kind === 'credits');
+    const xp = lv.rewards.find((r) => r.kind === 'xp');
+    const clues = lv.rewards.filter((r) => r.kind === 'evidence').length;
+    const pays = [
+      credits?.kind === 'credits' ? `${credits.amount} credits` : '',
+      xp?.kind === 'xp' ? `${xp.amount} XP` : '',
+      clues ? (clues === 1 ? 'a new clue' : `${clues} new clues`) : '',
+    ].filter(Boolean);
+    return h(
+      'div',
+      { class: 'story-next', 'data-story-next': lv.id },
+      h(
+        'p',
+        { class: 'story-next-text' },
+        h('small', null, `Next · Chapter ${ch.index} · ${ch.location}`),
+        h('strong', null, `${lv.title}: ${lv.objectiveText}`),
+        h(
+          'span',
+          { class: 'story-next-pays' },
+          [objectiveNote(lv), pays.length ? `Earns ${pays.join(', ')}.` : ''].filter(Boolean).join(' '),
+        ),
+      ),
+      button('Continue', () => void continueStory(ch, lv), {
+        variant: 'gold',
+        size: 'sm',
+        icon: 'play',
+        attrs: { 'data-action': 'continue-story' },
+      }),
+    );
+  }
+
+  /** Continue: open the chapter (its arrival first, if unseen), then the next challenge's brief. */
+  async function continueStory(ch: StoryChapter, lv: StoryLevel): Promise<void> {
+    if (!isLevelUnlocked(profile(), lv)) return;
+    audio.play('tap');
+    await openChapter(ch);
+    await startLevel(ch, lv);
   }
 
   /** Once the story is finished: the epilogue to replay, and the ghosts' rematches. */
@@ -216,7 +265,11 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
   }
 
   function journalScreen(from: View) {
-    const j = journalView(store, (scene) => void replay(scene));
+    const j = journalView(store, {
+      onReplay: (scene) => void replay(scene),
+      onContinue: (ch, lv) => void continueStory(ch, lv),
+      onRematch: () => void rematches(),
+    });
     const el = screenFrame({ title: 'Journal', subtitle: CAMPAIGN_TITLE, back: () => go(from), body: j.el });
     el.dataset.storyView = 'journal';
     return { el, destroy: j.destroy };
@@ -401,6 +454,7 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
           'div',
           { class: 'story-brief' },
           h('p', { class: 'story-objective', 'data-objective': '' }, icon('check'), lv.objectiveText),
+          objectiveNote(lv) ? h('p', { class: 'story-hint', 'data-objective-note': '' }, objectiveNote(lv)) : null,
           lv.info?.length
             ? h(
                 'div',
@@ -416,12 +470,18 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
               )
             : null,
           isLevelComplete(profile(), lv.id)
-            ? h('p', { class: 'story-hint' }, 'Already complete — play again any time, just for fun.')
-            : rewardList(lv.rewards, 'Rewards'),
+            ? h(
+                'p',
+                { class: 'story-hint', 'data-replay-note': '' },
+                'Complete. Replay it any time, for fun: its rewards and clues are already yours.',
+              )
+            : rewardList(lv.rewards, 'Rewards', storyOf(profile()).evidence ?? []),
         ),
         actions: [
           { label: 'Not now', value: 'cancel', variant: 'ghost' },
-          { label: 'Ready', value: 'play', variant: 'gold', icon: 'play' },
+          isLevelComplete(profile(), lv.id)
+            ? { label: 'Replay', value: 'play', variant: 'gold', icon: 'restart' }
+            : { label: 'Ready', value: 'play', variant: 'gold', icon: 'play' },
         ],
         dismissValue: 'cancel',
       });
@@ -429,7 +489,12 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
     }
     // A puzzle (the Chapter 8 door) comes before the first win; once solved it stays solved.
     if (lv.puzzle && !isLevelComplete(profile(), lv.id) && !isPuzzleSolved(lv.id)) {
-      if (!(await solveSuitPuzzle(lv.puzzle, lv.title))) return;
+      const found = storyOf(profile()).evidence ?? [];
+      const clues = (lv.puzzle.clues ?? []).flatMap((id) => {
+        const e = found.includes(id) ? getEvidence(id) : undefined;
+        return e ? [e] : [];
+      });
+      if (!(await solveSuitPuzzle(lv.puzzle, lv.title, clues, (c) => inspectClue(c, profile())))) return;
       markPuzzleSolved(lv.id);
     }
     if ((await versus(lv)) !== 'play') return;

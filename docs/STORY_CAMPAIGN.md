@@ -452,3 +452,74 @@ existing feedback.
   map tile.
 - Undiscovered places load nothing.
 - A Playwright test enforces this budget.
+
+## Where you left off (upgrade series)
+
+Everything below is worked out from the save's completed challenges and clues
+(`recapOf`, `objectiveNote` and `relatedFound` in `src/story/world.ts`). No new
+saved state was added, and no unlock or reward rule changed.
+
+**The map's "Next" strip:**
+
+- It names the next challenge: chapter, place, title and its objective as written.
+- It says what the challenge earns (credits, XP, "a new clue").
+- Continue plays the chapter's arrival if it hasn't been seen, then opens the
+  challenge's brief.
+- The strip only ever points at a challenge that is already unlocked.
+- Once the story is finished, it gives way to the existing Epilogue and Ghost
+  rematches banner.
+
+**Objectives:**
+
+- A Go Fish objective counted in books says plainly that winning isn't required: "You
+  don't have to win: 3 books is enough." This matches `objectiveMet`, which has always
+  counted books.
+- The brief lists a clue still to be found as "A new clue", without its name or
+  picture. Before this, the brief named it ahead of time.
+
+**Continue, Replay and Rematch are kept apart:**
+
+| Action   | Where                                       | What it does                                                                                                                               |
+| -------- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Continue | Map strip, journal recap                    | Opens the next unfinished challenge                                                                                                        |
+| Replay   | A finished challenge's brief                | Plays it again. The brief says its rewards and clues are already yours; no story reward, clue or stamp is granted twice (`story.rewarded`) |
+| Rematch  | Journal recap and map banner, once finished | The ghost War tables (free play, no story rewards)                                                                                         |
+
+Scene replays stay in the journal's Scenes tab.
+
+**The journal's recap** ("Where you left off"):
+
+- **Last clue:** the most recent clue found. Tap it to open the clue viewer.
+- **Open question:** the newest question still open. A clue's question closes once the
+  clue that answers it is found.
+- **Next:** the next challenge with its objective (and Continue). Otherwise, the
+  "still being written" preview, or the finished story (and Rematch).
+
+On short screens the lines clamp to one each, and below 560px the question gives way.
+
+**Clue readings:** every clue has a one-sentence interpretation beside its description
+(what you see). A clue may also have:
+
+- a question, shown while it is still open;
+- links to related clues. Only clues already found are linked, so the viewer never
+  names a future clue.
+
+**The four-suit door:**
+
+- The picker offers "Your clues": Steve's diagram, Sophia's river map and the dossier,
+  each once found. Each opens the clue viewer over the puzzle, then returns to it.
+- Looking is never required.
+- Unchanged: the answer, the progressive hints ending in the explicit answer, "Not now"
+  and replay (a finished door isn't asked again).
+
+**Tests:**
+
+- `tests/unit/storyRecap.test.ts` covers fresh saves, middle chapters, a loss, Go Fish
+  books without a win, replays (no repeated rewards, clues or stamps), reload after
+  rewards, the finished campaign (every challenge open, no second payout), and
+  first-campaign saves, migrated or raw.
+- It also checks that every question is answered by a later clue, that links reach only
+  clues already found, and that the recap never points past what the map shows.
+- `tests/e2e/story-recap.spec.ts` covers the map strip and Continue on a fresh save,
+  the unnamed new clue, the journal recap and clue links, Replay, and the door's clues
+  with its hint and "Not now".

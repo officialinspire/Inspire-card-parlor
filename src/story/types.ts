@@ -100,6 +100,8 @@ export interface SuitPuzzle {
   hints: DialogueLine[];
   /** Said when the right order is set. */
   solved: DialogueLine[];
+  /** Clues that help (offered in the puzzle once found; never required). */
+  clues?: string[];
 }
 
 export interface StoryLevel {
@@ -235,6 +237,13 @@ export interface Evidence {
   /** Key clues drive the mystery; optional ones add colour. */
   importance: 'key' | 'optional';
   status: ContentStatus;
+  /** What it suggests, in a sentence (the description is what you see). */
+  interpretation?: string;
+  /** The question it leaves open, until the clue in `answeredBy` is found. */
+  question?: string;
+  answeredBy?: string;
+  /** Other clues it connects to. Only those already found are ever shown. */
+  related?: string[];
 }
 
 export interface PassportStamp {
