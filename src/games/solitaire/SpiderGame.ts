@@ -66,6 +66,18 @@ export class SpiderGame extends SolitaireGame {
     return top.faceUp && descendingAnySuit(top, cards[0]!);
   }
 
+  protected override pickReason(pile: Pile, index: number): string {
+    const card = pile.at(index);
+    if (pile.kind !== 'tableau') return 'Completed runs stay put.';
+    if (card && !card.faceUp) return 'That card is face down.';
+    return 'Only a run of one suit, going down in order, moves together.';
+  }
+
+  protected override dropReason(cards: readonly Card[], _from: Pile, to: Pile): string {
+    if (to.kind !== 'tableau') return 'A finished run, King down to Ace in one suit, goes up by itself.';
+    return `The ${cards[0]!.label} can’t go on the ${to.top!.label}: place a card on one exactly one rank higher.`;
+  }
+
   protected override moveScore(): number {
     return -1;
   }

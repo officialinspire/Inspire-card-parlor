@@ -90,9 +90,16 @@ export const LOCATIONS: readonly StoryLocation[] = [
     notes: [
       {
         kind: 'history',
-        title: 'Public records',
-        text: 'Anyone may request public records from Virginia public bodies under the Virginia Freedom of Information Act, and from federal agencies under the federal Freedom of Information Act.',
-        source: 'Virginia FOIA Council; FOIA.gov',
+        title: 'Public records in Virginia',
+        text: 'Virginia’s Freedom of Information Act opens the records of state and local public bodies — a city included — to citizens of the Commonwealth, and to representatives of newspapers, magazines, radio and TV stations that circulate or broadcast in Virginia. A records custodian may ask for a name and legal address. Federal agencies answer instead under the federal FOIA, which any person may use.',
+        source: 'Code of Virginia § 2.2-3704(A); Virginia FOIA Council, “Access to Public Records”; FOIA.gov',
+      },
+      {
+        kind: 'history',
+        title: 'Filming in public',
+        text: 'Filming in a public place is a separate right from requesting records: it rests on the First Amendment, not on FOIA. In 2023 the federal appeals court for Virginia held that livestreaming a police traffic stop is protected speech. Rules can be stricter inside government offices and on private property.',
+        source:
+          'Sharpe v. Winterville Police Department (4th Cir. 2023); The First Amendment Encyclopedia (MTSU), “First Amendment Audits”',
       },
       {
         kind: 'fiction',
@@ -157,7 +164,7 @@ export const LOCATIONS: readonly StoryLocation[] = [
       {
         kind: 'history',
         title: 'Kenmore',
-        text: 'Kenmore was built in the 1770s for Fielding Lewis and his wife, Betty Washington Lewis, George Washington’s sister. It is known for its elaborate decorative plaster ceilings.',
+        text: 'Kenmore was built from 1769 to 1775 for Fielding Lewis and his wife, Betty Washington Lewis, George Washington’s sister. It is known for its elaborate decorative plaster ceilings.',
         source: 'Washington Heritage Museums; George Washington Foundation',
       },
       {

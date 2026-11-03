@@ -35,15 +35,15 @@ _An estate-sale box, twelve old decks and one card that should not exist._
 >
 > **Cheryl** _(portrait-neutral)_: We close at five. It’s ten to.
 >
-> _On the counter you see an estate-sale box tied with string. A single card lies on top._
+> _On the counter you see an estate-sale box tied with string, a twenty-dollar tag still on the knot. One card lies on top._
 >
-> **Cheryl** _(cards-reveal)_: Bought the whole lot for twenty dollars. Twelve old decks, a ledger, and that.
+> **Cheryl** _(cards-reveal)_: Lot 13, from an estate sale across the river. Twelve old decks, a ledger, and that. A collector comes at nine for the decks.
 >
 > _You pick up the card. It has no suit and no number — only the words THE THIRTEENTH HAND, and four blank corners._ **[Clue: The Thirteenth Hand]**
 >
-> **Cheryl** _(portrait-doubt)_: Before you ask: no, I don’t know what it’s worth. Nobody prints a card without a suit. Somebody wanted it noticed.
+> **Cheryl** _(portrait-doubt)_: Provenance is a story with receipts. That card has neither. Nobody prints a card without a suit unless they want it noticed.
 >
-> **Cheryl**: You want to know more, you sit and play. I don’t talk shop with strangers who can’t shuffle.
+> **Cheryl** _(portrait-talk)_: I don’t sell a lot I haven’t counted. Help me inventory it tonight, and you can look at anything in the box.
 
 ### 1.1 Price Check
 
@@ -51,7 +51,7 @@ _An estate-sale box, twelve old decks and one card that should not exist._
 
 **Before**
 
-> **Cheryl**: War. No thinking required. I want to see if you flinch.
+> **Cheryl** _(cards-deal)_: We split the twelve decks by War. High card picks. It’s faster than arguing.
 
 **After the win**
 
@@ -69,13 +69,15 @@ _An estate-sale box, twelve old decks and one card that should not exist._
 
 > _The box holds twelve loose decks, all shuffled together. Cheryl hands you one to sort._
 >
-> **Cheryl**: Aces up. If it’s missing cards, I want to know.
+> **Cheryl**: Aces up. A short deck sells for half. A complete one in its box sells for more than you’d think.
 
 **After the win**
 
 > _Under the decks you find a leather ledger. Twelve hands of cards are written out in faded ink. The thirteenth line is blank._ **[Clue: Ledger of twelve hands]**
 >
 > **Cheryl** _(portrait-think)_: Somebody kept score. And somebody stopped.
+>
+> **Cheryl**: One handwriting, twelve hands. That isn’t a game night. That’s a record.
 
 **Rewards:** 55 credits, 75 XP, clue: Ledger of twelve hands.
 
@@ -85,11 +87,11 @@ _An estate-sale box, twelve old decks and one card that should not exist._
 
 **Before**
 
-> **Cheryl** _(cards-shuffle)_: Go Fish. Don’t laugh. It’s how I check a matched set.
+> **Cheryl** _(cards-shuffle)_: Go Fish. Don’t laugh. Asking for matches is the quickest way to find out a set is short.
 
 **After the win**
 
-> **Cheryl**: Every deck in that box is complete. Fifty-two each. So where did the extra card come from?
+> **Cheryl** _(portrait-think)_: Every deck in the box is complete. Fifty-two each. So the extra card didn’t come with them. Somebody added it.
 
 **Rewards:** 65 credits, 85 XP.
 
@@ -101,11 +103,13 @@ _An estate-sale box, twelve old decks and one card that should not exist._
 
 > _You notice that Cheryl’s display case has a puzzle lock: a FreeCell deal painted under the glass._
 >
-> **Cheryl**: My late husband’s idea of security. Solve it and I’ll show you what was in the lid.
+> **Cheryl**: My late husband’s idea of security. He said burglars don’t have the patience. He was right about most people.
 
 **After the win**
 
 > _You find an old postcard of the Rappahannock tucked in the box lid. A heron is sketched on the back, with two words: River Station._ **[Clue: River postcard]**
+>
+> **Cheryl** _(portrait-neutral)_: A heron and two words. That isn’t provenance either. But it’s a direction.
 
 **Rewards:** 75 credits, 95 XP, clue: River postcard.
 
@@ -115,7 +119,7 @@ _An estate-sale box, twelve old decks and one card that should not exist._
 
 **Before**
 
-> **Cheryl**: One more. Spider. Then we look at that card under a proper lamp.
+> **Cheryl**: Last one. Spider. Then we look at that card under a proper lamp. Daylight lies about paper.
 
 **After the win**
 
@@ -127,9 +131,9 @@ _An estate-sale box, twelve old decks and one card that should not exist._
 
 **Departure**
 
-> **Cheryl**: The River Station is Sophia’s. Parks and Rec. She knows every heron on that river by name.
+> **Cheryl**: River Station is Sophia’s. Parks and Rec. If anyone can tell you who stood at that bend and drew a heron, it’s her.
 >
-> **Cheryl** _(portrait-greet)_: Take the card. Bring it back in one piece. And keep the receipt for anything you buy.
+> **Cheryl** _(portrait-greet)_: I called the collector. Told him Monday. Take the card, bring it back, and get a receipt for anything you spend.
 >
 > _You tuck the card into your pocket and head for the river._
 
@@ -151,15 +155,15 @@ _A heron sketch, a trail marker nobody remembers, Sophia’s river map and a let
 
 > _You follow the river path to the Rappahannock River Station. A heron stands in the shallows, unbothered._
 >
-> **Sophia** _(portrait-greet)_: Morning. If you’re here about the heron, she’s fine. She just likes the attention.
+> **Sophia** _(portrait-greet)_: Morning. If you’re here about the heron, she’s fine. She’s fished that bend longer than I’ve worked here.
 >
 > _You show Sophia the postcard and the card._
 >
-> **Sophia** _(portrait-think)_: That sketch is a great blue heron, drawn at this bend. We log her every morning. Whoever drew it has stood right here.
+> **Sophia** _(portrait-think)_: That’s this bend. See the snag behind her? It washed in during the spring flood. Whoever drew this stood on our dock, and recently.
 >
-> **Sophia** _(portrait-doubt)_: Last week a man with a phone on a stick filmed our lobby and asked for our visitor logs. Jak something. He said it was his constitutional right. It was also my lunch break.
+> **Sophia** _(portrait-doubt)_: Last week a man with a phone on a stick filmed our lobby and asked for the visitor logs. Jak something. Constitutional right, he said. It was also my lunch break.
 >
-> **Sophia**: I have a shift to finish. Play a few hands while I work, and I’ll pull the logs.
+> **Sophia** _(portrait-talk)_: I have a school group at two and a log to finish. Walk the route with me, and I’ll pull the sign-in sheets when we’re back.
 
 ### 2.1 Lunch Break
 
@@ -167,7 +171,7 @@ _A heron sketch, a trail marker nobody remembers, Sophia’s river map and a let
 
 **Before**
 
-> **Sophia** _(cards-deal)_: Lunch break. Twenty minutes. Go Fish is about all I can teach in twenty minutes.
+> **Sophia** _(cards-deal)_: Lunch break. Twenty minutes, and I’m eating. Go Fish is about all I can teach with one hand.
 
 **After the win**
 
@@ -189,13 +193,13 @@ _A heron sketch, a trail marker nobody remembers, Sophia’s river map and a let
 
 > _You walk the river trail with Sophia toward the heron’s bend._
 >
-> **Sophia**: Sort these while I check the markers. Patience is most of this job.
+> **Sophia**: Sort these while I check the markers. Half this job is noticing what moved overnight.
 
 **After the win**
 
 > _At the heron’s bend, an old trail marker leans toward the water. Carved into it is a small club — the exact size of one blank corner on your card._ **[Clue: The club mark]**
 >
-> **Sophia** _(portrait-surprise)_: That marker is older than I am. It isn’t on our trail inventory.
+> **Sophia** _(portrait-surprise)_: That marker is older than I am, and it isn’t on our trail inventory. Somebody set it where only high water reaches.
 
 **Rewards:** 60 credits, 80 XP, clue: The club mark.
 
@@ -209,7 +213,7 @@ _A heron sketch, a trail marker nobody remembers, Sophia’s river map and a let
 
 **Before**
 
-> **Sophia**: If that marker is old, it’ll be on an old map. Archive drawer. Bring patience.
+> **Sophia**: If that marker is old, it’s on an old map. The archive drawer sticks, and nobody’s labelled it since the nineties.
 
 **After the win**
 
@@ -229,13 +233,13 @@ _A heron sketch, a trail marker nobody remembers, Sophia’s river map and a let
 
 **Before**
 
-> **Sophia**: The river’s up. While we wait it out, the lost-and-found needs sorting. Thirty years of everything.
+> **Sophia**: River’s up, so the lower trail is closed. While it drops, the lost-and-found needs sorting. Thirty years of everything.
 
 **After the win**
 
 > _In the lost-and-found you find an envelope addressed to Dante at iSMOKESHOP, stamped Return to Sender. Inside is a card with a heron on it._ **[Clue: Returned envelope]**
 >
-> **Sophia** _(portrait-greet)_: Dante? He painted the mural for our kids’ program. Good kid. Terrible handwriting.
+> **Sophia** _(portrait-greet)_: Dante. He painted the mural for our kids’ program and signed it in letters nobody can read. On purpose, he says.
 
 **Rewards:** 80 credits, 100 XP, clue: Returned envelope.
 
@@ -249,23 +253,25 @@ _A heron sketch, a trail marker nobody remembers, Sophia’s river map and a let
 
 **Before**
 
-> **Sophia** _(cards-deal)_: End of shift. One quick game of War — loser files the incident report.
+> **Sophia** _(cards-deal)_: End of shift. One game of War. Loser writes up the man with the phone on a stick.
 
 **After the win**
 
-> **Sophia**: One suit found, three to go. I’ll watch the river. You watch that card.
+> **Sophia** _(portrait-neutral)_: People talk about this river like its history ended in 1776. Downriver, the Rappahannock Tribe got land at Fones Cliffs back in 2022.
+>
+> **Sophia**: It’s still being written. So is this. One mark found. I’ll watch the river; you watch that card.
 
 **Rewards:** 130 credits, 160 XP.
 
 **Field notes:**
 
-- **The river’s name** (history): The river shares its name with the Rappahannock people. The Rappahannock Tribe, based in Virginia’s Northern Neck, was federally recognized in 2018. _Source: Rappahannock Tribe; U.S. Bureau of Indian Affairs._
+- **The river’s name** (history): The river shares its name with the Rappahannock people. The Rappahannock Tribe, based in Virginia’s Northern Neck, was federally recognized in 2018. In 2022 it reacquired 465 acres at Fones Cliffs, a sacred site on the river. _Source: Rappahannock Tribe; U.S. Bureau of Indian Affairs; U.S. Department of the Interior._
 
 **Departure**
 
-> **Sophia** _(portrait-think)_: Somebody sent Dante a heron card, and it came back here. That’s not a coincidence.
+> **Sophia** _(portrait-think)_: Somebody mailed Dante a heron card, and it came back to a station that never sent it. I don’t like being somebody’s return address.
 >
-> **Sophia**: Go see him. And if you run into the man with the phone on a stick, you didn’t hear about the logs from me.
+> **Sophia**: Go see him. If you run into the man with the phone on a stick, tell him the sign-in sheets are city records. He can ask for them properly.
 >
 > _You fold the map into your pocket and set off for Dante’s shop._
 
@@ -287,15 +293,15 @@ _Dante has been paid, in one-dollar bills, to paint George Washington as thirtee
 
 > _You push open the door of iSMOKESHOP. Behind the glass counter, every inch of wall is covered in neon monsters with too many eyes._
 >
-> **Dante** _(portrait-greet)_: Hi! Welcome! Wait — you’ve got the look. You’re not here for a lighter. You’re here for a mystery.
+> **Dante** _(portrait-greet)_: Hey. Lighters are on the left, the art’s on the walls, and I’m behind on a deadline. Which one are you here for?
 >
-> _You set the returned envelope on the counter. Dante’s face drops, then lights right back up._
+> _You set the returned envelope on the counter. Dante goes quiet, then laughs once._
 >
-> **Dante** _(portrait-surprise)_: My heron card! I mailed that to a P.O. box that doesn’t exist. I used the River Station as my return address — I was painting their mural that week.
+> **Dante** _(portrait-surprise)_: My heron card. I mailed that to a P.O. box that doesn’t exist, with the River Station as the return address. I was painting their mural that week.
 >
-> **Dante** _(portrait-talk)_: The client asked for it back. Then the client stopped existing. Classic client.
+> **Dante** _(portrait-talk)_: The client paid in advance, asked for that card back, then stopped answering. I’m still on design one of thirteen. I finish what I’m paid for.
 >
-> **Dante** _(cards-fan)_: Help me catch up on my sketch pile and I’ll show you the weirdest job I’ve ever taken. And I once painted a lizard wizard on a food truck.
+> **Dante** _(cards-fan)_: Help me clear the sketch pile and I’ll show you the brief. Strangest job I’ve taken, and I once painted a lizard wizard on a food truck.
 
 ### 3.1 Monster Sketches
 
@@ -305,15 +311,15 @@ _Dante has been paid, in one-dollar bills, to paint George Washington as thirtee
 
 > _Dante drops a stack of monster sketches on the counter, sorted into suits that do not exist. You start sorting them into real ones._
 >
-> **Dante** _(cards-shuffle)_: Every monster needs a home. Aces up, like a civilised person.
+> **Dante** _(cards-shuffle)_: Real suits, aces up. Chaos goes on the paper, not the desk.
 
 **After the win**
 
 > _Under the last sketch you find an order form, typed and paid in advance. The client is listed only as “G. W.”_ **[Clue: Anonymous commission form]**
 >
-> **Dante** _(portrait-talk)_: Thirteen card designs. Theme: George Washington, but as a neon monster. Paid in one-dollar bills. Every single bill had the same guy on it.
+> **Dante** _(portrait-talk)_: Thirteen card designs. George Washington as a neon monster. Paid in one-dollar bills — so, technically, paid in George Washington.
 >
-> **Dante** _(portrait-think)_: I thought it was a bit. It might not be a bit.
+> **Dante** _(portrait-think)_: I thought it was a bit. Bits don’t usually pay in advance.
 
 **Rewards:** 55 credits, 75 XP, clue: Anonymous commission form.
 
@@ -327,13 +333,13 @@ _Dante has been paid, in one-dollar bills, to paint George Washington as thirtee
 
 **Before**
 
-> **Dante** _(cards-deal)_: War! My deck against your deck. Mine has monsters. Yours also has my monsters. I lent it to you. I’m very generous.
+> **Dante** _(cards-deal)_: War. My deck against your deck. Both of them are my deck; I lent you one. Don’t bend the cards.
 
 **After the win**
 
-> **Dante** _(portrait-talk)_: Psychedelic poster art is my whole thing. Those 1960s concert posters with lettering you have to stare at to read? They make you slow down and actually look.
+> **Dante** _(portrait-talk)_: Those sixties Fillmore posters? The lettering melts into the shapes. You can’t skim them. You stand there until the picture resolves.
 >
-> **Dante** _(portrait-think)_: That’s what this commission feels like. Something you’re supposed to stare at.
+> **Dante** _(portrait-think)_: This brief is like that. It isn’t random. Your eyes just haven’t found the rhythm yet.
 
 **Rewards:** 65 credits, 85 XP.
 
@@ -349,13 +355,13 @@ _Dante has been paid, in one-dollar bills, to paint George Washington as thirtee
 
 > _Dante pulls out the client’s reference sketch for you: a stiff, old-fashioned portrait of George Washington holding a hand of cards._
 >
-> **Dante** _(portrait-doubt)_: The brief says “capture my vigor.” My vigor. Who writes a brief in the first person?
+> **Dante** _(portrait-doubt)_: The brief says “capture my vigor.” My vigor. Clients don’t usually write about themselves like they’re a statue.
 
 **After the win**
 
-> _Dante hands you his first finished design: General Monsterton, a three-eyed George Washington in neon blue, holding twelve cards. You notice that the thirteenth card in his hand is blank._ **[Clue: General Monsterton]**
+> _Dante hands you his first finished design: General Monsterton, a three-eyed George Washington in neon blue, holding twelve cards. The thirteenth card in his hand is blank._ **[Clue: General Monsterton]**
 >
-> **Dante** _(portrait-greet)_: Keep it. Proof I was here before this got weird. Well. Weirder.
+> **Dante** _(portrait-greet)_: Keep that one. Proof I was hired before this got strange. And proof I hit at least one deadline.
 
 **Rewards:** 75 credits, 95 XP, clue: General Monsterton.
 
@@ -365,13 +371,15 @@ _Dante has been paid, in one-dollar bills, to paint George Washington as thirtee
 
 **Before**
 
-> **Dante** _(cards-deal)_: Paint’s drying. Go Fish while we wait. Monsters love a pond.
+> **Dante** _(cards-deal)_: Paint’s curing. Go Fish while it does. Rush fluorescent paint and it dries dull.
 
 **After the win**
 
-> **Dante** _(portrait-talk)_: People ask me what a psychonaut is. It’s an explorer of the inner world — a German writer, Ernst Jünger, used the word decades ago. For me, it’s sketchbooks. Way cheaper than a rocket.
+> **Dante** _(portrait-talk)_: People hear “psychedelic” and think drug joke. The poster artists were working on perception — what your eye does when a pattern won’t sit still.
 >
-> **Dante** _(portrait-doubt)_: Freemasons, though? No idea. Are they the ones with the little red hats? Wait, that’s the Shriners. I think. Don’t quote me.
+> **Dante** _(full-gesture-a)_: And it was a scene. Printers, bands, kids lining up for a poster. Art made for a room full of people. That’s the part I want.
+>
+> **Dante** _(portrait-doubt)_: Freemasons, though? No idea. The little red hats? No, that’s the Shriners. I think.
 
 **Rewards:** 85 credits, 105 XP.
 
@@ -381,23 +389,23 @@ _Dante has been paid, in one-dollar bills, to paint George Washington as thirtee
 
 **Before**
 
-> _Dante kills the lights and switches on a black light. The reference sketch in front of you starts to glow in places the ink should not be._
+> _Dante studies the reference sketch, then kills the lights and switches on a black light. You watch him tilt the paper toward it._
 >
-> **Dante** _(portrait-surprise)_: Okay. That’s either a clue or a very old smoothie stain.
+> **Dante** _(portrait-think)_: The cuff lace is wrong. Lace repeats, and this breaks its rhythm. Look at the gaps, not the threads. Figure and ground.
 
 **After the win**
 
-> _Under the black light, a heart appears in the lace of Washington’s cuff, drawn in invisible ink. You hold up your card: the heart is the exact size of its second blank corner._ **[Clue: The heart mark]**
+> _Under the black light, a heart glows in the gaps of Washington’s lace cuff, drawn in invisible ink. It is the exact size of your card’s second blank corner._ **[Clue: The heart mark]**
 >
-> **Dante** _(portrait-surprise)_: A hidden heart! In a portrait of George Washington! This is the most romantic crime I’ve ever been part of.
+> **Dante** _(portrait-surprise)_: There. Negative space first, fluorescent ink to prove it. Whoever drew this knew exactly how people look at lace: they don’t.
 
 **Rewards:** 140 credits, 170 XP, clue: The heart mark.
 
 **Departure**
 
-> **Dante** _(portrait-think)_: The ones came packed in a custom card case, stamped by the maker. The fancy one Jak Gold uses — he never stops talking about it.
+> **Dante** _(portrait-think)_: The ones came packed in a custom card case with the maker’s stamp. Same maker Jak Gold uses. He mentions it in roughly every video.
 >
-> **Dante** _(portrait-greet)_: Jak has a back room off Caroline Street. Ring light, tripod, opinions. Tell him Dante says hi. Actually, don’t. He’ll film it.
+> **Dante** _(portrait-greet)_: Jak has a back room off Caroline Street. Ring light, tripod, opinions. He’s better than his thumbnails. Don’t tell him I said that.
 >
 > _You tuck the glowing sketch away with the card. Two corners marked, two to go._
 
@@ -419,13 +427,13 @@ _Jak has filmed, filed and flourished his way to a reply nobody meant him to rea
 
 > _You knock on a back-room door off Caroline Street. A ring light snaps on in your face. So does a camera._
 >
-> **Jak Gold**: For the record: I’m Jak Gold, it’s today, and you have entered a space I am lawfully filming. Welcome to the parlor!
+> **Jak Gold**: This is my studio, so you’re on camera. Say the word and it goes off. Most people don’t say the word. They wave.
 >
 > **Jak Gold**: Dante sent you? Dante texted me eleven monster emojis. I inferred.
 >
 > _You show Jak the card. He stops talking, which, you sense, is rare._
 >
-> **Jak Gold**: That card is in my records request. Sit down. Deal in. I explain better with my hands busy.
+> **Jak Gold**: That card is in my records request. I’m cutting that video tonight, and I need someone who isn’t my audience. Deal in. I think better with my hands busy.
 
 ### 4.1 Rolling
 
@@ -433,13 +441,13 @@ _Jak has filmed, filed and flourished his way to a reply nobody meant him to rea
 
 **Before**
 
-> **Jak Gold**: War. Pure chance, zero skill, so nobody can say I cheated on camera. Rolling.
+> **Jak Gold**: War. Pure chance, so nobody watching can say I cheated. Rolling.
 
 **After the win**
 
-> **Jak Gold**: Six months ago I asked the city, in writing, about “unexplained activity” in the old cellars under downtown. Cheap question. Weird answer.
+> **Jak Gold**: Six months ago I asked the city, in writing, about “unexplained activity” in the old cellars downtown. State FOIA. Cheap question. Weird answer.
 >
-> **Jak Gold**: First, nothing. Then a reply with more black ink than words. That’s when I started filming everybody’s lobby. Including your ranger’s. She was not a fan.
+> **Jak Gold**: Then I filmed lobbies, your ranger’s included, on her lunch break. Legal, probably. Useful, no. I cut that footage. She was right.
 
 **Rewards:** 60 credits, 80 XP.
 
@@ -455,15 +463,15 @@ _Jak has filmed, filed and flourished his way to a reply nobody meant him to rea
 
 > _Jak hands you three practice decks shuffled together and asks you to sort them while he rehearses a one-handed cut._
 >
-> **Jak Gold**: Three at a time. Like my records requests.
+> **Jak Gold**: Three at a time. Same as records: you don’t get to pick which ones come up.
 
 **After the win**
 
 > _Among Jak’s paperwork you find a receipt for a custom card case, ordered from his own card-case maker by a customer who signed as “G. W.”_ **[Clue: Card-case receipt]**
 >
-> **Jak Gold**: G. W.? My case guy said that customer paid in ones. Every bill, same face.
+> **Jak Gold**: G. W. My case maker remembers him: paid in ones, every bill the same face. That’s one source. I don’t run anything on one source.
 >
-> **Jak Gold**: Two cases. One to Dante’s shop, stuffed with ones. One to an office above a shuttered storefront, no name on the door. I’ve filmed that door twice. It’s a very boring door.
+> **Jak Gold**: Two cases. One to Dante’s shop, full of ones, and Dante confirms it. One to an office above a shuttered storefront, no name on the door. Two sources. Now it’s a lead.
 
 **Rewards:** 70 credits, 90 XP, clue: Card-case receipt.
 
@@ -477,15 +485,15 @@ _Jak has filmed, filed and flourished his way to a reply nobody meant him to rea
 
 **After the win**
 
-> _Jak spreads out the reply to his request for you. Whole paragraphs are blacked out. One phrase survived: OPERATION THIRTEENTH HAND._ **[Clue: Redacted records reply]**
+> _Jak switches the camera off before he spreads out the reply for you. Whole paragraphs are blacked out. One phrase survived: OPERATION THIRTEENTH HAND._ **[Clue: Redacted records reply]**
 >
-> **Jak Gold**: They redacted everything except the name. Either somebody was sloppy, or somebody wanted it read.
+> **Jak Gold**: Off camera, because it isn’t content until I know what it is. They redacted everything but the name. Sloppy, or meant to be read.
 
 **Rewards:** 80 credits, 100 XP, clue: Redacted records reply.
 
 **Field notes:**
 
-- **Freedom of Information** (history): The federal Freedom of Information Act became law in 1966. Agencies may withhold some information under nine exemptions — one reason released records often arrive with black bars. _Source: FOIA.gov (U.S. Department of Justice)._
+- **Freedom of Information** (history): The federal Freedom of Information Act became law in 1966. It covers federal agencies, which may withhold information under nine exemptions — one reason released records arrive with black bars. A Virginia city answers under the state’s own Act, which has its own exclusions. _Source: FOIA.gov (U.S. Department of Justice); Virginia FOIA Council._
 
 ### 4.4 Redacted
 
@@ -493,13 +501,13 @@ _Jak has filmed, filed and flourished his way to a reply nobody meant him to rea
 
 **Before**
 
-> **Jak Gold**: Every black bar has a width. Measure the gaps and you can guess the words. That’s not paranoia. That’s arithmetic.
+> **Jak Gold**: Every black bar has a width. Measure the gaps and you can guess at the words. Guess, not know. That goes in the video too.
 >
 > _You read the reply line by line while Jak measures black bars with a steel ruler._
 
 **After the win**
 
-> **Jak Gold**: Here’s what made it through: “four marks,” “waterfront,” and “thirteenth hand — not concluded.” Not concluded. Somebody never finished something.
+> **Jak Gold**: What made it through: “four marks,” “waterfront,” and “thirteenth hand — not concluded.” Whatever it was, nobody closed the file.
 
 **Rewards:** 90 credits, 110 XP.
 
@@ -509,7 +517,7 @@ _Jak has filmed, filed and flourished his way to a reply nobody meant him to rea
 
 **Before**
 
-> **Jak Gold**: Let me borrow the card. One flourish. Spring, cascade, catch. My phone shoots two hundred and forty frames a second.
+> **Jak Gold**: Let me borrow the card. One flourish: spring, cascade, catch. My phone shoots two hundred and forty frames a second.
 >
 > _You hand Jak the card. It flies between his hands with fifty-two others and lands back on top of the deck._
 
@@ -517,17 +525,17 @@ _Jak has filmed, filed and flourished his way to a reply nobody meant him to rea
 
 > _Jak plays the footage back for you frame by frame. As the card bends mid-spring, a diamond shows inside its edge — printed so it appears only when the card flexes._ **[Clue: The diamond mark]**
 >
-> **Jak Gold**: Edge work. Old card cheats marked the edges of cards so they could read them from the side. This one marked itself for whoever bends it right.
+> **Jak Gold**: Edge work. Old cheats marked card edges to read them from the side. This one marks itself for whoever bends it right.
 >
-> **Jak Gold**: I need a minute. That’s the best footage I’ve ever shot and I can’t post it.
+> **Jak Gold**: Best footage I’ve ever shot. It stays off the channel until we know what it means.
 
 **Rewards:** 150 credits, 180 XP, clue: The diamond mark.
 
 **Departure**
 
-> **Jak Gold**: Three corners: club, heart, diamond. The spade is at that address — I’d bet my best deck on it. I’m banned from the stairwell, legally speaking. You aren’t.
+> **Jak Gold**: Three corners: club, heart, diamond. The spade is behind that unmarked door; I’d bet my best deck on it. The building manager banned me from the stairwell. You aren’t banned.
 >
-> **Jak Gold**: If anyone asks, I’m not following you. I’m filming in a public place you happen to be in.
+> **Jak Gold**: I’m not coming with you. I’ll be here, cutting a video that’s honest and a little boring. You can tell it’s honest because it’s boring.
 >
 > _You leave Jak rewatching his footage and head for the door with no name on it._
 
@@ -539,19 +547,21 @@ _Jak has filmed, filed and flourished his way to a reply nobody meant him to rea
 
 _A woman with no first name, a dossier with no happy ending, and a legend somebody borrowed._
 
-**The mystery so far:** In the story, Operation Thirteenth Hand was a fictional 1962 investigation of a phantom card game in the cellars, using a local legend — a game George Washington never finished — as its cover. Its dossier maps the four marks around the old waterfront, and its sealed ace of spades holds the fourth mark. Its consultant was a Freemason from Lodge No. 4.
+**The mystery so far:** In the story, Operation Thirteenth Hand was a fictional 1962 investigation of a phantom card game in the cellars, using a local legend — a game George Washington never finished — as its cover. It was compartmentalized: surveyors photographed the marks, a Freemason from Lodge No. 4 read the history, and nobody saw the whole file. Mrs. Gray inherited it, treats it as a record of what people feared rather than proof, and lets you break the seal no one in her office was cleared to break: the ace of spades holding the fourth mark.
 
 **Arrival**
 
 > _You climb the stairs above the shuttered storefront. The door with no name opens before you can knock._
 >
-> **Mrs. Gray** _(portrait-neutral)_: You’re late. A card case arrived here three days ago, signed “G. W.” Who is G. W.?
+> **Mrs. Gray** _(portrait-neutral)_: You’re late. Not by the clock. By the file.
+>
+> **Mrs. Gray** _(portrait-doubt)_: Three days ago a card case arrived here, signed “G. W.” I don’t receive packages. I receive explanations. Who is G. W.?
 >
 > _You show her the card with its three marked corners. She studies it without touching it._
 >
-> **Mrs. Gray** _(portrait-think)_: Do you know how long this office has waited for someone to walk in with that?
+> **Mrs. Gray** _(portrait-think)_: A club from the river. A heart from a painter’s commission. A diamond from somebody’s footage. You’ve been busy, and you’ve been noticed.
 >
-> **Mrs. Gray** _(portrait-doubt)_: The Hardigan boys sat in that chair once and asked me questions. They didn’t like the answers either. Sit.
+> **Mrs. Gray** _(portrait-doubt)_: Sit. The Hardigan boys had that chair once. Their questions improved after the first hour. Most people’s do.
 
 ### 5.1 Dead Drop
 
@@ -559,13 +569,13 @@ _A woman with no first name, a dossier with no happy ending, and a legend somebo
 
 **Before**
 
-> **Mrs. Gray** _(cards-deal)_: A dead drop is a place two people use so they never have to meet. This deal is one. Solve it.
+> **Mrs. Gray** _(cards-deal)_: A dead drop is a place two people use so they never have to meet. This deal is one. Solve it, and we’ll discuss who has been using yours.
 
 **After the win**
 
-> **Mrs. Gray** _(portrait-talk)_: The four marks on your ranger’s map weren’t decoration. Someone used them as a dead drop. A club at the river, a heart downtown. You see the pattern.
+> **Mrs. Gray** _(portrait-talk)_: The four marks on your ranger’s map weren’t decoration. They were dead drops. A club at the river, a heart downtown. Somebody left things. Somebody collected.
 >
-> **Mrs. Gray** _(portrait-doubt)_: I’m not saying who. I’m asking you who.
+> **Mrs. Gray** _(portrait-doubt)_: I don’t know who. I know what the file says, which is a different thing. A file is mostly a list of what someone was worried about.
 
 **Rewards:** 65 credits, 85 XP.
 
@@ -579,13 +589,15 @@ _A woman with no first name, a dossier with no happy ending, and a legend somebo
 
 **Before**
 
-> **Mrs. Gray** _(portrait-neutral)_: War. I’ll ask the questions. You’ll turn the cards.
+> **Mrs. Gray** _(portrait-neutral)_: War. I’ll ask the questions. You turn the cards. Neither of us will enjoy it as much as we pretend.
 
 **After the win**
 
-> **Mrs. Gray** _(portrait-think)_: Operation Thirteenth Hand. My predecessor opened the file in 1962: reports of a card game in the cellars under the old town, played by someone who left no footprints.
+> **Mrs. Gray** _(portrait-think)_: Operation Thirteenth Hand. My predecessor opened it in 1962: reports of a card game in the cellars under the old town, played by someone who left no footprints.
 >
-> **Mrs. Gray** _(portrait-doubt)_: They found a card with blank corners and a legend. They closed the file as “unexplained.” I inherited it with the desk. I have never liked that word.
+> **Mrs. Gray** _(portrait-doubt)_: Two witnesses. One had been drinking; the other was a deacon. The file gives them equal weight, which tells you something about the file.
+>
+> **Mrs. Gray** _(portrait-neutral)_: They closed it as “unexplained.” I inherited it with the desk. I’ve never liked that word. It means someone stopped asking.
 
 **Rewards:** 75 credits, 95 XP.
 
@@ -603,9 +615,11 @@ _A woman with no first name, a dossier with no happy ending, and a legend somebo
 
 > _Mrs. Gray slides a gray folder across the desk to you, stamped THIRTEENTH HAND. Inside are survey photos of four suit marks, each pinned to a spot near the old waterfront._ **[Clue: Operation Thirteenth Hand dossier]**
 >
-> **Mrs. Gray** _(portrait-talk)_: The operation needed a cover story, so it borrowed a local legend: a card game George Washington never finished. Twelve hands played. The thirteenth never dealt.
+> **Mrs. Gray** _(portrait-talk)_: Each office got one piece. Surveyors photographed the marks. The consultant read the history. Nobody saw the whole file. That was the point, and the problem.
 >
-> **Mrs. Gray** _(portrait-think)_: A legend, of course. Mostly.
+> **Mrs. Gray** _(portrait-talk)_: The cover story was a local legend: a card game George Washington never finished. Twelve hands played. The thirteenth never dealt.
+>
+> **Mrs. Gray** _(portrait-doubt)_: A legend, of course. Mostly.
 
 **Rewards:** 85 credits, 105 XP, clue: Operation Thirteenth Hand dossier.
 
@@ -619,13 +633,15 @@ _A woman with no first name, a dossier with no happy ending, and a legend somebo
 
 **Before**
 
-> **Mrs. Gray** _(cards-deal)_: Debrief. You ask me for cards. I decide what you’re cleared to know.
+> **Mrs. Gray** _(cards-deal)_: Debrief. You ask me for cards. I decide what you’re cleared to know. It will be less than you hoped and more than I should.
 
 **After the win**
 
-> **Mrs. Gray** _(portrait-think)_: The operation had a consultant: a Freemason from Lodge No. 4. He knew the history cold, and refused to believe a word of the legend.
+> **Mrs. Gray** _(portrait-think)_: The operation had a consultant: a Freemason from Lodge No. 4. He knew the town’s history cold, and refused to believe a word of the legend.
 >
-> **Mrs. Gray** _(portrait-talk)_: The lodge still keeps his notes. The man who reads them now is Steve Gonzales. Media work in Washington, a Norwich man, takes history seriously. You’ll like him. I’m still deciding.
+> **Mrs. Gray** _(portrait-talk)_: The lodge kept his notes. Steve Gonzales reads them now. Media work in Washington, a Norwich man, very careful with dates.
+>
+> **Mrs. Gray** _(portrait-doubt)_: You’ll like him. I’m still deciding. I have been deciding for some years.
 
 **Rewards:** 95 credits, 115 XP.
 
@@ -637,13 +653,15 @@ _A woman with no first name, a dossier with no happy ending, and a legend somebo
 
 > _You reach the last folder in the dossier. It is sealed, and the seal is a playing card._
 >
-> **Mrs. Gray** _(portrait-neutral)_: Finish this, and you may break the seal. I’ve waited a long time to watch someone else’s face when they do.
+> **Mrs. Gray** _(portrait-neutral)_: Finish this, and you may break the seal. Nobody in this office has. None of us was ever cleared to. I’d like to watch your face.
 
 **After the win**
 
 > _You break the seal. It is an ace of spades with an engraved centre — and in its corner, the fourth mark, cut to fit your card._ **[Clue: The spade mark]**
 >
-> **Mrs. Gray** _(portrait-surprise)_: Four marks. Four corners. And still no order to set them in. That’s what the lodge is for.
+> **Mrs. Gray** _(portrait-surprise)_: Club at the river. Heart in the commission. Diamond in the footage. Spade in my files. Four marks, four corners.
+>
+> **Mrs. Gray** _(portrait-talk)_: And still no order to set them in. That isn’t intelligence. That’s interpretation. It’s what the lodge is for.
 
 **Rewards:** 160 credits, 190 XP, clue: The spade mark.
 
@@ -653,9 +671,11 @@ _A woman with no first name, a dossier with no happy ending, and a legend somebo
 
 **Departure**
 
-> **Mrs. Gray** _(portrait-talk)_: Go to the lodge. Ask Steve about the order. Ask Steve about anything, really. He answers at length.
+> **Mrs. Gray** _(portrait-talk)_: Go to the lodge. Steve Gonzales can tell you what the marks mean. I can only tell you where they were found. Those are different jobs.
 >
-> **Mrs. Gray** _(portrait-neutral)_: This conversation didn’t happen. I’ll know if you say it did.
+> **Mrs. Gray** _(portrait-neutral)_: If anyone asks where you heard of Operation Thirteenth Hand, say it was a ghost story. That has the advantage of being accurate.
+>
+> **Mrs. Gray** _(portrait-doubt)_: This conversation didn’t happen. I’ll know if you say it did.
 >
 > _You walk down the stairs with four marked corners and no idea which one goes first._
 
@@ -667,17 +687,17 @@ _A woman with no first name, a dossier with no happy ending, and a legend somebo
 
 _Steve Gonzales separates what happened at the lodge in 1752 from what someone invented later._
 
-**The mystery so far:** Steve separates documented history (Washington’s initiation here in 1752, the Capitol cornerstone, the Culper Ring) from the story’s legend: the card’s suit cipher is not Masonic. With compasses, Sophia’s map and the dossier’s survey, he reads the order the card was made to be set in — spade, diamond, heart, club, downstream — and raking light raises two words from the ledger’s blank line: KENMORE — ASK MOTHER.
+**The mystery so far:** Steve separates documented history (Washington’s initiation here in 1752, the Capitol cornerstone, the Culper Ring) from the story’s legend. Masons explain the square, compasses, level and plumb as lessons in conduct; suit lore belongs to tarot and other traditions, and the card’s cipher is not Masonic. With compasses, Sophia’s map and the dossier’s survey, he reads the order the card was made to be set in — spade, diamond, heart, club, downstream — and raking light raises two words from the ledger’s blank line: KENMORE — ASK MOTHER.
 
 **Arrival**
 
 > _You stop outside Fredericksburg Masonic Lodge No. 4. A tall man in a dark coat is waiting on the steps with a camera bag and a very old book._
 >
-> **Steve Gonzales** _(portrait-greet)_: You must be the one with the card. Steve Gonzales. Mrs. Gray called. She doesn’t call.
+> **Steve Gonzales** _(portrait-greet)_: You must be the one with the card. Steve Gonzales. Mrs. Gray called. She doesn’t call. She lets you find out she knew.
 >
 > **Steve Gonzales** _(portrait-talk)_: Ground rules. This lodge is real. George Washington was made a Mason here on November 4, 1752. He was twenty.
 >
-> **Steve Gonzales** _(portrait-think)_: Your card, the legend, the cipher — none of that is Masonic. Today I show you exactly where the history stops and the story starts.
+> **Steve Gonzales** _(portrait-think)_: Your card, the legend, the cipher: none of that is Masonic. Today I show you exactly where the history stops and the story starts.
 >
 > **Steve Gonzales** _(cards-reveal)_: And then, I think, which order those suits go in. Vamos.
 
@@ -687,19 +707,22 @@ _Steve Gonzales separates what happened at the lodge in 1752 from what someone i
 
 **Before**
 
-> **Steve Gonzales** _(portrait-talk)_: Masons talk about cornerstones: the first stone you build on. Washington laid the Capitol’s in 1793, in a Masonic ceremony. Documented. Now lay yours.
+> **Steve Gonzales** _(portrait-talk)_: A cornerstone is the first stone you build on. Washington laid the Capitol’s in 1793, in a Masonic ceremony. Documented. Now lay yours.
 
 **After the win**
 
-> **Steve Gonzales** _(portrait-neutral)_: The square stands for acting fairly; the compasses, for keeping yourself within bounds. Public symbols with public meanings. Any library will tell you.
+> **Steve Gonzales** _(portrait-neutral)_: Our working tools are builders’ tools. Masons use them to talk about conduct. The square: deal fairly. The compasses: know your limits.
 >
-> **Steve Gonzales** _(portrait-doubt)_: Nobody ever taught a Masonic lesson with a playing card. That’s your first sign the cipher is borrowed costume.
+> **Steve Gonzales** _(portrait-doubt)_: Lodges explain them a little differently. That’s normal. A symbol that means only one thing is a label.
+>
+> **Steve Gonzales** _(portrait-doubt)_: Four suits as four elements is tarot, a different tradition. A secret Masonic card ritual is nobody’s. Your cipher is borrowed costume.
 
 **Rewards:** 70 credits, 90 XP.
 
 **Field notes:**
 
 - **The Capitol cornerstone** (history): On September 18, 1793, George Washington laid the cornerstone of the United States Capitol in a ceremony conducted by Freemasons. _Source: Architect of the Capitol._
+- **The working tools** (history): Freemasons explain their builders’ tools as lessons in conduct. One Grand Lodge’s public summary gives the square as morality, the level as equality and the plumb as upright living. An 18th-century text says the compasses keep us “within bounds.” Readings vary between lodges. _Source: Grand Lodge of California, “Fellow Craft Working Tools” (freemason.org); Grand Lodge of British Columbia and Yukon, “The Working Tools”._
 
 ### 6.2 Level and Plumb
 
@@ -707,13 +730,15 @@ _Steve Gonzales separates what happened at the lodge in 1752 from what someone i
 
 **Before**
 
-> **Steve Gonzales** _(cards-shuffle)_: The level reminds us we meet as equals. War is the most level game there is. Nobody gets to be clever.
+> **Steve Gonzales** _(cards-shuffle)_: The level is about meeting as equals. War is the most level game there is. Nobody gets to be clever. Including me. Especially me.
 
 **After the win**
 
-> **Steve Gonzales** _(portrait-talk)_: Before media and visual effects, I studied at Norwich — the oldest private military college in the country. Intelligence history sticks to you.
+> **Steve Gonzales** _(portrait-talk)_: The plumb is the other half: upright when nobody’s checking. In VFX, if your verticals lean, the audience feels it before they can say why.
 >
-> **Steve Gonzales** _(portrait-think)_: Washington ran real spies: the Culper Ring, codes, invisible ink. If he’d wanted to hide something, he’d have done better than four suits on a card.
+> **Steve Gonzales** _(portrait-neutral)_: Before media work, I studied at Norwich, the oldest private military college in the country. Intelligence history sticks to you.
+>
+> **Steve Gonzales** _(portrait-think)_: Washington ran real spies: the Culper Ring, a code book, invisible ink. If he’d wanted to hide something, four suits on a card would be beneath him.
 
 **Rewards:** 80 credits, 100 XP.
 
@@ -739,7 +764,13 @@ _Steve Gonzales separates what happened at the lodge in 1752 from what someone i
 >
 > **Steve Gonzales** _(portrait-greet)_: Nobody has asked for my bibliography in years. I’m moved.
 >
-> **Sophia** _(portrait-neutral)_: Don’t be.
+> **Sophia** _(portrait-neutral)_: Don’t be. Where did you learn to cite like that?
+>
+> **Steve Gonzales** _(portrait-talk)_: The lodge, mostly. And Burning Man. You build something huge with strangers, then write down who did what, so next year’s crew can find it.
+>
+> **Sophia** _(portrait-greet)_: That’s a trail inventory.
+>
+> **Steve Gonzales** _(portrait-think)_: “Everyone is invited to work. Everyone is invited to play.” Their words, not mine. A good lodge night isn’t so different.
 
 **Rewards:** 90 credits, 110 XP.
 
@@ -760,13 +791,19 @@ _Steve Gonzales separates what happened at the lodge in 1752 from what someone i
 
 **After the win**
 
-> _Steve sets his compasses on the lodge and swings them across the map for you. The four marks sit on the corners of a square: the spade to the north, then the diamond, the heart and the club, following the river downstream._ **[Clue: Steve’s suit-order diagram]**
+> _Steve sets his compasses on the lodge and swings them across the map for you. The marks sit on a square: spade in the north, then diamond, heart and club, downstream._ **[Clue: Steve’s suit-order diagram]**
 >
-> **Steve Gonzales** _(portrait-surprise)_: You came upriver: club, heart, diamond, spade. The card reads downstream. Spade, diamond, heart, club.
+> **Steve Gonzales** _(portrait-surprise)_: You found them upriver: club, heart, diamond, spade. The card reads downstream, from the north. Spade, diamond, heart, club.
+>
+> **Sophia** _(portrait-think)_: That’s how the river reads, too. Everything that reaches the bend came from upstream first.
 >
 > **Steve Gonzales** _(portrait-talk)_: Whoever made this knew the town, the river, and just enough about Masons to borrow our tools. Not our secrets. We don’t have the kind they wanted.
 
 **Rewards:** 100 credits, 120 XP, clue: Steve’s suit-order diagram.
+
+**Field notes:**
+
+- **Participation** (history): Burning Man’s Ten Principles were written by co-founder Larry Harvey in 2004. Participation says “Everyone is invited to work. Everyone is invited to play.” Communal Effort values creative cooperation and collaboration. _Source: Burning Man Project, “The 10 Principles” (burningman.org)._
 
 ### 6.5 The Keystone (finale)
 
@@ -784,15 +821,15 @@ _Steve Gonzales separates what happened at the lodge in 1752 from what someone i
 >
 > **Steve Gonzales** _(portrait-surprise)_: Kenmore. Betty Washington Lewis’s house. And “Mother” would be…
 >
-> **Steve Gonzales** _(portrait-think)_: No. Well. Maybe. Bring good manners. She’ll expect them.
+> **Steve Gonzales** _(portrait-think)_: No. Well. Maybe. Bring good manners. And don’t call it her house. I hear she’s particular.
 
 **Rewards:** 170 credits, 200 XP, clue: The thirteenth line.
 
 **Departure**
 
-> **Steve Gonzales** _(portrait-talk)_: So. History: Washington was made a Mason here, laid a cornerstone, ran spies. Legend: a ghost, a card and a game he never finished. Keep them in separate pockets.
+> **Steve Gonzales** _(portrait-talk)_: So. History: Washington was made a Mason here, laid a cornerstone, ran spies. Legend: a ghost, a card, a game he never finished. Separate pockets.
 >
-> **Steve Gonzales** _(portrait-neutral)_: Mrs. Gray says the marks lead to tunnels. When you need a guide down there, call me. Bring the ranger’s map.
+> **Steve Gonzales** _(portrait-neutral)_: Mrs. Gray says the marks lead under the town. When you need a guide down there, call me. Bring the ranger’s map, and a better flashlight than mine.
 >
 > _You leave the lodge with Steve’s diagram in your pocket and the name of a house in your head._
 
@@ -800,7 +837,7 @@ _Steve Gonzales separates what happened at the lodge in 1752 from what someone i
 
 **Chapter notes:**
 
-- **History and story** (about the story): Washington’s initiation at the Fredericksburg lodge in 1752 is documented history. The card, its suit cipher, the legend and the lodge’s part in the mystery are invented for the story; no secret card ceremony is a real Masonic practice.
+- **History and story** (about the story): Washington’s initiation at the Fredericksburg lodge in 1752 is documented history. The card, its suit cipher, the legend and the lodge’s part in the mystery are invented for the story. Reading the four suits as elements comes from tarot and other esoteric traditions, not Freemasonry; no secret card ceremony is a real Masonic practice; and the card’s glow is this game’s own magic.
 
 ## Chapter 7: A Mother’s Opinion
 
@@ -808,7 +845,7 @@ _Steve Gonzales separates what happened at the lodge in 1752 from what someone i
 
 _At her daughter’s house, Mary Ball Washington’s ghost has a few things to say about her son._
 
-**The mystery so far:** At Kenmore — her daughter Betty’s house, not hers — Mary Ball Washington’s ghost tells the story’s version of the legend: twelve hands of cards with her son, scored in her own ledger, and George walking away before the thirteenth because he was losing. She gives you a letter for him and the iron key to the cellar door where he waits.
+**The mystery so far:** At Kenmore — her daughter Betty’s house, not hers — Mary Ball Washington’s ghost tells her version of the legend: twelve hands of cards with her son, scored in her own ledger, and George walking away before the thirteenth because he was losing. A widow who kept the accounts of a farm for nearly thirty years, she wants the ledger closed honestly, not won. She confirms Steve’s reading, seals a letter for George and gives you the iron key to the cellar door where he waits.
 
 **Arrival**
 
@@ -818,11 +855,11 @@ _At her daughter’s house, Mary Ball Washington’s ghost has a few things to s
 >
 > _You show her the card and the ledger’s last line. She does not look surprised._
 >
-> **Mary Ball Washington** _(portrait-talk)_: “Ask Mother.” Of course he wrote that. A grown man, a general, and still sending people to ask Mother.
+> **Mary Ball Washington** _(portrait-talk)_: “Ask Mother.” Of course he wrote that. A grown man, a general, a president, and still sending people to ask Mother.
 >
 > **Mary Ball Washington** _(portrait-doubt)_: Before we go on: I did not live here. This was Betty’s house — Betty and Fielding’s. Mine was on Charles Street, a short walk away. Do get it right.
 >
-> **Mary Ball Washington** _(cards-deal)_: Now sit. I do not discuss family business with people who cannot hold their cards properly.
+> **Mary Ball Washington** _(cards-deal)_: People mix the two houses up because it makes a tidier story. I have had quite enough tidy stories about this family. Sit.
 
 ### 7.1 Plaster Ceilings
 
@@ -830,17 +867,20 @@ _At her daughter’s house, Mary Ball Washington’s ghost has a few things to s
 
 **Before**
 
-> **Mary Ball Washington** _(portrait-talk)_: Betty’s ceilings took the plasterers months. You may sort cards while you admire them. Quietly.
+> **Mary Ball Washington** _(portrait-talk)_: Betty’s ceilings took the plasterers months. Everyone admires them. You may sort cards while you do. Quietly.
 
 **After the win**
 
 > **Mary Ball Washington** _(portrait-think)_: Fielding spent nearly everything they had making guns for the Revolution. People remember the ceilings. I remember the bills.
+>
+> **Mary Ball Washington** _(portrait-neutral)_: Betty’s lists name the people this family enslaved here, written down as property to be divided. Billy kept that door. Put him in your account.
 
 **Rewards:** 75 credits, 95 XP.
 
 **Field notes:**
 
 - **The Fredericksburg gunnery** (history): During the Revolutionary War, Fielding Lewis helped run the Fredericksburg Gun Manufactory to arm Virginia’s troops, spending much of his own fortune on it. _Source: George Washington Foundation (Kenmore)._
+- **The people on Betty’s list** (history): Historic Kenmore’s researchers trace the community the Lewises enslaved through four surviving documents, including a 1782 list in Betty Lewis’s hand. One man there, Billy, was 38 that year, and was probably the head of the household staff. _Source: George Washington Foundation, “Billy at the Door” (kenmore.org)._
 
 ### 7.2 Family History
 
@@ -848,11 +888,13 @@ _At her daughter’s house, Mary Ball Washington’s ghost has a few things to s
 
 **Before**
 
-> **Mary Ball Washington** _(cards-deal)_: Go Fish. A child’s game. George played it badly as a child, too.
+> **Mary Ball Washington** _(cards-deal)_: Go Fish. A child’s game. George played it badly as a child, too. He asked for everything and kept nothing.
 
 **After the win**
 
-> **Mary Ball Washington** _(portrait-talk)_: Very well, the legend. George and I played cards at this table. Twelve hands. I kept the score in that ledger — somebody in this family had to.
+> **Mary Ball Washington** _(portrait-talk)_: Very well, the legend. George and I played cards at this table. Twelve hands. I kept the score in that ledger. Somebody in this family had to keep accounts.
+>
+> **Mary Ball Washington** _(portrait-think)_: I was widowed at Ferry Farm with the children still young, and kept that farm’s books for nearly thirty years. I know an unpaid debt when I see one.
 >
 > **Mary Ball Washington** _(portrait-doubt)_: He was losing. Before the thirteenth hand, he remembered urgent business in Williamsburg. On a Sunday.
 
@@ -868,13 +910,15 @@ _At her daughter’s house, Mary Ball Washington’s ghost has a few things to s
 
 **Before**
 
-> **Mary Ball Washington** _(portrait-neutral)_: War. My son made a career of it. Let us see whether you have the stomach.
+> **Mary Ball Washington** _(portrait-neutral)_: War. My son made a career of it. People write that I never praised him. People were not at my table.
 
 **After the win**
 
 > **Mary Ball Washington** _(portrait-think)_: You play as if you mean it. Good. He never could abide anyone who meant it more than he did.
 >
 > **Mary Ball Washington** _(portrait-talk)_: He is down there, under the town, waiting for someone to bring that card and finish what he ran from. He would rather haunt a cellar than lose to his mother.
+>
+> **Mary Ball Washington** _(portrait-doubt)_: Or he would rather lose to a stranger than to me. That would be very like him. I find I do not mind, provided it ends.
 
 **Rewards:** 95 credits, 115 XP.
 
@@ -893,6 +937,8 @@ _At her daughter’s house, Mary Ball Washington’s ghost has a few things to s
 > _She chooses one letter, seals it with wax and hands it to you. On the front: George. On the back: You owe me a hand._ **[Clue: Mary’s letter to George]**
 >
 > **Mary Ball Washington** _(portrait-doubt)_: Give him that when he begins to sulk. He will begin to sulk.
+>
+> **Mary Ball Washington** _(portrait-neutral)_: I am not owed the win. I am owed the ending. There is a difference, and he knows it.
 
 **Rewards:** 105 credits, 125 XP, clue: Mary’s letter to George.
 
@@ -907,6 +953,8 @@ _At her daughter’s house, Mary Ball Washington’s ghost has a few things to s
 **Before**
 
 > **Mary Ball Washington** _(portrait-neutral)_: One more. Then I shall decide whether you are fit to carry the key.
+>
+> **Mary Ball Washington** _(portrait-talk)_: Your Mason has it right, by the way. George learned surveying as a boy. He starts every map at the north and works down.
 
 **After the win**
 
@@ -922,7 +970,7 @@ _At her daughter’s house, Mary Ball Washington’s ghost has a few things to s
 
 > **Mary Ball Washington** _(portrait-think)_: Take your friends: the ranger’s map, the man with the camera, the Mason, the boy with the glowing paint. George will try to frighten you. He is very bad at it.
 >
-> **Mary Ball Washington** _(portrait-neutral)_: I may look in at the end. Not to help. To watch.
+> **Mary Ball Washington** _(portrait-neutral)_: I may look in at the end. Not to help. To see something in this family finished, for once, in front of a witness.
 >
 > _You leave Kenmore with an iron key, a sealed letter and the distinct feeling of having been politely scolded._
 
@@ -934,13 +982,13 @@ _At her daughter’s house, Mary Ball Washington’s ghost has a few things to s
 
 _Jak, Steve and Dante, one sealed door, and four suits that have to go in the right order._
 
-**The mystery so far:** Under the old town, the iron key opens the way to a door with four suit-shaped sockets. Jak’s theory (new deck order) is wrong; Steve’s diagram is right. You set the marks spade, diamond, heart, club, thirteen tumblers fall from king to ace, and the door opens on a candlelit card room.
+**The mystery so far:** Under the old town, the iron key opens the way to a door with four suit-shaped sockets. Everyone brought a piece: Sophia’s map and Steve’s diagram, Dante’s eye for the hidden door and his map of the way back, Jak’s wrong theory that rules one answer out. You set the marks spade, diamond, heart, club, thirteen tumblers fall from king to ace, and the door opens on a candlelit card room.
 
 **Arrival**
 
 > _At the old waterfront, the iron key turns in a cellar door that sticks, then gives. Three flashlights are waiting for you at the bottom of the steps._
 >
-> **Jak Gold**: We’re rolling. For the record: privately owned cellar, permission granted by a ghost, via you.
+> **Jak Gold**: We’re rolling. For the record: privately owned cellar, permission granted by a ghost, via you. Anyone says stop, I stop.
 >
 > **Dante** _(portrait-surprise)_: I brought neon markers! If we get lost, we’ll be lost beautifully.
 >
@@ -965,8 +1013,14 @@ _Jak, Steve and Dante, one sealed door, and four suits that have to go in the ri
 > _You take the spade arch first, as Steve’s diagram says. Dante tags the corner with a glowing arrow so you can find your way back._
 >
 > **Dante** _(portrait-greet)_: That’s a monster arrow. It has a face. It believes in you.
+>
+> **Steve Gonzales** _(portrait-talk)_: Look at this brickwork. Every one laid by hand, and the hands are never the name on the plaque.
 
 **Rewards:** 80 credits, 100 XP.
+
+**Field notes:**
+
+- **Rope by hand** (history): Before steam power, rope was made by hand at ropewalks, and Fredericksburg had them during the Revolution. A 1798 list of people enslaved by the Lewis family names three men, Bob, George and Randolph, as ropemakers. _Source: George Washington Foundation, “Abraham and the Ropewalkers” (kenmore.org)._
 
 ### 8.2 Three Guides
 
@@ -982,7 +1036,7 @@ _Jak, Steve and Dante, one sealed door, and four suits that have to go in the ri
 
 > **Steve Gonzales** _(portrait-talk)_: Jak reads cards. I read history. Dante reads… what, exactly?
 >
-> **Dante** _(portrait-think)_: Vibes. And walls. That wall has a door-shaped vibe.
+> **Dante** _(portrait-think)_: Figure and ground. Stare at bricks long enough and one patch stops being wall. That patch is a door.
 >
 > _You look where Dante is pointing. Behind a curtain of roots is a door with four empty sockets, each shaped like a suit._
 
@@ -1035,6 +1089,8 @@ _Jak, Steve and Dante, one sealed door, and four suits that have to go in the ri
 > **Steve Gonzales** _(portrait-neutral)_: This is the door. Four sockets, four marks, and your card carries all of them. You set the order.
 >
 > _You hold the Thirteenth Hand card up to the door. Its four marked corners line up with the sockets._
+>
+> **Jak Gold**: Club from the river, heart from Dante’s brief, diamond from my footage, spade from Mrs. Gray’s file. Everybody brought one.
 
 **Puzzle:** _You hold the card to the door. In which order do you set the four marks?_ Answer: spades, diamonds, hearts, clubs.
 
@@ -1070,7 +1126,7 @@ _Jak, Steve and Dante, one sealed door, and four suits that have to go in the ri
 
 > **Steve Gonzales** _(portrait-think)_: This is as far as we go. Mrs. Gray’s file says the game was between two players, and the card is in your hand.
 >
-> **Jak Gold**: I’ll be right out here. Respectfully filming a door.
+> **Jak Gold**: Camera’s off. Some things don’t go on the internet. I’ll be right out here, respectfully not filming a door.
 >
 > **Dante** _(portrait-greet)_: Tell him I finished his commission! He’ll want to know! Probably!
 >
@@ -1084,7 +1140,7 @@ _Jak, Steve and Dante, one sealed door, and four suits that have to go in the ri
 
 _George Washington’s ghost has waited a very long time to finish this game. He does not plan to lose it._
 
-**The mystery so far:** The legend resolves: George Washington’s ghost — who planted the card, sketched the heron and commissioned Dante, all to lure a challenger — has waited to play the thirteenth hand he walked away from. You win it, his mother’s letter ends the sulking, and the card awakens with all four corners filled.
+**The mystery so far:** The legend resolves: George Washington’s ghost — who planted the card, sketched the heron and commissioned Dante, all to lure a challenger — has waited to play the thirteenth hand he walked away from. Every portrait flatters him; one ledger, in his mother’s hand, says he left. You win it, his mother’s letter turns the loss into a debt paid, and the card awakens with all four corners filled.
 
 **Arrival**
 
@@ -1094,11 +1150,13 @@ _George Washington’s ghost has waited a very long time to finish this game. He
 >
 > _You show him General Monsterton, Dante’s three-eyed neon portrait of him._
 >
-> **George Washington’s Ghost** _(portrait-surprise)_: Three eyes. Magnificent. Precisely the vigor I asked for.
+> **George Washington’s Ghost** _(portrait-surprise)_: Three eyes. Magnificent. Precisely the vigor I asked for. I look as though I could win at anything.
 >
 > **George Washington’s Ghost** _(portrait-think)_: Yes, it was I. The card in Lot 13, the heron, the commission. A general recruits. Twelve hands were played in my mother’s parlor. I was called away before the thirteenth.
 >
-> **George Washington’s Ghost** _(cards-signature)_: Tonight we finish it. Five games. I intend to win all five.
+> **George Washington’s Ghost** _(cards-signature)_: They have written a great deal about me. Most of it flattering. One ledger is not, and it is in my mother’s hand.
+>
+> **George Washington’s Ghost** _(cards-signature)_: Tonight we finish it. Five games. I intend to win all five, and to be remembered winning them.
 
 ### 9.1 The General’s Welcome
 
@@ -1106,11 +1164,11 @@ _George Washington’s ghost has waited a very long time to finish this game. He
 
 **Before**
 
-> **George Washington’s Ghost** _(cards-deal)_: We begin with War. I have some experience.
+> **George Washington’s Ghost** _(cards-deal)_: We begin with War. I have some experience. Most of it was losing, until it wasn’t.
 
 **After the win**
 
-> **George Washington’s Ghost** _(portrait-doubt)_: A warm-up. I allowed you that. It was strategy. I was famous for strategy.
+> **George Washington’s Ghost** _(portrait-doubt)_: A warm-up. I allowed you that. It was strategy. I was famous for strategy. Look it up. Not the losses. The strategy.
 
 **Rewards:** 85 credits, 105 XP.
 
@@ -1146,11 +1204,13 @@ _George Washington’s ghost has waited a very long time to finish this game. He
 
 > _You recognise the deal in front of you: the twelfth hand from the ledger, laid out exactly as it was written._
 >
-> **George Washington’s Ghost** _(portrait-doubt)_: Mother kept that ledger. Mother keeps everything. Including grudges.
+> **George Washington’s Ghost** _(portrait-doubt)_: Mother kept that ledger. Mother keeps everything. Including accounts I would prefer were closed.
 
 **After the win**
 
 > **George Washington’s Ghost** _(portrait-surprise)_: You solved the twelfth hand. I lost that one, originally. I maintain the candle was in my eyes.
+>
+> **George Washington’s Ghost** _(portrait-think)_: Every portrait of me has a fine coat and a certain look. Not one shows me leaving a card table early. She was the only one who wrote that down.
 
 **Rewards:** 105 credits, 125 XP.
 
@@ -1189,6 +1249,8 @@ _George Washington’s ghost has waited a very long time to finish this game. He
 > _You lay the Thirteenth Hand card face up in the middle of the table. All four of its corners are marked._
 >
 > **George Washington’s Ghost** _(cards-signature)_: Thirteen ranks, thirteen books. Whoever lays down more wins the thirteenth hand — and the card.
+>
+> **George Washington’s Ghost** _(portrait-think)_: And this time the ledger records how it ended. Not how I left.
 
 **After the win**
 
@@ -1198,11 +1260,13 @@ _George Washington’s ghost has waited a very long time to finish this game. He
 >
 > _You hand George the letter from his mother. He reads the back, and goes quiet._
 >
-> **George Washington’s Ghost** _(portrait-doubt)_: “You owe me a hand.” …I suppose I did.
+> **George Washington’s Ghost** _(portrait-doubt)_: “You owe me a hand.” …I suppose I did. Longer than I have owed anyone anything.
 >
 > **Mary Ball Washington** _(portrait-greet)_: Well played. Both of you. Mostly the one who is alive.
 >
-> **George Washington’s Ghost** _(portrait-think)_: The game is finished. Two centuries of sulking, concluded. I feel… lighter. Which, for a ghost, is saying something.
+> **Mary Ball Washington** _(portrait-talk)_: Write it down, George. Lost the thirteenth hand, and stayed to the end. It reads better than you think.
+>
+> **George Washington’s Ghost** _(portrait-think)_: Lost, and stayed. Very well. Two centuries of sulking, concluded. I feel… lighter. Which, for a ghost, is saying something.
 
 **Rewards:** 220 credits, 260 XP, clue: The awakened card.
 
@@ -1228,21 +1292,25 @@ _George Washington’s ghost has waited a very long time to finish this game. He
 
 > _A week later, you bring the card back to Cheryl’s shop, where it all began. It sits under the lamp in a frame nobody can afford._
 >
-> **Cheryl** _(portrait-doubt)_: I priced it. Then I un-priced it. Then I put up a sign: NOT FOR SALE. DON’T ASK.
+> **Cheryl** _(portrait-doubt)_: Provenance: one ghost, four witnesses and a receipt for everything. Best file I’ve ever written. The sign says NOT FOR SALE. DON’T ASK.
 >
-> **Sophia** _(portrait-greet)_: The heron’s still at the bend. I logged her this morning. Some things are allowed to stay a mystery.
+> **Sophia** _(portrait-greet)_: The heron’s still at the bend. I logged her this morning. Some things are allowed to stay a mystery. The sign-in sheets are not among them.
 >
 > **Dante** _(portrait-surprise)_: All thirteen monster cards are done! The client paid the final invoice. In ones. Obviously.
 >
-> **Jak Gold**: My video’s up: “I Have No Footage of a Ghost (Proof).” The comments are mostly about my flourish. As they should be.
+> **Jak Gold**: My video’s up: “I Have No Footage of a Ghost (Proof).” The camera was off for the good part. The comments are about my flourish anyway.
 >
-> **Mrs. Gray** _(portrait-neutral)_: File closed. Reason: concluded. I’ve wanted to type that word for a very long time.
+> **Mrs. Gray** _(portrait-neutral)_: File closed. Reason: concluded. I’ve wanted to type that word for a very long time. Under sources, I put your name. Don’t frame it.
 >
 > **Steve Gonzales** _(portrait-talk)_: I’ve added a page to the lodge’s research: history in one column, legend in the other. Sophia approved it. Twice.
 >
 > _On your way out, you find an envelope on the counter, sealed in blue wax. Inside are a single dollar bill and a note in a very confident hand._
 >
 > **George Washington’s Ghost** _(cards-signature)_: Best of thirteen? — G. W.
+>
+> _Under his signature, in a smaller and much firmer hand, someone has added a line for you._
+>
+> **Mary Ball Washington** _(portrait-talk)_: He will lose again. Do keep score. — M. W.
 >
 > _You smile. Somewhere under the town, a candle lights itself. Ghost rematches are open._
 

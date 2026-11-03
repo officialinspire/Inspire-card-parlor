@@ -398,8 +398,10 @@
   }
 }
 .scene-portrait {
-  width: clamp(82px, 24vmin, 124px);
-  aspect-ratio: 3 / 4;
+  /* Square: a pose is shown whole and at the same scale as its neighbours.
+     Bust poses fill it by height; only the widest gestures shrink (to 87%). */
+  width: clamp(96px, 26vmin, 148px);
+  aspect-ratio: 1;
   border-radius: 46% 46% 12px 12px;
 }
 .scene-beat.enter .scene-portrait {
@@ -616,24 +618,38 @@
   height: auto;
 }
 .versus-portrait {
-  width: clamp(76px, 22vmin, 120px);
-  aspect-ratio: 3 / 4;
+  width: clamp(84px, 24vmin, 124px);
+  max-width: 100%;
+  aspect-ratio: 1;
   border-radius: 46% 46% 12px 12px;
 }
+/* Two or three opponents share the space evenly and shrink to fit it. */
+.versus-them-group.n2,
+.versus-them-group.n3 {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  align-items: start;
+}
 .versus-them-group.n2 .versus-portrait {
-  width: clamp(60px, 16vmin, 92px);
+  width: clamp(56px, 17vmin, 96px);
 }
 .versus-them-group.n3 .versus-portrait {
-  width: clamp(50px, 13vmin, 76px);
+  width: clamp(48px, 14vmin, 80px);
 }
 .versus-name {
   max-width: 100%;
   font-family: var(--font-display);
   font-size: 0.92em;
+  line-height: 1.2;
   text-align: center;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+}
+/* In a group, a name may wrap onto a second line rather than be cut off. */
+.versus-them-group.n2 .versus-name,
+.versus-them-group.n3 .versus-name {
+  font-size: max(var(--fs-min), 0.8em);
+  overflow-wrap: normal;
 }
 .versus-vs {
   font-family: var(--font-display);
@@ -940,6 +956,24 @@
   }
   .dialog-story-result .result-text > .result-title {
     align-self: start;
+  }
+}
+
+/* Small, short phones (320×568): a finale's whole list fits without scrolling. */
+@media (max-width: 420px) and (max-height: 620px) {
+  .dialog-story-result .story-result {
+    grid-template-columns: 48px minmax(0, 1fr);
+    padding-block: 0;
+  }
+  .dialog-story-result .result-art {
+    width: 48px;
+  }
+  .dialog-story-result .story-rewards ul {
+    gap: 3px 4px;
+    font-size: max(var(--fs-min), 0.86em);
+  }
+  .dialog-story-result .story-rewards li {
+    padding-block: 1px;
   }
 }
 
@@ -1556,6 +1590,25 @@
     grid-column: 1;
     grid-row: 3;
   }
+  .suit-clues {
+    grid-column: 2;
+    grid-row: 3;
+  }
+  .suit-clues small {
+    display: none;
+  }
+}
+
+/* Tall phones have room for a larger face beside the nameplate. */
+@media (min-height: 760px) {
+  .scene {
+    --phone-portrait: 88px;
+  }
+}
+@media (max-height: 600px) {
+  .scene {
+    --phone-portrait: 60px;
+  }
 }
 
 /* Narrow scenes (phones in portrait): a small portrait beside the nameplate,
@@ -1563,12 +1616,12 @@
 @container scene (max-width: 420px) {
   .scene-beat.is-speech {
     display: grid;
-    grid-template-columns: 52px minmax(0, 1fr);
+    grid-template-columns: var(--phone-portrait, 72px) minmax(0, 1fr);
     align-items: end;
-    gap: 6px 8px;
+    gap: 6px 10px;
   }
   .scene-beat.is-speech .scene-portrait {
-    width: 52px;
+    width: var(--phone-portrait, 72px);
     grid-row: 1;
   }
   .scene-beat.is-speech .scene-main {
@@ -1695,4 +1748,416 @@
 }
 .journal-chapter .tile-meta {
   width: 100%;
+}
+
+/* =========================== Places ==================================== */
+/*
+ * Each chapter is a place with its own look, set on <html> as
+ * data-story-place while its screen or scenes are open (StoryMode.ts). The
+ * map and the journal keep the parlor's look.
+ *
+ * One palette per place drives everything: the screen and panel colours in
+ * both themes (mixed lightly into the day palette, deeply into the night
+ * one), the accent used for labels and rules, the speech box, the narration
+ * paper and a faint background texture. Texture stays on the screen behind
+ * the panels, never behind body text, and nothing here moves.
+ *
+ * Contrast (WCAG, checked for all nine places): body and faint text 4.5:1 or
+ * better on every surface in both themes; speech and narration text 9:1 or
+ * better.
+ */
+:root[data-story-place='th-1'] {
+  /* Antique paper and brass: Cheryl's shop. */
+  --pl-deep: #241a12;
+  --pl-mid: #33261b;
+  --pl-accent: #d9ae62;
+  --pl-accent-day: #7a5520;
+  --pl-paper: #d9b98a;
+  --pl-box: #3a2a1c;
+  --pl-box-2: #2a1d13;
+  --pl-box-line: #c9a46a;
+  --pl-narr: #f5ead0;
+  --pl-narr-2: #e8d6ab;
+  --pl-texture: repeating-linear-gradient(0deg, rgb(255 236 200 / 0.025) 0 1px, transparent 1px 4px);
+}
+:root[data-story-place='th-2'] {
+  /* River greens: the River Station. */
+  --pl-deep: #12211b;
+  --pl-mid: #1c2f26;
+  --pl-accent: #a2cf9f;
+  --pl-accent-day: #3c6943;
+  --pl-paper: #a9c9a4;
+  --pl-box: #1f3a2c;
+  --pl-box-2: #15281f;
+  --pl-box-line: #8fb88a;
+  --pl-narr: #eef0dc;
+  --pl-narr-2: #dce3c3;
+  --pl-texture: repeating-linear-gradient(172deg, rgb(160 210 170 / 0.05) 0 2px, transparent 2px 26px);
+}
+:root[data-story-place='th-3'] {
+  /* Controlled neon: Dante's counter. Neon stays on edges, never behind text. */
+  --pl-deep: #170e22;
+  --pl-mid: #251839;
+  --pl-accent: #e79cff;
+  --pl-accent-day: #7f2d9c;
+  --pl-paper: #d9c3ef;
+  --pl-box: #221536;
+  --pl-box-2: #170e26;
+  --pl-box-line: #c46cf0;
+  --pl-box-glow: 0 0 0 1px rgb(95 227 255 / 0.4), 0 0 10px rgb(196 108 240 / 0.25);
+  --pl-narr: #f3edf8;
+  --pl-narr-2: #e3d8ef;
+  --pl-texture: radial-gradient(circle, rgb(95 227 255 / 0.06) 1px, transparent 1.5px) 0 0 / 18px 18px;
+}
+:root[data-story-place='th-4'] {
+  /* Emerald cardistry: Jak's back room. */
+  --pl-deep: #0c1d17;
+  --pl-mid: #13302a;
+  --pl-accent: #e3c46a;
+  --pl-accent-day: #6a5714;
+  --pl-paper: #9fcdb5;
+  --pl-box: #10372b;
+  --pl-box-2: #0b261e;
+  --pl-box-line: #d4af37;
+  --pl-narr: #f5ead0;
+  --pl-narr-2: #e8d6ab;
+  --pl-texture: repeating-linear-gradient(45deg, rgb(120 210 170 / 0.03) 0 1px, transparent 1px 6px);
+}
+:root[data-story-place='th-5'] {
+  /* Olive intelligence dossier: Mrs. Gray's office. */
+  --pl-deep: #1c1d14;
+  --pl-mid: #2b2c1e;
+  --pl-accent: #cbc47e;
+  --pl-accent-day: #5a5520;
+  --pl-paper: #c9c394;
+  --pl-box: #2f3021;
+  --pl-box-2: #202116;
+  --pl-box-line: #a8a35e;
+  --pl-narr: #efe2b8;
+  --pl-narr-2: #e0cd96;
+  --pl-texture: repeating-linear-gradient(0deg, rgb(205 198 130 / 0.05) 0 1px, transparent 1px 28px);
+}
+:root[data-story-place='th-6'] {
+  /* Restrained lodge geometry: a faint checkered pavement. */
+  --pl-deep: #121a2c;
+  --pl-mid: #1c2741;
+  --pl-accent: #dcc683;
+  --pl-accent-day: #665620;
+  --pl-paper: #b9c3dc;
+  --pl-box: #1d2a48;
+  --pl-box-2: #141d33;
+  --pl-box-line: #c8b273;
+  --pl-narr: #f5ead0;
+  --pl-narr-2: #e8d6ab;
+  --pl-texture: repeating-conic-gradient(rgb(220 198 131 / 0.035) 0 25%, transparent 0 50%) 0 0 / 36px 36px;
+}
+:root[data-story-place='th-7'] {
+  /* Kenmore plaster and gold: a soft ceiling glow and plaster-white paper. */
+  --pl-deep: #271f2d;
+  --pl-mid: #352b3c;
+  --pl-accent: #e6c680;
+  --pl-accent-day: #74561a;
+  --pl-paper: #e8dccb;
+  --pl-box: #3b3042;
+  --pl-box-2: #2b2231;
+  --pl-box-line: #d4b26a;
+  --pl-narr: #f8f3ea;
+  --pl-narr-2: #ece3d3;
+  --pl-texture: radial-gradient(ellipse 70% 40% at 50% -6%, rgb(255 244 222 / 0.09), transparent 70%);
+}
+:root[data-story-place='th-8'] {
+  /* Brick tunnels: mortar courses and lantern amber. */
+  --pl-deep: #1d1411;
+  --pl-mid: #2c201a;
+  --pl-accent: #eba961;
+  --pl-accent-day: #83461a;
+  --pl-paper: #d6b8a2;
+  --pl-box: #33241d;
+  --pl-box-2: #241914;
+  --pl-box-line: #c98a4a;
+  --pl-narr: #efe1cc;
+  --pl-narr-2: #dfc9a9;
+  --pl-texture: repeating-linear-gradient(0deg, rgb(0 0 0 / 0.16) 0 2px, transparent 2px 20px);
+}
+:root[data-story-place='th-9'] {
+  /* Spectral blue: the General's parlor. */
+  --pl-deep: #0d1725;
+  --pl-mid: #162538;
+  --pl-accent: #acd9ff;
+  --pl-accent-day: #2c5a85;
+  --pl-paper: #b9d3ea;
+  --pl-box: #17304a;
+  --pl-box-2: #0f2034;
+  --pl-box-line: #8cc4f0;
+  --pl-narr: #eef4fa;
+  --pl-narr-2: #dbe7f2;
+  --pl-texture: radial-gradient(ellipse 80% 50% at 50% 0%, rgb(172 217 255 / 0.08), transparent 70%);
+}
+
+/* The palette as the app's tokens, per theme. */
+:root[data-story-place][data-theme='night'] {
+  --bg: var(--pl-deep);
+  --bg-deep: color-mix(in srgb, var(--pl-deep), #000 30%);
+  --surface: var(--pl-mid);
+  --surface-2: color-mix(in srgb, var(--pl-mid), #fff 5%);
+  --surface-sunk: color-mix(in srgb, var(--pl-mid), #000 22%);
+  --border: color-mix(in srgb, var(--pl-accent) 20%, transparent);
+  --gold-line: color-mix(in srgb, var(--pl-accent) 50%, transparent);
+  --gold-text: var(--pl-accent);
+  --place-accent: var(--pl-accent);
+}
+:root[data-story-place][data-theme='day'] {
+  --bg: color-mix(in srgb, var(--pl-paper) 32%, #efe4cf);
+  --bg-deep: color-mix(in srgb, var(--pl-paper) 32%, #e3d3b6);
+  --surface: color-mix(in srgb, var(--pl-paper) 14%, #fbf6ec);
+  --surface-2: color-mix(in srgb, var(--pl-paper) 16%, #f4ead9);
+  --surface-sunk: color-mix(in srgb, var(--pl-paper) 24%, #e9dcc4);
+  --ink-faint: #62574b;
+  --gold-line: color-mix(in srgb, var(--pl-accent-day) 45%, transparent);
+  --gold-deep: var(--pl-accent-day);
+  --gold-text: var(--pl-accent-day);
+  --place-accent: var(--pl-accent-day);
+}
+
+/* The chapter screen: the place's texture behind its panels. */
+:root[data-story-place] .story-root > [data-story-view='chapter'] {
+  background: var(--pl-texture, none);
+}
+/* The location tile sits in a frame ruled in the place's accent. */
+:root[data-story-place] .chapter-hero-art {
+  width: clamp(84px, 26vmin, 132px);
+  background:
+    radial-gradient(circle at 50% 60%, color-mix(in srgb, var(--pl-accent) 18%, transparent), transparent 72%),
+    var(--surface-sunk);
+  box-shadow:
+    inset 0 0 0 1px var(--gold-line),
+    var(--elev-1);
+}
+:root[data-story-place] .chapter-hero p {
+  color: var(--ink);
+}
+/* Challenge cards: the place's accent on the kicker and a thin rule on the left. */
+:root[data-story-place] .challenge-card {
+  box-shadow:
+    inset 3px 0 0 var(--place-accent),
+    inset 0 1px 0 rgb(255 255 255 / 0.06),
+    0 var(--edge-size) 0 var(--edge),
+    var(--elev-1);
+}
+:root[data-story-place] .challenge-card.locked {
+  box-shadow:
+    inset 3px 0 0 var(--border),
+    0 var(--edge-size) 0 var(--edge),
+    var(--elev-1);
+}
+:root[data-story-place] .challenge-card .tile-kicker {
+  color: var(--place-accent);
+}
+
+/* Dialogs in a place: their rule and frame take its accent. */
+:root[data-story-place] .dialog {
+  border-color: var(--gold-line);
+}
+
+/* Speech: the place's own box. Narration: its own paper. */
+:root[data-story-place] .scene-box {
+  background: linear-gradient(160deg, var(--pl-box), var(--pl-box-2));
+  border-color: var(--pl-box-line);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 240 210 / 0.12),
+    var(--pl-box-glow, 0 0 0 transparent);
+}
+:root[data-story-place] .scene-beat.is-narration .scene-box {
+  background: linear-gradient(var(--pl-narr), var(--pl-narr-2));
+  border-color: color-mix(in srgb, var(--pl-box-line) 55%, rgb(110 76 36));
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.35);
+}
+:root[data-story-place] .scene-portrait,
+:root[data-story-place] .versus-portrait,
+:root[data-story-place] .result-portrait {
+  border-color: var(--gold-line);
+}
+/* Low effects: no glow, no texture. */
+:root.low-effects[data-story-place] .story-root > [data-story-view='chapter'] {
+  background: none;
+}
+:root.low-effects[data-story-place] .scene-box {
+  --pl-box-glow: 0 0 0 transparent;
+}
+
+/* =========================== Where you left off ======================== */
+/* The journal's recap: three short lines (last clue, open question, next),
+   with Continue beside them. Lines clamp so it never pushes the pages away. */
+.journal-recap {
+  align-items: center;
+}
+.recap-lines {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+.journal-recap .recap-head {
+  margin-bottom: 1px;
+}
+.recap-line {
+  margin: 0;
+  font-size: max(var(--fs-min), 0.86em);
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+.recap-label {
+  font-weight: 900;
+  margin-right: 6px;
+  color: #8a6424;
+}
+.recap-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 800;
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  /* A comfortable target, even inside a one-line recap. */
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  vertical-align: middle;
+}
+.recap-link:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+.journal-recap > .btn {
+  flex: none;
+}
+/* Short screens: the open question is the line that gives way. */
+@media (max-height: 640px) {
+  .recap-line {
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+  }
+}
+@media (max-height: 560px) {
+  .journal-recap [data-recap-question] {
+    display: none;
+  }
+}
+
+/* The map's "Next" strip: the next challenge, what it asks and earns, and Continue. */
+.story-next {
+  display: flex;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 8px 12px;
+  border-radius: var(--radius-m);
+  border: 1px solid color-mix(in srgb, var(--gold) 50%, transparent);
+  background: color-mix(in srgb, var(--gold) 10%, var(--surface));
+  color: var(--ink);
+}
+.story-next-text {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  display: grid;
+  gap: 1px;
+}
+.story-next-text small {
+  font-size: max(var(--fs-min), 0.72em);
+  font-weight: 900;
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  color: var(--gold-text);
+}
+.story-next-text strong {
+  font-size: 0.95em;
+  line-height: 1.25;
+}
+.story-next-pays {
+  font-size: max(var(--fs-min), 0.8em);
+  color: var(--ink-soft);
+}
+.story-next > .btn {
+  flex: none;
+}
+@media (max-height: 640px) {
+  .story-next-pays {
+    display: none;
+  }
+}
+
+/* The clue viewer's readings, and the clues it connects to. */
+.clue-reading {
+  margin: 6px 0 0;
+}
+.clue-related {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  margin-top: 8px;
+}
+.clue-related small {
+  font-weight: 900;
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  font-size: max(var(--fs-min), 0.7em);
+  color: var(--ink-faint);
+}
+.clue-related .recap-link {
+  min-height: 32px;
+}
+
+/* The door puzzle: the clues already found, one tap away. */
+.suit-clues {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px 6px;
+}
+.suit-clues small {
+  width: 100%;
+  text-align: center;
+  font-weight: 900;
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  font-size: max(var(--fs-min), 0.7em);
+  color: var(--ink-faint);
+}
+/* The last-clue line is a row (label, then the link), never clamped text the link could slip under. */
+.journal-recap [data-recap-clue] {
+  display: flex;
+  align-items: center;
+  gap: 0 6px;
+  min-width: 0;
+}
+.journal-recap [data-recap-clue] .recap-label {
+  margin-right: 0;
+  flex: none;
+}
+.journal-recap [data-recap-clue] .recap-link {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+  line-height: 28px;
+}
+/* Narrow screens: Continue drops to its own row before the recap lines get too narrow to tap. */
+.journal-recap {
+  flex-wrap: wrap;
+}
+.journal-recap .recap-lines {
+  flex: 1 1 190px;
+}
+.journal-recap > .btn {
+  margin-left: auto;
 }

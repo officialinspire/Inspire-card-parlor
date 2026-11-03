@@ -44,12 +44,25 @@ describe('story artwork manifest', () => {
       const s = sheet(id);
       expect(s.status, id).toBe('processed');
       expect(s.sprites, id).toHaveLength(18);
-      expect(s.sprites.map((p) => p.name)).toEqual(
-        manifest.poseRows.flatMap((r) => r.poses.map((p) => `${r.row}-${p}`)),
+      // Every pose, once each. (Grid order can differ: Dante's expressions are drawn in another order.)
+      expect(s.sprites.map((p) => p.name).sort(), id).toEqual(
+        manifest.poseRows.flatMap((r) => r.poses.map((p) => `${r.row}-${p}`)).sort(),
       );
     }
     useStoryManifest(manifest);
     expect(characterPose('cheryl', 'portrait-greet')?.src).toBe('assets/story/characters/cheryl/portrait-greet.webp');
+    // Dante's row is named for what is drawn: the chin-in-hand pose is "think", the alarm marks are "surprise".
+    const dante = sheet('dante')
+      .sprites.slice(0, 6)
+      .map((p) => p.name);
+    expect(dante).toEqual([
+      'portrait-greet',
+      'portrait-neutral',
+      'portrait-talk',
+      'portrait-surprise',
+      'portrait-think',
+      'portrait-doubt',
+    ]);
   });
 
   it('cuts twelve quest items from each item atlas, and the stamps, effects, map icons and 14 UI pieces', () => {

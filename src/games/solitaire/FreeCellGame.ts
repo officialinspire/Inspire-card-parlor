@@ -9,6 +9,7 @@ import {
 } from '@/engine';
 import { setupFreeCell } from '../setups';
 import { SolitaireGame, bestOf, initSolitaireData, type Hint } from './SolitaireGame';
+import { foundationReason } from './KlondikeGame';
 
 /*
  * FREECELL — rules as implemented
@@ -66,6 +67,32 @@ export class FreeCellGame extends SolitaireGame {
         return to.isEmpty || descendingAlternating(to.top!, first);
       default:
         return false;
+    }
+  }
+
+  protected override pickReason(pile: Pile, index: number): string {
+    if (pile.kind === 'foundation') return 'Cards on the foundations stay there.';
+    const run = pile.all.slice(index);
+    if (pile.kind === 'tableau' && isSequence(run, descendingAlternating))
+      return `You can move ${this.capacity(pile)} card${this.capacity(pile) === 1 ? '' : 's'} at once now: empty a free cell or a column to move more.`;
+    return 'Only a run going down in alternating colours moves together.';
+  }
+
+  protected override dropReason(cards: readonly Card[], from: Pile, to: Pile): string {
+    const first = cards[0]!;
+    switch (to.kind) {
+      case 'cell':
+        return cards.length > 1 ? 'A free cell holds one card.' : 'That free cell is taken.';
+      case 'foundation':
+        return foundationReason(cards, from, to);
+      case 'tableau': {
+        const cap = this.capacity(to);
+        if (cards.length > cap)
+          return `You can move ${cap} card${cap === 1 ? '' : 's'} there now: empty a free cell or a column to move more.`;
+        return `The ${first.label} can’t go on the ${to.top!.label}: columns go down one rank, alternating red and black.`;
+      }
+      default:
+        return 'Cards can’t be placed there.';
     }
   }
 

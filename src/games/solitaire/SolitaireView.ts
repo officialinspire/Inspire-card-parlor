@@ -10,7 +10,7 @@ import { victoryShower } from '@/components/celebration';
 import { button } from '@/components/ui';
 import { moreItem, setTool, toolButton, type GameToolbar } from '@/components/gameToolbar';
 import { confirmDialog, openDialog } from '@/components/Dialog';
-import { notify } from '@/components/Notifications';
+import { dismissNotification, notify } from '@/components/Notifications';
 import { recordGameResult } from '@/progression/results';
 import { saves, sleep } from '../session';
 import type { BoardMove, SolitaireGame } from './SolitaireGame';
@@ -99,6 +99,14 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
     if (p.kind === 'stock') slot.append(h('span', { class: 'sol-stock-count', 'data-count': 'stock' }));
     slots.set(p.id, slot);
     board.appendChild(slot);
+  }
+  // A finished foundation shows a mark that needs no motion and no colour to read.
+  const doneMarks = new Map<string, HTMLElement>();
+  for (const p of game.table.piles.values()) {
+    if (p.kind !== 'foundation') continue;
+    const mark = h('span', { class: 'sol-done', 'aria-hidden': 'true', hidden: true }, '✓');
+    doneMarks.set(p.id, mark);
+    board.appendChild(mark);
   }
   const pauseOverlay = h(
     'div',
@@ -276,9 +284,12 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
         lastPile.delete(key);
       }
     }
-    // A foundation that has just been completed (Ace to King) glows.
+    // A foundation that has just been completed (Ace to King) glows; a complete one keeps a ✓.
     for (const p of game.table.piles.values()) {
       if (p.kind !== 'foundation') continue;
+      const mark = doneMarks.get(p.id)!;
+      mark.hidden = p.size !== 13;
+      if (!mark.hidden) mark.style.transform = slots.get(p.id)!.style.transform;
       const before = foundationSize.get(p.id);
       foundationSize.set(p.id, p.size);
       if (before !== undefined && before < 13 && p.size === 13 && motion) {
@@ -291,6 +302,7 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
       }
     }
     if (flipped && !dealing) gameSound('card_flip');
+    markLegal(selection);
     paintCursor();
     renderHud();
   }
@@ -319,8 +331,39 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
     hintBtn.hidden = !finishBtn.hidden;
   }
 
+  // ----- Feedback -----
+  /**
+   * Marks every pile the held cards may go to (a dashed outline and a ▾, so
+   * it reads without colour). Only piles a legal move reaches are marked: no
+   * hidden card is shown and nothing is moved for the player.
+   */
+  function markLegal(held: { pile: string; index: number } | null): void {
+    for (const e of board.querySelectorAll('[data-legal]')) e.removeAttribute('data-legal');
+    if (!held || held.index < 0) return;
+    for (const m of game.legalMoves()) {
+      if (m.from !== held.pile || m.index !== held.index) continue;
+      const to = game.pile(m.to);
+      slots.get(m.to)?.setAttribute('data-legal', '');
+      if (to.top) els.get(keyOf(to.top))?.el.setAttribute('data-legal', '');
+    }
+  }
+
+  /** Why a move was refused: one short toast at a time (the same reason isn't repeated for a few seconds). */
+  let reasonToast = 0;
+  let lastReason = { text: '', at: -Infinity };
+  function explain(text: string | null): void {
+    if (!text) return;
+    const now = performance.now();
+    if (text === lastReason.text && now - lastReason.at < 4000) return;
+    lastReason = { text, at: now };
+    if (reasonToast) dismissNotification(reasonToast);
+    // Silent: the table's own invalid-move sound has already played.
+    reasonToast = notify(text, { kind: 'info', icon: 'hint', duration: 3200, sound: false });
+    say(text);
+  }
+
   // ----- Actions -----
-  async function afterAction(ok: boolean, rejectEl?: Element | null): Promise<void> {
+  async function afterAction(ok: boolean, rejectEl?: Element | null, reason?: string | null): Promise<void> {
     selection = null;
     if (ok) {
       gameSound('card_move');
@@ -332,29 +375,48 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
       render();
       if (rejectEl) shake(rejectEl);
       gameSound('invalid_move');
+      explain(reason ?? null);
     }
   }
 
+  /** A refused card shakes (with motion) and shows a brief ✕ (always). */
   function shake(target: Element): void {
-    target.classList.remove('sol-shake');
+    target.classList.remove('sol-shake', 'sol-refused');
     void (target as HTMLElement).offsetWidth;
-    target.classList.add('sol-shake');
+    target.classList.add('sol-shake', 'sol-refused');
+    setTimeout(() => target.classList.remove('sol-refused'), 700);
   }
 
   function tryMove(m: BoardMove, rejectEl?: Element | null): boolean {
+    const reason = game.explain(m);
     const ok = game.move(m);
-    void afterAction(ok, rejectEl);
+    void afterAction(ok, rejectEl, ok ? null : reason);
     return ok;
   }
 
+  /** When Spider last dealt a row: a second tap while that row is still landing is ignored. */
+  let lastDealAt = -Infinity;
   function stockTap(): void {
     if (freecell) return;
+    const now = performance.now();
+    if (spider && now - lastDealAt < 500) return;
     const ok = game.stockAction();
-    if (ok && spider) dealSounds(10, 45);
-    if (!ok && spider?.lastDealBlock === 'empty-column')
-      notify('Fill every column before dealing.', { kind: 'warning' });
-    else if (!ok && spider?.lastDealBlock === 'empty-stock') notify('No deals left.', { kind: 'info' });
-    void afterAction(ok, ok ? null : slots.get('stock'));
+    if (ok && spider) {
+      lastDealAt = now;
+      dealSounds(10, 45);
+      const left = game.pile('stock').size / 10;
+      say(`Dealt a row. ${left ? `${left} deal${left === 1 ? '' : 's'} left.` : 'That was the last deal.'}`);
+    }
+    const reason = ok
+      ? null
+      : spider?.lastDealBlock === 'empty-column'
+        ? 'Fill every column before dealing.'
+        : spider?.lastDealBlock === 'empty-stock'
+          ? 'No deals left.'
+          : klondike
+            ? 'The stock and the waste are both empty.'
+            : null;
+    void afterAction(ok, ok ? null : slots.get('stock'), reason);
   }
 
   function doUndo(): void {
@@ -417,6 +479,8 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
       gameSound('card_move');
       render();
       await sleep(store.state.settings.reducedMotion ? 0 : 90);
+      // Paused (or hidden): hold here until Resume, as every other table does.
+      while (paused && !destroyed) await sleep(120);
     }
     busy = false;
     if (game.data.won) await finish();
@@ -618,6 +682,7 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
     if (p.drag) {
       for (const x of p.drag.els) x.classList.remove('dragging');
       markDrop(null);
+      markLegal(null);
       if (!destroyed) render();
     }
   }
@@ -683,6 +748,7 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
       lastTap = null;
       clearHints();
       for (const x of board.querySelectorAll('.sol-card.selected')) x.classList.remove('selected');
+      markLegal({ pile: press.pile, index: press.index });
     }
     press.drag.dx = dx;
     press.drag.dy = dy;
@@ -706,6 +772,7 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
     if (p.drag) {
       for (const x of p.drag.els) x.classList.remove('dragging');
       markDrop(null);
+      markLegal(null);
       const t = dropTarget(p, e.clientX, e.clientY);
       if (t.pile) tryMove({ from: p.pile, index: p.index, to: t.pile }, t.legal ? null : p.drag.els[0]);
       else render(); // dropped on open felt, or back where it came from: snap home
@@ -737,7 +804,7 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
       lastTap = null;
       const to = game.autoTarget(pileId, index);
       if (to) tryMove({ from: pileId, index, to });
-      else void afterAction(false, els.get(key)?.el);
+      else void afterAction(false, els.get(key)?.el, `The ${card!.label} has nowhere to go right now.`);
       return;
     }
     lastTap = null;
@@ -755,17 +822,21 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
         render();
         return;
       }
+      let reason: string | null = null;
       if (sel.pile !== pileId) {
-        if (game.move({ from: sel.pile, index: sel.index, to: pileId })) {
+        const m = { from: sel.pile, index: sel.index, to: pileId };
+        reason = game.explain(m);
+        if (game.move(m)) {
           void afterAction(true);
           return;
         }
       }
       if (index >= 0 && game.canPick(pile, index)) return select();
-      void afterAction(false, index >= 0 ? els.get(key)?.el : slots.get(pileId));
+      void afterAction(false, index >= 0 ? els.get(key)?.el : slots.get(pileId), reason);
       return;
     }
     if (index >= 0 && game.canPick(pile, index)) select();
+    else if (card?.faceUp) explain(game.whyNotPick(pileId, index));
   }
 
   // ----- Keyboard play: a cursor over the piles -----

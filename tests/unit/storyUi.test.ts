@@ -253,3 +253,44 @@ describe('campaign data version 2 (Chapter 2 reordered)', () => {
     expect(storyOf({ ...p, ...(migrateProfile(JSON.parse(JSON.stringify(m))) as Profile) })).toEqual(s);
   });
 });
+
+describe('places and results', () => {
+  it('gives every chapter its own palette, in both themes', async () => {
+    const css = readFileSync('src/themes/story.css', 'utf8');
+    for (const c of STORY_CHAPTERS) {
+      const block = css.match(new RegExp(`:root\\[data-story-place='${c.id}'\\] \\{([^}]*)\\}`))?.[1];
+      expect(block, c.id).toBeTruthy();
+      for (const v of [
+        '--pl-deep',
+        '--pl-mid',
+        '--pl-accent',
+        '--pl-accent-day',
+        '--pl-paper',
+        '--pl-box',
+        '--pl-narr',
+      ])
+        expect(block, `${c.id} ${v}`).toContain(`${v}:`);
+    }
+    expect(css).toContain(":root[data-story-place][data-theme='night']");
+    expect(css).toContain(":root[data-story-place][data-theme='day']");
+  });
+
+  it('shows credits and XP from a finale and its chapter as one total each', async () => {
+    const { withTotals } = await import('@/components/story/results');
+    expect(
+      withTotals([
+        { kind: 'credits', amount: 220 },
+        { kind: 'xp', amount: 260 },
+        { kind: 'evidence', id: 'awakened-card' },
+        { kind: 'deck', id: 'washington_ghost' },
+        { kind: 'credits', amount: 800 },
+        { kind: 'xp', amount: 400 },
+      ]),
+    ).toEqual([
+      { kind: 'credits', amount: 1020 },
+      { kind: 'xp', amount: 660 },
+      { kind: 'evidence', id: 'awakened-card' },
+      { kind: 'deck', id: 'washington_ghost' },
+    ]);
+  });
+});

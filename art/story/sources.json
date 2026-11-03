@@ -105,9 +105,9 @@
         "portrait-greet",
         "portrait-neutral",
         "portrait-talk",
+        "portrait-surprise",
         "portrait-think",
         "portrait-doubt",
-        "portrait-surprise",
         "cards-deal",
         "cards-fan",
         "cards-shuffle",
@@ -121,7 +121,7 @@
         "full-gesture-c",
         "full-signature"
       ],
-      "notes": "18 poses in a 6x3 grid: expression portraits, card-handling busts, full-body poses. Pose names are positional slot conventions.",
+      "notes": "18 poses in a 6x3 grid: expression portraits, card-handling busts, full-body poses. This sheet's first row is drawn in a different order from the others (surprise, then think, then a sideways smirk), so its expression names follow the drawings, checked by eye against the source.",
       "sha256": "0822f507ed68502c7feead6d6653a9fb928d0962eea90e7dae643b364786c0fc",
       "sourceSize": {
         "width": 1536,

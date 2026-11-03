@@ -3,7 +3,7 @@ import { NARRATOR, type DialogueLine } from '@/story/campaign';
 import { paceDialogue } from '@/story/dialogue';
 import { getCharacter } from '@/story/chapters';
 import { getEvidence } from '@/story/evidence';
-import { audio } from '@/audio';
+import { audio, gameSound } from '@/audio';
 import { openDialog, type DialogAction } from '../Dialog';
 import { icon } from '../icons';
 import { MOOD_POSE, portrait, sprite } from './sprites';
@@ -124,6 +124,8 @@ export function playScene<T extends string>(opts: SceneOptions<T>): Promise<T> {
     // A discovery: a short sparkle (the card itself gets a faint spectral wisp) and a light buzz.
     if (found && dir >= 0) {
       const at = beat.querySelector('[data-found]');
+      // One cue per discovery (the card's final awakening has its own); stepping back is silent.
+      gameSound(found.id === 'awakened-card' ? 'final_reveal' : 'evidence');
       requestAnimationFrame(() => vfxBurst(found.id === 'thirteenth-hand-card' ? 'spectral' : 'discovery', at, 1.4));
       haptic('success');
     }

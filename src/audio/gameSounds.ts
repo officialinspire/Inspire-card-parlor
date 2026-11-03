@@ -23,7 +23,18 @@ export type GameSound =
   | 'invalid_move'
   | 'war_battle'
   | 'go_fish_ask'
-  | 'victory';
+  | 'victory'
+  // Story moments: a few restrained, distinct cues (never one per dialogue line).
+  | 'evidence'
+  | 'stamp'
+  | 'suit_set'
+  | 'puzzle_solved'
+  | 'final_reveal'
+  // Rewards announced by toasts (achievements, unlocks, level-ups, celebrations).
+  | 'achievement'
+  | 'unlock'
+  | 'level_up'
+  | 'celebrate';
 
 export const GAME_SOUND_SFX: Record<GameSound, Sfx> = {
   card_flip: 'flip',
@@ -35,6 +46,15 @@ export const GAME_SOUND_SFX: Record<GameSound, Sfx> = {
   war_battle: 'war',
   go_fish_ask: 'ask',
   victory: 'victory',
+  evidence: 'discover',
+  stamp: 'stamp',
+  suit_set: 'mark',
+  puzzle_solved: 'unlock',
+  final_reveal: 'reveal',
+  achievement: 'achievement',
+  unlock: 'unlock',
+  level_up: 'levelup',
+  celebrate: 'chime',
 };
 
 /** Vibration that accompanies an event (when haptics are on and supported). */
@@ -57,11 +77,37 @@ const MIN_GAP: Record<GameSound, number> = {
   war_battle: 400,
   go_fish_ask: 250,
   victory: 2000,
+  evidence: 600,
+  stamp: 1500,
+  // Every mark set is heard, however quickly (there are only four per try).
+  suit_set: 0,
+  puzzle_solved: 1500,
+  final_reveal: 3000,
+  achievement: 600,
+  unlock: 600,
+  level_up: 600,
+  celebrate: 600,
 };
+
+/**
+ * Fanfares share one window, in two tiers. The story's own moments (a win, a
+ * stamp, the door, the reveal) are only held back by another of those; the
+ * reward toasts (achievements, unlocks, level-ups, celebrations) give way to
+ * any fanfare heard in the last moment. So a chapter's finish, an achievement
+ * and a level-up arriving together are heard as one celebration, and a toast
+ * that happens to land first never silences the door opening.
+ */
+const MOMENTS: ReadonlySet<GameSound> = new Set(['victory', 'stamp', 'puzzle_solved', 'final_reveal']);
+const TOASTS: ReadonlySet<GameSound> = new Set(['achievement', 'unlock', 'level_up', 'celebrate']);
+export const FANFARE_GAP = 1500;
+let lastMoment = -Infinity;
+let lastFanfare = -Infinity;
 
 /** Within one action, a stronger event makes the weaker ones redundant. */
 const SUPERSEDES: Partial<Record<GameSound, GameSound[]>> = {
   victory: ['valid_move', 'card_move', 'card_flip', 'card_deal', 'war_battle'],
+  final_reveal: ['evidence', 'celebrate'],
+  puzzle_solved: ['suit_set'],
   war_battle: ['card_flip', 'card_move'],
   invalid_move: ['card_move', 'valid_move'],
   valid_move: ['card_move'],
@@ -122,7 +168,14 @@ export function flush(): void {
   for (const event of batch) {
     let played = false;
     const superseded = [...present].some((other) => SUPERSEDES[other]?.includes(event));
-    if (!handled.has(event) && !superseded && now - (lastPlayed.get(event) ?? -Infinity) >= MIN_GAP[event]) {
+    const crowded =
+      (MOMENTS.has(event) && now - lastMoment < FANFARE_GAP) || (TOASTS.has(event) && now - lastFanfare < FANFARE_GAP);
+    if (
+      !handled.has(event) &&
+      !superseded &&
+      !crowded &&
+      now - (lastPlayed.get(event) ?? -Infinity) >= MIN_GAP[event]
+    ) {
       const run = now - (lastPlayed.get(event) ?? -Infinity) < RUN_WINDOW ? (runs.get(event) ?? 0) + 1 : 0;
       runs.set(event, run);
       // Wins and achievements always play in full.
@@ -130,6 +183,8 @@ export function flush(): void {
       const buzz = GAME_SOUND_HAPTIC[event];
       if (buzz) buzzer(buzz);
       lastPlayed.set(event, now);
+      if (MOMENTS.has(event)) lastMoment = now;
+      if (MOMENTS.has(event) || TOASTS.has(event)) lastFanfare = now;
       played = true;
     }
     handled.add(event);
@@ -148,10 +203,14 @@ export function __setSoundBackend(p: (sfx: Sfx, level: number) => void, c?: () =
   lastPlayed.clear();
   runs.clear();
   pending = [];
+  lastFanfare = -Infinity;
+  lastMoment = -Infinity;
   return () => {
     player = prev.player;
     clock = prev.clock;
     lastPlayed.clear();
     runs.clear();
+    lastFanfare = -Infinity;
+    lastMoment = -Infinity;
   };
 }

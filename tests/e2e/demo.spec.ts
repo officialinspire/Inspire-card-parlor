@@ -92,7 +92,8 @@ async function playChallenge(page: Page, chapter: keyof typeof CHAPTERS, index: 
   // The challenge's scene: the host speaks, with their own portrait; the objective is clear.
   const scene = page.locator('.dialog-scene');
   await expect(scene.locator('[data-objective]')).toBeVisible();
-  await expect(scene.locator(`[data-portrait="${ch.host}"]`).or(scene.locator('.is-narration'))).toBeVisible();
+  // Either the host speaks or narration opens the scene (between beats both may briefly show).
+  await expect(scene.locator(`[data-portrait="${ch.host}"]`).or(scene.locator('.is-narration')).first()).toBeVisible();
   await action(page, 'play').click();
   // The versus card names the opponent (or a solo challenge) and the game.
   const vs = page.locator(`[data-versus="${level.id}"]`);

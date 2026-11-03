@@ -174,8 +174,23 @@ export function gameToolbar(store: Store, opts: GameToolbarOptions): GameToolbar
     el.classList.toggle('more-open', open);
     if (open) panel.querySelector<HTMLElement>('button')?.focus({ preventScroll: true });
   }
+  /**
+   * A tap outside the open panel only closes it: the same press must not
+   * also pick up a card or press a table button underneath (the panel was
+   * covering them, so the player wasn't aiming at them).
+   */
   const onDocDown = (e: PointerEvent) => {
-    if (open && !el.contains(e.target as Node)) setOpen(false);
+    if (!open || el.contains(e.target as Node)) return;
+    setOpen(false);
+    e.stopPropagation();
+    swallowClickUntil = e.timeStamp + 700;
+  };
+  let swallowClickUntil = -Infinity;
+  const onDocClick = (e: MouseEvent) => {
+    if (e.timeStamp > swallowClickUntil) return;
+    swallowClickUntil = -Infinity;
+    e.stopPropagation();
+    e.preventDefault();
   };
   // Escape closes the panel before it can mean "leave the table".
   const onKey = (e: KeyboardEvent) => {
@@ -187,6 +202,7 @@ export function gameToolbar(store: Store, opts: GameToolbarOptions): GameToolbar
     }
   };
   addEventListener('pointerdown', onDocDown, true);
+  addEventListener('click', onDocClick, true);
   addEventListener('keydown', onKey, true);
 
   const el = h(
@@ -204,6 +220,7 @@ export function gameToolbar(store: Store, opts: GameToolbarOptions): GameToolbar
     closeMore: () => setOpen(false),
     destroy() {
       removeEventListener('pointerdown', onDocDown, true);
+      removeEventListener('click', onDocClick, true);
       removeEventListener('keydown', onKey, true);
       document.documentElement.classList.remove('focus-mode');
     },

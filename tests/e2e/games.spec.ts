@@ -78,7 +78,7 @@ test.describe('War', () => {
     const auto = page.locator(`${CURRENT} [data-action="auto"]`);
     await auto.click();
     await expect(auto).toHaveAttribute('aria-pressed', 'true');
-    await expect(auto).toHaveText('Pause');
+    await expect(auto).toHaveText('Stop auto');
     await expect.poll(() => hudRound(page)).toBeGreaterThan(5);
     await auto.click();
     await expect(auto).toHaveAttribute('aria-pressed', 'false');
@@ -214,6 +214,19 @@ test.describe('Go Fish', () => {
     );
     await page.keyboard.press('Enter');
     await expect(picker).toHaveCount(0);
+    await expect(page.locator(`${CURRENT} .gf-you > .bubble`)).toBeVisible();
+  });
+
+  test('Enter asks at once, before focus has reached the Ask button', async ({ page }) => {
+    await prepare(page, { goFishOpponents: 1 });
+    await enterParlor(page);
+    await openTable(page, 'go-fish');
+    await page.locator('[data-dialog-action="deal"]').click();
+    await page.locator(`${CURRENT} .gf-center`).click();
+    // Open the picker and ask in one go: the second Enter lands as the picker appears.
+    await page.keyboard.press('Enter');
+    await page.keyboard.press('Enter');
+    await expect(page.locator('.dialog-ask')).toHaveCount(0);
     await expect(page.locator(`${CURRENT} .gf-you > .bubble`)).toBeVisible();
   });
 

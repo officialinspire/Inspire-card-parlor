@@ -25,6 +25,10 @@ export const EVIDENCE: readonly Evidence[] = [
     sprite: 'thirteenth-hand-antique-card/thirteenth-hand-antique-card',
     importance: 'key',
     status: 'final',
+    interpretation:
+      'Nobody prints a card without a suit unless it is meant to be finished: its four corners are waiting for marks.',
+    question: 'What belongs in the four blank corners?',
+    answeredBy: 'spade-mark',
   },
   {
     id: 'estate-sale-receipt',
@@ -35,6 +39,9 @@ export const EVIDENCE: readonly Evidence[] = [
     sprite: 'cheryls-antique-store-receipt/cheryls-antique-store-receipt',
     importance: 'optional',
     status: 'final',
+    interpretation:
+      'The box came from an estate sale across the river. The receipt is the only paperwork, and it says nothing about the card.',
+    related: ['thirteenth-hand-card'],
   },
   {
     id: 'ledger-of-twelve',
@@ -46,6 +53,11 @@ export const EVIDENCE: readonly Evidence[] = [
     sprite: 'mystery-parlor/leather-journal',
     importance: 'key',
     status: 'final',
+    interpretation:
+      'One handwriting kept score of twelve hands, then stopped. That is a record of a game left unfinished, not a game night.',
+    question: 'Who stopped before the thirteenth hand, and why?',
+    answeredBy: 'mary-letter',
+    related: ['thirteenth-hand-card'],
   },
   {
     id: 'river-postcard',
@@ -57,6 +69,9 @@ export const EVIDENCE: readonly Evidence[] = [
     sprite: 'mystery-parlor/old-town-postcard',
     importance: 'key',
     status: 'final',
+    interpretation: 'A heron and two words: a direction to follow, not proof of anything.',
+    question: 'Who drew the heron, and why point to River Station?',
+    answeredBy: 'club-mark',
   },
 
   // Chapter 2 — Sophia's Rappahannock River Station
@@ -70,6 +85,8 @@ export const EVIDENCE: readonly Evidence[] = [
     sprite: 'river-ranger/field-journal',
     importance: 'optional',
     status: 'final',
+    interpretation: 'The heron fishes the same bend every morning, so whoever drew her stood on the station’s dock.',
+    related: ['river-postcard'],
   },
   {
     id: 'club-mark',
@@ -81,6 +98,11 @@ export const EVIDENCE: readonly Evidence[] = [
     sprite: 'river-ranger/trail-marker-post',
     importance: 'key',
     status: 'final',
+    interpretation:
+      'The first mark fits the card exactly. The corners are a set, and the rest are somewhere to be found.',
+    question: 'Where are the other three marks?',
+    answeredBy: 'sophia-river-map',
+    related: ['thirteenth-hand-card'],
   },
   {
     id: 'returned-envelope',
@@ -92,6 +114,11 @@ export const EVIDENCE: readonly Evidence[] = [
     sprite: 'river-ranger/envelope-with-card',
     importance: 'key',
     status: 'final',
+    interpretation:
+      'A heron card mailed to Dante came back to a station that never sent it. Someone used the station as a return address.',
+    question: 'What does Dante have to do with the card?',
+    answeredBy: 'commission-form',
+    related: ['river-postcard'],
   },
   {
     id: 'sophia-river-map',
@@ -103,6 +130,11 @@ export const EVIDENCE: readonly Evidence[] = [
     sprite: 'rappahannock-river-map/rappahannock-river-map',
     importance: 'key',
     status: 'final',
+    interpretation:
+      'All four marks sit near the old waterfront, traced from an older survey. Whoever made the card knew that survey.',
+    question: 'Who made the older survey, and why?',
+    answeredBy: 'thirteenth-hand-dossier',
+    related: ['club-mark'],
   },
 
   // Chapter 3 — Dante's iSMOKESHOP
@@ -116,6 +148,11 @@ export const EVIDENCE: readonly Evidence[] = [
     sprite: 'dantes-gw-commission-form/dantes-gw-commission-form',
     importance: 'key',
     status: 'final',
+    interpretation:
+      'A client signing only “G. W.” paid in advance, in ones, and wanted thirteen designs: a client who wants to be noticed.',
+    question: 'Who is “G. W.”?',
+    answeredBy: 'awakened-card',
+    related: ['returned-envelope'],
   },
   {
     id: 'monster-card',
@@ -127,6 +164,8 @@ export const EVIDENCE: readonly Evidence[] = [
     sprite: 'neon-art-supplies/monster-trading-card',
     importance: 'optional',
     status: 'final',
+    interpretation: 'Twelve cards held and a thirteenth left blank: the design repeats the ledger’s count.',
+    related: ['ledger-of-twelve', 'commission-form'],
   },
   {
     id: 'heart-mark',
@@ -138,6 +177,8 @@ export const EVIDENCE: readonly Evidence[] = [
     sprite: 'neon-art-supplies/monster-sketch-page',
     importance: 'key',
     status: 'final',
+    interpretation: 'The second mark was hidden for a black light, by someone who expected it to be looked for.',
+    related: ['club-mark', 'commission-form'],
   },
 
   // Chapter 4 — Jak's Backroom Card Parlor
@@ -151,6 +192,10 @@ export const EVIDENCE: readonly Evidence[] = [
     sprite: 'jaks-cardistry-receipt/jaks-cardistry-receipt',
     importance: 'key',
     status: 'final',
+    interpretation: '“G. W.” sent a second card case to an office with no name on the door.',
+    question: 'Whose office has no name on the door?',
+    answeredBy: 'thirteenth-hand-dossier',
+    related: ['commission-form'],
   },
   {
     id: 'redacted-reply',
@@ -162,6 +207,10 @@ export const EVIDENCE: readonly Evidence[] = [
     sprite: 'cold-war-spycraft/redacted-document',
     importance: 'key',
     status: 'final',
+    interpretation: 'Someone official once looked into the cellars and the four marks, and never closed the file.',
+    question: 'What was Operation Thirteenth Hand?',
+    answeredBy: 'thirteenth-hand-dossier',
+    related: ['sophia-river-map'],
   },
   {
     id: 'diamond-mark',
@@ -173,6 +222,8 @@ export const EVIDENCE: readonly Evidence[] = [
     sprite: 'jak-black-gold/smartphone-recording',
     importance: 'key',
     status: 'final',
+    interpretation: 'The third mark is in the card itself, visible only in motion.',
+    related: ['club-mark', 'heart-mark', 'thirteenth-hand-card'],
   },
 
   // Chapter 5 — Mrs. Gray's Intelligence Safehouse
@@ -186,6 +237,11 @@ export const EVIDENCE: readonly Evidence[] = [
     sprite: 'mrs-grays-thirteenth-hand-dossier/mrs-grays-thirteenth-hand-dossier',
     importance: 'key',
     status: 'final',
+    interpretation:
+      'The marks once served as dead drops. A legend about an unfinished game was the operation’s cover story.',
+    question: 'In what order do the four marks go?',
+    answeredBy: 'lodge-sketchbook-page',
+    related: ['sophia-river-map', 'redacted-reply', 'cardistry-receipt'],
   },
   {
     id: 'spade-mark',
@@ -197,6 +253,10 @@ export const EVIDENCE: readonly Evidence[] = [
     sprite: 'cold-war-spycraft/spycraft-ace-of-spades',
     importance: 'key',
     status: 'final',
+    interpretation: 'All four corners have a mark now. What is missing is the order to set them in.',
+    question: 'In what order do the four marks go?',
+    answeredBy: 'lodge-sketchbook-page',
+    related: ['club-mark', 'heart-mark', 'diamond-mark'],
   },
 
   // Chapter 6 — Fredericksburg Masonic Lodge No. 4
@@ -210,6 +270,9 @@ export const EVIDENCE: readonly Evidence[] = [
     sprite: 'lodge-research-sketchbook-page/lodge-research-sketchbook-page',
     importance: 'key',
     status: 'final',
+    interpretation:
+      'Read downstream from the north, the marks give an order. The tools are borrowed; the order belongs to the card.',
+    related: ['sophia-river-map', 'thirteenth-hand-dossier', 'spade-mark'],
   },
   {
     id: 'ledger-impression',
@@ -221,6 +284,10 @@ export const EVIDENCE: readonly Evidence[] = [
     sprite: 'lodge-relics/sketch-notebook',
     importance: 'key',
     status: 'final',
+    interpretation: 'The thirteenth line wasn’t blank after all: it sends you to Kenmore, and to someone’s mother.',
+    question: 'Who is “Mother”, and what does she know?',
+    answeredBy: 'mary-letter',
+    related: ['ledger-of-twelve'],
   },
 
   // Chapter 7 — Kenmore
@@ -234,6 +301,8 @@ export const EVIDENCE: readonly Evidence[] = [
     sprite: 'kenmore-heirlooms/wax-sealed-letter',
     importance: 'key',
     status: 'final',
+    interpretation: 'Mary’s side of the legend: a hand is owed. She wants the game finished, not won.',
+    related: ['ledger-of-twelve', 'ledger-impression'],
   },
   {
     id: 'kenmore-iron-key',
@@ -244,6 +313,10 @@ export const EVIDENCE: readonly Evidence[] = [
     sprite: 'kenmore-heirlooms/iron-key',
     importance: 'key',
     status: 'final',
+    interpretation: 'Mary trusts you with the way down to the old waterfront.',
+    question: 'What waits behind the cellar door?',
+    answeredBy: 'four-suit-puzzle',
+    related: ['mary-letter'],
   },
 
   // Chapter 8 — The Underground Tunnels
@@ -256,6 +329,8 @@ export const EVIDENCE: readonly Evidence[] = [
     sprite: 'neon-art-supplies/monster-sketchbook',
     importance: 'optional',
     status: 'final',
+    interpretation: 'A way back out, marked turn by turn.',
+    related: ['kenmore-iron-key'],
   },
   {
     id: 'four-suit-puzzle',
@@ -267,6 +342,10 @@ export const EVIDENCE: readonly Evidence[] = [
     sprite: 'underground-four-suit-puzzle/underground-four-suit-puzzle',
     importance: 'key',
     status: 'final',
+    interpretation: 'The order from Steve’s diagram was right, and the card room is open.',
+    question: 'Can you win the thirteenth hand?',
+    answeredBy: 'awakened-card',
+    related: ['lodge-sketchbook-page', 'kenmore-iron-key'],
   },
 
   // Chapter 9 — Washington's Spectral Card Parlor
@@ -280,6 +359,8 @@ export const EVIDENCE: readonly Evidence[] = [
     sprite: 'awakened-thirteenth-hand-card/awakened-thirteenth-hand-card',
     importance: 'key',
     status: 'final',
+    interpretation: 'The thirteenth hand is played, and the card is finished.',
+    related: ['thirteenth-hand-card', 'ledger-of-twelve', 'mary-letter'],
   },
 ];
 

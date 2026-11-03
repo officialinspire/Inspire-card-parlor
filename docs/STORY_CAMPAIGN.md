@@ -117,6 +117,88 @@ tumblers (one run from king to ace). No card engine changes.
 The map shows an **Epilogue** and **Ghost rematches** banner once the story is
 finished, and the journal can replay the epilogue.
 
+**Voice pass, Chapters 1–4** (upgrade series; see `docs/UPGRADE_BRIEF.md`).
+Dialogue, outline beats, cast descriptions and table talk were revised for the
+creative direction:
+
+- dry humor;
+- credible relationships;
+- discoveries made, not handed over;
+- short beats, none over the 180-character panel limit, averaging about 110
+  characters.
+
+What changed, by character:
+
+- **Cheryl:** provenance versus a good story. She has a collector due at
+  nine and won't sell a lot she hasn't counted, so you inventory it with
+  her; she later postpones the sale.
+- **Sophia:** reads the river (the snag that dates the sketch). She has her
+  own schedule (a school group, the log), and present-day history: the
+  Rappahannock Tribe's 2022 return of land at Fones Cliffs.
+- **Dante:** a working illustrator on deadline. His figure/ground eye finds
+  the heart in the lace before the black light confirms it. Psychedelic art
+  is framed as perception and community. The unverified "psychonaut"
+  attribution is gone.
+- **Jak:**
+  - corroboration (one source is not a lead);
+  - the right law for the right request;
+  - owning the lobby footage he cut;
+  - offering to stop filming;
+  - turning the camera off to show the reply.
+
+Unchanged:
+
+- every challenge, seed, objective and reward;
+- every discovery, at the same beat;
+- every chapter title and the journal summaries.
+
+A check run during the pass compared clue placement, setups and rewards
+against the previous version: all identical.
+
+**Voice pass, Chapters 5–9 and the epilogue** (same series and rules). Lines
+average about 100 characters; none passes 180.
+
+- **Mrs. Gray:** controlled, deadpan menace. She talks about sources and
+  certainty ("a file is mostly a list of what someone was worried about"), two
+  unequal witnesses, and compartments: surveyors, consultant and office each
+  held one piece, and nobody in her office was cleared to break the last
+  seal. Inside the story her file is a record of fears, not proof, and the
+  operation stays fiction outside it.
+- **Steve:** the working tools as lessons in conduct (square: deal fairly;
+  compasses: know your limits; level: meet as equals; plumb: upright when
+  nobody's checking), with a field note citing two Grand Lodges. He keeps
+  traditions apart: suits as elements is tarot; a secret Masonic card ritual
+  is nobody's; the card's glow is the game's own magic. His VFX eye supplies
+  the wit (leaning verticals), and Burning Man appears once, as the habit of
+  recording who built what, with the Participation principle quoted.
+- **Mary:** self-possessed, with motives of her own. She was widowed young
+  and ran Ferry Farm for decades. She wants the ledger closed honestly, "not
+  owed the win… owed the ending". She confirms Steve's north-to-south
+  reading, and she names the people the Lewis family enslaved at Kenmore
+  (Billy, on Betty's 1782 list) without softening it. The Kenmore and Charles
+  Street distinction stays.
+- **George:** funny through pride and contradiction ("famous for strategy…
+  not the losses"). The final hand carries the stakes: every portrait
+  flatters him, but one ledger in his mother's hand says he left. He loses,
+  stays to the end, and accepts "lost, and stayed" as his record.
+- **The clue chain, named on screen:** Mrs. Gray recites it after the spade
+  ("club at the river, heart in the commission, diamond in the footage, spade
+  in my files") and hands interpretation to the lodge. Steve reads the order,
+  Sophia adds the river logic, Mary supplies the key, and Jak names everyone's
+  piece at the door. The puzzle, its hints and its timing are unchanged.
+- **Local history:** new sourced notes on Kenmore's household
+  (`kenmore-household`) and on Fredericksburg's ropewalks and the enslaved
+  ropemakers (`ropewalks`, in the tunnels). Steve's line about the brickwork ("the hands are never the name on
+  the plaque") carries that theme. The tunnels stay fiction in the location
+  notes, without disclaimers in the scenes.
+- **Epilogue callbacks:** Cheryl's provenance file, Sophia's sign-in sheets,
+  Jak's camera off for the good part, Mrs. Gray listing your name under
+  sources, and Steve's two columns. Mary adds a postscript to George's
+  rematch note ("Do keep score"). The last line is unchanged.
+
+The same check confirmed that discovery beats, configurations, rewards and
+the door puzzle are identical to before.
+
 **Writing rules applied.**
 
 - The player never speaks. Every narration line addresses “you”, and the tests
@@ -127,8 +209,8 @@ finished, and the journal can replay the epilogue.
   with a portrait sheet.
 - Real-person-inspired characters (Jak Gold, Steve Gonzales) are portrayed
   through their public, positive traits: cardistry, public-records requests
-  and filming for Jak; media and VFX work, Norwich, research and Freemasonry
-  for Steve. Neither does anything criminal or covert. Steve's intelligence
+  and filming for Jak; media and VFX work, Norwich, research, Freemasonry and
+  Burning Man for Steve. Neither does anything criminal or covert. Steve's intelligence
   background is mentioned only as history he studied.
 - Mary Ball Washington's ghost says plainly that Kenmore was Betty and
   Fielding's house and that hers was on Charles Street.
@@ -140,7 +222,8 @@ finished, and the journal can replay the epilogue.
 carry a source:
 
 - Day-Glo paint and 1960s concert posters;
-- the federal FOIA (1966) and its exemptions;
+- the federal FOIA (1966), its exemptions, and how it differs from Virginia's
+  Act;
 - the hollow-nickel case;
 - WWII escape-map playing cards;
 - the British card tax and the ace of spades;
@@ -202,12 +285,15 @@ bump `CAMPAIGN_VERSION` in `src/story/ids.ts` and add a migration step.
 
 ## Open items
 
-- **Fact-check the field notes.** The history notes added for Chapters 3–9
-  were written from general knowledge and each names a source to check. They
-  were not checked against those sources in this session. A fact-check pass
-  is recommended before release, especially for exact dates and names (the
-  Day-Glo founders, the 1894 Mary Washington monument, the Shriners' 1922
-  hospitals, new deck order).
+- **Fact-check the field notes.** `docs/STORY_SOURCES.md` now records each
+  claim with its source URL, publisher, scene and verification status, and
+  keeps history, interpretation and invented lore apart.
+  - The first pass corrected the Virginia FOIA note (access belongs to
+    citizens of the Commonwealth and in-state media, not "anyone"). It also
+    separated federal FOIA and filming rights into notes of their own, and
+    dated Kenmore 1769–1775.
+  - Notes still marked "Not yet checked" there need a check before they are
+    expanded.
 - **Review the real-person portrayals.** Jak Gold and Steve Gonzales are drawn
   from real people. Their scenes should be reviewed by, or with, the people
   they are based on.
@@ -366,3 +452,74 @@ existing feedback.
   map tile.
 - Undiscovered places load nothing.
 - A Playwright test enforces this budget.
+
+## Where you left off (upgrade series)
+
+Everything below is worked out from the save's completed challenges and clues
+(`recapOf`, `objectiveNote` and `relatedFound` in `src/story/world.ts`). No new
+saved state was added, and no unlock or reward rule changed.
+
+**The map's "Next" strip:**
+
+- It names the next challenge: chapter, place, title and its objective as written.
+- It says what the challenge earns (credits, XP, "a new clue").
+- Continue plays the chapter's arrival if it hasn't been seen, then opens the
+  challenge's brief.
+- The strip only ever points at a challenge that is already unlocked.
+- Once the story is finished, it gives way to the existing Epilogue and Ghost
+  rematches banner.
+
+**Objectives:**
+
+- A Go Fish objective counted in books says plainly that winning isn't required: "You
+  don't have to win: 3 books is enough." This matches `objectiveMet`, which has always
+  counted books.
+- The brief lists a clue still to be found as "A new clue", without its name or
+  picture. Before this, the brief named it ahead of time.
+
+**Continue, Replay and Rematch are kept apart:**
+
+| Action   | Where                                       | What it does                                                                                                                               |
+| -------- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Continue | Map strip, journal recap                    | Opens the next unfinished challenge                                                                                                        |
+| Replay   | A finished challenge's brief                | Plays it again. The brief says its rewards and clues are already yours; no story reward, clue or stamp is granted twice (`story.rewarded`) |
+| Rematch  | Journal recap and map banner, once finished | The ghost War tables (free play, no story rewards)                                                                                         |
+
+Scene replays stay in the journal's Scenes tab.
+
+**The journal's recap** ("Where you left off"):
+
+- **Last clue:** the most recent clue found. Tap it to open the clue viewer.
+- **Open question:** the newest question still open. A clue's question closes once the
+  clue that answers it is found.
+- **Next:** the next challenge with its objective (and Continue). Otherwise, the
+  "still being written" preview, or the finished story (and Rematch).
+
+On short screens the lines clamp to one each, and below 560px the question gives way.
+
+**Clue readings:** every clue has a one-sentence interpretation beside its description
+(what you see). A clue may also have:
+
+- a question, shown while it is still open;
+- links to related clues. Only clues already found are linked, so the viewer never
+  names a future clue.
+
+**The four-suit door:**
+
+- The picker offers "Your clues": Steve's diagram, Sophia's river map and the dossier,
+  each once found. Each opens the clue viewer over the puzzle, then returns to it.
+- Looking is never required.
+- Unchanged: the answer, the progressive hints ending in the explicit answer, "Not now"
+  and replay (a finished door isn't asked again).
+
+**Tests:**
+
+- `tests/unit/storyRecap.test.ts` covers fresh saves, middle chapters, a loss, Go Fish
+  books without a win, replays (no repeated rewards, clues or stamps), reload after
+  rewards, the finished campaign (every challenge open, no second payout), and
+  first-campaign saves, migrated or raw.
+- It also checks that every question is answered by a later clue, that links reach only
+  clues already found, and that the recap never points past what the map shows.
+- `tests/e2e/story-recap.spec.ts` covers the map strip and Continue on a fresh save,
+  the unnamed new clue, the journal recap and clue links, Replay, and the door's clues
+  with its hint and "Not now".

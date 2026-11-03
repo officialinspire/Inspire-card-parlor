@@ -130,8 +130,14 @@ export const CollectionScreen: ScreenFactory = ({ store }) => {
             size: 'sm',
             variant: 'secondary',
             icon: 'credits',
-            disabled: profile().credits < v.unlock.value,
-            attrs: { 'data-variant-buy': v.id },
+            // Short of credits, the button stays operable: it says how many more are needed.
+            class: profile().credits < v.unlock.value ? 'is-short' : '',
+            attrs: {
+              'data-variant-buy': v.id,
+              ...(profile().credits < v.unlock.value
+                ? { 'aria-label': `${v.unlock.value} credits — you need ${v.unlock.value - profile().credits} more` }
+                : {}),
+            },
           })
         : h('span', { class: 'tile-lock' }, icon('lock'), unlockHint(v));
     return h(
@@ -146,6 +152,12 @@ export const CollectionScreen: ScreenFactory = ({ store }) => {
   async function buy(deck: DeckDefinition, v: ArtVariant, refresh: () => void): Promise<void> {
     if (v.unlock.type !== 'credits') return;
     const cost = v.unlock.value;
+    if (profile().credits < cost)
+      return void notify(
+        `${v.name} costs ${cost} credits; you have ${profile().credits}. Win games to earn the other ${cost - profile().credits}.`,
+        // Silent: the button has already made its tap.
+        { kind: 'info', icon: 'credits', sound: false },
+      );
     const ok = await confirmDialog({
       title: `Collect ${v.name}?`,
       message: `Spend ${cost} credits on this artwork for ${deck.name}? You have ${profile().credits}.`,

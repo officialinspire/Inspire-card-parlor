@@ -20,6 +20,17 @@ import { SolitaireGame, bestOf, initSolitaireData, type Hint } from './Solitaire
 
 export type DrawCount = 1 | 3;
 
+/** Why cards can't go up to a foundation (Klondike and FreeCell share the rule). */
+export function foundationReason(cards: readonly Card[], from: Pile, to: Pile): string {
+  if (cards.length > 1) return 'Foundations take one card at a time.';
+  if (from.kind === 'foundation') return 'Cards don’t move between foundations.';
+  if (to.isEmpty) return 'Foundations start with an Ace.';
+  const top = to.top!;
+  return top.rank === 13
+    ? 'That foundation is complete.'
+    : `This foundation builds up in ${top.suit}: it takes the next ${top.suit.slice(0, -1)} after the ${top.label}.`;
+}
+
 export class KlondikeGame extends SolitaireGame {
   static create(opts: { seed?: number; draw?: DrawCount } = {}): KlondikeGame {
     const table = setupKlondike({ ...(opts.seed !== undefined ? { seed: opts.seed } : {}), drawCount: opts.draw ?? 1 });
@@ -69,6 +80,24 @@ export class KlondikeGame extends SolitaireGame {
       return to.isEmpty ? first.rank === 1 : ascendingSameSuit(to.top!, first);
     }
     return false;
+  }
+
+  protected override pickReason(pile: Pile, index: number): string {
+    const card = pile.at(index);
+    if (card && !card.faceUp) return 'That card is face down.';
+    if (pile.kind === 'tableau') return 'Only a run going down in alternating colours moves together.';
+    if (pile.kind === 'waste' || pile.kind === 'foundation') return 'Only the top card can be moved.';
+    return 'Those cards can’t be moved.';
+  }
+
+  protected override dropReason(cards: readonly Card[], from: Pile, to: Pile): string {
+    const first = cards[0]!;
+    if (to.kind === 'tableau') {
+      if (to.isEmpty) return 'Only a King can fill an empty column.';
+      return `The ${first.label} can’t go on the ${to.top!.label}: columns go down one rank, alternating red and black.`;
+    }
+    if (to.kind === 'foundation') return foundationReason(cards, from, to);
+    return 'Cards can’t be placed there.';
   }
 
   protected override moveScore(from: Pile, to: Pile): number {

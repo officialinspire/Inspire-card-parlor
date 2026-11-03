@@ -1,7 +1,8 @@
 import { h } from '@/utils/dom';
 import { NARRATOR, type StorySuit, type SuitPuzzle } from '@/story/campaign';
+import type { Evidence } from '@/story/types';
 import { FOUND_ORDER, SUIT_GLYPH, SUIT_NAME, checkSuitOrder, puzzleHint } from '@/story/puzzle';
-import { audio } from '@/audio';
+import { audio, gameSound } from '@/audio';
 import { haptic } from '@/utils/haptics';
 import { openDialog } from '../Dialog';
 import { playScene } from './scene';
@@ -13,13 +14,18 @@ import { playScene } from './scene';
  * the answer, and "Not now" always leaves, so the puzzle can never trap the
  * player. Resolves true once the door opens.
  */
-export async function solveSuitPuzzle(puzzle: SuitPuzzle, title: string): Promise<boolean> {
+export async function solveSuitPuzzle(
+  puzzle: SuitPuzzle,
+  title: string,
+  clues: readonly Evidence[] = [],
+  onClue?: (clue: Evidence) => Promise<void>,
+): Promise<boolean> {
   let wrong = 0;
   for (;;) {
-    const order = await pickOrder(puzzle, title);
+    const order = await pickOrder(puzzle, title, clues, onClue);
     if (!order) return false;
     if (checkSuitOrder(puzzle, order)) {
-      audio.play('unlock');
+      gameSound('puzzle_solved');
       haptic('success');
       await playScene({
         title,
@@ -55,7 +61,12 @@ export async function solveSuitPuzzle(puzzle: SuitPuzzle, title: string): Promis
 }
 
 /** The picker: four marks to tap in order, with Undo; resolves the order, or null for "Not now". */
-async function pickOrder(puzzle: SuitPuzzle, title: string): Promise<StorySuit[] | null> {
+async function pickOrder(
+  puzzle: SuitPuzzle,
+  title: string,
+  clues: readonly Evidence[],
+  onClue?: (clue: Evidence) => Promise<void>,
+): Promise<StorySuit[] | null> {
   const order: StorySuit[] = [];
   const slots = puzzle.answer.map((_, i) =>
     h('span', { class: 'suit-slot', 'data-suit-slot': String(i), 'aria-hidden': 'true' }),
@@ -71,7 +82,7 @@ async function pickOrder(puzzle: SuitPuzzle, title: string): Promise<StorySuit[]
         'aria-label': `${SUIT_NAME[suit]} mark`,
         onclick: () => {
           if (order.length >= puzzle.answer.length || order.includes(suit)) return;
-          audio.play('tap');
+          gameSound('suit_set');
           order.push(suit);
           sync();
         },
@@ -100,6 +111,26 @@ async function pickOrder(puzzle: SuitPuzzle, title: string): Promise<StorySuit[]
     h('div', { class: 'suit-slots', role: 'img', 'aria-label': 'The four sockets in the door' }, ...slots),
     h('div', { class: 'suit-marks', role: 'group', 'aria-label': 'Your four marks' }, ...marks),
     h('div', { class: 'suit-tools' }, undo),
+    // The clues already found that bear on the order, one tap away (looking is never required).
+    clues.length && onClue
+      ? h(
+          'div',
+          { class: 'suit-clues', role: 'group', 'aria-label': 'Your clues', 'data-suit-clues': '' },
+          h('small', null, 'Your clues'),
+          ...clues.map((c) =>
+            h(
+              'button',
+              {
+                type: 'button',
+                class: 'btn btn-ghost btn-sm suit-clue',
+                'data-suit-clue': c.id,
+                onclick: () => void onClue(c),
+              },
+              c.name,
+            ),
+          ),
+        )
+      : null,
     status,
   );
   function sync(): void {
@@ -123,7 +154,8 @@ async function pickOrder(puzzle: SuitPuzzle, title: string): Promise<StorySuit[]
     dismissValue: 'cancel',
     actions: [
       { label: 'Not now', value: 'cancel', variant: 'ghost' },
-      { label: 'Set the marks', value: 'set', variant: 'gold', icon: 'check' },
+      // Silent itself: the door answers (it opens, or stays shut with a low "nope").
+      { label: 'Set the marks', value: 'set', variant: 'gold', icon: 'check', sfx: null },
     ],
     focusIndex: 0,
   });

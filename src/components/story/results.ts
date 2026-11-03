@@ -24,8 +24,16 @@ const REWARD_ICON: Record<StoryReward['kind'], IconName> = {
   evidence: 'hint',
 };
 
-/** A list of rewards; clues show their artwork. */
-export function rewardList(rewards: readonly StoryReward[], label: string): HTMLElement | null {
+/**
+ * A list of rewards; clues show their artwork. Before a challenge is played,
+ * `known` lists the clues already found: any other clue is shown only as "A
+ * new clue", so its name and picture stay a surprise.
+ */
+export function rewardList(
+  rewards: readonly StoryReward[],
+  label: string,
+  known?: readonly string[],
+): HTMLElement | null {
   if (!rewards.length) return null;
   return h(
     'div',
@@ -36,6 +44,8 @@ export function rewardList(rewards: readonly StoryReward[], label: string): HTML
       null,
       ...rewards.map((r) => {
         const clue = r.kind === 'evidence' ? getEvidence(r.id) : undefined;
+        if (clue && known && !known.includes(clue.id))
+          return h('li', { 'data-reward': r.kind, 'data-unseen': '' }, icon(REWARD_ICON[r.kind]), 'A new clue');
         return h(
           'li',
           { 'data-reward': r.kind },
@@ -45,6 +55,26 @@ export function rewardList(rewards: readonly StoryReward[], label: string): HTML
       }),
     ),
   );
+}
+
+/**
+ * Credits and XP from the challenge and its chapter as one total each (in the
+ * place of the first), so a finale's list stays short enough to read whole.
+ */
+export function withTotals(rewards: readonly StoryReward[]): StoryReward[] {
+  const out: StoryReward[] = [];
+  for (const r of rewards) {
+    if (r.kind !== 'credits' && r.kind !== 'xp') {
+      out.push(r);
+      continue;
+    }
+    const i = out.findIndex((x) => x.kind === r.kind);
+    const prev = out[i];
+    if (prev && (prev.kind === 'credits' || prev.kind === 'xp'))
+      out[i] = { kind: r.kind, amount: prev.amount + r.amount };
+    else out.push({ ...r });
+  }
+  return out;
 }
 
 export type ResultChoice = 'continue' | 'retry' | 'map' | 'chapter';
@@ -59,7 +89,7 @@ export function storyResult(o: StoryOutcome): Promise<ResultChoice> {
   const chapter = getChapter(o.chapterId)!;
   const won = o.met;
   const next = levelAfter(level.id);
-  const earned = [...o.levelRewards, ...o.chapterRewards];
+  const earned = withTotals([...o.levelRewards, ...o.chapterRewards]);
   // The opponent (as a story character) reacts: crestfallen when beaten, pleased when they win.
   const firstOpponent = opponentsOf(level)[0];
   const opponent = firstOpponent ? CHARACTERS.find((c) => c.opponentId === firstOpponent)?.id : undefined;

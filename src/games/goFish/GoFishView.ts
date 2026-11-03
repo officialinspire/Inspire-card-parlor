@@ -111,6 +111,8 @@ export function mountGoFish(ctx: GoFishViewContext) {
   const myBooks = h('div', { class: 'gf-books', role: 'group', 'aria-label': 'Your books' });
   const hand = h('div', { class: 'gf-hand', role: 'group', 'aria-label': 'Your hand' });
   const askBtn = button('Ask', () => void humanTurn(), { icon: 'play', attrs: { 'data-action': 'ask' } });
+  /** What the table is waiting for, beside Ask (the hand and Ask are off whenever it isn't you). */
+  const waiting = h('span', { class: 'gf-waiting', 'data-waiting': '', 'aria-live': 'polite' });
   // Table toolbar: Pause, Hint, New Game.
   const pauseBtn = toolButton('pause', 'Pause', () => setPaused(!paused), { action: 'pause' });
   const hintBtn = toolButton('hint', 'Hint', () => showHint(), { action: 'hint' });
@@ -122,7 +124,7 @@ export function mountGoFish(ctx: GoFishViewContext) {
     { class: 'gf-you', 'data-player': human.id, 'aria-label': 'You' },
     myBooks,
     hand,
-    h('div', { class: 'gf-actions' }, askBtn),
+    h('div', { class: 'gf-actions' }, waiting, askBtn),
   );
   const el = h('div', { class: 'gofish' }, opponents, h('div', { class: 'gf-center' }, pond, status), you, veil);
   ctx.surface.replaceChildren(el);
@@ -193,6 +195,16 @@ export function mountGoFish(ctx: GoFishViewContext) {
 
     askBtn.disabled = !myTurn;
     hintBtn.disabled = !myTurn;
+    waiting.textContent = game.isOver
+      ? ''
+      : paused
+        ? 'Paused'
+        : myTurn
+          ? 'Your turn: pick a card'
+          : game.current.id === human.id
+            ? 'Your ask is being answered…'
+            : `Waiting for ${game.current.name}…`;
+    waiting.dataset.state = myTurn ? 'you' : paused ? 'paused' : 'waiting';
     if (pauseBtn.getAttribute('aria-pressed') !== String(paused)) {
       setTool(pauseBtn, paused ? 'play' : 'pause', paused ? 'Resume' : 'Pause');
       pauseBtn.setAttribute('aria-pressed', String(paused));
@@ -368,7 +380,8 @@ export function mountGoFish(ctx: GoFishViewContext) {
       }
       case 'book': {
         const p = game.players.find((x) => x.id === e.p)!;
-        gameSound('valid_move');
+        // Your book is a success; an opponent's is just a move on the table.
+        gameSound(p.cpu ? 'card_move' : 'valid_move');
         spotlight(e.p, 'gf-booked');
         if (p.cpu) void say(anchor(e.p), pickLine(personaOf(p).lines.book), { duration: 1300 * f() + 300 });
         mood(e.p, 'win');
@@ -475,6 +488,10 @@ export function mountGoFish(ctx: GoFishViewContext) {
       if (k in RANK_KEYS && ranks.includes(RANK_KEYS[k]!)) {
         rank = RANK_KEYS[k]!;
         draw();
+      } else if (e.key === 'Enter' && !(e.target as HTMLElement)?.closest?.('button')) {
+        // "Enter asks", wherever focus is (it reaches the Ask button a frame after the picker opens).
+        e.preventDefault();
+        document.querySelector<HTMLButtonElement>('.dialog-ask [data-dialog-action="ask"]')?.click();
       } else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
         const i = targets.findIndex((t) => t.id === target);
         target = targets[(i + (e.key === 'ArrowRight' ? 1 : targets.length - 1)) % targets.length]!.id;
@@ -658,6 +675,11 @@ export function mountGoFish(ctx: GoFishViewContext) {
     }
   };
   addEventListener('keydown', onKey);
+  // Leaving the page pauses the table, so CPU turns don't play on unseen.
+  const onVisibility = () => {
+    if (document.hidden && !paused && !game.isOver) setPaused(true);
+  };
+  document.addEventListener('visibilitychange', onVisibility);
 
   // ----- Start -----
   render();
@@ -677,6 +699,7 @@ export function mountGoFish(ctx: GoFishViewContext) {
       destroyed = true;
       ro.disconnect();
       removeEventListener('keydown', onKey);
+      document.removeEventListener('visibilitychange', onVisibility);
     },
   };
 }
