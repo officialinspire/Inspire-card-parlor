@@ -422,3 +422,29 @@ save format changed.
   - there is no town map (new map art was inventoried: none added since the
     pipeline's first run). Sophia's annotated river map is evidence and is
     not used as one.
+
+**Tables: interaction and feedback.** Details in `docs/GAMEPLAY_INTERACTION.md`, under
+"Table feedback (upgrade series)".
+
+- **Reproduced first, then fixed:**
+  - Klondike Auto-finish ran on under Pause;
+  - a tap that closed the More panel picked up a card;
+  - War's Auto button read "Pause";
+  - War Auto Play and Go Fish CPU turns kept playing in a hidden page;
+  - Spider dealt twice on a fast double tap;
+  - a disabled credit-price button in the Collection gave no explanation.
+- **Clearer feedback:**
+  - solitaire cues that read without colour (lift, dashed ▾ destinations, dotted
+    hints, ✕ on refusal, ✓ on finished foundations);
+  - refusal reasons from each game's own rules;
+  - Go Fish's waiting label;
+  - War's Auto play badge.
+- **Unchanged:** rules, deals, difficulty, randomization, undo and rewards.
+- **No first-use tip:** the table now answers each unclear point itself.
+- **Earlier open item:** `quick-play.spec.ts:61` (locked decks) passes on phone-portrait,
+  small-phone, phone-landscape and desktop on current code.
+- **Tests:**
+  - unit tests: 492 passed;
+  - interaction, games, toolbar, quick-play, customization, table-feedback, story and
+    campaign e2e on phone-portrait, phone-landscape and desktop: 160 passed,
+    14 skipped (by design).
