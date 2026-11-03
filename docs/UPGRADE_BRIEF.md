@@ -330,14 +330,16 @@ save format changed.
   - B1: Burning Man's Ten Principles.
 
   K8 is now Read.
+
 - **New field notes:**
   - `working-tools` (6-1);
-  - `burning-man-principles` (6-3);
+  - `burning-man-principles` (6-4);
   - `kenmore-household` (7-1);
   - `ropewalks` (8-1).
 
   The chapter note `lodge-history-vs-story` now separates Freemasonry, tarot
   suit lore and the game's own magic.
+
 - **Cast:** Steve's bio drops "military-intelligence connections" (his
   interest is intelligence history, which he studied); Mary's and George's
   bios carry their new motives.

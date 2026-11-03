@@ -1443,6 +1443,14 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
             text: 'The red fez Dante remembered belongs to the Shriners, a fraternity whose members are Freemasons. Since 1922 the Shriners have run a network of children’s hospitals.',
             source: 'Shriners International; Shriners Children’s',
           },
+        ],
+      }),
+      level('th-6', 4, {
+        title: 'The Cipher',
+        game: 'freecell',
+        objectiveText: 'Solve this FreeCell deal.',
+        setup: { seed: 1009, deckId: 'freemasonry', boardId: 'masonic_lodge_no4' },
+        info: [
           {
             id: 'burning-man-principles',
             kind: 'history',
@@ -1451,12 +1459,6 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
             source: 'Burning Man Project, “The 10 Principles” (burningman.org)',
           },
         ],
-      }),
-      level('th-6', 4, {
-        title: 'The Cipher',
-        game: 'freecell',
-        objectiveText: 'Solve this FreeCell deal.',
-        setup: { seed: 1009, deckId: 'freemasonry', boardId: 'masonic_lodge_no4' },
         intro: [
           say(
             'steve_gonzales',

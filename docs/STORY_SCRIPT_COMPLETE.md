@@ -778,7 +778,6 @@ _Steve Gonzales separates what happened at the lodge in 1752 from what someone i
 
 - **The real “Masonic cipher”** (history): The pigpen cipher, which swaps letters for shapes taken from a grid, was used by some Freemasons in the 1700s and is often called the Masonic cipher. It is publicly documented — and it uses no playing cards. _Source: Scottish Rite Masonic Museum & Library._
 - **The red hats** (history): The red fez Dante remembered belongs to the Shriners, a fraternity whose members are Freemasons. Since 1922 the Shriners have run a network of children’s hospitals. _Source: Shriners International; Shriners Children’s._
-- **Participation** (history): Burning Man’s Ten Principles were written by co-founder Larry Harvey in 2004. Participation says “Everyone is invited to work. Everyone is invited to play.” Communal Effort values creative cooperation and collaboration. _Source: Burning Man Project, “The 10 Principles” (burningman.org)._
 
 ### 6.4 The Cipher
 
@@ -801,6 +800,10 @@ _Steve Gonzales separates what happened at the lodge in 1752 from what someone i
 > **Steve Gonzales** _(portrait-talk)_: Whoever made this knew the town, the river, and just enough about Masons to borrow our tools. Not our secrets. We don’t have the kind they wanted.
 
 **Rewards:** 100 credits, 120 XP, clue: Steve’s suit-order diagram.
+
+**Field notes:**
+
+- **Participation** (history): Burning Man’s Ten Principles were written by co-founder Larry Harvey in 2004. Participation says “Everyone is invited to work. Everyone is invited to play.” Communal Effort values creative cooperation and collaboration. _Source: Burning Man Project, “The 10 Principles” (burningman.org)._
 
 ### 6.5 The Keystone (finale)
 
