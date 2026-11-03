@@ -170,8 +170,7 @@ test('an achievement earned at the table waits for the hand to end, then toasts'
     w.__knockToasts = 0;
     new MutationObserver((records) => {
       for (const record of records)
-        for (const node of record.addedNodes)
-          if (node instanceof Element && node.matches(selector)) w.__knockToasts++;
+        for (const node of record.addedNodes) if (node instanceof Element && node.matches(selector)) w.__knockToasts++;
     }).observe(document.body, { childList: true, subtree: true });
   }, badge);
   // Earn a secret mid-game: it unlocks now, but no toast interrupts play.
