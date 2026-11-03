@@ -316,3 +316,37 @@ save format changed.
 - **Facts:** the Fones Cliffs line uses STORY_SOURCES T2 (Read); Jak's lines
   follow section 1 of the sources doc. See `docs/STORY_CAMPAIGN.md` for the
   per-character summary.
+
+**Voice pass, Chapters 5–9 and the epilogue.**
+
+- **Where:** `src/story/campaign.ts` (dialogue, outline beats, five new
+  field notes), `src/story/cast.ts` and `src/games/cpu/storyOpponents.ts`
+  (Mrs. Gray, Steve, Mary, George). See `docs/STORY_CAMPAIGN.md` for the
+  per-character summary.
+- **New sources** (`docs/STORY_SOURCES.md`):
+  - K9–K11: Kenmore's enslaved household (Billy), the ropemakers, and Mary's
+    widowhood at Ferry Farm;
+  - M4–M6: the working tools, as two Grand Lodges explain them publicly;
+  - B1: Burning Man's Ten Principles.
+
+  K8 is now Read.
+- **New field notes:**
+  - `working-tools` (6-1);
+  - `burning-man-principles` (6-3);
+  - `kenmore-household` (7-1);
+  - `ropewalks` (8-1).
+
+  The chapter note `lodge-history-vs-story` now separates Freemasonry, tarot
+  suit lore and the game's own magic.
+- **Cast:** Steve's bio drops "military-intelligence connections" (his
+  interest is intelligence history, which he studied); Mary's and George's
+  bios carry their new motives.
+- **Guardrails verified by script:**
+  - discovery beats (index and id) are identical to before;
+  - every challenge id, game, setup, objective, reward and unlock is
+    identical;
+  - the door puzzle's prompt, answer, hints and solved lines are identical;
+  - no Chapter 5–9 or epilogue beat exceeds 180 characters;
+  - all narration addresses "you";
+  - the e2e strings ("set the four marks", "Ghost rematches are open") are
+    unchanged.

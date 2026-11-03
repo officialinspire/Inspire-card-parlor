@@ -3,7 +3,7 @@ import { action, CURRENT, clickInPager, enterParlor, seed } from './helpers';
 import { layoutIssues } from './layout-checks';
 
 /**
- * Every line of the revised Chapter 1–4 scenes fits on a small phone and a
+ * Every line of the revised scenes, Chapters 1–9, fits on a small phone and a
  * phone on its side: arrivals, each challenge's opening (with its brief),
  * each challenge's closing scene and each departure. Lines are checked one
  * by one, so a long beat can't push the controls off screen or clip.
@@ -14,14 +14,14 @@ test.beforeEach(({}, info) => {
   test.skip(info.project.name !== 'desktop', 'sizes are set by the test');
 });
 
-const CHAPTERS = [1, 2, 3, 4];
+const CHAPTERS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const levels = (n: number) => Array.from({ length: 5 }, (_, i) => `th-${n}-${i + 1}`);
 const SIZES = [
   [320, 568],
   [667, 375],
 ] as const;
 
-/** Pages through the journal until a tile shows (it lists every scene seen in four chapters, so it can run long). */
+/** Pages through the journal until a tile shows (it lists every scene seen in nine chapters, so it can run long). */
 async function reveal(page: Page, selector: string) {
   const target = page.locator(`${CURRENT} ${selector}`);
   await page.locator(`${CURRENT} .pager-grid > *`).first().waitFor();
@@ -61,7 +61,7 @@ for (const [w, h] of SIZES)
         settings: { musicPaused: true },
         profile: {
           schemaVersion: 3,
-          storyChapter: 4,
+          storyChapter: 9,
           story: {
             campaign: 'thirteenth-hand',
             version: 2,
@@ -95,7 +95,7 @@ for (const [w, h] of SIZES)
         await page.locator(`${CURRENT} [data-tab="scenes"]`).click();
         const replays = [`${ch}:intro`, ...levels(n).map((id) => `${id}:outro`), `${ch}:outro`];
         for (const id of replays) {
-          // Every Chapter 1–4 challenge has a closing scene, so every one is replayable.
+          // Every challenge has a closing scene, so every one is replayable.
           await reveal(page, `[data-replay="${id}"]`);
           await everyLine(page, id);
           await action(page, 'ok').click();

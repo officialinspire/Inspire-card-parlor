@@ -993,12 +993,12 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
     status: 'final',
     music: 'window-rain',
     mysteryThread:
-      'In the story, Operation Thirteenth Hand was a fictional 1962 investigation of a phantom card game in the cellars, using a local legend — a game George Washington never finished — as its cover. Its dossier maps the four marks around the old waterfront, and its sealed ace of spades holds the fourth mark. Its consultant was a Freemason from Lodge No. 4.',
+      'In the story, Operation Thirteenth Hand was a fictional 1962 investigation of a phantom card game in the cellars, using a local legend — a game George Washington never finished — as its cover. It was compartmentalized: surveyors photographed the marks, a Freemason from Lodge No. 4 read the history, and nobody saw the whole file. Mrs. Gray inherited it, treats it as a record of what people feared rather than proof, and lets you break the seal no one in her office was cleared to break: the ace of spades holding the fourth mark.',
     beats: [
-      'You climb to the unmarked office; Mrs. Gray has been expecting someone with the card.',
+      'You climb to the unmarked office; Mrs. Gray already knows where your first three marks came from.',
       'She explains dead drops: the four marks on Sophia’s map were used as one.',
       'Her predecessor opened Operation Thirteenth Hand (fiction) in 1962 after reports of a card game in the cellars played by someone who left no footprints.',
-      'The dossier: survey photos pin each mark to a spot near the old waterfront; the legend of the unfinished game was the operation’s cover story.',
+      'The dossier: survey photos pin each mark to a spot near the old waterfront. Each office held one piece; the legend of the unfinished game was the cover story.',
       'The operation’s consultant was a Freemason from Lodge No. 4; Steve Gonzales keeps that research now.',
       'The sealed ace of spades carries the fourth mark, the spade.',
     ],
@@ -1010,30 +1010,36 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
     },
     intro: [
       narrate('You climb the stairs above the shuttered storefront. The door with no name opens before you can knock.'),
+      say('mrs_gray', 'You’re late. Not by the clock. By the file.', 'portrait-neutral'),
       say(
         'mrs_gray',
-        'You’re late. A card case arrived here three days ago, signed “G. W.” Who is G. W.?',
-        'portrait-neutral',
+        'Three days ago a card case arrived here, signed “G. W.” I don’t receive packages. I receive explanations. Who is G. W.?',
+        'portrait-doubt',
       ),
       narrate('You show her the card with its three marked corners. She studies it without touching it.'),
       say(
         'mrs_gray',
-        'Do you know how long this office has waited for someone to walk in with that?',
+        'A club from the river. A heart from a painter’s commission. A diamond from somebody’s footage. You’ve been busy, and you’ve been noticed.',
         'portrait-think',
       ),
       say(
         'mrs_gray',
-        'The Hardigan boys sat in that chair once and asked me questions. They didn’t like the answers either. Sit.',
+        'Sit. The Hardigan boys had that chair once. Their questions improved after the first hour. Most people’s do.',
         'portrait-doubt',
       ),
     ],
     outro: [
       say(
         'mrs_gray',
-        'Go to the lodge. Ask Steve about the order. Ask Steve about anything, really. He answers at length.',
+        'Go to the lodge. Steve Gonzales can tell you what the marks mean. I can only tell you where they were found. Those are different jobs.',
         'portrait-talk',
       ),
-      say('mrs_gray', 'This conversation didn’t happen. I’ll know if you say it did.', 'portrait-neutral'),
+      say(
+        'mrs_gray',
+        'If anyone asks where you heard of Operation Thirteenth Hand, say it was a ghost story. That has the advantage of being accurate.',
+        'portrait-neutral',
+      ),
+      say('mrs_gray', 'This conversation didn’t happen. I’ll know if you say it did.', 'portrait-doubt'),
       narrate('You walk down the stairs with four marked corners and no idea which one goes first.'),
     ],
     levels: [
@@ -1045,17 +1051,21 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
         intro: [
           say(
             'mrs_gray',
-            'A dead drop is a place two people use so they never have to meet. This deal is one. Solve it.',
+            'A dead drop is a place two people use so they never have to meet. This deal is one. Solve it, and we’ll discuss who has been using yours.',
             'cards-deal',
           ),
         ],
         outro: [
           say(
             'mrs_gray',
-            'The four marks on your ranger’s map weren’t decoration. Someone used them as a dead drop. A club at the river, a heart downtown. You see the pattern.',
+            'The four marks on your ranger’s map weren’t decoration. They were dead drops. A club at the river, a heart downtown. Somebody left things. Somebody collected.',
             'portrait-talk',
           ),
-          say('mrs_gray', 'I’m not saying who. I’m asking you who.', 'portrait-doubt'),
+          say(
+            'mrs_gray',
+            'I don’t know who. I know what the file says, which is a different thing. A file is mostly a list of what someone was worried about.',
+            'portrait-doubt',
+          ),
         ],
         info: [
           {
@@ -1073,17 +1083,28 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
         game: 'war',
         objectiveText: 'Win War against Mrs. Gray.',
         setup: { seed: 2010, options: { opponent: 'mrs_gray' }, deckId: 'spycraft', boardId: 'mrs_gray_safehouse' },
-        intro: [say('mrs_gray', 'War. I’ll ask the questions. You’ll turn the cards.', 'portrait-neutral')],
+        intro: [
+          say(
+            'mrs_gray',
+            'War. I’ll ask the questions. You turn the cards. Neither of us will enjoy it as much as we pretend.',
+            'portrait-neutral',
+          ),
+        ],
         outro: [
           say(
             'mrs_gray',
-            'Operation Thirteenth Hand. My predecessor opened the file in 1962: reports of a card game in the cellars under the old town, played by someone who left no footprints.',
+            'Operation Thirteenth Hand. My predecessor opened it in 1962: reports of a card game in the cellars under the old town, played by someone who left no footprints.',
             'portrait-think',
           ),
           say(
             'mrs_gray',
-            'They found a card with blank corners and a legend. They closed the file as “unexplained.” I inherited it with the desk. I have never liked that word.',
+            'Two witnesses. One had been drinking; the other was a deacon. The file gives them equal weight, which tells you something about the file.',
             'portrait-doubt',
+          ),
+          say(
+            'mrs_gray',
+            'They closed it as “unexplained.” I inherited it with the desk. I’ve never liked that word. It means someone stopped asking.',
+            'portrait-neutral',
           ),
         ],
       }),
@@ -1105,10 +1126,15 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
           ),
           say(
             'mrs_gray',
-            'The operation needed a cover story, so it borrowed a local legend: a card game George Washington never finished. Twelve hands played. The thirteenth never dealt.',
+            'Each office got one piece. Surveyors photographed the marks. The consultant read the history. Nobody saw the whole file. That was the point, and the problem.',
             'portrait-talk',
           ),
-          say('mrs_gray', 'A legend, of course. Mostly.', 'portrait-think'),
+          say(
+            'mrs_gray',
+            'The cover story was a local legend: a card game George Washington never finished. Twelve hands played. The thirteenth never dealt.',
+            'portrait-talk',
+          ),
+          say('mrs_gray', 'A legend, of course. Mostly.', 'portrait-doubt'),
         ],
         info: [
           {
@@ -1131,17 +1157,28 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
           deckId: 'spycraft',
           boardId: 'mrs_gray_safehouse',
         },
-        intro: [say('mrs_gray', 'Debrief. You ask me for cards. I decide what you’re cleared to know.', 'cards-deal')],
+        intro: [
+          say(
+            'mrs_gray',
+            'Debrief. You ask me for cards. I decide what you’re cleared to know. It will be less than you hoped and more than I should.',
+            'cards-deal',
+          ),
+        ],
         outro: [
           say(
             'mrs_gray',
-            'The operation had a consultant: a Freemason from Lodge No. 4. He knew the history cold, and refused to believe a word of the legend.',
+            'The operation had a consultant: a Freemason from Lodge No. 4. He knew the town’s history cold, and refused to believe a word of the legend.',
             'portrait-think',
           ),
           say(
             'mrs_gray',
-            'The lodge still keeps his notes. The man who reads them now is Steve Gonzales. Media work in Washington, a Norwich man, takes history seriously. You’ll like him. I’m still deciding.',
+            'The lodge kept his notes. Steve Gonzales reads them now. Media work in Washington, a Norwich man, very careful with dates.',
             'portrait-talk',
+          ),
+          say(
+            'mrs_gray',
+            'You’ll like him. I’m still deciding. I have been deciding for some years.',
+            'portrait-doubt',
           ),
         ],
       }),
@@ -1155,7 +1192,7 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
           narrate('You reach the last folder in the dossier. It is sealed, and the seal is a playing card.'),
           say(
             'mrs_gray',
-            'Finish this, and you may break the seal. I’ve waited a long time to watch someone else’s face when they do.',
+            'Finish this, and you may break the seal. Nobody in this office has. None of us was ever cleared to. I’d like to watch your face.',
             'portrait-neutral',
           ),
         ],
@@ -1166,8 +1203,13 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
           ),
           say(
             'mrs_gray',
-            'Four marks. Four corners. And still no order to set them in. That’s what the lodge is for.',
+            'Club at the river. Heart in the commission. Diamond in the footage. Spade in my files. Four marks, four corners.',
             'portrait-surprise',
+          ),
+          say(
+            'mrs_gray',
+            'And still no order to set them in. That isn’t intelligence. That’s interpretation. It’s what the lodge is for.',
+            'portrait-talk',
           ),
         ],
         info: [
@@ -1208,12 +1250,12 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
     status: 'final',
     music: 'silent-study-hours',
     mysteryThread:
-      'Steve separates documented history (Washington’s initiation here in 1752, the Capitol cornerstone, the Culper Ring) from the story’s legend: the card’s suit cipher is not Masonic. With compasses, Sophia’s map and the dossier’s survey, he reads the order the card was made to be set in — spade, diamond, heart, club, downstream — and raking light raises two words from the ledger’s blank line: KENMORE — ASK MOTHER.',
+      'Steve separates documented history (Washington’s initiation here in 1752, the Capitol cornerstone, the Culper Ring) from the story’s legend. Masons explain the square, compasses, level and plumb as lessons in conduct; suit lore belongs to tarot and other traditions, and the card’s cipher is not Masonic. With compasses, Sophia’s map and the dossier’s survey, he reads the order the card was made to be set in — spade, diamond, heart, club, downstream — and raking light raises two words from the ledger’s blank line: KENMORE — ASK MOTHER.',
     beats: [
       'You meet Steve Gonzales on the steps of the historic lodge where George Washington was made a Mason in 1752.',
       'Steve sets the ground rules: the lodge and Washington’s Masonic history are real; the card, the legend and the cipher are not Masonic.',
-      'Masonic symbols have public meanings (the square, the compasses, the level), and none of them is a playing card.',
-      'Sophia arrives to check Steve’s sources. They hold up, to her mild annoyance.',
+      'The working tools have public meanings — the square, compasses, level and plumb as lessons in conduct and limits — and none of them is a playing card.',
+      'Sophia arrives to check Steve’s sources. They hold up, to her mild annoyance; he credits the lodge and Burning Man for his habit of writing down who built what.',
       'Compasses, Sophia’s map and the dossier’s survey give the order: you followed the marks upriver; the card reads downstream — spade, diamond, heart, club.',
       'Steve’s raking light raises an impression on the ledger’s blank thirteenth line: KENMORE — ASK MOTHER.',
     ],
@@ -1229,7 +1271,7 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
       ),
       say(
         'steve_gonzales',
-        'You must be the one with the card. Steve Gonzales. Mrs. Gray called. She doesn’t call.',
+        'You must be the one with the card. Steve Gonzales. Mrs. Gray called. She doesn’t call. She lets you find out she knew.',
         'portrait-greet',
       ),
       say(
@@ -1239,7 +1281,7 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
       ),
       say(
         'steve_gonzales',
-        'Your card, the legend, the cipher — none of that is Masonic. Today I show you exactly where the history stops and the story starts.',
+        'Your card, the legend, the cipher: none of that is Masonic. Today I show you exactly where the history stops and the story starts.',
         'portrait-think',
       ),
       say('steve_gonzales', 'And then, I think, which order those suits go in. Vamos.', 'cards-reveal'),
@@ -1247,12 +1289,12 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
     outro: [
       say(
         'steve_gonzales',
-        'So. History: Washington was made a Mason here, laid a cornerstone, ran spies. Legend: a ghost, a card and a game he never finished. Keep them in separate pockets.',
+        'So. History: Washington was made a Mason here, laid a cornerstone, ran spies. Legend: a ghost, a card, a game he never finished. Separate pockets.',
         'portrait-talk',
       ),
       say(
         'steve_gonzales',
-        'Mrs. Gray says the marks lead to tunnels. When you need a guide down there, call me. Bring the ranger’s map.',
+        'Mrs. Gray says the marks lead under the town. When you need a guide down there, call me. Bring the ranger’s map, and a better flashlight than mine.',
         'portrait-neutral',
       ),
       narrate('You leave the lodge with Steve’s diagram in your pocket and the name of a house in your head.'),
@@ -1266,19 +1308,24 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
         intro: [
           say(
             'steve_gonzales',
-            'Masons talk about cornerstones: the first stone you build on. Washington laid the Capitol’s in 1793, in a Masonic ceremony. Documented. Now lay yours.',
+            'A cornerstone is the first stone you build on. Washington laid the Capitol’s in 1793, in a Masonic ceremony. Documented. Now lay yours.',
             'portrait-talk',
           ),
         ],
         outro: [
           say(
             'steve_gonzales',
-            'The square stands for acting fairly; the compasses, for keeping yourself within bounds. Public symbols with public meanings. Any library will tell you.',
+            'Our working tools are builders’ tools. Masons use them to talk about conduct. The square: deal fairly. The compasses: know your limits.',
             'portrait-neutral',
           ),
           say(
             'steve_gonzales',
-            'Nobody ever taught a Masonic lesson with a playing card. That’s your first sign the cipher is borrowed costume.',
+            'Lodges explain them a little differently. That’s normal. A symbol that means only one thing is a label.',
+            'portrait-doubt',
+          ),
+          say(
+            'steve_gonzales',
+            'Four suits as four elements is tarot, a different tradition. A secret Masonic card ritual is nobody’s. Your cipher is borrowed costume.',
             'portrait-doubt',
           ),
         ],
@@ -1290,6 +1337,14 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
             text: 'On September 18, 1793, George Washington laid the cornerstone of the United States Capitol in a ceremony conducted by Freemasons.',
             source: 'Architect of the Capitol',
             sprite: 'lodge-relics/carved-stone-tablet',
+          },
+          {
+            id: 'working-tools',
+            kind: 'history',
+            title: 'The working tools',
+            text: 'Freemasons explain their builders’ tools as lessons in conduct. One Grand Lodge’s public summary gives the square as morality, the level as equality and the plumb as upright living. An 18th-century text says the compasses keep us “within bounds.” Readings vary between lodges.',
+            source:
+              'Grand Lodge of California, “Fellow Craft Working Tools” (freemason.org); Grand Lodge of British Columbia and Yukon, “The Working Tools”',
           },
         ],
       }),
@@ -1306,19 +1361,24 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
         intro: [
           say(
             'steve_gonzales',
-            'The level reminds us we meet as equals. War is the most level game there is. Nobody gets to be clever.',
+            'The level is about meeting as equals. War is the most level game there is. Nobody gets to be clever. Including me. Especially me.',
             'cards-shuffle',
           ),
         ],
         outro: [
           say(
             'steve_gonzales',
-            'Before media and visual effects, I studied at Norwich — the oldest private military college in the country. Intelligence history sticks to you.',
+            'The plumb is the other half: upright when nobody’s checking. In VFX, if your verticals lean, the audience feels it before they can say why.',
             'portrait-talk',
           ),
           say(
             'steve_gonzales',
-            'Washington ran real spies: the Culper Ring, codes, invisible ink. If he’d wanted to hide something, he’d have done better than four suits on a card.',
+            'Before media work, I studied at Norwich, the oldest private military college in the country. Intelligence history sticks to you.',
+            'portrait-neutral',
+          ),
+          say(
+            'steve_gonzales',
+            'Washington ran real spies: the Culper Ring, a code book, invisible ink. If he’d wanted to hide something, four suits on a card would be beneath him.',
             'portrait-think',
           ),
         ],
@@ -1354,7 +1414,18 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
         outro: [
           say('sophia', 'His dates are right. His sources are real. I hate it a little.', 'portrait-think'),
           say('steve_gonzales', 'Nobody has asked for my bibliography in years. I’m moved.', 'portrait-greet'),
-          say('sophia', 'Don’t be.', 'portrait-neutral'),
+          say('sophia', 'Don’t be. Where did you learn to cite like that?', 'portrait-neutral'),
+          say(
+            'steve_gonzales',
+            'The lodge, mostly. And Burning Man. You build something huge with strangers, then write down who did what, so next year’s crew can find it.',
+            'portrait-talk',
+          ),
+          say('sophia', 'That’s a trail inventory.', 'portrait-greet'),
+          say(
+            'steve_gonzales',
+            '“Everyone is invited to work. Everyone is invited to play.” Their words, not mine. A good lodge night isn’t so different.',
+            'portrait-think',
+          ),
         ],
         info: [
           {
@@ -1371,6 +1442,13 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
             title: 'The red hats',
             text: 'The red fez Dante remembered belongs to the Shriners, a fraternity whose members are Freemasons. Since 1922 the Shriners have run a network of children’s hospitals.',
             source: 'Shriners International; Shriners Children’s',
+          },
+          {
+            id: 'burning-man-principles',
+            kind: 'history',
+            title: 'Participation',
+            text: 'Burning Man’s Ten Principles were written by co-founder Larry Harvey in 2004. Participation says “Everyone is invited to work. Everyone is invited to play.” Communal Effort values creative cooperation and collaboration.',
+            source: 'Burning Man Project, “The 10 Principles” (burningman.org)',
           },
         ],
       }),
@@ -1389,13 +1467,18 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
         ],
         outro: [
           narrate(
-            'Steve sets his compasses on the lodge and swings them across the map for you. The four marks sit on the corners of a square: the spade to the north, then the diamond, the heart and the club, following the river downstream.',
+            'Steve sets his compasses on the lodge and swings them across the map for you. The marks sit on a square: spade in the north, then diamond, heart and club, downstream.',
             'lodge-sketchbook-page',
           ),
           say(
             'steve_gonzales',
-            'You came upriver: club, heart, diamond, spade. The card reads downstream. Spade, diamond, heart, club.',
+            'You found them upriver: club, heart, diamond, spade. The card reads downstream, from the north. Spade, diamond, heart, club.',
             'portrait-surprise',
+          ),
+          say(
+            'sophia',
+            'That’s how the river reads, too. Everything that reaches the bend came from upstream first.',
+            'portrait-think',
           ),
           say(
             'steve_gonzales',
@@ -1426,7 +1509,11 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
             'ledger-impression',
           ),
           say('steve_gonzales', 'Kenmore. Betty Washington Lewis’s house. And “Mother” would be…', 'portrait-surprise'),
-          say('steve_gonzales', 'No. Well. Maybe. Bring good manners. She’ll expect them.', 'portrait-think'),
+          say(
+            'steve_gonzales',
+            'No. Well. Maybe. Bring good manners. And don’t call it her house. I hear she’s particular.',
+            'portrait-think',
+          ),
         ],
         rewards: [credits(170), xp(200)],
       }),
@@ -1444,7 +1531,7 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
         id: 'lodge-history-vs-story',
         kind: 'note',
         title: 'History and story',
-        text: 'Washington’s initiation at the Fredericksburg lodge in 1752 is documented history. The card, its suit cipher, the legend and the lodge’s part in the mystery are invented for the story; no secret card ceremony is a real Masonic practice.',
+        text: 'Washington’s initiation at the Fredericksburg lodge in 1752 is documented history. The card, its suit cipher, the legend and the lodge’s part in the mystery are invented for the story. Reading the four suits as elements comes from tarot and other esoteric traditions, not Freemasonry; no secret card ceremony is a real Masonic practice; and the card’s glow is this game’s own magic.',
       },
     ],
     unlockRequirements: { chapter: 'th-5' },
@@ -1463,13 +1550,13 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
     status: 'final',
     music: 'midnight-tea',
     mysteryThread:
-      'At Kenmore — her daughter Betty’s house, not hers — Mary Ball Washington’s ghost tells the story’s version of the legend: twelve hands of cards with her son, scored in her own ledger, and George walking away before the thirteenth because he was losing. She gives you a letter for him and the iron key to the cellar door where he waits.',
+      'At Kenmore — her daughter Betty’s house, not hers — Mary Ball Washington’s ghost tells her version of the legend: twelve hands of cards with her son, scored in her own ledger, and George walking away before the thirteenth because he was losing. A widow who kept the accounts of a farm for nearly thirty years, she wants the ledger closed honestly, not won. She confirms Steve’s reading, seals a letter for George and gives you the iron key to the cellar door where he waits.',
     beats: [
-      'You visit Kenmore, the home of Fielding Lewis and Betty Washington Lewis, famous for its plaster ceilings.',
+      'You visit Kenmore, the home of Fielding Lewis and Betty Washington Lewis, famous for its plaster ceilings and built on the work of the people the family enslaved.',
       'Mary Ball Washington’s ghost is visiting her daughter’s house; she corrects you that her own was on Charles Street.',
-      'She tells the legend: she kept the score in the ledger; George left before the thirteenth hand because he was losing.',
+      'She tells the legend: widowed young, she kept the farm’s accounts and the score in the ledger; George left before the thirteenth hand because he was losing.',
       'She seals a letter to George: “You owe me a hand.”',
-      'She entrusts you with the iron key to a cellar door on the old waterfront, and warns that George never concedes gracefully.',
+      'She confirms Steve’s reading (George surveyed from the north), entrusts you with the iron key to a cellar door on the old waterfront, and warns that he never concedes gracefully.',
     ],
     artwork: {
       backdrop: 'backgrounds/kenmore_parlor/background.webp',
@@ -1485,7 +1572,7 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
       narrate('You show her the card and the ledger’s last line. She does not look surprised.'),
       say(
         'mary_ball_washington',
-        '“Ask Mother.” Of course he wrote that. A grown man, a general, and still sending people to ask Mother.',
+        '“Ask Mother.” Of course he wrote that. A grown man, a general, a president, and still sending people to ask Mother.',
         'portrait-talk',
       ),
       say(
@@ -1495,7 +1582,7 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
       ),
       say(
         'mary_ball_washington',
-        'Now sit. I do not discuss family business with people who cannot hold their cards properly.',
+        'People mix the two houses up because it makes a tidier story. I have had quite enough tidy stories about this family. Sit.',
         'cards-deal',
       ),
     ],
@@ -1505,7 +1592,11 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
         'Take your friends: the ranger’s map, the man with the camera, the Mason, the boy with the glowing paint. George will try to frighten you. He is very bad at it.',
         'portrait-think',
       ),
-      say('mary_ball_washington', 'I may look in at the end. Not to help. To watch.', 'portrait-neutral'),
+      say(
+        'mary_ball_washington',
+        'I may look in at the end. Not to help. To see something in this family finished, for once, in front of a witness.',
+        'portrait-neutral',
+      ),
       narrate(
         'You leave Kenmore with an iron key, a sealed letter and the distinct feeling of having been politely scolded.',
       ),
@@ -1519,7 +1610,7 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
         intro: [
           say(
             'mary_ball_washington',
-            'Betty’s ceilings took the plasterers months. You may sort cards while you admire them. Quietly.',
+            'Betty’s ceilings took the plasterers months. Everyone admires them. You may sort cards while you do. Quietly.',
             'portrait-talk',
           ),
         ],
@@ -1528,6 +1619,11 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
             'mary_ball_washington',
             'Fielding spent nearly everything they had making guns for the Revolution. People remember the ceilings. I remember the bills.',
             'portrait-think',
+          ),
+          say(
+            'mary_ball_washington',
+            'Betty’s lists name the people this family enslaved here, written down as property to be divided. Billy kept that door. Put him in your account.',
+            'portrait-neutral',
           ),
         ],
         info: [
@@ -1538,6 +1634,13 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
             text: 'During the Revolutionary War, Fielding Lewis helped run the Fredericksburg Gun Manufactory to arm Virginia’s troops, spending much of his own fortune on it.',
             source: 'George Washington Foundation (Kenmore)',
             sprite: 'kenmore-heirlooms/carved-plaster-fragment',
+          },
+          {
+            id: 'kenmore-household',
+            kind: 'history',
+            title: 'The people on Betty’s list',
+            text: 'Historic Kenmore’s researchers trace the community the Lewises enslaved through four surviving documents, including a 1782 list in Betty Lewis’s hand. One man there, Billy, was 38 that year, and was probably the head of the household staff.',
+            source: 'George Washington Foundation, “Billy at the Door” (kenmore.org)',
           },
         ],
       }),
@@ -1552,13 +1655,22 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
           boardId: 'kenmore_parlor',
         },
         intro: [
-          say('mary_ball_washington', 'Go Fish. A child’s game. George played it badly as a child, too.', 'cards-deal'),
+          say(
+            'mary_ball_washington',
+            'Go Fish. A child’s game. George played it badly as a child, too. He asked for everything and kept nothing.',
+            'cards-deal',
+          ),
         ],
         outro: [
           say(
             'mary_ball_washington',
-            'Very well, the legend. George and I played cards at this table. Twelve hands. I kept the score in that ledger — somebody in this family had to.',
+            'Very well, the legend. George and I played cards at this table. Twelve hands. I kept the score in that ledger. Somebody in this family had to keep accounts.',
             'portrait-talk',
+          ),
+          say(
+            'mary_ball_washington',
+            'I was widowed at Ferry Farm with the children still young, and kept that farm’s books for nearly thirty years. I know an unpaid debt when I see one.',
+            'portrait-think',
           ),
           say(
             'mary_ball_washington',
@@ -1590,7 +1702,7 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
         intro: [
           say(
             'mary_ball_washington',
-            'War. My son made a career of it. Let us see whether you have the stomach.',
+            'War. My son made a career of it. People write that I never praised him. People were not at my table.',
             'portrait-neutral',
           ),
         ],
@@ -1604,6 +1716,11 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
             'mary_ball_washington',
             'He is down there, under the town, waiting for someone to bring that card and finish what he ran from. He would rather haunt a cellar than lose to his mother.',
             'portrait-talk',
+          ),
+          say(
+            'mary_ball_washington',
+            'Or he would rather lose to a stranger than to me. That would be very like him. I find I do not mind, provided it ends.',
+            'portrait-doubt',
           ),
         ],
       }),
@@ -1624,6 +1741,11 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
             'mary-letter',
           ),
           say('mary_ball_washington', 'Give him that when he begins to sulk. He will begin to sulk.', 'portrait-doubt'),
+          say(
+            'mary_ball_washington',
+            'I am not owed the win. I am owed the ending. There is a difference, and he knows it.',
+            'portrait-neutral',
+          ),
         ],
         info: [
           {
@@ -1646,6 +1768,11 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
             'mary_ball_washington',
             'One more. Then I shall decide whether you are fit to carry the key.',
             'portrait-neutral',
+          ),
+          say(
+            'mary_ball_washington',
+            'Your Mason has it right, by the way. George learned surveying as a boy. He starts every map at the north and works down.',
+            'portrait-talk',
           ),
         ],
         outro: [
@@ -1684,7 +1811,7 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
     status: 'final',
     music: 'fxbg-after-dark',
     mysteryThread:
-      'Under the old town, the iron key opens the way to a door with four suit-shaped sockets. Jak’s theory (new deck order) is wrong; Steve’s diagram is right. You set the marks spade, diamond, heart, club, thirteen tumblers fall from king to ace, and the door opens on a candlelit card room.',
+      'Under the old town, the iron key opens the way to a door with four suit-shaped sockets. Everyone brought a piece: Sophia’s map and Steve’s diagram, Dante’s eye for the hidden door and his map of the way back, Jak’s wrong theory that rules one answer out. You set the marks spade, diamond, heart, club, thirteen tumblers fall from king to ace, and the door opens on a candlelit card room.',
     beats: [
       'The iron key opens a cellar door on the old waterfront; Jak, Steve and Dante are waiting at the bottom of the steps.',
       'A junction splits four ways, one arch per suit; Steve’s diagram picks the spade arch, and Dante marks the way back in neon.',
@@ -1703,7 +1830,10 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
       narrate(
         'At the old waterfront, the iron key turns in a cellar door that sticks, then gives. Three flashlights are waiting for you at the bottom of the steps.',
       ),
-      say('jak_gold', 'We’re rolling. For the record: privately owned cellar, permission granted by a ghost, via you.'),
+      say(
+        'jak_gold',
+        'We’re rolling. For the record: privately owned cellar, permission granted by a ghost, via you. Anyone says stop, I stop.',
+      ),
       say('dante', 'I brought neon markers! If we get lost, we’ll be lost beautifully.', 'portrait-surprise'),
       say(
         'steve_gonzales',
@@ -1719,7 +1849,10 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
         'This is as far as we go. Mrs. Gray’s file says the game was between two players, and the card is in your hand.',
         'portrait-think',
       ),
-      say('jak_gold', 'I’ll be right out here. Respectfully filming a door.'),
+      say(
+        'jak_gold',
+        'Camera’s off. Some things don’t go on the internet. I’ll be right out here, respectfully not filming a door.',
+      ),
       say('dante', 'Tell him I finished his commission! He’ll want to know! Probably!', 'portrait-greet'),
       narrate('You step through the door alone, the card warm in your hand.'),
     ],
@@ -1739,11 +1872,25 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
             'portrait-think',
           ),
         ],
+        info: [
+          {
+            id: 'ropewalks',
+            kind: 'history',
+            title: 'Rope by hand',
+            text: 'Before steam power, rope was made by hand at ropewalks, and Fredericksburg had them during the Revolution. A 1798 list of people enslaved by the Lewis family names three men, Bob, George and Randolph, as ropemakers.',
+            source: 'George Washington Foundation, “Abraham and the Ropewalkers” (kenmore.org)',
+          },
+        ],
         outro: [
           narrate(
             'You take the spade arch first, as Steve’s diagram says. Dante tags the corner with a glowing arrow so you can find your way back.',
           ),
           say('dante', 'That’s a monster arrow. It has a face. It believes in you.', 'portrait-greet'),
+          say(
+            'steve_gonzales',
+            'Look at this brickwork. Every one laid by hand, and the hands are never the name on the plaque.',
+            'portrait-talk',
+          ),
         ],
       }),
       level('th-8', 2, {
@@ -1764,7 +1911,11 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
         ],
         outro: [
           say('steve_gonzales', 'Jak reads cards. I read history. Dante reads… what, exactly?', 'portrait-talk'),
-          say('dante', 'Vibes. And walls. That wall has a door-shaped vibe.', 'portrait-think'),
+          say(
+            'dante',
+            'Figure and ground. Stare at bricks long enough and one patch stops being wall. That patch is a door.',
+            'portrait-think',
+          ),
           narrate(
             'You look where Dante is pointing. Behind a curtain of roots is a door with four empty sockets, each shaped like a suit.',
           ),
@@ -1840,6 +1991,10 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
           narrate(
             'You hold the Thirteenth Hand card up to the door. Its four marked corners line up with the sockets.',
           ),
+          say(
+            'jak_gold',
+            'Club from the river, heart from Dante’s brief, diamond from my footage, spade from Mrs. Gray’s file. Everybody brought one.',
+          ),
         ],
         puzzle: {
           prompt: 'You hold the card to the door. In which order do you set the four marks?',
@@ -1906,13 +2061,13 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
     status: 'final',
     music: 'shadows-of-the-occult',
     mysteryThread:
-      'The legend resolves: George Washington’s ghost — who planted the card, sketched the heron and commissioned Dante, all to lure a challenger — has waited to play the thirteenth hand he walked away from. You win it, his mother’s letter ends the sulking, and the card awakens with all four corners filled.',
+      'The legend resolves: George Washington’s ghost — who planted the card, sketched the heron and commissioned Dante, all to lure a challenger — has waited to play the thirteenth hand he walked away from. Every portrait flatters him; one ledger, in his mother’s hand, says he left. You win it, his mother’s letter turns the loss into a debt paid, and the card awakens with all four corners filled.',
     beats: [
       'You enter a card room lit by candles that never burn down; George Washington’s ghost greets you with ceremony and pride.',
       'He admits (as the story’s legend) that he walked away from his mother’s card table before the thirteenth hand, and has waited ever since.',
       'He planted the card in Lot 13, sketched the heron and paid Dante in his own face — all to bring a challenger to his table.',
       'Five escalating games; the twelfth hand from the ledger returns; his mother arrives for the last.',
-      'You win the thirteenth hand. He demands a recount until you give him Mary’s letter: “You owe me a hand.”',
+      'You win the thirteenth hand. He demands a recount until you give him Mary’s letter: “You owe me a hand.” He stays to the end, and lets the record say so.',
       'The card awakens. The game is finished, and a rematch is promised.',
     ],
     artwork: {
@@ -1931,13 +2086,26 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
         'portrait-greet',
       ),
       narrate('You show him General Monsterton, Dante’s three-eyed neon portrait of him.'),
-      say('george_washington', 'Three eyes. Magnificent. Precisely the vigor I asked for.', 'portrait-surprise'),
+      say(
+        'george_washington',
+        'Three eyes. Magnificent. Precisely the vigor I asked for. I look as though I could win at anything.',
+        'portrait-surprise',
+      ),
       say(
         'george_washington',
         'Yes, it was I. The card in Lot 13, the heron, the commission. A general recruits. Twelve hands were played in my mother’s parlor. I was called away before the thirteenth.',
         'portrait-think',
       ),
-      say('george_washington', 'Tonight we finish it. Five games. I intend to win all five.', 'cards-signature'),
+      say(
+        'george_washington',
+        'They have written a great deal about me. Most of it flattering. One ledger is not, and it is in my mother’s hand.',
+        'cards-signature',
+      ),
+      say(
+        'george_washington',
+        'Tonight we finish it. Five games. I intend to win all five, and to be remembered winning them.',
+        'cards-signature',
+      ),
     ],
     outro: [
       say(
@@ -1962,11 +2130,17 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
           deckId: 'washington_ghost',
           boardId: 'washington_final_table',
         },
-        intro: [say('george_washington', 'We begin with War. I have some experience.', 'cards-deal')],
+        intro: [
+          say(
+            'george_washington',
+            'We begin with War. I have some experience. Most of it was losing, until it wasn’t.',
+            'cards-deal',
+          ),
+        ],
         outro: [
           say(
             'george_washington',
-            'A warm-up. I allowed you that. It was strategy. I was famous for strategy.',
+            'A warm-up. I allowed you that. It was strategy. I was famous for strategy. Look it up. Not the losses. The strategy.',
             'portrait-doubt',
           ),
         ],
@@ -2021,7 +2195,7 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
           ),
           say(
             'george_washington',
-            'Mother kept that ledger. Mother keeps everything. Including grudges.',
+            'Mother kept that ledger. Mother keeps everything. Including accounts I would prefer were closed.',
             'portrait-doubt',
           ),
         ],
@@ -2030,6 +2204,11 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
             'george_washington',
             'You solved the twelfth hand. I lost that one, originally. I maintain the candle was in my eyes.',
             'portrait-surprise',
+          ),
+          say(
+            'george_washington',
+            'Every portrait of me has a fine coat and a certain look. Not one shows me leaving a card table early. She was the only one who wrote that down.',
+            'portrait-think',
           ),
         ],
       }),
@@ -2085,6 +2264,7 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
             'Thirteen ranks, thirteen books. Whoever lays down more wins the thirteenth hand — and the card.',
             'cards-signature',
           ),
+          say('george_washington', 'And this time the ledger records how it ended. Not how I left.', 'portrait-think'),
         ],
         outro: [
           narrate(
@@ -2093,11 +2273,20 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
           ),
           say('george_washington', 'I demand a recount. And a rematch. And —', 'portrait-surprise'),
           narrate('You hand George the letter from his mother. He reads the back, and goes quiet.'),
-          say('george_washington', '“You owe me a hand.” …I suppose I did.', 'portrait-doubt'),
-          say('mary_ball_washington', 'Well played. Both of you. Mostly the one who is alive.', 'portrait-greet'),
           say(
             'george_washington',
-            'The game is finished. Two centuries of sulking, concluded. I feel… lighter. Which, for a ghost, is saying something.',
+            '“You owe me a hand.” …I suppose I did. Longer than I have owed anyone anything.',
+            'portrait-doubt',
+          ),
+          say('mary_ball_washington', 'Well played. Both of you. Mostly the one who is alive.', 'portrait-greet'),
+          say(
+            'mary_ball_washington',
+            'Write it down, George. Lost the thirteenth hand, and stayed to the end. It reads better than you think.',
+            'portrait-talk',
+          ),
+          say(
+            'george_washington',
+            'Lost, and stayed. Very well. Two centuries of sulking, concluded. I feel… lighter. Which, for a ghost, is saying something.',
             'portrait-think',
           ),
         ],
@@ -2132,10 +2321,14 @@ export const EPILOGUE: readonly DialogueLine[] = [
   narrate(
     'A week later, you bring the card back to Cheryl’s shop, where it all began. It sits under the lamp in a frame nobody can afford.',
   ),
-  say('cheryl', 'I priced it. Then I un-priced it. Then I put up a sign: NOT FOR SALE. DON’T ASK.', 'portrait-doubt'),
+  say(
+    'cheryl',
+    'Provenance: one ghost, four witnesses and a receipt for everything. Best file I’ve ever written. The sign says NOT FOR SALE. DON’T ASK.',
+    'portrait-doubt',
+  ),
   say(
     'sophia',
-    'The heron’s still at the bend. I logged her this morning. Some things are allowed to stay a mystery.',
+    'The heron’s still at the bend. I logged her this morning. Some things are allowed to stay a mystery. The sign-in sheets are not among them.',
     'portrait-greet',
   ),
   say(
@@ -2145,11 +2338,11 @@ export const EPILOGUE: readonly DialogueLine[] = [
   ),
   say(
     'jak_gold',
-    'My video’s up: “I Have No Footage of a Ghost (Proof).” The comments are mostly about my flourish. As they should be.',
+    'My video’s up: “I Have No Footage of a Ghost (Proof).” The camera was off for the good part. The comments are about my flourish anyway.',
   ),
   say(
     'mrs_gray',
-    'File closed. Reason: concluded. I’ve wanted to type that word for a very long time.',
+    'File closed. Reason: concluded. I’ve wanted to type that word for a very long time. Under sources, I put your name. Don’t frame it.',
     'portrait-neutral',
   ),
   say(
@@ -2161,6 +2354,8 @@ export const EPILOGUE: readonly DialogueLine[] = [
     'On your way out, you find an envelope on the counter, sealed in blue wax. Inside are a single dollar bill and a note in a very confident hand.',
   ),
   say('george_washington', 'Best of thirteen? — G. W.', 'cards-signature'),
+  narrate('Under his signature, in a smaller and much firmer hand, someone has added a line for you.'),
+  say('mary_ball_washington', 'He will lose again. Do keep score. — M. W.', 'portrait-talk'),
   narrate('You smile. Somewhere under the town, a candle lights itself. Ghost rematches are open.'),
 ];
 

@@ -155,6 +155,50 @@ Unchanged:
 A check run during the pass compared clue placement, setups and rewards
 against the previous version: all identical.
 
+**Voice pass, Chapters 5–9 and the epilogue** (same series and rules). Lines
+average about 100 characters; none passes 180.
+
+- **Mrs. Gray:** controlled, deadpan menace. She talks about sources and
+  certainty ("a file is mostly a list of what someone was worried about"), two
+  unequal witnesses, and compartments: surveyors, consultant and office each
+  held one piece, and nobody in her office was cleared to break the last
+  seal. Inside the story her file is a record of fears, not proof, and the
+  operation stays fiction outside it.
+- **Steve:** the working tools as lessons in conduct (square: deal fairly;
+  compasses: know your limits; level: meet as equals; plumb: upright when
+  nobody's checking), with a field note citing two Grand Lodges. He keeps
+  traditions apart: suits as elements is tarot; a secret Masonic card ritual
+  is nobody's; the card's glow is the game's own magic. His VFX eye supplies
+  the wit (leaning verticals), and Burning Man appears once, as the habit of
+  recording who built what, with the Participation principle quoted.
+- **Mary:** self-possessed, with motives of her own. She was widowed young
+  and ran Ferry Farm for decades. She wants the ledger closed honestly, "not
+  owed the win… owed the ending". She confirms Steve's north-to-south
+  reading, and she names the people the Lewis family enslaved at Kenmore
+  (Billy, on Betty's 1782 list) without softening it. The Kenmore and Charles
+  Street distinction stays.
+- **George:** funny through pride and contradiction ("famous for strategy…
+  not the losses"). The final hand carries the stakes: every portrait
+  flatters him, but one ledger in his mother's hand says he left. He loses,
+  stays to the end, and accepts "lost, and stayed" as his record.
+- **The clue chain, named on screen:** Mrs. Gray recites it after the spade
+  ("club at the river, heart in the commission, diamond in the footage, spade
+  in my files") and hands interpretation to the lodge. Steve reads the order,
+  Sophia adds the river logic, Mary supplies the key, and Jak names everyone's
+  piece at the door. The puzzle, its hints and its timing are unchanged.
+- **Local history:** new sourced notes on Kenmore's household
+  (`kenmore-household`) and on Fredericksburg's ropewalks and the enslaved
+  ropemakers (`ropewalks`, in the tunnels). Steve's line about the brickwork ("the hands are never the name on
+  the plaque") carries that theme. The tunnels stay fiction in the location
+  notes, without disclaimers in the scenes.
+- **Epilogue callbacks:** Cheryl's provenance file, Sophia's sign-in sheets,
+  Jak's camera off for the good part, Mrs. Gray listing your name under
+  sources, and Steve's two columns. Mary adds a postscript to George's
+  rematch note ("Do keep score"). The last line is unchanged.
+
+The same check confirmed that discovery beats, configurations, rewards and
+the door puzzle are identical to before.
+
 **Writing rules applied.**
 
 - The player never speaks. Every narration line addresses “you”, and the tests
@@ -165,8 +209,8 @@ against the previous version: all identical.
   with a portrait sheet.
 - Real-person-inspired characters (Jak Gold, Steve Gonzales) are portrayed
   through their public, positive traits: cardistry, public-records requests
-  and filming for Jak; media and VFX work, Norwich, research and Freemasonry
-  for Steve. Neither does anything criminal or covert. Steve's intelligence
+  and filming for Jak; media and VFX work, Norwich, research, Freemasonry and
+  Burning Man for Steve. Neither does anything criminal or covert. Steve's intelligence
   background is mentioned only as history he studied.
 - Mary Ball Washington's ghost says plainly that Kenmore was Betty and
   Fielding's house and that hers was on Charles Street.
