@@ -95,6 +95,44 @@ export abstract class SolitaireGame {
     return true;
   }
 
+  /**
+   * Why a move is refused, in a short sentence, or null if it is legal (or
+   * not worth a message: dropping cards back where they came from). Built
+   * from the rules the game already applies, and it only names face-up cards.
+   */
+  explain(m: BoardMove): string | null {
+    if (this.canMove(m)) return null;
+    const from = this.table.piles.get(m.from);
+    const to = this.table.piles.get(m.to);
+    switch (this.lastReject) {
+      case 'not-pickable':
+        return from ? this.pickReason(from, m.index) : null;
+      case 'illegal-drop':
+        return from && to ? this.dropReason(from.all.slice(m.index), from, to) : null;
+      default:
+        return null;
+    }
+  }
+
+  /** Why the cards from `index` up can't be picked up, or null if they can. */
+  whyNotPick(pileId: string, index: number): string | null {
+    const pile = this.table.piles.get(pileId);
+    if (!pile || index < 0 || index >= pile.size || this.canPick(pile, index)) return null;
+    return this.pickReason(pile, index);
+  }
+
+  /** Why the cards from `index` up can't be picked up (only called when they can't). */
+  protected pickReason(pile: Pile, index: number): string {
+    const card = pile.at(index);
+    if (card && !card.faceUp) return 'That card is face down.';
+    return 'Those cards can’t be moved together.';
+  }
+
+  /** Why `cards` can't go on `to` (only called when they can't). */
+  protected dropReason(_cards: readonly Card[], _from: Pile, _to: Pile): string {
+    return 'They can’t go there.';
+  }
+
   #reject(r: RejectReason): false {
     this.lastReject = r;
     return false;

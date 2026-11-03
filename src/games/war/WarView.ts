@@ -69,7 +69,9 @@ export function mountWar(ctx: WarViewContext) {
   const oppSlot = h('div', { class: 'war-slot', 'data-slot': 'cpu' });
   const youSlot = h('div', { class: 'war-slot', 'data-slot': 'player' });
   const banner = h('div', { class: 'war-banner', 'aria-live': 'polite', 'data-banner': '' });
-  const field = h('section', { class: 'war-field', 'aria-label': 'Battle' }, oppSlot, banner, youSlot);
+  // While Auto Play runs, the field says so in words (the button alone was easy to miss).
+  const autoBadge = h('span', { class: 'war-auto', 'data-auto-badge': '', hidden: true }, '▶▶ Auto play');
+  const field = h('section', { class: 'war-field', 'aria-label': 'Battle' }, oppSlot, banner, autoBadge, youSlot);
   const oppFace = avatar(cpu);
   preloadMoods(cpu);
   const oppAnchor = h('div', { class: 'war-who' }, oppFace, h('span', { class: 'war-name' }, cpu.name));
@@ -123,8 +125,10 @@ export function mountWar(ctx: WarViewContext) {
       pauseBtn.setAttribute('aria-pressed', String(paused));
     }
     veil.hidden = !paused;
-    autoBtn.replaceChildren(h('span', { class: 'btn-label' }, auto ? 'Pause' : 'Auto Play'));
+    // "Stop auto", not "Pause": the toolbar's Pause is a different action (it holds the whole table).
+    autoBtn.replaceChildren(h('span', { class: 'btn-label' }, auto ? 'Stop auto' : 'Auto Play'));
     autoBtn.setAttribute('aria-pressed', String(auto));
+    autoBadge.hidden = !auto;
     playBtn.disabled = game.isOver || auto || paused;
     autoBtn.disabled = game.isOver || paused;
     pauseBtn.disabled = game.isOver;
@@ -424,13 +428,19 @@ export function mountWar(ctx: WarViewContext) {
     const onButton = (e.target as HTMLElement)?.closest?.('button');
     if ((e.key === ' ' || e.key === 'Enter') && !onButton) {
       e.preventDefault();
-      void playRound();
+      // Auto Play deals the rounds; like the disabled Play button, the key waits.
+      if (!auto) void playRound();
     } else if (e.key === 'p' || e.key === 'P') setPaused(!paused);
     else if (e.key === 'a' || e.key === 'A') toggleAuto();
     else if (e.key === 's' || e.key === 'S') cycleSpeed();
     else if (e.key === 'r' || e.key === 'R') void restart();
   };
   addEventListener('keydown', onKey);
+  // Leaving the page pauses the table (Auto Play stops), as the solitaire tables do.
+  const onVisibility = () => {
+    if (document.hidden && !paused && !game.isOver) setPaused(true);
+  };
+  document.addEventListener('visibilitychange', onVisibility);
 
   renderStatic();
   if (game.data.round === 0) react('talk', pickLine(cpu.lines.greet), 2000);
@@ -440,6 +450,7 @@ export function mountWar(ctx: WarViewContext) {
       destroyed = true;
       auto = false;
       removeEventListener('keydown', onKey);
+      document.removeEventListener('visibilitychange', onVisibility);
     },
   };
 }

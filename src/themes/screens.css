@@ -4843,3 +4843,116 @@ button.board-tile .tile-title {
   outline-offset: 2px;
   border-radius: calc(var(--card-w) * 0.09);
 }
+
+/* ===================== Solitaire: cues that read without colour ===================== */
+/*
+ * Selected cards lift; legal destinations are dashed and marked ▾; the drop
+ * target under a carried card is a heavy solid ring with the same ▾; hints are
+ * dotted; a refused move shows ✕ for a moment; a finished foundation keeps ✓.
+ * Shapes and marks carry the meaning; colour only reinforces it.
+ */
+.sol-card.selected {
+  translate: 0 calc(var(--card-w) * -0.07);
+}
+.sol-slot[data-legal],
+.sol-card[data-legal] {
+  outline: 3px dashed var(--success);
+  outline-offset: 2px;
+}
+.sol-slot[data-drop],
+.sol-card[data-drop] {
+  outline: 3px solid var(--success);
+  outline-offset: 2px;
+}
+.sol-slot[data-legal]::before {
+  content: '▾';
+  position: absolute;
+  left: 50%;
+  top: calc(var(--card-w) * -0.3);
+  translate: -50% 0;
+  font-family: var(--font-body);
+  font-size: calc(var(--card-w) * 0.3);
+  line-height: 1;
+  color: var(--board-ink, #fff8ee);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+}
+.sol-card[data-hint],
+.sol-slot[data-hint] {
+  outline: 3px dotted var(--sky);
+  outline-offset: 2px;
+}
+.sol-card.sol-refused::after {
+  content: '✕';
+  position: absolute;
+  top: calc(var(--card-w) * -0.12);
+  right: calc(var(--card-w) * -0.12);
+  display: grid;
+  place-items: center;
+  width: calc(var(--card-w) * 0.34);
+  min-width: 18px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--danger);
+  color: var(--danger-ink);
+  font: 900 max(11px, calc(var(--card-w) * 0.2)) / 1 var(--font-body);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+}
+.sol-done {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 900;
+  /* Sits on the foundation's top-right corner (its transform is the slot's). */
+  margin-left: calc(var(--card-w) * 0.72);
+  margin-top: calc(var(--card-w) * -0.1);
+  display: grid;
+  place-items: center;
+  width: calc(var(--card-w) * 0.36);
+  min-width: 18px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--gold-bright, #f5d98e);
+  color: #2a1d07;
+  font: 900 max(11px, calc(var(--card-w) * 0.22)) / 1 var(--font-body);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+}
+.sol-done[hidden] {
+  display: none;
+}
+
+/* War: Auto Play says so on the field, in words (the toggle alone was easy to miss). */
+.war-auto {
+  align-self: center;
+  padding: 2px 10px;
+  border-radius: 999px;
+  border: 1.5px solid currentColor;
+  background: rgba(0, 0, 0, 0.35);
+  color: var(--board-ink, #fff8ee);
+  font-weight: 900;
+  font-size: max(var(--fs-min), 0.8rem);
+  letter-spacing: 0.04em;
+}
+.war-auto[hidden] {
+  display: none;
+}
+/* Go Fish: what the table is waiting for, next to Ask. */
+.gf-waiting {
+  font-weight: 800;
+  font-size: max(var(--fs-min), 0.85rem);
+  color: var(--board-ink, #fff8ee);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+.gf-waiting[data-state='you'] {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.table[data-board-tone='light'] :is(.gf-waiting, .war-auto) {
+  color: var(--ink);
+  text-shadow: none;
+}
+.table[data-board-tone='light'] .war-auto {
+  background: rgba(255, 255, 255, 0.6);
+}

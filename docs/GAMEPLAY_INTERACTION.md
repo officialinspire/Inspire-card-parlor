@@ -146,3 +146,102 @@ War and Go Fish.
   - haptic and sound rate limits;
   - capped animation waits;
   - table moods.
+
+## Table feedback (upgrade series)
+
+Each change below fixes a problem reproduced first, by hand in a browser or in a mounted
+view. Rules, difficulty, randomization, verified deals and reward amounts are unchanged.
+
+**Reproduced and fixed:**
+
+- **Klondike Auto-finish ignored Pause.** Cards kept flying to the foundations under the
+  "Paused" veil; in the reproduction, 33 more cards went up during a 3-second pause.
+  The loop now holds while paused (or while the page is hidden), and Resume carries on.
+- **Closing the More panel picked up a card.** A tap on the table, meant only to close
+  the panel, also selected the card underneath. The panel now swallows that press and
+  its click; the next tap is an ordinary tap.
+- **War's Auto button read "Pause" while running,** the same label as the toolbar's
+  Pause, which is a different action. It now reads "Stop auto", and a "▶▶ Auto play"
+  badge shows on the field while it runs.
+- **Hidden pages kept playing.** War's Auto Play kept dealing rounds in a background
+  tab (rounds 1→3 in the reproduction), and Go Fish CPU turns ran on unseen. Both
+  tables now pause when the page is hidden, as the solitaire tables already did.
+- **Spider double deal.** A quick second tap on the stock dealt a second row while the
+  first was still landing. A second deal within 500 ms is ignored. This guards that one
+  action only: other input is never blocked, and Undo still takes back one deal at a
+  time.
+- **Collection: a locked artwork's price button was disabled** when you were short of
+  credits, so tapping it said nothing. It stays operable and says how many more credits
+  are needed.
+
+**Selection and destinations, beyond colour:**
+
+| What                             | Cue                                              |
+| -------------------------------- | ------------------------------------------------ |
+| Selected cards                   | Lift slightly, as well as the gold ring          |
+| Legal destinations               | Dashed outline and a ▾ above the pile            |
+| Drop target under a carried card | Heavy solid outline, with the same ▾             |
+| Hint                             | Dotted outline, as well as the blue pulse        |
+| Refused move                     | ✕ on the card for a moment, as well as the shake |
+| Finished foundation              | A ✓ badge that stays (no motion needed)          |
+
+Destinations are marked while a card is held, by tap, keyboard or drag. Only piles a
+legal move reaches are marked: no hidden card is shown, and nothing moves for the
+player.
+
+**Why a move is refused** (`explain()` and `whyNotPick()` in
+`src/games/solitaire/*Game.ts`): each game words the refusal from the rule it already
+checked. For example:
+
+- "Only a King can fill an empty column."
+- "Foundations start with an Ace."
+- "That free cell is taken."
+- "You can move 2 cards there now: empty a free cell or a column to move more."
+- "Place a card on one exactly one rank higher."
+
+Face-down cards are only ever "face down". The reason shows in one toast at a time,
+the same reason isn't repeated within 4 seconds, and it is announced to screen readers.
+
+**Waiting states:**
+
+- **Go Fish** shows what the table is waiting for, beside Ask: "Your turn: pick a card",
+  "Your ask is being answered…", "Waiting for Jak Gold…" or "Paused". The hand and Ask
+  stay disabled when it isn't your turn, because those actions are genuinely
+  unavailable.
+- **War:** while Auto Play runs, Space and Enter no longer start an extra round, which
+  matches the disabled Play Round button.
+
+**Sound and haptics:**
+
+- Refusal toasts are silent: the table's own `invalid_move` event already played (and
+  buzzed) once. Spider's "Fill every column before dealing" used to play its own error
+  sound as well.
+- Screen-reader announcements report a Spider deal and the deals left.
+
+**Intentionally left unchanged:**
+
+- **Rules, scoring, CPU difficulty, shuffles and seeds, verified story deals, and
+  rewards.**
+- **Undo semantics:** one player action, one undo (a refused move changes nothing to
+  undo).
+- **Tapping another movable card while one is selected switches the selection;** it is
+  not treated as a refused move.
+- **Klondike stock taps are not guarded.** Fast draws are a normal way to play, and each
+  is undoable.
+- **No first-use tip was added.** The unclear points found (where a selected card can go,
+  why a move failed, what Go Fish is waiting for, whether Auto Play is on) are now
+  answered by the table itself.
+- **No global input lock:** each guard covers one action.
+
+**Tests:**
+
+- `tests/unit/tableFeedback.test.ts` (mounted views):
+  - Auto-finish holds under Pause;
+  - ✓ marks with reduced motion;
+  - refusal reasons for each solitaire;
+  - the Spider deal guard and its undo.
+- `tests/e2e/table-feedback.spec.ts`:
+  - the More panel tap;
+  - legal-destination marks and a refused drag with its reason;
+  - War Auto Play naming, badge and background pause;
+  - the Go Fish waiting label and background pause.

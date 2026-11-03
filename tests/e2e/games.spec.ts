@@ -78,7 +78,7 @@ test.describe('War', () => {
     const auto = page.locator(`${CURRENT} [data-action="auto"]`);
     await auto.click();
     await expect(auto).toHaveAttribute('aria-pressed', 'true');
-    await expect(auto).toHaveText('Pause');
+    await expect(auto).toHaveText('Stop auto');
     await expect.poll(() => hudRound(page)).toBeGreaterThan(5);
     await auto.click();
     await expect(auto).toHaveAttribute('aria-pressed', 'false');
