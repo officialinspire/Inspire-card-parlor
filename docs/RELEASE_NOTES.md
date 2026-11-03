@@ -1,5 +1,17 @@
 # Release notes
 
+## Unreleased — story quality upgrades
+
+- **Corrected public-records note.** Virginia's Freedom of Information Act
+  is open to citizens of the Commonwealth and to Virginia-circulating media,
+  not to "anyone". The Chapter 4 notes now keep three things apart: Virginia
+  FOIA, the federal FOIA (open to any person) and the separate First
+  Amendment right to film in public.
+- **Kenmore** is now dated 1769–1775, the dates the George Washington
+  Foundation gives.
+- **New docs:** `docs/STORY_SOURCES.md` (every claim with its source,
+  publisher, scene and verification status) and `docs/UPGRADE_BRIEF.md`.
+
 ## 1.2.0 — The Thirteenth Hand, complete
 
 The full nine-chapter story, published to GitHub Pages, together with the

@@ -140,7 +140,8 @@ finished, and the journal can replay the epilogue.
 carry a source:
 
 - Day-Glo paint and 1960s concert posters;
-- the federal FOIA (1966) and its exemptions;
+- the federal FOIA (1966), its exemptions, and how it differs from Virginia's
+  Act;
 - the hollow-nickel case;
 - WWII escape-map playing cards;
 - the British card tax and the ace of spades;
@@ -202,12 +203,15 @@ bump `CAMPAIGN_VERSION` in `src/story/ids.ts` and add a migration step.
 
 ## Open items
 
-- **Fact-check the field notes.** The history notes added for Chapters 3–9
-  were written from general knowledge and each names a source to check. They
-  were not checked against those sources in this session. A fact-check pass
-  is recommended before release, especially for exact dates and names (the
-  Day-Glo founders, the 1894 Mary Washington monument, the Shriners' 1922
-  hospitals, new deck order).
+- **Fact-check the field notes.** `docs/STORY_SOURCES.md` now records each
+  claim with its source URL, publisher, scene and verification status, and
+  keeps history, interpretation and invented lore apart.
+  - The first pass corrected the Virginia FOIA note (access belongs to
+    citizens of the Commonwealth and in-state media, not "anyone"). It also
+    separated federal FOIA and filming rights into notes of their own, and
+    dated Kenmore 1769–1775.
+  - Notes still marked "Not yet checked" there need a check before they are
+    expanded.
 - **Review the real-person portrayals.** Jak Gold and Steve Gonzales are drawn
   from real people. Their scenes should be reviewed by, or with, the people
   they are based on.

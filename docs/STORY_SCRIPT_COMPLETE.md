@@ -485,7 +485,7 @@ _Jak has filmed, filed and flourished his way to a reply nobody meant him to rea
 
 **Field notes:**
 
-- **Freedom of Information** (history): The federal Freedom of Information Act became law in 1966. Agencies may withhold some information under nine exemptions — one reason released records often arrive with black bars. _Source: FOIA.gov (U.S. Department of Justice)._
+- **Freedom of Information** (history): The federal Freedom of Information Act became law in 1966. It covers federal agencies, which may withhold information under nine exemptions — one reason released records arrive with black bars. A Virginia city answers under the state’s own Act, which has its own exclusions. _Source: FOIA.gov (U.S. Department of Justice); Virginia FOIA Council._
 
 ### 4.4 Redacted
 
