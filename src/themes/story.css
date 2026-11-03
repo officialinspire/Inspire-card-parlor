@@ -2025,7 +2025,11 @@
   text-decoration: underline;
   text-underline-offset: 2px;
   cursor: pointer;
-  min-height: 0;
+  /* A comfortable target, even inside a one-line recap. */
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  vertical-align: middle;
 }
 .recap-link:focus-visible {
   outline: 2px solid var(--gold);
@@ -2127,4 +2131,33 @@
   text-transform: uppercase;
   font-size: max(var(--fs-min), 0.7em);
   color: var(--ink-faint);
+}
+/* The last-clue line is a row (label, then the link), never clamped text the link could slip under. */
+.journal-recap [data-recap-clue] {
+  display: flex;
+  align-items: center;
+  gap: 0 6px;
+  min-width: 0;
+}
+.journal-recap [data-recap-clue] .recap-label {
+  margin-right: 0;
+  flex: none;
+}
+.journal-recap [data-recap-clue] .recap-link {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+  line-height: 28px;
+}
+/* Narrow screens: Continue drops to its own row before the recap lines get too narrow to tap. */
+.journal-recap {
+  flex-wrap: wrap;
+}
+.journal-recap .recap-lines {
+  flex: 1 1 190px;
+}
+.journal-recap > .btn {
+  margin-left: auto;
 }

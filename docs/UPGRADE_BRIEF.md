@@ -448,3 +448,24 @@ save format changed.
   - interaction, games, toolbar, quick-play, customization, table-feedback, story and
     campaign e2e on phone-portrait, phone-landscape and desktop: 160 passed,
     14 skipped (by design).
+
+**Story progress: where you left off.** Details in `docs/STORY_CAMPAIGN.md`, "Where you
+left off".
+
+- **New features:**
+  - a "Next" strip on the map with Continue;
+  - Go Fish book objectives that say winning isn't required;
+  - the journal's three-line recap (last clue, open question, next action);
+  - a one-line interpretation for every clue, with an open question and links to
+    related clues already found;
+  - "Your clues" in the four-suit door;
+  - Replay labelled as such.
+- **The brief no longer names a clue before it is earned.**
+- **No new saved state; unlock and reward rules unchanged.**
+- **Tests:**
+  - unit tests: 505 passed (13 new recap tests);
+  - story-recap e2e: 12 passed on phone-portrait, small-phone and desktop.
+- **A small-phone fix:** the layout suite found the recap's clue link too small at
+  320px (a tiny target, once covered by its label). It now has a 28px target, and
+  Continue wraps to its own row on narrow screens. Layout and "story screens fit": 8
+  passed on four projects.
