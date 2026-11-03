@@ -227,8 +227,12 @@ export function paginator<T>(opts: PaginatorOptions<T>) {
   );
   // Keyboard
   el.addEventListener('keydown', (e) => {
-    if (e.key === 'PageDown' || (e.key === 'ArrowRight' && e.target === viewport)) go(page + 1);
-    if (e.key === 'PageUp' || (e.key === 'ArrowLeft' && e.target === viewport)) go(page - 1);
+    const forward = e.key === 'PageDown' || (e.key === 'ArrowRight' && e.target === viewport);
+    const back = e.key === 'PageUp' || (e.key === 'ArrowLeft' && e.target === viewport);
+    if (forward || back) {
+      e.preventDefault();
+      go(page + (forward ? 1 : -1));
+    }
   });
 
   const ro = new ResizeObserver(() => measure());
