@@ -286,3 +286,33 @@ save format changed.
    the existing VFX and items; no new art pipeline.
 6. **Documentation:** after each step, update `docs/STORY_CAMPAIGN.md`,
    regenerate the script, and record results.
+
+## 7. Progress log
+
+**Voice pass, Chapters 1–4.**
+
+- **Where:** `src/story/campaign.ts`, `src/story/cast.ts`,
+  `src/games/cpu/storyOpponents.ts` (Cheryl, Sophia, Dante), and one Jak
+  greeting in `src/games/cpu/personalities.ts`.
+- **"Play before I talk" removed.** Each host now has a reason of their own:
+  - Cheryl's inventory before a collector's visit;
+  - Sophia's shift, school group and log;
+  - Dante's commission deadline;
+  - Jak's edit, for which he wants someone who isn't his audience.
+
+  The existing challenges are those tasks.
+
+- **Guardrails verified by script:**
+  - discovery beats (index and id) are identical to before;
+  - challenge ids, games, setups, objectives, rewards and unlocks are
+    identical;
+  - no Chapter 1–4 beat exceeds 180 characters;
+  - Chapter 1's arrival keeps the beat order the e2e test relies on;
+  - all narration addresses "you".
+- **Mobile fit:** the new `tests/e2e/dialogue-fit.spec.ts` checks every line
+  of every Chapter 1–4 scene at 320×568 and 667×375: arrivals, each
+  challenge's opening with its brief, closing scenes and departures. All 8
+  tests (four chapters at two sizes) pass.
+- **Facts:** the Fones Cliffs line uses STORY_SOURCES T2 (Read); Jak's lines
+  follow section 1 of the sources doc. See `docs/STORY_CAMPAIGN.md` for the
+  per-character summary.

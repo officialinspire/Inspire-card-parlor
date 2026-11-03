@@ -86,7 +86,7 @@ export const PERSONALITIES: readonly CpuPersonality[] = [
     color: '#e0b54a',
     traits: { memory: 0.75, whimsy: 0.1, pressure: 0.8, greed: 0.7 },
     lines: {
-      greet: ['Camera’s rolling. Deal me in.', 'Let’s see what you’ve got.'],
+      greet: ['Camera’s rolling. Say the word and it stops.', 'Let’s see what you’ve got.'],
       ask: (r, t) => `${t}, hand over your ${rankPlural(r)}.`,
       gave: ['Knew it.', 'For the record: thank you.'],
       goFish: ['Go fish.', 'Not a one. Go fish.'],

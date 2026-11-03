@@ -105,7 +105,7 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
     beats: [
       'You enter Cheryl’s shop as she is closing.',
       'Cheryl shows you an estate-sale box; on top lies a card with no suit or rank, titled The Thirteenth Hand.',
-      'She will only talk to someone who can play: five games across the shop.',
+      'A collector is due at nine for the decks, and Cheryl will not sell a lot she has not counted, so you help her take inventory.',
       'The box gives up a receipt (Lot 13), a ledger of twelve hands with the thirteenth blank, and a river postcard.',
       'Under the lamp, the card shows four blank corners shaped for suit marks.',
       'Cheryl sends you to Sophia at the River Station.',
@@ -121,24 +121,37 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
         'You step into Cheryl’s Antique Shop. A bell rings over the door, and forty clocks disagree about the time.',
       ),
       say('cheryl', 'We close at five. It’s ten to.', 'portrait-neutral'),
-      narrate('On the counter you see an estate-sale box tied with string. A single card lies on top.'),
-      say('cheryl', 'Bought the whole lot for twenty dollars. Twelve old decks, a ledger, and that.', 'cards-reveal'),
+      narrate(
+        'On the counter you see an estate-sale box tied with string, a twenty-dollar tag still on the knot. One card lies on top.',
+      ),
+      say(
+        'cheryl',
+        'Lot 13, from an estate sale across the river. Twelve old decks, a ledger, and that. A collector comes at nine for the decks.',
+        'cards-reveal',
+      ),
       narrate(
         'You pick up the card. It has no suit and no number — only the words THE THIRTEENTH HAND, and four blank corners.',
         'thirteenth-hand-card',
       ),
       say(
         'cheryl',
-        'Before you ask: no, I don’t know what it’s worth. Nobody prints a card without a suit. Somebody wanted it noticed.',
+        'Provenance is a story with receipts. That card has neither. Nobody prints a card without a suit unless they want it noticed.',
         'portrait-doubt',
       ),
-      say('cheryl', 'You want to know more, you sit and play. I don’t talk shop with strangers who can’t shuffle.'),
-    ],
-    outro: [
-      say('cheryl', 'The River Station is Sophia’s. Parks and Rec. She knows every heron on that river by name.'),
       say(
         'cheryl',
-        'Take the card. Bring it back in one piece. And keep the receipt for anything you buy.',
+        'I don’t sell a lot I haven’t counted. Help me inventory it tonight, and you can look at anything in the box.',
+        'portrait-talk',
+      ),
+    ],
+    outro: [
+      say(
+        'cheryl',
+        'River Station is Sophia’s. Parks and Rec. If anyone can tell you who stood at that bend and drew a heron, it’s her.',
+      ),
+      say(
+        'cheryl',
+        'I called the collector. Told him Monday. Take the card, bring it back, and get a receipt for anything you spend.',
         'portrait-greet',
       ),
       narrate('You tuck the card into your pocket and head for the river.'),
@@ -154,7 +167,9 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
           deckId: 'fredericksburg',
           boardId: 'cheryls_antique_shop',
         },
-        intro: [say('cheryl', 'War. No thinking required. I want to see if you flinch.')],
+        intro: [
+          say('cheryl', 'We split the twelve decks by War. High card picks. It’s faster than arguing.', 'cards-deal'),
+        ],
         outro: [
           narrate(
             'Cheryl slides a receipt across the counter to you: Lot 13, one card box, contents as found.',
@@ -170,7 +185,10 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
         setup: { seed: 1008, options: { draw: 1 }, deckId: 'fredericksburg', boardId: 'cheryls_antique_shop' },
         intro: [
           narrate('The box holds twelve loose decks, all shuffled together. Cheryl hands you one to sort.'),
-          say('cheryl', 'Aces up. If it’s missing cards, I want to know.'),
+          say(
+            'cheryl',
+            'Aces up. A short deck sells for half. A complete one in its box sells for more than you’d think.',
+          ),
         ],
         outro: [
           narrate(
@@ -178,6 +196,7 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
             'ledger-of-twelve',
           ),
           say('cheryl', 'Somebody kept score. And somebody stopped.', 'portrait-think'),
+          say('cheryl', 'One handwriting, twelve hands. That isn’t a game night. That’s a record.'),
         ],
       }),
       level('th-1', 3, {
@@ -189,9 +208,19 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
           deckId: 'fredericksburg',
           boardId: 'cheryls_antique_shop',
         },
-        intro: [say('cheryl', 'Go Fish. Don’t laugh. It’s how I check a matched set.', 'cards-shuffle')],
+        intro: [
+          say(
+            'cheryl',
+            'Go Fish. Don’t laugh. Asking for matches is the quickest way to find out a set is short.',
+            'cards-shuffle',
+          ),
+        ],
         outro: [
-          say('cheryl', 'Every deck in that box is complete. Fifty-two each. So where did the extra card come from?'),
+          say(
+            'cheryl',
+            'Every deck in the box is complete. Fifty-two each. So the extra card didn’t come with them. Somebody added it.',
+            'portrait-think',
+          ),
         ],
       }),
       level('th-1', 4, {
@@ -201,12 +230,20 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
         setup: { seed: 1001, deckId: 'fredericksburg', boardId: 'cheryls_antique_shop' },
         intro: [
           narrate('You notice that Cheryl’s display case has a puzzle lock: a FreeCell deal painted under the glass.'),
-          say('cheryl', 'My late husband’s idea of security. Solve it and I’ll show you what was in the lid.'),
+          say(
+            'cheryl',
+            'My late husband’s idea of security. He said burglars don’t have the patience. He was right about most people.',
+          ),
         ],
         outro: [
           narrate(
             'You find an old postcard of the Rappahannock tucked in the box lid. A heron is sketched on the back, with two words: River Station.',
             'river-postcard',
+          ),
+          say(
+            'cheryl',
+            'A heron and two words. That isn’t provenance either. But it’s a direction.',
+            'portrait-neutral',
           ),
         ],
       }),
@@ -216,7 +253,9 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
         finale: true,
         objectiveText: 'Finale: clear one-suit Spider.',
         setup: { seed: 1035, options: { suits: 1 }, deckId: 'fredericksburg', boardId: 'cheryls_antique_shop' },
-        intro: [say('cheryl', 'One more. Spider. Then we look at that card under a proper lamp.')],
+        intro: [
+          say('cheryl', 'Last one. Spider. Then we look at that card under a proper lamp. Daylight lies about paper.'),
+        ],
         outro: [
           narrate(
             'You hold the card under the lamp. Its blank corners catch the light, each shaped for a suit mark — four of them, all missing.',
@@ -280,31 +319,35 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
       ),
       say(
         'sophia',
-        'Morning. If you’re here about the heron, she’s fine. She just likes the attention.',
+        'Morning. If you’re here about the heron, she’s fine. She’s fished that bend longer than I’ve worked here.',
         'portrait-greet',
       ),
       narrate('You show Sophia the postcard and the card.'),
       say(
         'sophia',
-        'That sketch is a great blue heron, drawn at this bend. We log her every morning. Whoever drew it has stood right here.',
+        'That’s this bend. See the snag behind her? It washed in during the spring flood. Whoever drew this stood on our dock, and recently.',
         'portrait-think',
       ),
       say(
         'sophia',
-        'Last week a man with a phone on a stick filmed our lobby and asked for our visitor logs. Jak something. He said it was his constitutional right. It was also my lunch break.',
+        'Last week a man with a phone on a stick filmed our lobby and asked for the visitor logs. Jak something. Constitutional right, he said. It was also my lunch break.',
         'portrait-doubt',
       ),
-      say('sophia', 'I have a shift to finish. Play a few hands while I work, and I’ll pull the logs.'),
+      say(
+        'sophia',
+        'I have a school group at two and a log to finish. Walk the route with me, and I’ll pull the sign-in sheets when we’re back.',
+        'portrait-talk',
+      ),
     ],
     outro: [
       say(
         'sophia',
-        'Somebody sent Dante a heron card, and it came back here. That’s not a coincidence.',
+        'Somebody mailed Dante a heron card, and it came back to a station that never sent it. I don’t like being somebody’s return address.',
         'portrait-think',
       ),
       say(
         'sophia',
-        'Go see him. And if you run into the man with the phone on a stick, you didn’t hear about the logs from me.',
+        'Go see him. If you run into the man with the phone on a stick, tell him the sign-in sheets are city records. He can ask for them properly.',
       ),
       narrate('You fold the map into your pocket and set off for Dante’s shop.'),
     ],
@@ -322,7 +365,7 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
         intro: [
           say(
             'sophia',
-            'Lunch break. Twenty minutes. Go Fish is about all I can teach in twenty minutes.',
+            'Lunch break. Twenty minutes, and I’m eating. Go Fish is about all I can teach with one hand.',
             'cards-deal',
           ),
         ],
@@ -351,14 +394,18 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
         setup: { seed: 3101, options: { draw: 1 }, deckId: 'eastern_woodlands', boardId: 'rappahannock_riverside' },
         intro: [
           narrate('You walk the river trail with Sophia toward the heron’s bend.'),
-          say('sophia', 'Sort these while I check the markers. Patience is most of this job.'),
+          say('sophia', 'Sort these while I check the markers. Half this job is noticing what moved overnight.'),
         ],
         outro: [
           narrate(
             'At the heron’s bend, an old trail marker leans toward the water. Carved into it is a small club — the exact size of one blank corner on your card.',
             'club-mark',
           ),
-          say('sophia', 'That marker is older than I am. It isn’t on our trail inventory.', 'portrait-surprise'),
+          say(
+            'sophia',
+            'That marker is older than I am, and it isn’t on our trail inventory. Somebody set it where only high water reaches.',
+            'portrait-surprise',
+          ),
         ],
         info: [
           {
@@ -376,7 +423,12 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
         game: 'freecell',
         objectiveText: 'Solve this FreeCell deal.',
         setup: { seed: 1016, deckId: 'eastern_woodlands', boardId: 'rappahannock_riverside' },
-        intro: [say('sophia', 'If that marker is old, it’ll be on an old map. Archive drawer. Bring patience.')],
+        intro: [
+          say(
+            'sophia',
+            'If that marker is old, it’s on an old map. The archive drawer sticks, and nobody’s labelled it since the nineties.',
+          ),
+        ],
         outro: [
           narrate(
             'Sophia spreads her own annotated map of the river trail across the desk and lets you take it. Near the old waterfront, four small marks are circled in pencil.',
@@ -406,7 +458,7 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
         intro: [
           say(
             'sophia',
-            'The river’s up. While we wait it out, the lost-and-found needs sorting. Thirty years of everything.',
+            'River’s up, so the lower trail is closed. While it drops, the lost-and-found needs sorting. Thirty years of everything.',
           ),
         ],
         outro: [
@@ -416,7 +468,7 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
           ),
           say(
             'sophia',
-            'Dante? He painted the mural for our kids’ program. Good kid. Terrible handwriting.',
+            'Dante. He painted the mural for our kids’ program and signed it in letters nobody can read. On purpose, he says.',
             'portrait-greet',
           ),
         ],
@@ -442,16 +494,32 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
           deckId: 'eastern_woodlands',
           boardId: 'rappahannock_riverside',
         },
-        intro: [say('sophia', 'End of shift. One quick game of War — loser files the incident report.', 'cards-deal')],
-        outro: [say('sophia', 'One suit found, three to go. I’ll watch the river. You watch that card.')],
+        intro: [
+          say(
+            'sophia',
+            'End of shift. One game of War. Loser writes up the man with the phone on a stick.',
+            'cards-deal',
+          ),
+        ],
+        outro: [
+          say(
+            'sophia',
+            'People talk about this river like its history ended in 1776. Downriver, the Rappahannock Tribe got land at Fones Cliffs back in 2022.',
+            'portrait-neutral',
+          ),
+          say(
+            'sophia',
+            'It’s still being written. So is this. One mark found. I’ll watch the river; you watch that card.',
+          ),
+        ],
         rewards: [credits(130), xp(160)],
         info: [
           {
             id: 'rappahannock-name',
             kind: 'history',
             title: 'The river’s name',
-            text: 'The river shares its name with the Rappahannock people. The Rappahannock Tribe, based in Virginia’s Northern Neck, was federally recognized in 2018.',
-            source: 'Rappahannock Tribe; U.S. Bureau of Indian Affairs',
+            text: 'The river shares its name with the Rappahannock people. The Rappahannock Tribe, based in Virginia’s Northern Neck, was federally recognized in 2018. In 2022 it reacquired 465 acres at Fones Cliffs, a sacred site on the river.',
+            source: 'Rappahannock Tribe; U.S. Bureau of Indian Affairs; U.S. Department of the Interior',
           },
         ],
       }),
@@ -493,7 +561,7 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
       'The returned heron card was his: he mailed it to the client’s P.O. box using the River Station, where he was painting a mural, as his return address.',
       'An anonymous order: thirteen card designs of George Washington as a neon monster, paid in advance in one-dollar bills, signed “G. W.”',
       'Dante gives you his first finished design, General Monsterton, holding twelve cards and one blank one.',
-      'Under black light, the reference sketch shows a heart drawn in invisible ink — the second mark.',
+      'Dante sees that the lace in the reference sketch breaks its own rhythm; under black light, the gap holds a heart drawn in invisible ink — the second mark.',
       'Dante, cheerfully clueless about Freemasonry, knows the payments came through Jak Gold’s card-case maker, and sends you to Jak.',
     ],
     artwork: {
@@ -508,31 +576,35 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
       ),
       say(
         'dante',
-        'Hi! Welcome! Wait — you’ve got the look. You’re not here for a lighter. You’re here for a mystery.',
+        'Hey. Lighters are on the left, the art’s on the walls, and I’m behind on a deadline. Which one are you here for?',
         'portrait-greet',
       ),
-      narrate('You set the returned envelope on the counter. Dante’s face drops, then lights right back up.'),
+      narrate('You set the returned envelope on the counter. Dante goes quiet, then laughs once.'),
       say(
         'dante',
-        'My heron card! I mailed that to a P.O. box that doesn’t exist. I used the River Station as my return address — I was painting their mural that week.',
+        'My heron card. I mailed that to a P.O. box that doesn’t exist, with the River Station as the return address. I was painting their mural that week.',
         'portrait-surprise',
       ),
-      say('dante', 'The client asked for it back. Then the client stopped existing. Classic client.', 'portrait-talk'),
       say(
         'dante',
-        'Help me catch up on my sketch pile and I’ll show you the weirdest job I’ve ever taken. And I once painted a lizard wizard on a food truck.',
+        'The client paid in advance, asked for that card back, then stopped answering. I’m still on design one of thirteen. I finish what I’m paid for.',
+        'portrait-talk',
+      ),
+      say(
+        'dante',
+        'Help me clear the sketch pile and I’ll show you the brief. Strangest job I’ve taken, and I once painted a lizard wizard on a food truck.',
         'cards-fan',
       ),
     ],
     outro: [
       say(
         'dante',
-        'The ones came packed in a custom card case, stamped by the maker. The fancy one Jak Gold uses — he never stops talking about it.',
+        'The ones came packed in a custom card case with the maker’s stamp. Same maker Jak Gold uses. He mentions it in roughly every video.',
         'portrait-think',
       ),
       say(
         'dante',
-        'Jak has a back room off Caroline Street. Ring light, tripod, opinions. Tell him Dante says hi. Actually, don’t. He’ll film it.',
+        'Jak has a back room off Caroline Street. Ring light, tripod, opinions. He’s better than his thumbnails. Don’t tell him I said that.',
         'portrait-greet',
       ),
       narrate('You tuck the glowing sketch away with the card. Two corners marked, two to go.'),
@@ -547,7 +619,7 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
           narrate(
             'Dante drops a stack of monster sketches on the counter, sorted into suits that do not exist. You start sorting them into real ones.',
           ),
-          say('dante', 'Every monster needs a home. Aces up, like a civilised person.', 'cards-shuffle'),
+          say('dante', 'Real suits, aces up. Chaos goes on the paper, not the desk.', 'cards-shuffle'),
         ],
         outro: [
           narrate(
@@ -556,10 +628,10 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
           ),
           say(
             'dante',
-            'Thirteen card designs. Theme: George Washington, but as a neon monster. Paid in one-dollar bills. Every single bill had the same guy on it.',
+            'Thirteen card designs. George Washington as a neon monster. Paid in one-dollar bills — so, technically, paid in George Washington.',
             'portrait-talk',
           ),
-          say('dante', 'I thought it was a bit. It might not be a bit.', 'portrait-think'),
+          say('dante', 'I thought it was a bit. Bits don’t usually pay in advance.', 'portrait-think'),
         ],
         info: [
           {
@@ -580,19 +652,19 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
         intro: [
           say(
             'dante',
-            'War! My deck against your deck. Mine has monsters. Yours also has my monsters. I lent it to you. I’m very generous.',
+            'War. My deck against your deck. Both of them are my deck; I lent you one. Don’t bend the cards.',
             'cards-deal',
           ),
         ],
         outro: [
           say(
             'dante',
-            'Psychedelic poster art is my whole thing. Those 1960s concert posters with lettering you have to stare at to read? They make you slow down and actually look.',
+            'Those sixties Fillmore posters? The lettering melts into the shapes. You can’t skim them. You stand there until the picture resolves.',
             'portrait-talk',
           ),
           say(
             'dante',
-            'That’s what this commission feels like. Something you’re supposed to stare at.',
+            'This brief is like that. It isn’t random. Your eyes just haven’t found the rhythm yet.',
             'portrait-think',
           ),
         ],
@@ -618,16 +690,20 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
           ),
           say(
             'dante',
-            'The brief says “capture my vigor.” My vigor. Who writes a brief in the first person?',
+            'The brief says “capture my vigor.” My vigor. Clients don’t usually write about themselves like they’re a statue.',
             'portrait-doubt',
           ),
         ],
         outro: [
           narrate(
-            'Dante hands you his first finished design: General Monsterton, a three-eyed George Washington in neon blue, holding twelve cards. You notice that the thirteenth card in his hand is blank.',
+            'Dante hands you his first finished design: General Monsterton, a three-eyed George Washington in neon blue, holding twelve cards. The thirteenth card in his hand is blank.',
             'monster-card',
           ),
-          say('dante', 'Keep it. Proof I was here before this got weird. Well. Weirder.', 'portrait-greet'),
+          say(
+            'dante',
+            'Keep that one. Proof I was hired before this got strange. And proof I hit at least one deadline.',
+            'portrait-greet',
+          ),
         ],
       }),
       level('th-3', 4, {
@@ -639,16 +715,27 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
           deckId: 'dantes_world',
           boardId: 'artists_studio',
         },
-        intro: [say('dante', 'Paint’s drying. Go Fish while we wait. Monsters love a pond.', 'cards-deal')],
+        intro: [
+          say(
+            'dante',
+            'Paint’s curing. Go Fish while it does. Rush fluorescent paint and it dries dull.',
+            'cards-deal',
+          ),
+        ],
         outro: [
           say(
             'dante',
-            'People ask me what a psychonaut is. It’s an explorer of the inner world — a German writer, Ernst Jünger, used the word decades ago. For me, it’s sketchbooks. Way cheaper than a rocket.',
+            'People hear “psychedelic” and think drug joke. The poster artists were working on perception — what your eye does when a pattern won’t sit still.',
             'portrait-talk',
           ),
           say(
             'dante',
-            'Freemasons, though? No idea. Are they the ones with the little red hats? Wait, that’s the Shriners. I think. Don’t quote me.',
+            'And it was a scene. Printers, bands, kids lining up for a poster. Art made for a room full of people. That’s the part I want.',
+            'full-gesture-a',
+          ),
+          say(
+            'dante',
+            'Freemasons, though? No idea. The little red hats? No, that’s the Shriners. I think.',
             'portrait-doubt',
           ),
         ],
@@ -661,18 +748,22 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
         setup: { seed: 1003, options: { suits: 1 }, deckId: 'dantes_world', boardId: 'artists_studio' },
         intro: [
           narrate(
-            'Dante kills the lights and switches on a black light. The reference sketch in front of you starts to glow in places the ink should not be.',
+            'Dante studies the reference sketch, then kills the lights and switches on a black light. You watch him tilt the paper toward it.',
           ),
-          say('dante', 'Okay. That’s either a clue or a very old smoothie stain.', 'portrait-surprise'),
+          say(
+            'dante',
+            'The cuff lace is wrong. Lace repeats, and this breaks its rhythm. Look at the gaps, not the threads. Figure and ground.',
+            'portrait-think',
+          ),
         ],
         outro: [
           narrate(
-            'Under the black light, a heart appears in the lace of Washington’s cuff, drawn in invisible ink. You hold up your card: the heart is the exact size of its second blank corner.',
+            'Under the black light, a heart glows in the gaps of Washington’s lace cuff, drawn in invisible ink. It is the exact size of your card’s second blank corner.',
             'heart-mark',
           ),
           say(
             'dante',
-            'A hidden heart! In a portrait of George Washington! This is the most romantic crime I’ve ever been part of.',
+            'There. Negative space first, fluorescent ink to prove it. Whoever drew this knew exactly how people look at lace: they don’t.',
             'portrait-surprise',
           ),
         ],
@@ -709,7 +800,7 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
       'You find Jak mid-video, narrating to his camera in a back room off Caroline Street.',
       'He filmed the River Station lobby while chasing a records request about “unexplained activity” in the old cellars.',
       'Among his papers: a receipt for a custom card case ordered by “G. W.”, paid in ones, shipped to an office with no name on the door.',
-      'The reply to his request is almost all black bars; one phrase survives: OPERATION THIRTEENTH HAND.',
+      'He corroborates the receipt with a second source, then switches the camera off to show you the reply: almost all black bars, one phrase surviving — OPERATION THIRTEENTH HAND.',
       'Jak films the card in a spring flourish at 240 frames a second; frame by frame, a diamond appears inside its edge — the third mark.',
       'Jak sends you to the unmarked office: he is banned from the stairwell, and you are not.',
     ],
@@ -725,18 +816,24 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
       ),
       say(
         'jak_gold',
-        'For the record: I’m Jak Gold, it’s today, and you have entered a space I am lawfully filming. Welcome to the parlor!',
+        'This is my studio, so you’re on camera. Say the word and it goes off. Most people don’t say the word. They wave.',
       ),
       say('jak_gold', 'Dante sent you? Dante texted me eleven monster emojis. I inferred.'),
       narrate('You show Jak the card. He stops talking, which, you sense, is rare.'),
-      say('jak_gold', 'That card is in my records request. Sit down. Deal in. I explain better with my hands busy.'),
+      say(
+        'jak_gold',
+        'That card is in my records request. I’m cutting that video tonight, and I need someone who isn’t my audience. Deal in. I think better with my hands busy.',
+      ),
     ],
     outro: [
       say(
         'jak_gold',
-        'Three corners: club, heart, diamond. The spade is at that address — I’d bet my best deck on it. I’m banned from the stairwell, legally speaking. You aren’t.',
+        'Three corners: club, heart, diamond. The spade is behind that unmarked door; I’d bet my best deck on it. The building manager banned me from the stairwell. You aren’t banned.',
       ),
-      say('jak_gold', 'If anyone asks, I’m not following you. I’m filming in a public place you happen to be in.'),
+      say(
+        'jak_gold',
+        'I’m not coming with you. I’ll be here, cutting a video that’s honest and a little boring. You can tell it’s honest because it’s boring.',
+      ),
       narrate('You leave Jak rewatching his footage and head for the door with no name on it.'),
     ],
     levels: [
@@ -745,15 +842,15 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
         game: 'war',
         objectiveText: 'Win War against Jak Gold.',
         setup: { seed: 2030, options: { opponent: 'jak_gold' }, deckId: 'jak_gold', boardId: 'backroom_card_table' },
-        intro: [say('jak_gold', 'War. Pure chance, zero skill, so nobody can say I cheated on camera. Rolling.')],
+        intro: [say('jak_gold', 'War. Pure chance, so nobody watching can say I cheated. Rolling.')],
         outro: [
           say(
             'jak_gold',
-            'Six months ago I asked the city, in writing, about “unexplained activity” in the old cellars under downtown. Cheap question. Weird answer.',
+            'Six months ago I asked the city, in writing, about “unexplained activity” in the old cellars downtown. State FOIA. Cheap question. Weird answer.',
           ),
           say(
             'jak_gold',
-            'First, nothing. Then a reply with more black ink than words. That’s when I started filming everybody’s lobby. Including your ranger’s. She was not a fan.',
+            'Then I filmed lobbies, your ranger’s included, on her lunch break. Legal, probably. Useful, no. I cut that footage. She was right.',
           ),
         ],
         info: [
@@ -775,17 +872,20 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
           narrate(
             'Jak hands you three practice decks shuffled together and asks you to sort them while he rehearses a one-handed cut.',
           ),
-          say('jak_gold', 'Three at a time. Like my records requests.'),
+          say('jak_gold', 'Three at a time. Same as records: you don’t get to pick which ones come up.'),
         ],
         outro: [
           narrate(
             'Among Jak’s paperwork you find a receipt for a custom card case, ordered from his own card-case maker by a customer who signed as “G. W.”',
             'cardistry-receipt',
           ),
-          say('jak_gold', 'G. W.? My case guy said that customer paid in ones. Every bill, same face.'),
           say(
             'jak_gold',
-            'Two cases. One to Dante’s shop, stuffed with ones. One to an office above a shuttered storefront, no name on the door. I’ve filmed that door twice. It’s a very boring door.',
+            'G. W. My case maker remembers him: paid in ones, every bill the same face. That’s one source. I don’t run anything on one source.',
+          ),
+          say(
+            'jak_gold',
+            'Two cases. One to Dante’s shop, full of ones, and Dante confirms it. One to an office above a shuttered storefront, no name on the door. Two sources. Now it’s a lead.',
           ),
         ],
       }),
@@ -802,12 +902,12 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
         intro: [say('jak_gold', 'Go Fish. You ask, I disclose. Or I don’t. Like a government agency.')],
         outro: [
           narrate(
-            'Jak spreads out the reply to his request for you. Whole paragraphs are blacked out. One phrase survived: OPERATION THIRTEENTH HAND.',
+            'Jak switches the camera off before he spreads out the reply for you. Whole paragraphs are blacked out. One phrase survived: OPERATION THIRTEENTH HAND.',
             'redacted-reply',
           ),
           say(
             'jak_gold',
-            'They redacted everything except the name. Either somebody was sloppy, or somebody wanted it read.',
+            'Off camera, because it isn’t content until I know what it is. They redacted everything but the name. Sloppy, or meant to be read.',
           ),
         ],
         info: [
@@ -829,14 +929,14 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
         intro: [
           say(
             'jak_gold',
-            'Every black bar has a width. Measure the gaps and you can guess the words. That’s not paranoia. That’s arithmetic.',
+            'Every black bar has a width. Measure the gaps and you can guess at the words. Guess, not know. That goes in the video too.',
           ),
           narrate('You read the reply line by line while Jak measures black bars with a steel ruler.'),
         ],
         outro: [
           say(
             'jak_gold',
-            'Here’s what made it through: “four marks,” “waterfront,” and “thirteenth hand — not concluded.” Not concluded. Somebody never finished something.',
+            'What made it through: “four marks,” “waterfront,” and “thirteenth hand — not concluded.” Whatever it was, nobody closed the file.',
           ),
         ],
       }),
@@ -849,7 +949,7 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
         intro: [
           say(
             'jak_gold',
-            'Let me borrow the card. One flourish. Spring, cascade, catch. My phone shoots two hundred and forty frames a second.',
+            'Let me borrow the card. One flourish: spring, cascade, catch. My phone shoots two hundred and forty frames a second.',
           ),
           narrate(
             'You hand Jak the card. It flies between his hands with fifty-two others and lands back on top of the deck.',
@@ -862,9 +962,9 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
           ),
           say(
             'jak_gold',
-            'Edge work. Old card cheats marked the edges of cards so they could read them from the side. This one marked itself for whoever bends it right.',
+            'Edge work. Old cheats marked card edges to read them from the side. This one marks itself for whoever bends it right.',
           ),
-          say('jak_gold', 'I need a minute. That’s the best footage I’ve ever shot and I can’t post it.'),
+          say('jak_gold', 'Best footage I’ve ever shot. It stays off the channel until we know what it means.'),
         ],
         rewards: [credits(150), xp(180)],
       }),

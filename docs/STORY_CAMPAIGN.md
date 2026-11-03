@@ -117,6 +117,44 @@ tumblers (one run from king to ace). No card engine changes.
 The map shows an **Epilogue** and **Ghost rematches** banner once the story is
 finished, and the journal can replay the epilogue.
 
+**Voice pass, Chapters 1–4** (upgrade series; see `docs/UPGRADE_BRIEF.md`).
+Dialogue, outline beats, cast descriptions and table talk were revised for the
+creative direction:
+
+- dry humor;
+- credible relationships;
+- discoveries made, not handed over;
+- short beats, none over the 180-character panel limit, averaging about 110
+  characters.
+
+What changed, by character:
+
+- **Cheryl:** provenance versus a good story. She has a collector due at
+  nine and won't sell a lot she hasn't counted, so you inventory it with
+  her; she later postpones the sale.
+- **Sophia:** reads the river (the snag that dates the sketch). She has her
+  own schedule (a school group, the log), and present-day history: the
+  Rappahannock Tribe's 2022 return of land at Fones Cliffs.
+- **Dante:** a working illustrator on deadline. His figure/ground eye finds
+  the heart in the lace before the black light confirms it. Psychedelic art
+  is framed as perception and community. The unverified "psychonaut"
+  attribution is gone.
+- **Jak:**
+  - corroboration (one source is not a lead);
+  - the right law for the right request;
+  - owning the lobby footage he cut;
+  - offering to stop filming;
+  - turning the camera off to show the reply.
+
+Unchanged:
+
+- every challenge, seed, objective and reward;
+- every discovery, at the same beat;
+- every chapter title and the journal summaries.
+
+A check run during the pass compared clue placement, setups and rewards
+against the previous version: all identical.
+
 **Writing rules applied.**
 
 - The player never speaks. Every narration line addresses “you”, and the tests

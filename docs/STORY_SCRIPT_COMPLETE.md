@@ -35,15 +35,15 @@ _An estate-sale box, twelve old decks and one card that should not exist._
 >
 > **Cheryl** _(portrait-neutral)_: We close at five. It’s ten to.
 >
-> _On the counter you see an estate-sale box tied with string. A single card lies on top._
+> _On the counter you see an estate-sale box tied with string, a twenty-dollar tag still on the knot. One card lies on top._
 >
-> **Cheryl** _(cards-reveal)_: Bought the whole lot for twenty dollars. Twelve old decks, a ledger, and that.
+> **Cheryl** _(cards-reveal)_: Lot 13, from an estate sale across the river. Twelve old decks, a ledger, and that. A collector comes at nine for the decks.
 >
 > _You pick up the card. It has no suit and no number — only the words THE THIRTEENTH HAND, and four blank corners._ **[Clue: The Thirteenth Hand]**
 >
-> **Cheryl** _(portrait-doubt)_: Before you ask: no, I don’t know what it’s worth. Nobody prints a card without a suit. Somebody wanted it noticed.
+> **Cheryl** _(portrait-doubt)_: Provenance is a story with receipts. That card has neither. Nobody prints a card without a suit unless they want it noticed.
 >
-> **Cheryl**: You want to know more, you sit and play. I don’t talk shop with strangers who can’t shuffle.
+> **Cheryl** _(portrait-talk)_: I don’t sell a lot I haven’t counted. Help me inventory it tonight, and you can look at anything in the box.
 
 ### 1.1 Price Check
 
@@ -51,7 +51,7 @@ _An estate-sale box, twelve old decks and one card that should not exist._
 
 **Before**
 
-> **Cheryl**: War. No thinking required. I want to see if you flinch.
+> **Cheryl** _(cards-deal)_: We split the twelve decks by War. High card picks. It’s faster than arguing.
 
 **After the win**
 
@@ -69,13 +69,15 @@ _An estate-sale box, twelve old decks and one card that should not exist._
 
 > _The box holds twelve loose decks, all shuffled together. Cheryl hands you one to sort._
 >
-> **Cheryl**: Aces up. If it’s missing cards, I want to know.
+> **Cheryl**: Aces up. A short deck sells for half. A complete one in its box sells for more than you’d think.
 
 **After the win**
 
 > _Under the decks you find a leather ledger. Twelve hands of cards are written out in faded ink. The thirteenth line is blank._ **[Clue: Ledger of twelve hands]**
 >
 > **Cheryl** _(portrait-think)_: Somebody kept score. And somebody stopped.
+>
+> **Cheryl**: One handwriting, twelve hands. That isn’t a game night. That’s a record.
 
 **Rewards:** 55 credits, 75 XP, clue: Ledger of twelve hands.
 
@@ -85,11 +87,11 @@ _An estate-sale box, twelve old decks and one card that should not exist._
 
 **Before**
 
-> **Cheryl** _(cards-shuffle)_: Go Fish. Don’t laugh. It’s how I check a matched set.
+> **Cheryl** _(cards-shuffle)_: Go Fish. Don’t laugh. Asking for matches is the quickest way to find out a set is short.
 
 **After the win**
 
-> **Cheryl**: Every deck in that box is complete. Fifty-two each. So where did the extra card come from?
+> **Cheryl** _(portrait-think)_: Every deck in the box is complete. Fifty-two each. So the extra card didn’t come with them. Somebody added it.
 
 **Rewards:** 65 credits, 85 XP.
 
@@ -101,11 +103,13 @@ _An estate-sale box, twelve old decks and one card that should not exist._
 
 > _You notice that Cheryl’s display case has a puzzle lock: a FreeCell deal painted under the glass._
 >
-> **Cheryl**: My late husband’s idea of security. Solve it and I’ll show you what was in the lid.
+> **Cheryl**: My late husband’s idea of security. He said burglars don’t have the patience. He was right about most people.
 
 **After the win**
 
 > _You find an old postcard of the Rappahannock tucked in the box lid. A heron is sketched on the back, with two words: River Station._ **[Clue: River postcard]**
+>
+> **Cheryl** _(portrait-neutral)_: A heron and two words. That isn’t provenance either. But it’s a direction.
 
 **Rewards:** 75 credits, 95 XP, clue: River postcard.
 
@@ -115,7 +119,7 @@ _An estate-sale box, twelve old decks and one card that should not exist._
 
 **Before**
 
-> **Cheryl**: One more. Spider. Then we look at that card under a proper lamp.
+> **Cheryl**: Last one. Spider. Then we look at that card under a proper lamp. Daylight lies about paper.
 
 **After the win**
 
@@ -127,9 +131,9 @@ _An estate-sale box, twelve old decks and one card that should not exist._
 
 **Departure**
 
-> **Cheryl**: The River Station is Sophia’s. Parks and Rec. She knows every heron on that river by name.
+> **Cheryl**: River Station is Sophia’s. Parks and Rec. If anyone can tell you who stood at that bend and drew a heron, it’s her.
 >
-> **Cheryl** _(portrait-greet)_: Take the card. Bring it back in one piece. And keep the receipt for anything you buy.
+> **Cheryl** _(portrait-greet)_: I called the collector. Told him Monday. Take the card, bring it back, and get a receipt for anything you spend.
 >
 > _You tuck the card into your pocket and head for the river._
 
@@ -151,15 +155,15 @@ _A heron sketch, a trail marker nobody remembers, Sophia’s river map and a let
 
 > _You follow the river path to the Rappahannock River Station. A heron stands in the shallows, unbothered._
 >
-> **Sophia** _(portrait-greet)_: Morning. If you’re here about the heron, she’s fine. She just likes the attention.
+> **Sophia** _(portrait-greet)_: Morning. If you’re here about the heron, she’s fine. She’s fished that bend longer than I’ve worked here.
 >
 > _You show Sophia the postcard and the card._
 >
-> **Sophia** _(portrait-think)_: That sketch is a great blue heron, drawn at this bend. We log her every morning. Whoever drew it has stood right here.
+> **Sophia** _(portrait-think)_: That’s this bend. See the snag behind her? It washed in during the spring flood. Whoever drew this stood on our dock, and recently.
 >
-> **Sophia** _(portrait-doubt)_: Last week a man with a phone on a stick filmed our lobby and asked for our visitor logs. Jak something. He said it was his constitutional right. It was also my lunch break.
+> **Sophia** _(portrait-doubt)_: Last week a man with a phone on a stick filmed our lobby and asked for the visitor logs. Jak something. Constitutional right, he said. It was also my lunch break.
 >
-> **Sophia**: I have a shift to finish. Play a few hands while I work, and I’ll pull the logs.
+> **Sophia** _(portrait-talk)_: I have a school group at two and a log to finish. Walk the route with me, and I’ll pull the sign-in sheets when we’re back.
 
 ### 2.1 Lunch Break
 
@@ -167,7 +171,7 @@ _A heron sketch, a trail marker nobody remembers, Sophia’s river map and a let
 
 **Before**
 
-> **Sophia** _(cards-deal)_: Lunch break. Twenty minutes. Go Fish is about all I can teach in twenty minutes.
+> **Sophia** _(cards-deal)_: Lunch break. Twenty minutes, and I’m eating. Go Fish is about all I can teach with one hand.
 
 **After the win**
 
@@ -189,13 +193,13 @@ _A heron sketch, a trail marker nobody remembers, Sophia’s river map and a let
 
 > _You walk the river trail with Sophia toward the heron’s bend._
 >
-> **Sophia**: Sort these while I check the markers. Patience is most of this job.
+> **Sophia**: Sort these while I check the markers. Half this job is noticing what moved overnight.
 
 **After the win**
 
 > _At the heron’s bend, an old trail marker leans toward the water. Carved into it is a small club — the exact size of one blank corner on your card._ **[Clue: The club mark]**
 >
-> **Sophia** _(portrait-surprise)_: That marker is older than I am. It isn’t on our trail inventory.
+> **Sophia** _(portrait-surprise)_: That marker is older than I am, and it isn’t on our trail inventory. Somebody set it where only high water reaches.
 
 **Rewards:** 60 credits, 80 XP, clue: The club mark.
 
@@ -209,7 +213,7 @@ _A heron sketch, a trail marker nobody remembers, Sophia’s river map and a let
 
 **Before**
 
-> **Sophia**: If that marker is old, it’ll be on an old map. Archive drawer. Bring patience.
+> **Sophia**: If that marker is old, it’s on an old map. The archive drawer sticks, and nobody’s labelled it since the nineties.
 
 **After the win**
 
@@ -229,13 +233,13 @@ _A heron sketch, a trail marker nobody remembers, Sophia’s river map and a let
 
 **Before**
 
-> **Sophia**: The river’s up. While we wait it out, the lost-and-found needs sorting. Thirty years of everything.
+> **Sophia**: River’s up, so the lower trail is closed. While it drops, the lost-and-found needs sorting. Thirty years of everything.
 
 **After the win**
 
 > _In the lost-and-found you find an envelope addressed to Dante at iSMOKESHOP, stamped Return to Sender. Inside is a card with a heron on it._ **[Clue: Returned envelope]**
 >
-> **Sophia** _(portrait-greet)_: Dante? He painted the mural for our kids’ program. Good kid. Terrible handwriting.
+> **Sophia** _(portrait-greet)_: Dante. He painted the mural for our kids’ program and signed it in letters nobody can read. On purpose, he says.
 
 **Rewards:** 80 credits, 100 XP, clue: Returned envelope.
 
@@ -249,23 +253,25 @@ _A heron sketch, a trail marker nobody remembers, Sophia’s river map and a let
 
 **Before**
 
-> **Sophia** _(cards-deal)_: End of shift. One quick game of War — loser files the incident report.
+> **Sophia** _(cards-deal)_: End of shift. One game of War. Loser writes up the man with the phone on a stick.
 
 **After the win**
 
-> **Sophia**: One suit found, three to go. I’ll watch the river. You watch that card.
+> **Sophia** _(portrait-neutral)_: People talk about this river like its history ended in 1776. Downriver, the Rappahannock Tribe got land at Fones Cliffs back in 2022.
+>
+> **Sophia**: It’s still being written. So is this. One mark found. I’ll watch the river; you watch that card.
 
 **Rewards:** 130 credits, 160 XP.
 
 **Field notes:**
 
-- **The river’s name** (history): The river shares its name with the Rappahannock people. The Rappahannock Tribe, based in Virginia’s Northern Neck, was federally recognized in 2018. _Source: Rappahannock Tribe; U.S. Bureau of Indian Affairs._
+- **The river’s name** (history): The river shares its name with the Rappahannock people. The Rappahannock Tribe, based in Virginia’s Northern Neck, was federally recognized in 2018. In 2022 it reacquired 465 acres at Fones Cliffs, a sacred site on the river. _Source: Rappahannock Tribe; U.S. Bureau of Indian Affairs; U.S. Department of the Interior._
 
 **Departure**
 
-> **Sophia** _(portrait-think)_: Somebody sent Dante a heron card, and it came back here. That’s not a coincidence.
+> **Sophia** _(portrait-think)_: Somebody mailed Dante a heron card, and it came back to a station that never sent it. I don’t like being somebody’s return address.
 >
-> **Sophia**: Go see him. And if you run into the man with the phone on a stick, you didn’t hear about the logs from me.
+> **Sophia**: Go see him. If you run into the man with the phone on a stick, tell him the sign-in sheets are city records. He can ask for them properly.
 >
 > _You fold the map into your pocket and set off for Dante’s shop._
 
@@ -287,15 +293,15 @@ _Dante has been paid, in one-dollar bills, to paint George Washington as thirtee
 
 > _You push open the door of iSMOKESHOP. Behind the glass counter, every inch of wall is covered in neon monsters with too many eyes._
 >
-> **Dante** _(portrait-greet)_: Hi! Welcome! Wait — you’ve got the look. You’re not here for a lighter. You’re here for a mystery.
+> **Dante** _(portrait-greet)_: Hey. Lighters are on the left, the art’s on the walls, and I’m behind on a deadline. Which one are you here for?
 >
-> _You set the returned envelope on the counter. Dante’s face drops, then lights right back up._
+> _You set the returned envelope on the counter. Dante goes quiet, then laughs once._
 >
-> **Dante** _(portrait-surprise)_: My heron card! I mailed that to a P.O. box that doesn’t exist. I used the River Station as my return address — I was painting their mural that week.
+> **Dante** _(portrait-surprise)_: My heron card. I mailed that to a P.O. box that doesn’t exist, with the River Station as the return address. I was painting their mural that week.
 >
-> **Dante** _(portrait-talk)_: The client asked for it back. Then the client stopped existing. Classic client.
+> **Dante** _(portrait-talk)_: The client paid in advance, asked for that card back, then stopped answering. I’m still on design one of thirteen. I finish what I’m paid for.
 >
-> **Dante** _(cards-fan)_: Help me catch up on my sketch pile and I’ll show you the weirdest job I’ve ever taken. And I once painted a lizard wizard on a food truck.
+> **Dante** _(cards-fan)_: Help me clear the sketch pile and I’ll show you the brief. Strangest job I’ve taken, and I once painted a lizard wizard on a food truck.
 
 ### 3.1 Monster Sketches
 
@@ -305,15 +311,15 @@ _Dante has been paid, in one-dollar bills, to paint George Washington as thirtee
 
 > _Dante drops a stack of monster sketches on the counter, sorted into suits that do not exist. You start sorting them into real ones._
 >
-> **Dante** _(cards-shuffle)_: Every monster needs a home. Aces up, like a civilised person.
+> **Dante** _(cards-shuffle)_: Real suits, aces up. Chaos goes on the paper, not the desk.
 
 **After the win**
 
 > _Under the last sketch you find an order form, typed and paid in advance. The client is listed only as “G. W.”_ **[Clue: Anonymous commission form]**
 >
-> **Dante** _(portrait-talk)_: Thirteen card designs. Theme: George Washington, but as a neon monster. Paid in one-dollar bills. Every single bill had the same guy on it.
+> **Dante** _(portrait-talk)_: Thirteen card designs. George Washington as a neon monster. Paid in one-dollar bills — so, technically, paid in George Washington.
 >
-> **Dante** _(portrait-think)_: I thought it was a bit. It might not be a bit.
+> **Dante** _(portrait-think)_: I thought it was a bit. Bits don’t usually pay in advance.
 
 **Rewards:** 55 credits, 75 XP, clue: Anonymous commission form.
 
@@ -327,13 +333,13 @@ _Dante has been paid, in one-dollar bills, to paint George Washington as thirtee
 
 **Before**
 
-> **Dante** _(cards-deal)_: War! My deck against your deck. Mine has monsters. Yours also has my monsters. I lent it to you. I’m very generous.
+> **Dante** _(cards-deal)_: War. My deck against your deck. Both of them are my deck; I lent you one. Don’t bend the cards.
 
 **After the win**
 
-> **Dante** _(portrait-talk)_: Psychedelic poster art is my whole thing. Those 1960s concert posters with lettering you have to stare at to read? They make you slow down and actually look.
+> **Dante** _(portrait-talk)_: Those sixties Fillmore posters? The lettering melts into the shapes. You can’t skim them. You stand there until the picture resolves.
 >
-> **Dante** _(portrait-think)_: That’s what this commission feels like. Something you’re supposed to stare at.
+> **Dante** _(portrait-think)_: This brief is like that. It isn’t random. Your eyes just haven’t found the rhythm yet.
 
 **Rewards:** 65 credits, 85 XP.
 
@@ -349,13 +355,13 @@ _Dante has been paid, in one-dollar bills, to paint George Washington as thirtee
 
 > _Dante pulls out the client’s reference sketch for you: a stiff, old-fashioned portrait of George Washington holding a hand of cards._
 >
-> **Dante** _(portrait-doubt)_: The brief says “capture my vigor.” My vigor. Who writes a brief in the first person?
+> **Dante** _(portrait-doubt)_: The brief says “capture my vigor.” My vigor. Clients don’t usually write about themselves like they’re a statue.
 
 **After the win**
 
-> _Dante hands you his first finished design: General Monsterton, a three-eyed George Washington in neon blue, holding twelve cards. You notice that the thirteenth card in his hand is blank._ **[Clue: General Monsterton]**
+> _Dante hands you his first finished design: General Monsterton, a three-eyed George Washington in neon blue, holding twelve cards. The thirteenth card in his hand is blank._ **[Clue: General Monsterton]**
 >
-> **Dante** _(portrait-greet)_: Keep it. Proof I was here before this got weird. Well. Weirder.
+> **Dante** _(portrait-greet)_: Keep that one. Proof I was hired before this got strange. And proof I hit at least one deadline.
 
 **Rewards:** 75 credits, 95 XP, clue: General Monsterton.
 
@@ -365,13 +371,15 @@ _Dante has been paid, in one-dollar bills, to paint George Washington as thirtee
 
 **Before**
 
-> **Dante** _(cards-deal)_: Paint’s drying. Go Fish while we wait. Monsters love a pond.
+> **Dante** _(cards-deal)_: Paint’s curing. Go Fish while it does. Rush fluorescent paint and it dries dull.
 
 **After the win**
 
-> **Dante** _(portrait-talk)_: People ask me what a psychonaut is. It’s an explorer of the inner world — a German writer, Ernst Jünger, used the word decades ago. For me, it’s sketchbooks. Way cheaper than a rocket.
+> **Dante** _(portrait-talk)_: People hear “psychedelic” and think drug joke. The poster artists were working on perception — what your eye does when a pattern won’t sit still.
 >
-> **Dante** _(portrait-doubt)_: Freemasons, though? No idea. Are they the ones with the little red hats? Wait, that’s the Shriners. I think. Don’t quote me.
+> **Dante** _(full-gesture-a)_: And it was a scene. Printers, bands, kids lining up for a poster. Art made for a room full of people. That’s the part I want.
+>
+> **Dante** _(portrait-doubt)_: Freemasons, though? No idea. The little red hats? No, that’s the Shriners. I think.
 
 **Rewards:** 85 credits, 105 XP.
 
@@ -381,23 +389,23 @@ _Dante has been paid, in one-dollar bills, to paint George Washington as thirtee
 
 **Before**
 
-> _Dante kills the lights and switches on a black light. The reference sketch in front of you starts to glow in places the ink should not be._
+> _Dante studies the reference sketch, then kills the lights and switches on a black light. You watch him tilt the paper toward it._
 >
-> **Dante** _(portrait-surprise)_: Okay. That’s either a clue or a very old smoothie stain.
+> **Dante** _(portrait-think)_: The cuff lace is wrong. Lace repeats, and this breaks its rhythm. Look at the gaps, not the threads. Figure and ground.
 
 **After the win**
 
-> _Under the black light, a heart appears in the lace of Washington’s cuff, drawn in invisible ink. You hold up your card: the heart is the exact size of its second blank corner._ **[Clue: The heart mark]**
+> _Under the black light, a heart glows in the gaps of Washington’s lace cuff, drawn in invisible ink. It is the exact size of your card’s second blank corner._ **[Clue: The heart mark]**
 >
-> **Dante** _(portrait-surprise)_: A hidden heart! In a portrait of George Washington! This is the most romantic crime I’ve ever been part of.
+> **Dante** _(portrait-surprise)_: There. Negative space first, fluorescent ink to prove it. Whoever drew this knew exactly how people look at lace: they don’t.
 
 **Rewards:** 140 credits, 170 XP, clue: The heart mark.
 
 **Departure**
 
-> **Dante** _(portrait-think)_: The ones came packed in a custom card case, stamped by the maker. The fancy one Jak Gold uses — he never stops talking about it.
+> **Dante** _(portrait-think)_: The ones came packed in a custom card case with the maker’s stamp. Same maker Jak Gold uses. He mentions it in roughly every video.
 >
-> **Dante** _(portrait-greet)_: Jak has a back room off Caroline Street. Ring light, tripod, opinions. Tell him Dante says hi. Actually, don’t. He’ll film it.
+> **Dante** _(portrait-greet)_: Jak has a back room off Caroline Street. Ring light, tripod, opinions. He’s better than his thumbnails. Don’t tell him I said that.
 >
 > _You tuck the glowing sketch away with the card. Two corners marked, two to go._
 
@@ -419,13 +427,13 @@ _Jak has filmed, filed and flourished his way to a reply nobody meant him to rea
 
 > _You knock on a back-room door off Caroline Street. A ring light snaps on in your face. So does a camera._
 >
-> **Jak Gold**: For the record: I’m Jak Gold, it’s today, and you have entered a space I am lawfully filming. Welcome to the parlor!
+> **Jak Gold**: This is my studio, so you’re on camera. Say the word and it goes off. Most people don’t say the word. They wave.
 >
 > **Jak Gold**: Dante sent you? Dante texted me eleven monster emojis. I inferred.
 >
 > _You show Jak the card. He stops talking, which, you sense, is rare._
 >
-> **Jak Gold**: That card is in my records request. Sit down. Deal in. I explain better with my hands busy.
+> **Jak Gold**: That card is in my records request. I’m cutting that video tonight, and I need someone who isn’t my audience. Deal in. I think better with my hands busy.
 
 ### 4.1 Rolling
 
@@ -433,13 +441,13 @@ _Jak has filmed, filed and flourished his way to a reply nobody meant him to rea
 
 **Before**
 
-> **Jak Gold**: War. Pure chance, zero skill, so nobody can say I cheated on camera. Rolling.
+> **Jak Gold**: War. Pure chance, so nobody watching can say I cheated. Rolling.
 
 **After the win**
 
-> **Jak Gold**: Six months ago I asked the city, in writing, about “unexplained activity” in the old cellars under downtown. Cheap question. Weird answer.
+> **Jak Gold**: Six months ago I asked the city, in writing, about “unexplained activity” in the old cellars downtown. State FOIA. Cheap question. Weird answer.
 >
-> **Jak Gold**: First, nothing. Then a reply with more black ink than words. That’s when I started filming everybody’s lobby. Including your ranger’s. She was not a fan.
+> **Jak Gold**: Then I filmed lobbies, your ranger’s included, on her lunch break. Legal, probably. Useful, no. I cut that footage. She was right.
 
 **Rewards:** 60 credits, 80 XP.
 
@@ -455,15 +463,15 @@ _Jak has filmed, filed and flourished his way to a reply nobody meant him to rea
 
 > _Jak hands you three practice decks shuffled together and asks you to sort them while he rehearses a one-handed cut._
 >
-> **Jak Gold**: Three at a time. Like my records requests.
+> **Jak Gold**: Three at a time. Same as records: you don’t get to pick which ones come up.
 
 **After the win**
 
 > _Among Jak’s paperwork you find a receipt for a custom card case, ordered from his own card-case maker by a customer who signed as “G. W.”_ **[Clue: Card-case receipt]**
 >
-> **Jak Gold**: G. W.? My case guy said that customer paid in ones. Every bill, same face.
+> **Jak Gold**: G. W. My case maker remembers him: paid in ones, every bill the same face. That’s one source. I don’t run anything on one source.
 >
-> **Jak Gold**: Two cases. One to Dante’s shop, stuffed with ones. One to an office above a shuttered storefront, no name on the door. I’ve filmed that door twice. It’s a very boring door.
+> **Jak Gold**: Two cases. One to Dante’s shop, full of ones, and Dante confirms it. One to an office above a shuttered storefront, no name on the door. Two sources. Now it’s a lead.
 
 **Rewards:** 70 credits, 90 XP, clue: Card-case receipt.
 
@@ -477,9 +485,9 @@ _Jak has filmed, filed and flourished his way to a reply nobody meant him to rea
 
 **After the win**
 
-> _Jak spreads out the reply to his request for you. Whole paragraphs are blacked out. One phrase survived: OPERATION THIRTEENTH HAND._ **[Clue: Redacted records reply]**
+> _Jak switches the camera off before he spreads out the reply for you. Whole paragraphs are blacked out. One phrase survived: OPERATION THIRTEENTH HAND._ **[Clue: Redacted records reply]**
 >
-> **Jak Gold**: They redacted everything except the name. Either somebody was sloppy, or somebody wanted it read.
+> **Jak Gold**: Off camera, because it isn’t content until I know what it is. They redacted everything but the name. Sloppy, or meant to be read.
 
 **Rewards:** 80 credits, 100 XP, clue: Redacted records reply.
 
@@ -493,13 +501,13 @@ _Jak has filmed, filed and flourished his way to a reply nobody meant him to rea
 
 **Before**
 
-> **Jak Gold**: Every black bar has a width. Measure the gaps and you can guess the words. That’s not paranoia. That’s arithmetic.
+> **Jak Gold**: Every black bar has a width. Measure the gaps and you can guess at the words. Guess, not know. That goes in the video too.
 >
 > _You read the reply line by line while Jak measures black bars with a steel ruler._
 
 **After the win**
 
-> **Jak Gold**: Here’s what made it through: “four marks,” “waterfront,” and “thirteenth hand — not concluded.” Not concluded. Somebody never finished something.
+> **Jak Gold**: What made it through: “four marks,” “waterfront,” and “thirteenth hand — not concluded.” Whatever it was, nobody closed the file.
 
 **Rewards:** 90 credits, 110 XP.
 
@@ -509,7 +517,7 @@ _Jak has filmed, filed and flourished his way to a reply nobody meant him to rea
 
 **Before**
 
-> **Jak Gold**: Let me borrow the card. One flourish. Spring, cascade, catch. My phone shoots two hundred and forty frames a second.
+> **Jak Gold**: Let me borrow the card. One flourish: spring, cascade, catch. My phone shoots two hundred and forty frames a second.
 >
 > _You hand Jak the card. It flies between his hands with fifty-two others and lands back on top of the deck._
 
@@ -517,17 +525,17 @@ _Jak has filmed, filed and flourished his way to a reply nobody meant him to rea
 
 > _Jak plays the footage back for you frame by frame. As the card bends mid-spring, a diamond shows inside its edge — printed so it appears only when the card flexes._ **[Clue: The diamond mark]**
 >
-> **Jak Gold**: Edge work. Old card cheats marked the edges of cards so they could read them from the side. This one marked itself for whoever bends it right.
+> **Jak Gold**: Edge work. Old cheats marked card edges to read them from the side. This one marks itself for whoever bends it right.
 >
-> **Jak Gold**: I need a minute. That’s the best footage I’ve ever shot and I can’t post it.
+> **Jak Gold**: Best footage I’ve ever shot. It stays off the channel until we know what it means.
 
 **Rewards:** 150 credits, 180 XP, clue: The diamond mark.
 
 **Departure**
 
-> **Jak Gold**: Three corners: club, heart, diamond. The spade is at that address — I’d bet my best deck on it. I’m banned from the stairwell, legally speaking. You aren’t.
+> **Jak Gold**: Three corners: club, heart, diamond. The spade is behind that unmarked door; I’d bet my best deck on it. The building manager banned me from the stairwell. You aren’t banned.
 >
-> **Jak Gold**: If anyone asks, I’m not following you. I’m filming in a public place you happen to be in.
+> **Jak Gold**: I’m not coming with you. I’ll be here, cutting a video that’s honest and a little boring. You can tell it’s honest because it’s boring.
 >
 > _You leave Jak rewatching his footage and head for the door with no name on it._
 
