@@ -298,9 +298,21 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
           ? chapterView(getChapter(view.id)!)
           : journalScreen(view.from);
     root.replaceChildren(mounted.el);
+    setPlace(view.kind === 'chapter' ? view.id : null);
     // The audio director follows the place: a chapter's music in it, the player's own on the map.
     const where = view.kind === 'journal' ? view.from : view;
     setStoryScene(where.kind === 'chapter' ? 'chapter' : 'map', where.kind === 'chapter' ? where.id : null);
+  }
+
+  /**
+   * The place you are in: a chapter's look (palette, panels, texture) while
+   * its screen or its scenes are open. It is set on <html> because scenes,
+   * the versus card and results are dialogs outside the screen. The map and
+   * the journal keep the parlor's own look.
+   */
+  function setPlace(chapterId: string | null): void {
+    if (chapterId) document.documentElement.dataset.storyPlace = chapterId;
+    else delete document.documentElement.dataset.storyPlace;
   }
 
   function go(v: View): void {
@@ -587,6 +599,7 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
   }
 
   async function replay(scene: ReplayableScene): Promise<void> {
+    setPlace(scene.chapter.id);
     await playScene({
       title: scene.title,
       lines: scene.lines,
@@ -594,6 +607,7 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
       dismissValue: 'ok',
       className: 'scene-replay',
     });
+    if (!disposed) setPlace(view.kind === 'chapter' ? view.id : null);
   }
 
   render();
@@ -606,6 +620,7 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
   });
   d.add(() => {
     disposed = true;
+    setPlace(null);
     mounted?.destroy();
     releaseLive(root);
   });

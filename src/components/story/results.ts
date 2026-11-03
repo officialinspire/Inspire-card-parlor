@@ -47,6 +47,26 @@ export function rewardList(rewards: readonly StoryReward[], label: string): HTML
   );
 }
 
+/**
+ * Credits and XP from the challenge and its chapter as one total each (in the
+ * place of the first), so a finale's list stays short enough to read whole.
+ */
+export function withTotals(rewards: readonly StoryReward[]): StoryReward[] {
+  const out: StoryReward[] = [];
+  for (const r of rewards) {
+    if (r.kind !== 'credits' && r.kind !== 'xp') {
+      out.push(r);
+      continue;
+    }
+    const i = out.findIndex((x) => x.kind === r.kind);
+    const prev = out[i];
+    if (prev && (prev.kind === 'credits' || prev.kind === 'xp'))
+      out[i] = { kind: r.kind, amount: prev.amount + r.amount };
+    else out.push({ ...r });
+  }
+  return out;
+}
+
 export type ResultChoice = 'continue' | 'retry' | 'map' | 'chapter';
 
 /**
@@ -59,7 +79,7 @@ export function storyResult(o: StoryOutcome): Promise<ResultChoice> {
   const chapter = getChapter(o.chapterId)!;
   const won = o.met;
   const next = levelAfter(level.id);
-  const earned = [...o.levelRewards, ...o.chapterRewards];
+  const earned = withTotals([...o.levelRewards, ...o.chapterRewards]);
   // The opponent (as a story character) reacts: crestfallen when beaten, pleased when they win.
   const firstOpponent = opponentsOf(level)[0];
   const opponent = firstOpponent ? CHARACTERS.find((c) => c.opponentId === firstOpponent)?.id : undefined;
