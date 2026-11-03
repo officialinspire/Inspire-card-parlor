@@ -380,7 +380,8 @@ export function mountGoFish(ctx: GoFishViewContext) {
       }
       case 'book': {
         const p = game.players.find((x) => x.id === e.p)!;
-        gameSound('valid_move');
+        // Your book is a success; an opponent's is just a move on the table.
+        gameSound(p.cpu ? 'card_move' : 'valid_move');
         spotlight(e.p, 'gf-booked');
         if (p.cpu) void say(anchor(e.p), pickLine(personaOf(p).lines.book), { duration: 1300 * f() + 300 });
         mood(e.p, 'win');

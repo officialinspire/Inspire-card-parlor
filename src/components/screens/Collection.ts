@@ -155,7 +155,8 @@ export const CollectionScreen: ScreenFactory = ({ store }) => {
     if (profile().credits < cost)
       return void notify(
         `${v.name} costs ${cost} credits; you have ${profile().credits}. Win games to earn the other ${cost - profile().credits}.`,
-        { kind: 'info', icon: 'credits' },
+        // Silent: the button has already made its tap.
+        { kind: 'info', icon: 'credits', sound: false },
       );
     const ok = await confirmDialog({
       title: `Collect ${v.name}?`,

@@ -231,3 +231,68 @@ test('with effects on, a discovery plays its effect — and never over a card ta
   await page.waitForTimeout(1700);
   await expect(page.locator('.vfx-layer [data-vfx]')).toHaveCount(0);
 });
+
+/** Every cue the story and the tables asked for, in order (played or merged). */
+async function listenCues(page: Page) {
+  await page.evaluate(() => {
+    const w = window as unknown as { __cues: { event: string; played: boolean }[] };
+    w.__cues = [];
+    addEventListener('icp:sound', (e) => {
+      const d = (e as CustomEvent<{ event: string; played: boolean }>).detail;
+      w.__cues.push({ event: d.event, played: d.played });
+    });
+  });
+  return () => page.evaluate(() => (window as unknown as { __cues: { event: string; played: boolean }[] }).__cues);
+}
+
+test('story cues: four marks, one door; a discovery once; stepping back is silent', async ({ page }) => {
+  const levels = (n: number, upTo = 5) => Array.from({ length: upTo }, (_, i) => `th-${n}-${i + 1}`);
+  const done = [1, 2, 3, 4, 5, 6, 7].flatMap((n) => levels(n)).concat(levels(8, 4));
+  await seed(page, {
+    settings: { musicPaused: true, reducedMotion: true },
+    profile: {
+      schemaVersion: 3,
+      storyChapter: 7,
+      story: {
+        campaign: 'thirteenth-hand',
+        version: 2,
+        completed: done,
+        rewarded: done.map((id) => `level:${id}`),
+        stamps: [],
+        introsSeen: [1, 2, 3, 4, 5, 6, 7, 8].map((n) => `th-${n}`),
+        attempts: {},
+        evidence: ['lodge-sketchbook-page', 'sophia-river-map', 'thirteenth-hand-dossier'],
+      },
+    },
+  });
+  await enterParlor(page);
+  await clickNav(page, 'STORY_MODE');
+  const cues = await listenCues(page);
+  await page.locator(`${CURRENT} [data-story-next] [data-action="continue-story"]`).click();
+  await action(page, 'play').click();
+  const puzzle = page.locator('.dialog-suit-puzzle');
+  for (const s of ['spades', 'diamonds', 'hearts', 'clubs']) await puzzle.locator(`[data-suit="${s}"]`).click();
+  await puzzle.locator('[data-dialog-action="set"]').click();
+  await expect(page.locator('.scene-puzzle-solved')).toBeVisible();
+  const heard = (await cues()).filter((c) => c.played).map((c) => c.event);
+  expect(heard.filter((e) => e === 'suit_set')).toHaveLength(4);
+  expect(heard.filter((e) => e === 'puzzle_solved')).toHaveLength(1);
+  await action(page, 'ok').click();
+  await action(page, 'back').click(); // leave at the versus card
+
+  // A replayed scene with a discovery: one evidence cue going forward, none stepping back.
+  const before = (await cues()).length;
+  await page.locator(`${CURRENT} [data-action="journal"]`).click();
+  await page.locator(`${CURRENT} [data-tab="scenes"]`).click();
+  const replay = page.locator(`${CURRENT} [data-replay="th-6-4:outro"]`);
+  for (let i = 0; i < 12 && !(await replay.isVisible()); i++)
+    await page.locator(`${CURRENT} [data-pager="next"]`).click();
+  await replay.click();
+  await page.locator('[data-scene-nav="next"]').click();
+  await page.locator('[data-scene-nav="back"]').click();
+  const replayed = (await cues())
+    .slice(before)
+    .filter((c) => c.played)
+    .map((c) => c.event);
+  expect(replayed.filter((e) => e === 'evidence')).toHaveLength(1);
+});

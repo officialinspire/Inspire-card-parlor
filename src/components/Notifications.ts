@@ -1,7 +1,7 @@
 import { h } from '@/utils/dom';
 import { store, type Store } from '@/core/store';
 import type { Notification, NotificationKind } from '@/core/types';
-import { audio } from '@/audio';
+import { audio, gameSound } from '@/audio';
 import { icon, type IconName } from './icons';
 import { medal } from './medal';
 import { getAchievement } from '@/achievements/registry';
@@ -33,10 +33,11 @@ export function notify(
 ): number {
   const id = ++seq;
   const kind = opts.kind ?? 'info';
-  if (opts.sound !== false)
-    audio.play(
-      kind === 'error' || kind === 'warning' ? 'error' : kind === 'success' || kind === 'celebrate' ? 'chime' : 'tap',
-    );
+  if (opts.sound !== false) {
+    // Celebrations share the fanfare window (gameSounds), so rewards announced together don't stack.
+    if (kind === 'success' || kind === 'celebrate') gameSound('celebrate');
+    else audio.play(kind === 'error' || kind === 'warning' ? 'error' : 'tap');
+  }
   store.dispatch({
     type: 'NOTIFY',
     notification: {

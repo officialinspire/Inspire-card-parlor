@@ -3,7 +3,7 @@ import { h } from '@/utils/dom';
 import { AppState } from '@/core/states';
 import { navigate } from '@/core/store';
 import { getGame } from '@/games/registry';
-import { audio } from '@/audio';
+import { audio, gameSound } from '@/audio';
 import { loadStoryArt } from '@/story/art';
 import {
   CAMPAIGN_TITLE,
@@ -42,7 +42,7 @@ import { infoCards } from '../story/notes';
 import type { MapStop } from '@/story/world';
 import { openDialog } from '../Dialog';
 import { icon } from '../icons';
-import { celebrate, notify } from '../Notifications';
+import { notify } from '../Notifications';
 import { passportStamps } from '../passportStamps';
 import { paginator } from '../Paginator';
 import { button, iconButton, progressBar, screenFrame } from '../ui';
@@ -159,7 +159,7 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
   /** Continue: open the chapter (its arrival first, if unseen), then the next challenge's brief. */
   async function continueStory(ch: StoryChapter, lv: StoryLevel): Promise<void> {
     if (!isLevelUnlocked(profile(), lv)) return;
-    audio.play('tap');
+    // (The Continue button has already made its one tap.)
     await openChapter(ch);
     await startLevel(ch, lv);
   }
@@ -508,7 +508,8 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
     const lv = getLevel(o.levelId)!;
     go({ kind: 'chapter', id: ch.id });
     if (o.met && o.firstClear) {
-      audio.play('levelup');
+      // No fanfare here: the table has just played its victory, and the closing
+      // scene's discovery has its own cue. The results panel lists the rewards.
       if (lv.outro.length)
         await playScene({
           title: lv.title,
@@ -557,7 +558,9 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
   }
 
   async function chapterComplete(ch: StoryChapter, o: StoryOutcome): Promise<void> {
-    celebrate('Passport stamped', ch.location, 'trophy');
+    // The stamp's own cue; the toast stays silent so the two don't stack.
+    gameSound('stamp');
+    notify(ch.location, { kind: 'celebrate', title: 'Passport stamped', icon: 'trophy', duration: 4200, sound: false });
     haptic('celebrate');
     const next = STORY_CHAPTERS[ch.index];
     const stamp = o.chapterRewards.find((r) => r.kind === 'stamp');

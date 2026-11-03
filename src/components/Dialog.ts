@@ -1,6 +1,7 @@
 import { h } from '@/utils/dom';
 import type { Store } from '@/core/store';
 import { button, iconButton, type ButtonVariant } from './ui';
+import type { Sfx } from '@/audio';
 import { icon, type IconName } from './icons';
 import { releaseLive, sweepLive } from './live';
 
@@ -9,6 +10,8 @@ export interface DialogAction<T> {
   value: T;
   variant?: ButtonVariant;
   icon?: IconName;
+  /** Its own press sound; null when what follows makes the sound (a door that opens or stays shut). */
+  sfx?: Sfx | null;
 }
 
 export interface DialogOptions<T> {
@@ -152,7 +155,7 @@ export function openDialog<T>(opts: DialogOptions<T>): Promise<T> {
       button(a.label, () => close(a.value), {
         variant: a.variant ?? 'primary',
         ...(a.icon ? { icon: a.icon } : {}),
-        sfx: a.variant === 'ghost' || a.variant === 'secondary' ? 'back' : 'tap',
+        sfx: a.sfx !== undefined ? a.sfx : a.variant === 'ghost' || a.variant === 'secondary' ? 'back' : 'tap',
         attrs: { 'data-dialog-action': String(a.value) },
       }),
     );

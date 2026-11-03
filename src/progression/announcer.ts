@@ -1,7 +1,7 @@
 import type { Store } from '@/core/store';
 import type { Profile } from '@/core/types';
 import { AppState } from '@/core/states';
-import { audio } from '@/audio';
+import { gameSound } from '@/audio';
 import { haptic } from '@/utils/haptics';
 import { allDecks } from '@/decks/registry';
 import { allBoards } from '@/boards/registry';
@@ -105,7 +105,7 @@ function show(a: Announcement, index: number): void {
       case 'achievement': {
         const def = getAchievement(a.id);
         if (!def) return;
-        audio.play('achievement');
+        gameSound('achievement');
         haptic('success');
         notify(def.name, {
           kind: 'celebrate',
@@ -117,7 +117,7 @@ function show(a: Announcement, index: number): void {
         break;
       }
       case 'summary':
-        audio.play('achievement');
+        gameSound('achievement');
         haptic('success');
         notify(`${a.count} ${a.count === 1 ? 'achievement' : 'achievements'} earned`, {
           kind: 'celebrate',
@@ -128,16 +128,16 @@ function show(a: Announcement, index: number): void {
         });
         break;
       case 'deck':
-        audio.play('unlock');
+        gameSound('unlock');
         haptic('success');
         notify(a.name, { kind: 'celebrate', title: 'Deck unlocked', icon: 'cards', duration: 4200, sound: false });
         break;
       case 'board':
-        audio.play('unlock');
+        gameSound('unlock');
         notify(a.name, { kind: 'celebrate', title: 'Gameboard unlocked', icon: 'board', duration: 4200, sound: false });
         break;
       case 'level':
-        audio.play('levelup');
+        gameSound('level_up');
         haptic('success');
         notify(`Level ${a.level}`, {
           kind: 'celebrate',

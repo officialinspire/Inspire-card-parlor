@@ -17,7 +17,12 @@ export type Sfx =
   | 'victory'
   | 'achievement'
   | 'unlock'
-  | 'levelup';
+  | 'levelup'
+  // Story cues: short, soft and distinct from the table's sounds.
+  | 'discover'
+  | 'stamp'
+  | 'mark'
+  | 'reveal';
 
 type VolumeSettings = Pick<
   Settings,
@@ -323,6 +328,30 @@ class AudioEngine {
       case 'levelup':
         [392, 523.25, 659.25, 783.99].forEach((f, i) => this.#tone(f, t + i * 0.1, 0.45, 'triangle', 0.11, sfx));
         this.#tone(1046.5, t + 0.42, 1.0, 'sine', 0.12, sfx);
+        break;
+      case 'discover':
+        // A clue noticed: a soft rising glint (two sine notes a sixth apart), quieter than any fanfare.
+        this.#tone(784, t, 0.35, 'sine', 0.07, sfx);
+        this.#tone(1318.5, t + 0.09, 0.5, 'sine', 0.06, sfx);
+        this.#swish(t + 0.05, 0.08, 5200, 0.04);
+        break;
+      case 'stamp':
+        // A passport stamp: a padded thump, then one warm bell.
+        this.#thump(t, 110, 0.14, 0.22);
+        this.#swish(t, 0.05, 1600, 0.12);
+        this.#tone(659.25, t + 0.12, 0.8, 'sine', 0.09, sfx);
+        break;
+      case 'mark':
+        // A suit mark set into its socket: a small stone click.
+        this.#tone(320, t, 0.05, 'triangle', 0.12, sfx);
+        this.#swish(t, 0.03, 3000, 0.1);
+        break;
+      case 'reveal':
+        // The final reveal: a slow, low shimmer under one high bell (no fanfare run).
+        this.#tone(196, t, 1.6, 'sine', 0.08, sfx);
+        this.#tone(293.66, t + 0.15, 1.5, 'sine', 0.06, sfx);
+        this.#tone(1174.66, t + 0.45, 1.2, 'sine', 0.05, sfx);
+        for (let i = 0; i < 4; i++) this.#swish(t + 0.4 + i * 0.12, 0.08, 6500 - i * 400, 0.03);
         break;
     }
   }

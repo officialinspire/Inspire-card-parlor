@@ -2,7 +2,7 @@ import { h } from '@/utils/dom';
 import { NARRATOR, type StorySuit, type SuitPuzzle } from '@/story/campaign';
 import type { Evidence } from '@/story/types';
 import { FOUND_ORDER, SUIT_GLYPH, SUIT_NAME, checkSuitOrder, puzzleHint } from '@/story/puzzle';
-import { audio } from '@/audio';
+import { audio, gameSound } from '@/audio';
 import { haptic } from '@/utils/haptics';
 import { openDialog } from '../Dialog';
 import { playScene } from './scene';
@@ -25,7 +25,7 @@ export async function solveSuitPuzzle(
     const order = await pickOrder(puzzle, title, clues, onClue);
     if (!order) return false;
     if (checkSuitOrder(puzzle, order)) {
-      audio.play('unlock');
+      gameSound('puzzle_solved');
       haptic('success');
       await playScene({
         title,
@@ -82,7 +82,7 @@ async function pickOrder(
         'aria-label': `${SUIT_NAME[suit]} mark`,
         onclick: () => {
           if (order.length >= puzzle.answer.length || order.includes(suit)) return;
-          audio.play('tap');
+          gameSound('suit_set');
           order.push(suit);
           sync();
         },
@@ -154,7 +154,8 @@ async function pickOrder(
     dismissValue: 'cancel',
     actions: [
       { label: 'Not now', value: 'cancel', variant: 'ghost' },
-      { label: 'Set the marks', value: 'set', variant: 'gold', icon: 'check' },
+      // Silent itself: the door answers (it opens, or stays shut with a low "nope").
+      { label: 'Set the marks', value: 'set', variant: 'gold', icon: 'check', sfx: null },
     ],
     focusIndex: 0,
   });
