@@ -14,10 +14,8 @@ import { audio } from './engine';
  *  · Beds and most one-shots are original procedural sound made here from
  *    filtered noise — water, breeze, leaves, a far-off town, lapping water.
  *  · Wildlife (birdsong by day, insects at night) has replaceable recording
- *    slots (`RECORDING_SLOTS`). Synthesized birds would not be convincing, so
- *    until a properly licensed recording is added there are no birds; the
- *    night has a very soft, sparse synthesized chirp as a placeholder for
- *    crickets, replaced by a recording as soon as one is listed.
+ *    slots (`RECORDING_SLOTS`). Original, quiet synthesized bird phrases and
+ *    cricket chirps play when no licensed field recordings are configured.
  *
  * Behaviour: silent until the first allowed gesture and until Touch to
  * Start; full on the main menu, ducked on other menu screens, faded out (and
@@ -163,7 +161,7 @@ const SCENES: Record<AmbienceScene, { beds: BedSpec[]; oneShots: OneShotSpec[] }
       { id: 'leaves', every: [9, 22], play: (p, at, out) => p.leaves(at, out, 0.11) },
       { id: 'distant-car', every: [45, 95], play: (p, at, out) => p.swell(at, out, 380, 3.6, 0.045) },
       // Birdsong only from a recording (none yet): no oscillator imitation.
-      { id: 'birds', every: [12, 28], slot: 'day-birds', play: () => undefined },
+      { id: 'birds', every: [12, 28], slot: 'day-birds', play: (p, at, out) => p.birds(at, out) },
     ],
   },
   night: {
@@ -355,7 +353,33 @@ export class WebAmbience implements AmbiencePlayer {
     src.start(at);
   }
 
-  // ----- Procedural one-shots (all from filtered noise; nothing pretends to be an animal) -----
+  // ----- Original procedural one-shots -----
+
+  /** Original stylized bird whistles, softly phrased with silence between calls. */
+  birds(at: number, out: AudioNode): void {
+    const ctx = audio.context!;
+    const pitch = rand(1800, 2800);
+    const count = 2 + Math.floor(Math.random() * 3);
+    for (let i = 0; i < count; i++) {
+      const t = at + i * 0.24;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(pitch * (i % 2 ? 1.15 : 1), t);
+      osc.frequency.exponentialRampToValueAtTime(pitch * 1.45, t + 0.055);
+      osc.frequency.exponentialRampToValueAtTime(pitch * 0.92, t + 0.17);
+      gain.gain.setValueAtTime(0, t);
+      gain.gain.linearRampToValueAtTime(0.035, t + 0.018);
+      gain.gain.linearRampToValueAtTime(0, t + 0.18);
+      osc.connect(gain).connect(out);
+      osc.onended = () => {
+        osc.disconnect();
+        gain.disconnect();
+      };
+      osc.start(t);
+      osc.stop(t + 0.19);
+    }
+  }
 
   /** A shiver of leaves: a few soft, bright grains of noise over about a second. */
   leaves(at: number, out: AudioNode, peak: number): void {

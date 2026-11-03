@@ -71,13 +71,19 @@ for (const [gameId, total] of GAMES) {
       expect(await page.locator('[data-card-id]').count()).toBe(0);
       expect(await page.locator(`${CURRENT} .sol-card.card-back[data-code]`).count()).toBe(0);
       // Every card fits on the board.
-      const box = (await board(page).boundingBox())!;
-      for (const c of await page.locator(`${CURRENT} .sol-card`).all()) {
-        const r = (await c.boundingBox())!;
-        expect(r.x).toBeGreaterThanOrEqual(box.x - 1);
-        expect(r.x + r.width).toBeLessThanOrEqual(box.x + box.width + 1);
-        expect(r.y + r.height).toBeLessThanOrEqual(box.y + box.height + 1);
-      }
+      // Read all rectangles in one frame; fonts/resize can otherwise move the board
+      // between the board measurement and the last of 104 separate card reads.
+      await expect
+        .poll(() =>
+          board(page).evaluate((el) => {
+            const box = el.getBoundingClientRect();
+            return [...el.querySelectorAll('.sol-card')].every((card) => {
+              const r = card.getBoundingClientRect();
+              return r.x >= box.x - 1 && r.right <= box.right + 1 && r.bottom <= box.bottom + 1;
+            });
+          }),
+        )
+        .toBe(true);
     });
 
     test('tap-to-select follows a hint; undo reverses it', async ({ page }) => {

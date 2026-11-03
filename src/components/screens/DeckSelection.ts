@@ -32,7 +32,8 @@ export const DeckSelectionScreen: ScreenFactory = ({ store }) => {
           type: 'button',
           class: `tile deck-tile rarity-${deck.rarity}${selected ? ' selected' : ''}${unlocked ? '' : ' locked'}`,
           'aria-pressed': String(selected),
-          'aria-disabled': String(!unlocked),
+          'data-locked': String(!unlocked),
+          'aria-label': unlocked ? deck.name : `${deck.name} — locked. Show unlock requirements.`,
           'data-deck': deck.id,
           onclick: () => {
             if (!unlocked)

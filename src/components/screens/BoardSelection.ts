@@ -35,7 +35,8 @@ export const BoardSelectionScreen: ScreenFactory = ({ store }) => {
           type: 'button',
           class: `tile board-tile${selected ? ' selected' : ''}${unlocked ? '' : ' locked'}`,
           'aria-pressed': String(selected),
-          'aria-disabled': String(!unlocked),
+          'data-locked': String(!unlocked),
+          'aria-label': unlocked ? board.name : `${board.name} — locked. Show unlock requirements.`,
           'data-board': board.id,
           onclick: () => {
             if (!unlocked)

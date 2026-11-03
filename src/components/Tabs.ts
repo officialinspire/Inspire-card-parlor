@@ -1,3 +1,4 @@
+import { releaseLive } from './live';
 import { h } from '@/utils/dom';
 import { audio } from '@/audio';
 
@@ -32,8 +33,18 @@ export function tabs(defs: TabDef[], opts: { initial?: string; onChange?: (id: s
         },
         onkeydown: (e: KeyboardEvent) => {
           const i = defs.findIndex((x) => x.id === active);
-          if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
-            const n = defs[(i + (e.key === 'ArrowRight' ? 1 : defs.length - 1)) % defs.length]!;
+          if (['ArrowRight', 'ArrowLeft', 'Home', 'End'].includes(e.key)) {
+            e.preventDefault();
+            const n =
+              defs[
+                e.key === 'Home'
+                  ? 0
+                  : e.key === 'End'
+                    ? defs.length - 1
+                    : (i + (e.key === 'ArrowRight' ? 1 : defs.length - 1)) % defs.length
+              ]!;
+            if (n.id === active) return;
+            audio.play('tap');
             select(n.id);
             buttons[defs.indexOf(n)]!.focus();
           }
@@ -54,6 +65,7 @@ export function tabs(defs: TabDef[], opts: { initial?: string; onChange?: (id: s
       buttons[i]!.tabIndex = on ? 0 : -1;
     });
     cleanup?.();
+    releaseLive(panel);
     const content = defs.find((d) => d.id === id)!.render();
     cleanup = (content as HTMLElement & { destroy?: () => void }).destroy ?? null;
     panel.setAttribute('aria-labelledby', `tab-${id}`);
@@ -87,6 +99,7 @@ export function tabs(defs: TabDef[], opts: { initial?: string; onChange?: (id: s
     destroy: () => {
       ro?.disconnect();
       cleanup?.();
+      releaseLive(panel);
     },
   };
 }
