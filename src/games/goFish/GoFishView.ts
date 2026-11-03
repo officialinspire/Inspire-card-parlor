@@ -488,6 +488,10 @@ export function mountGoFish(ctx: GoFishViewContext) {
       if (k in RANK_KEYS && ranks.includes(RANK_KEYS[k]!)) {
         rank = RANK_KEYS[k]!;
         draw();
+      } else if (e.key === 'Enter' && !(e.target as HTMLElement)?.closest?.('button')) {
+        // "Enter asks", wherever focus is (it reaches the Ask button a frame after the picker opens).
+        e.preventDefault();
+        document.querySelector<HTMLButtonElement>('.dialog-ask [data-dialog-action="ask"]')?.click();
       } else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
         const i = targets.findIndex((t) => t.id === target);
         target = targets[(i + (e.key === 'ArrowRight' ? 1 : targets.length - 1)) % targets.length]!.id;

@@ -217,6 +217,19 @@ test.describe('Go Fish', () => {
     await expect(page.locator(`${CURRENT} .gf-you > .bubble`)).toBeVisible();
   });
 
+  test('Enter asks at once, before focus has reached the Ask button', async ({ page }) => {
+    await prepare(page, { goFishOpponents: 1 });
+    await enterParlor(page);
+    await openTable(page, 'go-fish');
+    await page.locator('[data-dialog-action="deal"]').click();
+    await page.locator(`${CURRENT} .gf-center`).click();
+    // Open the picker and ask in one go: the second Enter lands as the picker appears.
+    await page.keyboard.press('Enter');
+    await page.keyboard.press('Enter');
+    await expect(page.locator('.dialog-ask')).toHaveCount(0);
+    await expect(page.locator(`${CURRENT} .gf-you > .bubble`)).toBeVisible();
+  });
+
   test('plays a whole game to final scoring', async ({ page }) => {
     await prepare(page, { goFishOpponents: 1, reducedMotion: true, cpuDifficulty: 'easy' });
     await enterParlor(page);

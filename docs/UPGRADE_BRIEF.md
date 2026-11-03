@@ -494,3 +494,46 @@ left off".
   - campaign and story-recap: passed;
   - the end-to-end test caught dropped mark cues and a toast silencing the door, and
     both are fixed.
+
+## 8. Release check
+
+**Branch:** `claude/happy-brahmagupta-8bw5sp`. `main` had not moved since the branch
+point, so there was nothing to merge and no conflicts.
+
+**A fix found in CI:** Go Fish's "ask with the keyboard" test failed on a loaded CI
+runner. Enter only asked once focus had reached the Ask button, which happens a frame
+after the picker opens. Enter now asks from anywhere in the picker except another button,
+as its own hint ("Enter asks") says. A new e2e test presses Enter as the picker appears.
+Without the fix it failed 1 run in 3; with it, all Go Fish tests passed 3/3 on desktop
+and phone.
+
+**Local results on the release head:**
+
+- `format:check`: clean;
+- `typecheck`: clean;
+- `npm test`: 513 passed (32 files);
+- `validate:decks`: 12 decks, 0 errors;
+- `validate:story`: 51 sheets, 279 sprites, 0 errors, 39 known artwork warnings;
+- `build`: built;
+- `test:release`: 11 passed (Pages-subpath assets, including every loaded image
+  complete with a positive natural width; PWA; offline safety);
+- `story:script`: regenerated, identical to the committed script.
+
+**Build size against `main`:**
+
+|               | `main`                   | This branch              | Change                                                                                        |
+| ------------- | ------------------------ | ------------------------ | --------------------------------------------------------------------------------------------- |
+| JS            | 415.9 kB (138.5 kB gzip) | 443.0 kB (147.7 kB gzip) | +27 kB (+9 kB gzip): the Chapter 5–9 voice pass, 23 clue readings, the recap, refusal reasons |
+| CSS           | 149.6 kB (31.5 kB gzip)  | 160.4 kB (33.7 kB gzip)  | +11 kB (+2 kB gzip): nine place palettes, table cues                                          |
+| `dist/` total | 49.45 MB                 | 49.49 MB                 | +38 kB. No new images; Dante's three re-cut poses replace their old files                     |
+
+**Remaining source-art defects** (in `docs/ART_ASSET_AUDIT.md`; nothing is marked
+verified, and no placeholder is presented as finished art):
+
+- Steve's greet, neutral and talk portraits are cut by their sheet cells;
+- several poses touch a neighbour (Mary, Sophia, Dante, George);
+- Mrs. Gray's "CIA" badge;
+- Steve's surprise portrait reads as neutral;
+- no pose sheet for Jak (his avatar stands in, by design);
+- no town map;
+- no top-down table painting for the Underground Tunnels board.
