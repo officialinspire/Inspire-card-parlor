@@ -28,6 +28,11 @@
   object-fit: cover;
   object-position: 50% 12%;
 }
+.scene-portrait .portrait-art,
+.versus-portrait .portrait-art {
+  object-fit: contain;
+  object-position: center bottom;
+}
 .portrait-monogram {
   align-self: center;
   font-family: var(--font-display);

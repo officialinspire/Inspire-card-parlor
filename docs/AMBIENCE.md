@@ -12,7 +12,7 @@ effects placed on what is painted.
 | River wash and babble, breeze, distant town hum            | Original procedural audio made in the browser from filtered noise (`src/audio/ambience.ts`) | Original work of this project. |
 | Leaves, a car far across the river, water lapping at night | Original procedural one-shots, from filtered noise                                          | Original work of this project. |
 | Night insects (placeholder)                                | A very soft, sparse synthesized chirp, used only until a recording is supplied              | Original work of this project. |
-| Birdsong (day)                                             | **None yet.** A replaceable recording slot exists; no oscillator imitation is used.         | —                              |
+| Birdsong (day)                                             | Original soft synthesized whistles in varied two-to-four-note phrases.                      | —                              |
 | Ambience recordings                                        | **None supplied.** No ambience audio files ship with the game, and none are downloaded.     | —                              |
 
 The five owned music recordings in `public/assets/music/` are not used by the
@@ -23,7 +23,7 @@ ambience.
 `RECORDING_SLOTS` in `src/audio/ambience.ts` lists recordings that replace a
 procedural fallback:
 
-- `day-birds` replaces silence with occasional birdsong;
+- `day-birds` replaces the synthesized bird phrases with occasional recorded birdsong;
 - `night-insects` replaces the placeholder chirp.
 
 Each slot is a list of paths under `public/assets/ambience/`, played at random

@@ -1,6 +1,8 @@
-import { describe, expect, it } from 'vitest';
+import { audio } from '@/audio/engine';
+import { describe, expect, it, vi } from 'vitest';
 import {
   AmbienceController,
+  WebAmbience,
   CROSSFADE,
   DUCKED_LEVEL,
   FADE_IN,
@@ -117,5 +119,50 @@ describe('click-free fades', () => {
     log.length = 0;
     rampParam(param, 0, 0, 5);
     expect(log.at(-1)).toBe('ramp 0 5.02');
+  });
+});
+
+describe('daytime bird phrases', () => {
+  it('routes quiet finite whistles through the ambience output and releases their nodes', () => {
+    const param = () => ({
+      setValueAtTime: vi.fn(),
+      linearRampToValueAtTime: vi.fn(),
+      exponentialRampToValueAtTime: vi.fn(),
+    });
+    const oscillators: any[] = [];
+    const gains: any[] = [];
+    const ctx = {
+      createOscillator: () => {
+        const node = {
+          frequency: param(),
+          connect: vi.fn(),
+          disconnect: vi.fn(),
+          start: vi.fn(),
+          stop: vi.fn(),
+          onended: null,
+        };
+        oscillators.push(node);
+        return node;
+      },
+      createGain: () => {
+        const node = { gain: param(), connect: vi.fn(), disconnect: vi.fn() };
+        gains.push(node);
+        oscillators.at(-1).connect.mockReturnValue(node);
+        return node;
+      },
+    };
+    vi.spyOn(audio, 'context', 'get').mockReturnValue(ctx as unknown as AudioContext);
+    const out = {} as AudioNode;
+    new WebAmbience().birds(10, out);
+    expect(oscillators.length).toBeGreaterThanOrEqual(2);
+    expect(oscillators.length).toBeLessThanOrEqual(4);
+    for (const [i, node] of oscillators.entries()) {
+      expect(node.stop.mock.calls[0][0] - node.start.mock.calls[0][0]).toBeCloseTo(0.19);
+      expect(gains[i].connect).toHaveBeenCalledWith(out);
+      expect(gains[i].gain.linearRampToValueAtTime.mock.calls[0][0]).toBeLessThan(0.05);
+      node.onended();
+      expect(node.disconnect).toHaveBeenCalledOnce();
+      expect(gains[i].disconnect).toHaveBeenCalledOnce();
+    }
   });
 });

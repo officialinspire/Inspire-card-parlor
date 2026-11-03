@@ -15,7 +15,7 @@ import { attachInstallPrompt } from '@/utils/install';
 import { attachTheme } from '@/themes/theme';
 import { assetManager, attachDeckThemes } from '@/decks';
 import { ScreenManager } from '@/components/ScreenManager';
-import { attachDialogs } from '@/components/Dialog';
+import { attachDialogs, confirmDialog } from '@/components/Dialog';
 import { attachNotifications } from '@/components/Notifications';
 import { SCREENS } from '@/components/screens';
 import { AppState } from './states';
@@ -113,17 +113,28 @@ export async function startApp(mount: HTMLElement): Promise<void> {
   }
 
   if (import.meta.env.PROD && 'serviceWorker' in navigator) {
-    // A new release's worker takes over as soon as it installs and deletes the old offline
-    // copy. Pages are fetched network-first, so the page that sees this already runs the
-    // new release (verified with a simulated deploy; see docs/PERFORMANCE_AND_ACCESSIBILITY_QA.md).
-    const hadController = !!navigator.serviceWorker.controller;
+    // A new worker does not replace JavaScript already running in this tab.
+    // Keep play uninterrupted until the player chooses to reload; normal
+    // pagehide persistence flushes progress/settings without clearing saves.
+    let hadController = !!navigator.serviceWorker.controller;
+    let updateOffered = false;
     navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (hadController)
-        notify('The parlor has been updated to the newest version.', {
-          kind: 'info',
-          sound: false,
-          duration: 7000,
-        });
+      if (!navigator.serviceWorker.controller) return;
+      if (!hadController) {
+        hadController = true;
+        return;
+      }
+      if (updateOffered) return;
+      updateOffered = true;
+      void confirmDialog({
+        title: 'Update available',
+        message:
+          'A new version is ready. Reload to use it, or keep playing and update later. Your saved progress and settings are kept.',
+        confirmLabel: 'Reload',
+        cancelLabel: 'Later',
+      }).then((reload) => {
+        if (reload) location.reload();
+      });
     });
     navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`).catch((err: unknown) => {
       console.warn('[offline] service worker not registered:', err);

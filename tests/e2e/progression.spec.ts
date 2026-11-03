@@ -147,6 +147,10 @@ test('achievements: 150 with medals, rarity, progress and dates; secrets stay hi
 
 test('an achievement earned at the table waits for the hand to end, then toasts', async ({ page }) => {
   test.slow(); // plays a whole game of War
+  // Seed 9 finishes in 48 rounds (a loss), exercising end-of-hand announcements deterministically.
+  await page.addInitScript(() => {
+    (window as unknown as { __ICP_TEST_SEED__: number }).__ICP_TEST_SEED__ = 9;
+  });
   await seed(page, { settings: { warSpeed: 'instant' } });
   await enterParlor(page);
   await page.evaluate(() => {

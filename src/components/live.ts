@@ -49,3 +49,8 @@ export function sweepLive(): void {
 
 /** For tests and diagnostics: live widgets still subscribed. */
 export const liveCount = () => bindings.size;
+
+/** Release a known owner immediately, including widgets removed before their first sweep. */
+export function releaseLive(root: Element): void {
+  for (const b of [...bindings]) if (b.el === root || root.contains(b.el)) b.off();
+}

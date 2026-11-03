@@ -1,3 +1,4 @@
+import { releaseLive } from '../live';
 import { h } from '@/utils/dom';
 import { AppState } from '@/core/states';
 import { navigate } from '@/core/store';
@@ -285,7 +286,10 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
     );
   }
 
+  let disposed = false;
   function render(): void {
+    if (disposed) return;
+    releaseLive(root);
     mounted?.destroy();
     mounted =
       view.kind === 'map'
@@ -595,12 +599,16 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
   render();
   // Story art arrives after the first paint: redraw once it is in (it is optional).
   void loadStoryArt().then((m) => {
-    if (!m) return;
+    if (!m || disposed) return;
     render();
     // Warm only what comes next: this chapter's portraits and the next place on the map.
     preloadStory(profile());
   });
-  d.add(() => mounted?.destroy());
+  d.add(() => {
+    disposed = true;
+    mounted?.destroy();
+    releaseLive(root);
+  });
 
   return {
     el: root,

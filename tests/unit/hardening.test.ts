@@ -1,12 +1,25 @@
 import { describe, expect, it, vi } from 'vitest';
 import { store } from '@/core/store';
-import { live, liveCount, sweepLive } from '@/components/live';
+import { live, liveCount, releaseLive, sweepLive } from '@/components/live';
 import { onStorageHealth, reportWrite, storageFailing } from '@/storage/health';
 import { local } from '@/storage/local';
 import { AssetManager } from '@/assets/AssetManager';
 
 /** Prompt 32: no screen kept alive by its widgets; saving problems reported; card faces wait for the opening. */
 describe('live widgets let go of their screen', () => {
+  it('releases a quickly discarded owner before any sweep observes it', () => {
+    const before = liveCount();
+    const root = document.createElement('section');
+    const render = vi.fn();
+    root.append(live(document.createElement('span'), (s) => s.settings.sfxVolume, render));
+    expect(liveCount()).toBe(before + 1);
+    releaseLive(root);
+    expect(liveCount()).toBe(before);
+    render.mockClear();
+    store.dispatch({ type: 'UPDATE_SETTINGS', patch: { sfxVolume: 0.77 } });
+    expect(render).not.toHaveBeenCalled();
+  });
+
   it('a widget whose value never changes again is released when its screen is removed', () => {
     const screen = document.createElement('section');
     const pill = live(
