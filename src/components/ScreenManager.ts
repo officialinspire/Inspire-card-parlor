@@ -1,7 +1,7 @@
 import type { Store } from '@/core/store';
 import type { AppState } from '@/core/states';
 import type { Screen, ScreenRegistry } from './Screen';
-import { sweepLive } from './live';
+import { releaseLive, sweepLive } from './live';
 
 /**
  * Swaps screens in response to `state.screen`, running a short
@@ -42,6 +42,7 @@ export class ScreenManager {
     this.#stage.appendChild(next.el);
     if (!reduced) next.el.classList.add(`enter-${dir}`);
     requestAnimationFrame(() => {
+      if (this.#current?.screen !== next) return;
       next.el.classList.remove(`enter-${dir}`);
       next.mount?.();
       // Move focus for keyboard/screen-reader users.
@@ -51,6 +52,7 @@ export class ScreenManager {
     if (old) {
       old.screen.unmount?.();
       const el = old.screen.el;
+      releaseLive(el);
       el.setAttribute('aria-hidden', 'true');
       el.inert = true;
       // Once the old screen is gone, its live widgets let go of the store (and so of the screen).

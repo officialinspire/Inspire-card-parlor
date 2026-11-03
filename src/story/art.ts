@@ -145,11 +145,19 @@ export function storyImage(id: string, opts: { thumb?: boolean; alt?: string; cl
     alt,
     width: w,
     height: hgt,
-    loading: 'lazy',
+    loading: opts.className?.includes('portrait-art') ? 'eager' : 'lazy',
     decoding: 'async',
     draggable: false,
     'data-story-sprite': s.id,
   });
-  img.addEventListener('error', () => img.replaceWith(missingArt(alt, { width: w, height: hgt })), { once: true });
+  img.addEventListener(
+    'error',
+    () => {
+      const fallback = missingArt(alt, { width: w, height: hgt });
+      if (opts.className) fallback.classList.add(...opts.className.split(/\s+/).filter(Boolean));
+      img.replaceWith(fallback);
+    },
+    { once: true },
+  );
   return img;
 }

@@ -138,10 +138,11 @@ describe('story artwork at runtime', () => {
     expect(missing.dataset.missingArt).toBe('nobody/nothing');
     expect(missing.textContent).toBe('Artwork missing');
     const parent = document.createElement('div');
-    const img = storyImage('cheryl/portrait-greet');
+    const img = storyImage('cheryl/portrait-greet', { className: 'portrait-art' });
+    expect(img.getAttribute('loading')).toBe('eager');
     parent.append(img);
     img.dispatchEvent(new Event('error'));
-    expect(parent.querySelector('[data-missing-art]')).not.toBeNull();
+    expect(parent.querySelector('[data-missing-art].portrait-art')).not.toBeNull();
     expect(missingArt('x').getAttribute('aria-label')).toBe('x (artwork missing)');
   });
 });

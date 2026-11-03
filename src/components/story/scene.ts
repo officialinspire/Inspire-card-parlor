@@ -132,7 +132,7 @@ export function playScene<T extends string>(opts: SceneOptions<T>): Promise<T> {
   const step = (d: 1 | -1) => {
     const target = i + d;
     if (target < 0 || target >= lines.length) return;
-    if (d > 0) audio.play('flip');
+    audio.play(d > 0 ? 'flip' : 'back');
     render(target, d);
   };
   back.addEventListener('click', () => step(-1));

@@ -1,3 +1,4 @@
+import { releaseLive } from './live';
 import { h } from '@/utils/dom';
 import { audio } from '@/audio';
 import { clamp } from '@/utils/math';
@@ -86,11 +87,11 @@ export function paginator<T>(opts: PaginatorOptions<T>) {
   const dots = h('div', { class: 'pager-dots' });
   const status = h('span', { class: 'sr-only', 'aria-live': 'polite' });
   const prev = iconButton('chevronLeft', 'Previous page', () => go(page - 1), {
-    sfx: 'flip',
+    sfx: null,
     attrs: { 'data-pager': 'prev' },
   });
   const next = iconButton('chevronRight', 'Next page', () => go(page + 1), {
-    sfx: 'flip',
+    sfx: null,
     attrs: { 'data-pager': 'next' },
   });
   const nav = h(
@@ -147,6 +148,7 @@ export function paginator<T>(opts: PaginatorOptions<T>) {
     );
     grid.setAttribute('role', interactive ? 'group' : 'list');
     for (const t of tiles) if (!interactive) t.setAttribute('role', 'listitem');
+    releaseLive(grid);
     grid.replaceChildren(...tiles);
     if (direction) {
       grid.classList.remove('page-in-left', 'page-in-right');
@@ -177,7 +179,6 @@ export function paginator<T>(opts: PaginatorOptions<T>) {
         'aria-label': `Page ${i + 1} of ${pages}`,
         'data-pager': `dot-${i}`,
         onclick: () => {
-          audio.play('flip');
           go(i);
         },
       });
@@ -189,6 +190,7 @@ export function paginator<T>(opts: PaginatorOptions<T>) {
     const target = clamp(p, 0, layout.pages - 1);
     if (target === page) return;
     const dir = Math.sign(target - page);
+    audio.play('flip');
     page = target;
     draw(dir);
   }
@@ -207,7 +209,6 @@ export function paginator<T>(opts: PaginatorOptions<T>) {
     tracking = false;
     const dx = e.clientX - startX;
     if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(e.clientY - startY) * 1.5) {
-      audio.play('flip');
       go(page + (dx < 0 ? 1 : -1));
     }
   });
@@ -226,8 +227,12 @@ export function paginator<T>(opts: PaginatorOptions<T>) {
   );
   // Keyboard
   el.addEventListener('keydown', (e) => {
-    if (e.key === 'PageDown' || (e.key === 'ArrowRight' && e.target === viewport)) go(page + 1);
-    if (e.key === 'PageUp' || (e.key === 'ArrowLeft' && e.target === viewport)) go(page - 1);
+    const forward = e.key === 'PageDown' || (e.key === 'ArrowRight' && e.target === viewport);
+    const back = e.key === 'PageUp' || (e.key === 'ArrowLeft' && e.target === viewport);
+    if (forward || back) {
+      e.preventDefault();
+      go(page + (forward ? 1 : -1));
+    }
   });
 
   const ro = new ResizeObserver(() => measure());
@@ -241,7 +246,10 @@ export function paginator<T>(opts: PaginatorOptions<T>) {
     get page() {
       return page;
     },
-    destroy: () => ro.disconnect(),
+    destroy: () => {
+      ro.disconnect();
+      releaseLive(el);
+    },
   };
 }
 
