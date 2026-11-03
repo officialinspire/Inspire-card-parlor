@@ -161,6 +161,9 @@ test('an achievement earned at the table waits for the hand to end, then toasts'
   });
   await expectScreen(page, 'GAMEPLAY');
   await page.locator('[data-dialog-action="deal"]').click();
+  // The hand starts once the deal dialog has closed and the table is up: earn the secret after that.
+  await expect(page.locator('.dialog-backdrop:not([aria-hidden])')).toHaveCount(0);
+  await expect(page.locator(`${CURRENT} [data-action="auto"]`)).toBeEnabled();
   await page.evaluate(() => {
     const w = window as unknown as { __TOASTS__: string[] };
     w.__TOASTS__ = [];
