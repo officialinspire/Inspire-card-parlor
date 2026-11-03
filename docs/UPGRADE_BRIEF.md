@@ -352,3 +352,64 @@ save format changed.
   - all narration addresses "you";
   - the e2e strings ("set the four marks", "Ghost rematches are open") are
     unchanged.
+- **Tests:** unit 484 passed; story e2e (story, campaign, demo, story-audio,
+  story-art) on phone-portrait and desktop: 43 passed, 1 skipped; the
+  dialogue-fit test now covers all nine chapters at 320×568 and 667×375 and
+  passes (18 tests). It caught one layout fault: a third field-note button at
+  6-3 was covered at 320px, so the Burning Man note moved to 6-4.
+
+**Story presentation: places, portraits and screens.**
+
+- **Audit first.** 155 screenshots before the change (map, all nine chapter
+  screens, a speech line from each arrival, a versus card per chapter, the
+  journal, a clue and a finale's results, at 320×568, 360×640, 390×844,
+  844×390 and 1280×800), and every portrait pose checked from its sprite
+  file (sizes, transparent margins, cut edges). Before and after pictures:
+  `docs/qa/story-places/`.
+- **Places.** Each chapter sets `data-story-place` on `<html>` while its
+  screen or scenes are open (`StoryMode.ts`), and `src/themes/story.css`
+  gives it a palette in both themes, a speech box, narration paper and a
+  faint, static texture behind the panels (none in low-effects mode):
+  1. antique paper and brass;
+  2. river greens;
+  3. controlled neon (edges only, never behind text);
+  4. emerald cardistry;
+  5. olive intelligence dossier;
+  6. restrained lodge geometry (a faint checkered pavement);
+  7. Kenmore plaster and gold;
+  8. brick tunnels (mortar courses, lantern amber);
+  9. spectral blue.
+
+  Contrast was computed for every surface in both themes: body and faint
+  text 4.5:1 or better (the app's own baseline is 4.5–4.7:1).
+
+- **CSS defects fixed:**
+  - Portraits were 3:4 frames with `contain`, so wide gesture poses showed
+    smaller faces. Frames are now square: poses stay whole (the uncropped
+    treatment and eager loading are kept), bust poses share one scale, and
+    the widest gestures shrink only to 87%.
+  - Phone scene portraits grow from 52px to 72px (60px on short screens,
+    88px on tall ones).
+  - With two or three opponents, the versus card cut the third portrait off
+    and truncated names ("Steve Gon…"). The group now shares the space and
+    names wrap.
+  - A finale's results list overflowed at 320×568. Credits and XP from the
+    challenge and its chapter now show as one total each (nine items become
+    seven).
+- **Source and pipeline defect fixed:** Dante's expression row is drawn in a
+  different order from the other sheets, so his "think" lines showed alarm
+  and his "surprise" lines a grin. The names in `art/story/sources.json`
+  now follow the drawings; the art itself is unchanged.
+- **Unresolved art** (recorded in `art/story/review.json` and
+  `docs/ART_ASSET_AUDIT.md`; nothing is marked verified):
+  - Steve's greet, neutral and talk portraits are cut at the bottom by their
+    sheet cells (49, 21 and 32 px);
+  - Mary's greet (17 px), Sophia's talk and think, Dante's greet and
+    neutral, and George's think and doubt touch a neighbouring pose;
+  - Mrs. Gray's badge reads "CIA" in the art, while the story's agency is
+    unnamed;
+  - Steve's "surprise" portrait reads as neutral;
+  - Jak has no pose sheet: his opponent avatar stands in, by design;
+  - there is no town map (new map art was inventoried: none added since the
+    pipeline's first run). Sophia's annotated river map is evidence and is
+    not used as one.
