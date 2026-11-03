@@ -705,7 +705,7 @@
         "transparentShare": 0.407
       },
       "verified": false,
-      "notes": "18 poses in a 6x3 grid: expression portraits, card-handling busts, full-body poses. Pose names are positional slot conventions.",
+      "notes": "18 poses in a 6x3 grid: expression portraits, card-handling busts, full-body poses. This sheet's first row is drawn in a different order from the others (surprise, then think, then a sideways smirk), so its expression names follow the drawings, checked by eye against the source.",
       "sprites": [
         {
           "id": "dante/portrait-greet",
@@ -762,50 +762,50 @@
           "thumbHeight": 128
         },
         {
-          "id": "dante/portrait-think",
-          "name": "portrait-think",
+          "id": "dante/portrait-surprise",
+          "name": "portrait-surprise",
           "frame": {
             "x": 828,
             "y": 7,
             "w": 252,
             "h": 302
           },
-          "src": "assets/story/characters/dante/portrait-think.webp",
+          "src": "assets/story/characters/dante/portrait-surprise.webp",
           "width": 252,
           "height": 302,
-          "thumb": "assets/story/characters/dante/thumbs/portrait-think.webp",
+          "thumb": "assets/story/characters/dante/thumbs/portrait-surprise.webp",
           "thumbWidth": 107,
           "thumbHeight": 128
         },
         {
-          "id": "dante/portrait-doubt",
-          "name": "portrait-doubt",
+          "id": "dante/portrait-think",
+          "name": "portrait-think",
           "frame": {
             "x": 1085,
             "y": 8,
             "w": 236,
             "h": 300
           },
-          "src": "assets/story/characters/dante/portrait-doubt.webp",
+          "src": "assets/story/characters/dante/portrait-think.webp",
           "width": 236,
           "height": 300,
-          "thumb": "assets/story/characters/dante/thumbs/portrait-doubt.webp",
+          "thumb": "assets/story/characters/dante/thumbs/portrait-think.webp",
           "thumbWidth": 101,
           "thumbHeight": 128
         },
         {
-          "id": "dante/portrait-surprise",
-          "name": "portrait-surprise",
+          "id": "dante/portrait-doubt",
+          "name": "portrait-doubt",
           "frame": {
             "x": 1325,
             "y": 9,
             "w": 204,
             "h": 299
           },
-          "src": "assets/story/characters/dante/portrait-surprise.webp",
+          "src": "assets/story/characters/dante/portrait-doubt.webp",
           "width": 204,
           "height": 299,
-          "thumb": "assets/story/characters/dante/thumbs/portrait-surprise.webp",
+          "thumb": "assets/story/characters/dante/thumbs/portrait-doubt.webp",
           "thumbWidth": 87,
           "thumbHeight": 128
         },
@@ -5679,6 +5679,7 @@
       },
       "verified": false,
       "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
+      "registeredAs": "masonic_lodge_no4",
       "board": {
         "background": "assets/story/boards/antique-walnut-masonic/background.webp",
         "backgroundWidth": 1672,
@@ -5690,8 +5691,7 @@
       },
       "sprites": [],
       "status": "processed",
-      "warnings": [],
-      "registeredAs": "masonic_lodge_no4"
+      "warnings": []
     },
     {
       "id": "cheryls-antique-shop",
@@ -5711,6 +5711,7 @@
       },
       "verified": false,
       "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
+      "registeredAs": "cheryls_antique_shop",
       "board": {
         "background": "assets/story/boards/cheryls-antique-shop/background.webp",
         "backgroundWidth": 1672,
@@ -5722,8 +5723,7 @@
       },
       "sprites": [],
       "status": "processed",
-      "warnings": [],
-      "registeredAs": "cheryls_antique_shop"
+      "warnings": []
     },
     {
       "id": "mrs-grays-olive-desk",
@@ -5743,6 +5743,7 @@
       },
       "verified": false,
       "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
+      "registeredAs": "mrs_gray_safehouse",
       "board": {
         "background": "assets/story/boards/mrs-grays-olive-desk/background.webp",
         "backgroundWidth": 1672,
@@ -5754,8 +5755,7 @@
       },
       "sprites": [],
       "status": "processed",
-      "warnings": [],
-      "registeredAs": "mrs_gray_safehouse"
+      "warnings": []
     },
     {
       "id": "colonial-cellar-table",
@@ -5775,6 +5775,7 @@
       },
       "verified": false,
       "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
+      "registeredAs": "washington_final_table",
       "board": {
         "background": "assets/story/boards/colonial-cellar-table/background.webp",
         "backgroundWidth": 1448,
@@ -5786,8 +5787,7 @@
       },
       "sprites": [],
       "status": "processed",
-      "warnings": [],
-      "registeredAs": "washington_final_table"
+      "warnings": []
     },
     {
       "id": "germanna-library-desk",
@@ -5807,6 +5807,7 @@
       },
       "verified": false,
       "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
+      "registeredAs": "germanna_library",
       "board": {
         "background": "assets/story/boards/germanna-library-desk/background.webp",
         "backgroundWidth": 1448,
@@ -5818,8 +5819,7 @@
       },
       "sprites": [],
       "status": "processed",
-      "warnings": [],
-      "registeredAs": "germanna_library"
+      "warnings": []
     },
     {
       "id": "kenmore-georgian-parlor",
@@ -5839,6 +5839,7 @@
       },
       "verified": false,
       "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
+      "registeredAs": "kenmore_parlor",
       "board": {
         "background": "assets/story/boards/kenmore-georgian-parlor/background.webp",
         "backgroundWidth": 1448,
@@ -5850,8 +5851,7 @@
       },
       "sprites": [],
       "status": "processed",
-      "warnings": [],
-      "registeredAs": "kenmore_parlor"
+      "warnings": []
     },
     {
       "id": "umw-classroom-table",
@@ -5871,6 +5871,7 @@
       },
       "verified": false,
       "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
+      "registeredAs": "umw_classroom",
       "board": {
         "background": "assets/story/boards/umw-classroom-table/background.webp",
         "backgroundWidth": 1448,
@@ -5882,8 +5883,7 @@
       },
       "sprites": [],
       "status": "processed",
-      "warnings": [],
-      "registeredAs": "umw_classroom"
+      "warnings": []
     },
     {
       "id": "smoke-shop-glass-counter",
@@ -5903,6 +5903,7 @@
       },
       "verified": false,
       "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
+      "registeredAs": "ismokeshop_counter (adult-only)",
       "board": {
         "background": "assets/story/boards/smoke-shop-glass-counter/background.webp",
         "backgroundWidth": 1448,
@@ -5914,8 +5915,7 @@
       },
       "sprites": [],
       "status": "processed",
-      "warnings": [],
-      "registeredAs": "ismokeshop_counter (adult-only)"
+      "warnings": []
     },
     {
       "id": "smoke-shop-counter-overhead",
@@ -5935,6 +5935,7 @@
       },
       "verified": false,
       "notes": "Registered as a gameboard by scripts/art/build_images.py (public/assets/backgrounds/); the copy here is the story preview.",
+      "registeredAs": "ismokeshop_counter_overhead (adult-only)",
       "board": {
         "background": "assets/story/boards/smoke-shop-counter-overhead/background.webp",
         "backgroundWidth": 1448,
@@ -5946,8 +5947,7 @@
       },
       "sprites": [],
       "status": "processed",
-      "warnings": [],
-      "registeredAs": "ismokeshop_counter_overhead (adult-only)"
+      "warnings": []
     },
     {
       "id": "engraved-georgian",
@@ -5968,6 +5968,7 @@
       },
       "verified": false,
       "notes": "Built into a deck by scripts/art/extract_cards.py (public/assets/cards/).",
+      "registeredAs": "deck freemasonry (faces)",
       "audit": {
         "kind": "deck",
         "cardsFound": 32,
@@ -5985,8 +5986,7 @@
           "code": "deck-count",
           "message": "Only 12 face-sized cards found; a deck needs 52."
         }
-      ],
-      "registeredAs": "deck freemasonry (faces)"
+      ]
     },
     {
       "id": "spectral-washington",
@@ -6007,6 +6007,7 @@
       },
       "verified": false,
       "notes": "Built into a deck by scripts/art/extract_cards.py (public/assets/cards/).",
+      "registeredAs": "deck washington_ghost (faces)",
       "audit": {
         "kind": "deck",
         "cardsFound": 11,
@@ -6024,8 +6025,7 @@
           "code": "deck-count",
           "message": "Only 7 face-sized cards found; a deck needs 52."
         }
-      ],
-      "registeredAs": "deck washington_ghost (faces)"
+      ]
     },
     {
       "id": "inspire-botanical",
@@ -6084,6 +6084,7 @@
       },
       "verified": false,
       "notes": "Built into a deck by scripts/art/extract_cards.py (public/assets/cards/).",
+      "registeredAs": "deck freemasonry (back)",
       "audit": {
         "kind": "card-back",
         "ratio": 0.714
@@ -6096,8 +6097,7 @@
           "code": "back-margin",
           "message": "Opaque image: the area around the card (if any) must be trimmed before use."
         }
-      ],
-      "registeredAs": "deck freemasonry (back)"
+      ]
     },
     {
       "id": "spectral-tricorn-back",
@@ -6118,6 +6118,7 @@
       },
       "verified": false,
       "notes": "Built into a deck by scripts/art/extract_cards.py (public/assets/cards/).",
+      "registeredAs": "deck washington_ghost (back)",
       "audit": {
         "kind": "card-back",
         "ratio": 0.714
@@ -6130,8 +6131,7 @@
           "code": "back-margin",
           "message": "Opaque image: the area around the card (if any) must be trimmed before use."
         }
-      ],
-      "registeredAs": "deck washington_ghost (back)"
+      ]
     }
   ]
 }

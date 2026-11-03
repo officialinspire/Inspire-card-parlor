@@ -115,9 +115,9 @@ Character pose slots (same position on every sheet; names are slot conventions, 
 
 - None of the requested source images is missing.
 - No character sprite sheet for **Jak** (Jak Gold): his quest-item atlas, parlor tile and receipt exist, but there are no poses for him.
-- No sprite art for the current Story Mode hosts (Mae, Jules, Otto, Ivy in `src/story/campaign.ts`); they still use monogram portraits.
 - No pose sheet for the Thirteenth Hand itself (only the two card illustrations and the VFX atlas).
 - A **top-down table painting for the Underground Tunnels** board: `Card Table Beneath the Sealed Door.png` is an isometric map tile, so `underground_tunnels` keeps its drawn surface (marked "Art coming soon").
+- No illustrated **town map of Fredericksburg**. The story map lays the nine location tiles along a trail, in story order. Sophia's annotated river map is a clue (evidence), not a town map, and is not used as one.
 
 ## Cropping and alpha issues
 
@@ -180,6 +180,7 @@ Character pose slots (same position on every sheet; names are slot conventions, 
 - **Freemasonry** (Engraved Georgian faces + navy-gold back) and **George Washington's Ghost** (Spectral Washington faces + tricorn back) were checked card by card in Prompt 19: rank and suit of all 52 cards by their top-left index, pips and colours. Misprinted bottom-right indices (Freemasonry: the four 9s and K♠; Washington: 9♠, 9♥, 9♦, 9♣, 5♥, 6♣, K♥) are replaced at build time by each card's own top-left index rotated 180° (`indexFixes` in their atlas.json). The four Freemasonry 5s show four pips (not changed; disclosed). The pairing of these faces with these backs is my reading of the art.
 - **INSPIRE Botanical Cannabis deck** (audited only): the 8 of diamonds reads "7" in its top-left index and shows a heart in its bottom-right corner; the 9 of diamonds also shows a heart in its bottom-right corner; the 3 of spades reads "2" in its top-left index (three pips, bottom index 3). The deck is cannabis-themed and should be treated as adult content (isolated like the other 18+ decks) if it is added.
 - Nothing in `public/assets/story/` is used by the game yet, and nothing is marked verified (`verified: false` on every sheet).
+- **Dante's expression row** is drawn in a different order from the other sheets: surprise (with alarm marks), then thinking (hand on chin), then a sideways smirk. Its names in `sources.json` now follow the drawings (checked by eye in the upgrade series); the other six sheets match the standard order.
 
 ## Runtime paths
 
@@ -217,3 +218,4 @@ Paths are relative to the site root (they work under the GitHub Pages project pa
 5. Provide a Jak character sheet, and sprite sheets for the Story Mode hosts if they are kept.
 6. Define where each location tile sits on the river map (a coordinate list), so the map screen can be built from data.
 7. Supply a top-down painting for the Underground Tunnels board.
+8. Source-art defects seen in the Story Mode presentation audit (upgrade series), for a re-export, not a CSS fix: Steve Gonzales's `portrait-greet`, `portrait-neutral` and `portrait-talk` are cut at the bottom by the sheet's cell (49, 21 and 32 px); Mary Ball Washington's `portrait-greet` (17 px), Sophia's `portrait-talk`/`portrait-think` and Dante's `portrait-greet`/`portrait-neutral` (8–10 px), and George Washington's `portrait-think`/`portrait-doubt` (22 px) touch or share an edge with a neighbouring pose. Mrs. Gray's badge reads "CIA" in the art, while the story's agency is unnamed; Steve's `portrait-surprise` reads as neutral. Jak still has no pose sheet: his opponent avatar stands in, by design.
