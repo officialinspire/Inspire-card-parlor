@@ -235,7 +235,22 @@ export function paginator<T>(opts: PaginatorOptions<T>) {
     }
   });
 
-  const ro = new ResizeObserver(() => measure());
+  // Re-lay out on the next frame, and only when the size really changed: laying out
+  // inside the observer's own callback can resize the box it watches, which the
+  // browser reports as "ResizeObserver loop completed with undelivered notifications".
+  let lastSize = '';
+  let frame = 0;
+  const ro = new ResizeObserver((entries) => {
+    const r = entries[entries.length - 1]?.contentRect;
+    const size = r ? `${Math.round(r.width)}x${Math.round(r.height)}` : '';
+    if (size === lastSize) return;
+    lastSize = size;
+    cancelAnimationFrame(frame);
+    frame = requestAnimationFrame(() => {
+      frame = 0;
+      measure();
+    });
+  });
   ro.observe(viewport);
 
   return {
@@ -248,6 +263,7 @@ export function paginator<T>(opts: PaginatorOptions<T>) {
     },
     destroy: () => {
       ro.disconnect();
+      cancelAnimationFrame(frame);
       releaseLive(el);
     },
   };
