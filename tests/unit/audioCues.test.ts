@@ -50,6 +50,18 @@ describe('story cues', () => {
     t.restore();
   });
 
+  it('a toast that lands first never silences a story moment; the moment then holds back the next toast', () => {
+    const t = listen();
+    t.say('achievement');
+    t.wait(300);
+    t.say('puzzle_solved');
+    t.wait(300);
+    t.say('unlock');
+    expect(t.heard).toEqual(['achievement', 'unlock']);
+    // ('unlock' above is the door's own sound; the second toast was held back.)
+    t.restore();
+  });
+
   it('a clue found during a celebration is still heard: discoveries are not fanfares', () => {
     const t = listen();
     t.say('victory');
@@ -68,9 +80,10 @@ describe('story cues', () => {
 
   it('setting four marks quickly is four soft clicks; the door that opens is heard over them', () => {
     const t = listen();
+    // However quickly they are tapped, each mark is heard.
     for (let i = 0; i < 4; i++) {
       t.say('suit_set');
-      t.wait(150);
+      t.wait(20);
     }
     expect(t.heard).toEqual(['mark', 'mark', 'mark', 'mark']);
     t.say('suit_set', 'puzzle_solved');

@@ -163,10 +163,15 @@ so per-event cooldowns and same-action supersession apply:
 | `puzzle_solved` | `unlock`   | The door opening                                             |
 | `final_reveal`  | `reveal`   | The card awakening: a slow, low shimmer under one bell       |
 
-- **Fanfares share one window:** victory, stamp, puzzle solved, final reveal,
-  achievements, unlocks, level-ups and celebration toasts. After one plays, another
-  within 1.5 s is dropped (its toast still shows). Finishing a chapter, earning an
-  achievement and levelling up together are heard as one celebration.
+- **Fanfares share a 1.5 s window, in two tiers:**
+  - **Story moments** (victory, stamp, the door opening, the final reveal) are held back
+    only by another moment.
+  - **Reward toasts** (achievements, unlocks, level-ups, celebrations) give way to any
+    fanfare heard in that window; the toast itself still shows.
+  - Finishing a chapter, earning an achievement and levelling up together are heard as
+    one celebration, and a toast that lands first never silences the door.
+- **Suit marks have no cooldown:** every one is heard, however fast it is tapped (four
+  per try). The end-to-end test found quick taps being dropped by a 90 ms cooldown.
 - **Discoveries are not fanfares,** so a clue found right after a win is still heard.
 - **Dialogue lines have no sound** beyond the page-turn, and stepping back over a
   discovery is silent.

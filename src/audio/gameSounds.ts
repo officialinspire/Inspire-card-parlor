@@ -79,7 +79,8 @@ const MIN_GAP: Record<GameSound, number> = {
   victory: 2000,
   evidence: 600,
   stamp: 1500,
-  suit_set: 90,
+  // Every mark set is heard, however quickly (there are only four per try).
+  suit_set: 0,
   puzzle_solved: 1500,
   final_reveal: 3000,
   achievement: 600,
@@ -89,21 +90,17 @@ const MIN_GAP: Record<GameSound, number> = {
 };
 
 /**
- * Fanfares share one window: after one plays, another within this time is
- * dropped (its toast still shows), so a chapter's finish, an achievement and
- * a level-up arriving together are heard as one celebration, not a pile-up.
+ * Fanfares share one window, in two tiers. The story's own moments (a win, a
+ * stamp, the door, the reveal) are only held back by another of those; the
+ * reward toasts (achievements, unlocks, level-ups, celebrations) give way to
+ * any fanfare heard in the last moment. So a chapter's finish, an achievement
+ * and a level-up arriving together are heard as one celebration, and a toast
+ * that happens to land first never silences the door opening.
  */
-const FANFARES: ReadonlySet<GameSound> = new Set([
-  'victory',
-  'stamp',
-  'puzzle_solved',
-  'final_reveal',
-  'achievement',
-  'unlock',
-  'level_up',
-  'celebrate',
-]);
+const MOMENTS: ReadonlySet<GameSound> = new Set(['victory', 'stamp', 'puzzle_solved', 'final_reveal']);
+const TOASTS: ReadonlySet<GameSound> = new Set(['achievement', 'unlock', 'level_up', 'celebrate']);
 export const FANFARE_GAP = 1500;
+let lastMoment = -Infinity;
 let lastFanfare = -Infinity;
 
 /** Within one action, a stronger event makes the weaker ones redundant. */
@@ -171,7 +168,8 @@ export function flush(): void {
   for (const event of batch) {
     let played = false;
     const superseded = [...present].some((other) => SUPERSEDES[other]?.includes(event));
-    const crowded = FANFARES.has(event) && now - lastFanfare < FANFARE_GAP;
+    const crowded =
+      (MOMENTS.has(event) && now - lastMoment < FANFARE_GAP) || (TOASTS.has(event) && now - lastFanfare < FANFARE_GAP);
     if (
       !handled.has(event) &&
       !superseded &&
@@ -185,7 +183,8 @@ export function flush(): void {
       const buzz = GAME_SOUND_HAPTIC[event];
       if (buzz) buzzer(buzz);
       lastPlayed.set(event, now);
-      if (FANFARES.has(event)) lastFanfare = now;
+      if (MOMENTS.has(event)) lastMoment = now;
+      if (MOMENTS.has(event) || TOASTS.has(event)) lastFanfare = now;
       played = true;
     }
     handled.add(event);
@@ -205,11 +204,13 @@ export function __setSoundBackend(p: (sfx: Sfx, level: number) => void, c?: () =
   runs.clear();
   pending = [];
   lastFanfare = -Infinity;
+  lastMoment = -Infinity;
   return () => {
     player = prev.player;
     clock = prev.clock;
     lastPlayed.clear();
     runs.clear();
     lastFanfare = -Infinity;
+    lastMoment = -Infinity;
   };
 }

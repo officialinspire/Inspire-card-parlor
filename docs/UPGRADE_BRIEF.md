@@ -469,3 +469,28 @@ left off".
   320px (a tiny target, once covered by its label). It now has a 28px target, and
   Continue wraps to its own row on narrow screens. Layout and "story screens fit": 8
   passed on four projects.
+
+**Audio: one cue per action.** Details in `docs/AMBIENCE.md`.
+
+- **Story cues:** clue found, passport stamp, suit mark, door opening, final reveal. All
+  are synthesized, through the existing `gameSound` events.
+- **Fanfares:** a two-tier window, so rewards don't stack and toasts never silence story
+  moments.
+- **Double or misleading cues fixed:**
+  - Continue's double tap;
+  - a toast sound over the Collection price button;
+  - a tap before the door's answer;
+  - a success sound for an opponent's Go Fish book;
+  - a level-up on top of the table's victory.
+- **Music:** all nine chapters reviewed and left unchanged.
+- **Unchanged:** the ambience and birdsong (no problem could be confirmed by ear), and
+  ambience still off in Story Mode and at the tables.
+- **Listening:** not possible in this container (no audio output), and documented as
+  such.
+- **Tests:**
+  - unit tests: 513 passed;
+  - story-audio and ambience e2e (unlock, mute, rapid navigation, background and resume,
+    offline, story cues): 26 passed;
+  - campaign and story-recap: passed;
+  - the end-to-end test caught dropped mark cues and a toast silencing the door, and
+    both are fixed.
