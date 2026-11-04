@@ -2153,12 +2153,16 @@
     padding-left: 2px;
   }
   .tool-btn {
+    width: 44px;
     min-width: 44px;
+    flex: 0 0 44px;
     padding-inline: 2px;
     font-size: var(--fs-min);
   }
   /* A two-word label ("New Game") wraps rather than spilling past its button. */
   .tool-label {
+    max-width: 100%;
+    overflow-wrap: anywhere;
     white-space: normal;
     text-align: center;
     line-height: 1.05;
