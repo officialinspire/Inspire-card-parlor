@@ -122,8 +122,8 @@ describe('campaign structure', () => {
         c.levels.filter((l) => l.finale),
         c.id,
       ).toHaveLength(1);
-      // Each chapter plays all five games once.
-      expect(new Set(c.levels.map((l) => l.game)).size, c.id).toBe(5);
+      // Revised pacing reserves FreeCell for three authored puzzle encounters.
+      expect(new Set(c.levels.map((l) => l.game)).size, c.id).toBeGreaterThanOrEqual(4);
       expect(c.beats.length, c.id).toBeGreaterThanOrEqual(4);
       expect(c.mysteryThread.length, c.id).toBeGreaterThan(20);
       expect(c.unlockRequirements).toEqual(i === 0 ? {} : { chapter: `th-${i}` });
@@ -379,7 +379,7 @@ describe('every challenge can be won', () => {
   it.each(goFish.map((l) => [l.id, l] as const))(
     '%s: the objective is regularly reachable',
     (_, level) => {
-      expect(level.setup.options?.difficulty).toBe('easy');
+      expect(['easy', 'normal']).toContain(level.setup.options?.difficulty);
       expect(goFishWinRate(level, 40)).toBeGreaterThanOrEqual(0.25);
     },
     60_000,

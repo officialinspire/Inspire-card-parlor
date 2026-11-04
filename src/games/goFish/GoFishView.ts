@@ -13,6 +13,7 @@ import { pauseVeil, setTool, toolButton, type GameToolbar } from '@/components/g
 import { confirmDialog, openDialog } from '@/components/Dialog';
 import { recordGameResult } from '@/progression/results';
 import { getPersonality, pickLine, rankPlural, rankSingular } from '../cpu/personalities';
+import { HINT_LIMIT, hintsRemaining, useHint } from '../solitaire/hints';
 import { saves, settle, sleep } from '../session';
 import { chooseAsk } from './cpu';
 import { playerView } from './view';
@@ -25,6 +26,8 @@ export interface GoFishViewContext {
   tools: GameToolbar;
   theme: DeckTheme;
   game: GoFishGame;
+  /** Story sprint ends when this many books have been earned. */
+  goalBooks?: number;
   onNewGame: () => void;
   onExit: () => void;
   /** Result-dialog buttons (Story Mode: "Play again" / "Story map"). */
@@ -63,6 +66,9 @@ export function mountGoFish(ctx: GoFishViewContext) {
   let destroyed = false;
   let busy = false;
   let paused = false;
+  let finished = false;
+  const goalMet = () => !!ctx.goalBooks && game.books(human.id).length >= ctx.goalBooks;
+  const tableOver = () => finished || game.isOver || goalMet();
 
   const f = () => (store.state.settings.reducedMotion ? 0.08 : SPEED[store.state.settings.cardAnimationSpeed]);
   /** Waits between steps, and holds the table (CPU turns included) while paused. */
@@ -154,7 +160,7 @@ export function mountGoFish(ctx: GoFishViewContext) {
       o.fan.replaceChildren(
         ...Array.from({ length: Math.min(n, 8) }, () => cardRenderer.renderBack(theme, { className: 'gf-mini' })),
       );
-      o.root.classList.toggle('is-turn', game.current.id === p.id && !game.isOver);
+      o.root.classList.toggle('is-turn', game.current.id === p.id && !tableOver());
       o.root.classList.toggle('is-empty', n === 0);
     }
     pondCount.textContent = String(game.pond.size);
@@ -194,7 +200,8 @@ export function mountGoFish(ctx: GoFishViewContext) {
     hand.dataset.size = String(cards.length);
 
     askBtn.disabled = !myTurn;
-    hintBtn.disabled = !myTurn;
+    setTool(hintBtn, 'hint', `Hint ${hintsRemaining(game.data)}/${HINT_LIMIT}`);
+    hintBtn.disabled = !myTurn || !store.state.settings.showHints || !hintsRemaining(game.data);
     waiting.textContent = game.isOver
       ? ''
       : paused
@@ -217,7 +224,7 @@ export function mountGoFish(ctx: GoFishViewContext) {
       : game.current.id === human.id
         ? 'Your turn'
         : `${game.current.name}’s turn`;
-    hudBooks.textContent = `Books ${game.books(human.id).length}`;
+    hudBooks.textContent = `Books ${game.books(human.id).length}${ctx.goalBooks ? `/${ctx.goalBooks}` : ''}`;
   }
 
   function fitHand(): void {
@@ -230,7 +237,7 @@ export function mountGoFish(ctx: GoFishViewContext) {
   const ro = new ResizeObserver(fitHand);
   ro.observe(hand);
 
-  const isMyTurn = () => !busy && !paused && !game.isOver && game.current.id === human.id && game.awaitingAsk;
+  const isMyTurn = () => !busy && !paused && !tableOver() && game.current.id === human.id && game.awaitingAsk;
 
   function setPaused(p: boolean): void {
     if (game.isOver) return;
@@ -241,9 +248,12 @@ export function mountGoFish(ctx: GoFishViewContext) {
 
   /** Suggests the rank you hold most of: the ask most likely to complete a book. */
   function showHint(): void {
-    if (!isMyTurn()) return;
+    if (!isMyTurn() || !store.state.settings.showHints || !hintsRemaining(game.data)) return;
     const ranks = game.askableRanks(human.id);
     if (!ranks.length) return;
+    useHint(game.data);
+    render();
+    void saves.save(game.table);
     const best = ranks.reduce((a, b) => (game.hand(human.id).countRank(b) > game.hand(human.id).countRank(a) ? b : a));
     for (const c of hand.querySelectorAll<HTMLElement>('.gf-card')) {
       if (c.dataset.rank === RANK_CODE[best]) c.dataset.hint = 'source';
@@ -322,6 +332,7 @@ export function mountGoFish(ctx: GoFishViewContext) {
     spotlight(targetId, 'gf-asked');
     await pause(900);
 
+    if (destroyed) return;
     const result = game.ask(askerId, targetId, rank);
     for (const e of result.events) await replay(e, askerId);
     if (result.privateDraw?.player === human.id) {
@@ -329,7 +340,7 @@ export function mountGoFish(ctx: GoFishViewContext) {
       setStatus(`You drew ${c.shortLabel}.`);
     }
     render();
-    if (!game.isOver) await saves.save(game.table);
+    if (!destroyed && !tableOver()) await saves.save(game.table);
   }
 
   async function replay(e: GoFishEvent, askerId: string): Promise<void> {
@@ -557,7 +568,7 @@ export function mountGoFish(ctx: GoFishViewContext) {
       // ever, so the table stops waiting after a few of those (and after a
       // generous cap) and hands the turn back to the player's controls.
       let stalls = 0;
-      for (let guard = 0; guard < 400 && !destroyed && !game.isOver && game.current.id !== human.id; guard++) {
+      for (let guard = 0; guard < 400 && !destroyed && !tableOver() && game.current.id !== human.id; guard++) {
         const cur = game.current;
         mood(cur.id, 'think', 650);
         await pause(650);
@@ -576,7 +587,7 @@ export function mountGoFish(ctx: GoFishViewContext) {
     }
     if (destroyed) return;
     render();
-    if (game.isOver) await finish();
+    if (game.isOver || goalMet()) await finish();
     else if (!status.textContent?.startsWith('You drew')) setStatus('Your turn — tap a card or press Ask.');
   }
 
@@ -594,9 +605,11 @@ export function mountGoFish(ctx: GoFishViewContext) {
   }
 
   async function finish(): Promise<void> {
+    if (finished) return;
+    finished = true;
     await saves.delete('go-fish');
     const standings = game.standings();
-    const winners = game.data.winners;
+    const winners = goalMet() ? [human.id] : game.data.winners;
     const mine = game.books(human.id).length;
     const outcome = winners.includes(human.id) ? (winners.length === 1 ? 'win' : 'draw') : 'loss';
     const summary = recordGameResult(store, {
@@ -622,12 +635,14 @@ export function mountGoFish(ctx: GoFishViewContext) {
         duration: 2400,
       });
     }
-    setStatus('All 13 books are down.');
+    setStatus(goalMet() ? `Objective complete: ${ctx.goalBooks} books collected.` : 'All 13 books are down.');
     await sleep(store.state.settings.reducedMotion ? 150 : 900);
     if (destroyed) return;
     const title =
       outcome === 'win'
-        ? 'You win!'
+        ? goalMet()
+          ? 'Challenge complete!'
+          : 'You win!'
         : outcome === 'draw'
           ? 'A shared win!'
           : `${winners.map(nameOf).join(' & ')} win${winners.length === 1 ? 's' : ''}`;
@@ -677,13 +692,13 @@ export function mountGoFish(ctx: GoFishViewContext) {
   addEventListener('keydown', onKey);
   // Leaving the page pauses the table, so CPU turns don't play on unseen.
   const onVisibility = () => {
-    if (document.hidden && !paused && !game.isOver) setPaused(true);
+    if (document.hidden && !paused && !tableOver()) setPaused(true);
   };
   document.addEventListener('visibilitychange', onVisibility);
 
   // ----- Start -----
   render();
-  if (game.isOver) void finish();
+  if (game.isOver || goalMet()) void finish();
   else if (game.current.id === human.id) {
     setStatus('Your turn — tap a card or press Ask.');
     if (game.data.log.filter((e) => e.t === 'ask').length === 0) {

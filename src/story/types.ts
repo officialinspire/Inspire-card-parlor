@@ -37,6 +37,8 @@ export interface LevelSetup {
   /** Fixed deal. Required for solitaire and War (verified winnable); Go Fish deals fresh. */
   seed?: number;
   options?: {
+    /** Short authored FreeCell endgame; Quick Play keeps the full deal. */
+    freecellPuzzle?: boolean;
     draw?: 1 | 3;
     suits?: 1 | 2 | 4;
     /** War opponent, or Go Fish opponents (personality ids). */

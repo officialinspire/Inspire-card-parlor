@@ -4956,3 +4956,46 @@ button.board-tile .tile-title {
 .table[data-board-tone='light'] .war-auto {
   background: rgba(255, 255, 255, 0.6);
 }
+
+/* Compact rank/suit chips stay visible above the next card in portrait columns. */
+.sol-card .card-index {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  font-size: clamp(12px, 30cqw, 22px);
+  line-height: 1;
+  padding: 1px 2px;
+}
+.sol-card .card-index i {
+  display: inline;
+}
+.sol-inspect {
+  flex: 0 0 auto;
+  min-height: 22px;
+  margin: 0;
+  padding: 2px 6px;
+  text-align: center;
+  color: #fff8ee;
+  background: #10261ee6;
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 1.25;
+}
+@media (max-height: 450px) {
+  .sol-inspect {
+    font-size: 12px;
+    min-height: 18px;
+  }
+}
+
+@media (orientation: portrait) and (max-width: 600px) {
+  .gf-card .card-index {
+    display: flex;
+    gap: 1px;
+    font-size: 18px;
+    line-height: 1;
+  }
+  .gf-card .card-index i {
+    display: inline;
+  }
+}

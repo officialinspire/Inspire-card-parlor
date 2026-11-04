@@ -383,7 +383,8 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
     let table: Table;
     if (level.game === 'klondike') table = KlondikeGame.create({ ...seed, draw: o.draw ?? 1 }).table;
     else if (level.game === 'spider') table = SpiderGame.create({ ...seed, suits: o.suits ?? 1 }).table;
-    else if (level.game === 'freecell') table = FreeCellGame.create(seed).table;
+    else if (level.game === 'freecell')
+      table = (o.freecellPuzzle ? FreeCellGame.createPuzzle(seed) : FreeCellGame.create(seed)).table;
     else if (level.game === 'war') table = WarGame.create({ opponentId: o.opponent ?? 'jak_gold', ...seed }).table;
     else
       table = GoFishGame.create({
@@ -445,7 +446,12 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
       labels: story ? { again: 'Play again', exit: 'Continue story' } : undefined,
     };
     if (gameId === 'war') view = mountWar({ ...common, game: WarGame.restore(table) });
-    else if (gameId === 'go-fish') view = mountGoFish({ ...common, game: GoFishGame.restore(table) });
+    else if (gameId === 'go-fish')
+      view = mountGoFish({
+        ...common,
+        game: GoFishGame.restore(table),
+        goalBooks: story?.objective.kind === 'books' ? story.objective.min : undefined,
+      });
     else {
       const solitaire =
         gameId === 'klondike'
@@ -462,6 +468,8 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
     if (!currentTable) return;
     const table = createGame(currentTable);
     gameEvent('game_started', { start: 'restart' });
+    view?.destroy();
+    view = null;
     await saves.save(table);
     mount(table);
   }
@@ -473,6 +481,8 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
     }
     const table = createGame();
     gameEvent('game_started', { start: 'new' });
+    view?.destroy();
+    view = null;
     await saves.save(table);
     mount(table);
   }
@@ -480,7 +490,13 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
   async function start(): Promise<void> {
     let saved = await saves.load(gameId!);
     // The story slot only resumes the same challenge.
-    if (saved && story && saved.data.storyLevel !== story.id) {
+    if (
+      saved &&
+      story &&
+      (saved.data.storyLevel !== story.id ||
+        saved.gameId !== story.game ||
+        !!story.setup.options?.freecellPuzzle !== !!saved.data.puzzle)
+    ) {
       await saves.delete(gameId!);
       saved = null;
     }

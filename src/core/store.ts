@@ -4,6 +4,7 @@ import { createDefaultProfile, createDefaultSelection, DEFAULT_SETTINGS } from '
 import { applyJournal, mergeJournals, type JournalUpdate } from '@/achievements/journal';
 
 export type Action =
+  | { type: 'RESTORE_BACKUP'; settings: Settings; profile: Profile; selection: Selection }
   | { type: 'NAVIGATE'; to: AppState; replace?: boolean }
   | { type: 'BACK' }
   | { type: 'BOOT_PROGRESS'; progress: number; label: string }
@@ -157,6 +158,8 @@ export function reduce(state: RootState, action: Action): RootState {
       return { ...state, profile: { ...state.profile, ...action.patch } };
     case 'JOURNAL':
       return { ...state, profile: { ...state.profile, journal: applyJournal(state.profile.journal, action.update) } };
+    case 'RESTORE_BACKUP':
+      return { ...state, settings: action.settings, profile: action.profile, selection: action.selection };
     case 'HYDRATE':
       return {
         ...state,
