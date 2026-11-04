@@ -77,13 +77,14 @@ export default defineConfig({
   ],
   webServer: [
     {
-      command: `npm run build && npx vite preview --port ${PORT} --strictPort`,
+      // Keep browser test events out of the production analytics project.
+      command: `VITE_POSTHOG_KEY= npm run build && npx vite preview --port ${PORT} --strictPort`,
       port: PORT,
       reuseExistingServer: !process.env.CI,
       timeout: 120_000,
     },
     {
-      command: `VITE_ENABLE_MATURE_CONTENT=true npx vite build --outDir dist-mature && npx vite preview --outDir dist-mature --port ${MATURE_PORT} --strictPort`,
+      command: `VITE_POSTHOG_KEY= VITE_ENABLE_MATURE_CONTENT=true npx vite build --outDir dist-mature && npx vite preview --outDir dist-mature --port ${MATURE_PORT} --strictPort`,
       port: MATURE_PORT,
       reuseExistingServer: !process.env.CI,
       timeout: 120_000,
