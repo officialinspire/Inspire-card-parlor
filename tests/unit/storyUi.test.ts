@@ -175,7 +175,7 @@ describe('screens render from data, with or without artwork', () => {
 describe('the playable demo (chapters 1–2)', () => {
   it('plays the challenges in the order the demo specifies', () => {
     expect(getChapter('th-1')!.levels.map((l) => l.game)).toEqual(['war', 'klondike', 'go-fish', 'freecell', 'spider']);
-    expect(getChapter('th-2')!.levels.map((l) => l.game)).toEqual(['go-fish', 'klondike', 'freecell', 'spider', 'war']);
+    expect(getChapter('th-2')!.levels.map((l) => l.game)).toEqual(['go-fish', 'klondike', 'go-fish', 'spider', 'war']);
     expect(getChapter('th-2')!.levels[0]!.setup.options?.opponents).toEqual(['sophia']);
     expect(getChapter('th-2')!.levels[4]!.setup.options?.opponent).toBe('sophia');
     for (const id of ['th-1', 'th-2']) {
@@ -184,7 +184,7 @@ describe('the playable demo (chapters 1–2)', () => {
       for (const l of ch.levels) {
         if (l.game === 'klondike') expect(l.setup.options?.draw).toBe(1);
         if (l.game === 'spider') expect(l.setup.options?.suits).toBe(1);
-        if (l.game === 'go-fish') expect(l.setup.options?.difficulty).toBe('easy');
+        if (l.game === 'go-fish') expect(['easy', 'normal']).toContain(l.setup.options?.difficulty);
       }
     }
   });
@@ -238,7 +238,7 @@ describe('campaign data version 2 (Chapter 2 reordered)', () => {
     };
     const m = migrateProfile(v1 as Profile) as Profile;
     const s = storyOf({ ...createDefaultProfile(), ...m });
-    expect(s.version).toBe(2);
+    expect(s.version).toBe(3);
     // Klondike was th-2-1, now th-2-2; War was th-2-2, now th-2-5.
     expect(s.completed).toEqual(['th-1-1', 'th-2-2', 'th-2-5']);
     expect(s.rewarded).toEqual(['level:th-2-2', 'level:th-2-5', 'chapter:th-1']);

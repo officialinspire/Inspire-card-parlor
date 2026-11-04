@@ -97,7 +97,7 @@ _An estate-sale box, twelve old decks and one card that should not exist._
 
 ### 1.4 The Locked Case
 
-**Game:** freecell. **Objective:** Solve this FreeCell deal. **Table:** fredericksburg deck on cheryls_antique_shop, deal 1001 (verified winnable).
+**Game:** freecell. **Objective:** FreeCell puzzle: finish the last four ranks. Use the free cells to plan ahead. **Table:** fredericksburg deck on cheryls_antique_shop, deal 1001 (verified winnable).
 
 **Before**
 
@@ -209,7 +209,7 @@ _A heron sketch, a trail marker nobody remembers, Sophia’s river map and a let
 
 ### 2.3 The Archive Drawer
 
-**Game:** freecell. **Objective:** Solve this FreeCell deal. **Table:** eastern_woodlands deck on rappahannock_riverside, deal 1016 (verified winnable).
+**Game:** go-fish against Sophia. **Objective:** Collect 3 books: choose your asks and remember the replies. **Table:** eastern_woodlands deck on rappahannock_riverside, a fresh deal each try at an Easy table.
 
 **Before**
 
@@ -349,7 +349,7 @@ _Dante has been paid, in one-dollar bills, to paint George Washington as thirtee
 
 ### 3.3 The Commission
 
-**Game:** freecell. **Objective:** Solve this FreeCell deal. **Table:** dantes_world deck on artists_studio, deal 1018 (verified winnable).
+**Game:** go-fish against Dante. **Objective:** Collect 3 books: choose your asks and remember the replies. **Table:** dantes_world deck on artists_studio, a fresh deal each try at an Easy table.
 
 **Before**
 
@@ -497,7 +497,7 @@ _Jak has filmed, filed and flourished his way to a reply nobody meant him to rea
 
 ### 4.4 Redacted
 
-**Game:** freecell. **Objective:** Solve this FreeCell deal. **Table:** jak_gold deck on backroom_card_table, deal 3310 (verified winnable).
+**Game:** go-fish against Jak Gold. **Objective:** Collect 3 books: choose your asks and remember the replies. **Table:** jak_gold deck on backroom_card_table, a fresh deal each try at an Easy table.
 
 **Before**
 
@@ -565,7 +565,7 @@ _A woman with no first name, a dossier with no happy ending, and a legend somebo
 
 ### 5.1 Dead Drop
 
-**Game:** freecell. **Objective:** Solve this FreeCell deal. **Table:** spycraft deck on mrs_gray_safehouse, deal 1017 (verified winnable).
+**Game:** freecell. **Objective:** FreeCell puzzle: finish the last four ranks. Use the free cells to plan ahead. **Table:** spycraft deck on mrs_gray_safehouse, deal 1017 (verified winnable).
 
 **Before**
 
@@ -781,7 +781,7 @@ _Steve Gonzales separates what happened at the lodge in 1752 from what someone i
 
 ### 6.4 The Cipher
 
-**Game:** freecell. **Objective:** Solve this FreeCell deal. **Table:** freemasonry deck on masonic_lodge_no4, deal 1009 (verified winnable).
+**Game:** go-fish against Steve Gonzales. **Objective:** Collect 3 books: choose your asks and remember the replies. **Table:** freemasonry deck on masonic_lodge_no4, a fresh deal each try at an Easy table.
 
 **Before**
 
@@ -924,7 +924,7 @@ _At her daughter’s house, Mary Ball Washington’s ghost has a few things to s
 
 ### 7.4 Letters
 
-**Game:** freecell. **Objective:** Solve this FreeCell deal. **Table:** fredericksburg deck on kenmore_parlor, deal 1019 (verified winnable).
+**Game:** go-fish against Mary Ball Washington. **Objective:** Collect 3 books: choose your asks and remember the replies. **Table:** fredericksburg deck on kenmore_parlor, a fresh deal each try at an Easy table.
 
 **Before**
 
@@ -1000,7 +1000,7 @@ _Jak, Steve and Dante, one sealed door, and four suits that have to go in the ri
 
 ### 8.1 Down the Steps
 
-**Game:** freecell. **Objective:** Solve this FreeCell deal. **Table:** inspire deck on underground_tunnels, deal 3300 (verified winnable).
+**Game:** freecell. **Objective:** FreeCell puzzle: finish the last four ranks. Use the free cells to plan ahead. **Table:** inspire deck on underground_tunnels, deal 3300 (verified winnable).
 
 **Before**
 
@@ -1198,7 +1198,7 @@ _George Washington’s ghost has waited a very long time to finish this game. He
 
 ### 9.3 The Twelfth Hand
 
-**Game:** freecell. **Objective:** Solve this FreeCell deal. **Table:** washington_ghost deck on washington_final_table, deal 3302 (verified winnable).
+**Game:** go-fish against George Washington’s Ghost. **Objective:** Collect 3 books: choose your asks and remember the replies. **Table:** washington_ghost deck on washington_final_table, a fresh deal each try at an Easy table.
 
 **Before**
 

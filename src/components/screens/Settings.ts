@@ -4,6 +4,7 @@ import { AppState } from '@/core/states';
 import { navigate } from '@/core/store';
 import type { Settings } from '@/core/types';
 import { createDefaultProfile, createDefaultSelection, DEFAULT_SETTINGS } from '@/core/defaults';
+import { saveTransfer } from '../saveTransfer';
 import { resetAllData } from '@/storage/persistence';
 import { fullscreen } from '@/utils/device';
 import { haptic, hapticsSupported } from '@/utils/haptics';
@@ -193,7 +194,12 @@ export const SettingsScreen: ScreenFactory = ({ store }) => {
       render: () =>
         panel(
           toggle('Left-handed layout', s().leftHanded, (v) => set({ leftHanded: v }), 'Mirror stock and controls'),
-          toggle('Show hints', s().showHints, (v) => set({ showHints: v })),
+          toggle(
+            'Show hints',
+            s().showHints,
+            (v) => set({ showHints: v }),
+            'Three hints per deal, shared across reloads. Undo does not refill them.',
+          ),
           toggle(
             'Auto-complete',
             s().autoComplete,
@@ -255,6 +261,7 @@ export const SettingsScreen: ScreenFactory = ({ store }) => {
       label: 'Data',
       render: () =>
         panel(
+          saveTransfer(store),
           tagged(
             toggle(
               'Anonymous usage statistics',

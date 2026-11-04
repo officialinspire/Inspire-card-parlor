@@ -22,7 +22,7 @@ export { CHARACTERS };
  *
  * Every seeded deal has been proven winnable (src/story/verify.ts,
  * tests/unit/story.test.ts): solitaire by the solver, War by simulating the
- * whole game. Go Fish challenges are dealt fresh on each try at an Easy table,
+ * whole game. Go Fish challenges are dealt fresh on each try at Easy or Normal tables,
  * and their objectives are checked to be reachable.
  *
  * All nine chapters are written (`status: 'final'`). The `draft` status and
@@ -226,8 +226,13 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
       level('th-1', 4, {
         title: 'The Locked Case',
         game: 'freecell',
-        objectiveText: 'Solve this FreeCell deal.',
-        setup: { seed: 1001, deckId: 'fredericksburg', boardId: 'cheryls_antique_shop' },
+        objectiveText: 'FreeCell puzzle: finish the last four ranks. Use the free cells to plan ahead.',
+        setup: {
+          seed: 1001,
+          options: { freecellPuzzle: true },
+          deckId: 'fredericksburg',
+          boardId: 'cheryls_antique_shop',
+        },
         intro: [
           narrate('You notice that Cheryl’s display case has a puzzle lock: a FreeCell deal painted under the glass.'),
           say(
@@ -420,9 +425,14 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
       }),
       level('th-2', 3, {
         title: 'The Archive Drawer',
-        game: 'freecell',
-        objectiveText: 'Solve this FreeCell deal.',
-        setup: { seed: 1016, deckId: 'eastern_woodlands', boardId: 'rappahannock_riverside' },
+        game: 'go-fish',
+        objective: { kind: 'books', min: 3 },
+        objectiveText: 'Collect 3 books: choose your asks and remember the replies.',
+        setup: {
+          options: { opponents: ['sophia'], difficulty: 'normal' },
+          deckId: 'eastern_woodlands',
+          boardId: 'rappahannock_riverside',
+        },
         intro: [
           say(
             'sophia',
@@ -681,9 +691,14 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
       }),
       level('th-3', 3, {
         title: 'The Commission',
-        game: 'freecell',
-        objectiveText: 'Solve this FreeCell deal.',
-        setup: { seed: 1018, deckId: 'dantes_world', boardId: 'artists_studio' },
+        game: 'go-fish',
+        objective: { kind: 'books', min: 3 },
+        objectiveText: 'Collect 3 books: choose your asks and remember the replies.',
+        setup: {
+          options: { opponents: ['dante'], difficulty: 'normal' },
+          deckId: 'dantes_world',
+          boardId: 'artists_studio',
+        },
         intro: [
           narrate(
             'Dante pulls out the client’s reference sketch for you: a stiff, old-fashioned portrait of George Washington holding a hand of cards.',
@@ -923,9 +938,14 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
       }),
       level('th-4', 4, {
         title: 'Redacted',
-        game: 'freecell',
-        objectiveText: 'Solve this FreeCell deal.',
-        setup: { seed: 3310, deckId: 'jak_gold', boardId: 'backroom_card_table' },
+        game: 'go-fish',
+        objective: { kind: 'books', min: 3 },
+        objectiveText: 'Collect 3 books: choose your asks and remember the replies.',
+        setup: {
+          options: { opponents: ['jak_gold'], difficulty: 'normal' },
+          deckId: 'jak_gold',
+          boardId: 'backroom_card_table',
+        },
         intro: [
           say(
             'jak_gold',
@@ -1046,8 +1066,8 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
       level('th-5', 1, {
         title: 'Dead Drop',
         game: 'freecell',
-        objectiveText: 'Solve this FreeCell deal.',
-        setup: { seed: 1017, deckId: 'spycraft', boardId: 'mrs_gray_safehouse' },
+        objectiveText: 'FreeCell puzzle: finish the last four ranks. Use the free cells to plan ahead.',
+        setup: { seed: 1017, options: { freecellPuzzle: true }, deckId: 'spycraft', boardId: 'mrs_gray_safehouse' },
         intro: [
           say(
             'mrs_gray',
@@ -1447,9 +1467,14 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
       }),
       level('th-6', 4, {
         title: 'The Cipher',
-        game: 'freecell',
-        objectiveText: 'Solve this FreeCell deal.',
-        setup: { seed: 1009, deckId: 'freemasonry', boardId: 'masonic_lodge_no4' },
+        game: 'go-fish',
+        objective: { kind: 'books', min: 3 },
+        objectiveText: 'Collect 3 books: choose your asks and remember the replies.',
+        setup: {
+          options: { opponents: ['steve_gonzales'], difficulty: 'normal' },
+          deckId: 'freemasonry',
+          boardId: 'masonic_lodge_no4',
+        },
         info: [
           {
             id: 'burning-man-principles',
@@ -1728,9 +1753,14 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
       }),
       level('th-7', 4, {
         title: 'Letters',
-        game: 'freecell',
-        objectiveText: 'Solve this FreeCell deal.',
-        setup: { seed: 1019, deckId: 'fredericksburg', boardId: 'kenmore_parlor' },
+        game: 'go-fish',
+        objective: { kind: 'books', min: 3 },
+        objectiveText: 'Collect 3 books: choose your asks and remember the replies.',
+        setup: {
+          options: { opponents: ['mary_ball_washington'], difficulty: 'normal' },
+          deckId: 'fredericksburg',
+          boardId: 'kenmore_parlor',
+        },
         intro: [
           narrate(
             'Mary’s ghost sets a bundle of ribbon-tied letters beside you. Each is addressed in the same firm hand: To George.',
@@ -1862,8 +1892,8 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
       level('th-8', 1, {
         title: 'Down the Steps',
         game: 'freecell',
-        objectiveText: 'Solve this FreeCell deal.',
-        setup: { seed: 3300, deckId: 'inspire', boardId: 'underground_tunnels' },
+        objectiveText: 'FreeCell puzzle: finish the last four ranks. Use the free cells to plan ahead.',
+        setup: { seed: 3300, options: { freecellPuzzle: true }, deckId: 'inspire', boardId: 'underground_tunnels' },
         intro: [
           narrate(
             'You reach a junction where the tunnel splits four ways. A suit is carved into the keystone of each arch.',
@@ -2190,9 +2220,14 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
       }),
       level('th-9', 3, {
         title: 'The Twelfth Hand',
-        game: 'freecell',
-        objectiveText: 'Solve this FreeCell deal.',
-        setup: { seed: 3302, deckId: 'washington_ghost', boardId: 'washington_final_table' },
+        game: 'go-fish',
+        objective: { kind: 'books', min: 3 },
+        objectiveText: 'Collect 3 books: choose your asks and remember the replies.',
+        setup: {
+          options: { opponents: ['george_washington'], difficulty: 'normal' },
+          deckId: 'washington_ghost',
+          boardId: 'washington_final_table',
+        },
         intro: [
           narrate(
             'You recognise the deal in front of you: the twelfth hand from the ledger, laid out exactly as it was written.',

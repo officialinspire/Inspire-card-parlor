@@ -53,7 +53,7 @@ const CHAPTERS = {
     levels: [
       { id: 'th-2-1', game: 'go-fish', opponent: 'sophia' },
       { id: 'th-2-2', game: 'klondike' },
-      { id: 'th-2-3', game: 'freecell' },
+      { id: 'th-2-3', game: 'go-fish', opponent: 'sophia' },
       { id: 'th-2-4', game: 'spider' },
       { id: 'th-2-5', game: 'war', opponent: 'sophia' },
     ],

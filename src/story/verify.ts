@@ -28,7 +28,7 @@ export function createSolitaire(level: StoryLevel): SolitaireGame {
   const { seed, options = {} } = level.setup;
   if (level.game === 'klondike') return KlondikeGame.create({ seed, draw: options.draw ?? 1 });
   if (level.game === 'spider') return SpiderGame.create({ seed, suits: options.suits ?? 1 });
-  return FreeCellGame.create({ seed });
+  return level.setup.options?.freecellPuzzle ? FreeCellGame.createPuzzle({ seed }) : FreeCellGame.create({ seed });
 }
 
 export function verifySolitaire(level: StoryLevel, budget = 200_000): SolveResult & { replayed: boolean } {
