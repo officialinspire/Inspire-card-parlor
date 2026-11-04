@@ -104,7 +104,13 @@ function referrer(): string {
 }
 
 const doNotTrack = () =>
-  safe(() => navigator.doNotTrack === '1' || (window as { doNotTrack?: string }).doNotTrack === '1', false);
+  safe(
+    () =>
+      (navigator as Navigator & { globalPrivacyControl?: boolean }).globalPrivacyControl === true ||
+      navigator.doNotTrack === '1' ||
+      (window as { doNotTrack?: string }).doNotTrack === '1',
+    false,
+  );
 
 export const analyticsConfigured = () => KEY !== '';
 

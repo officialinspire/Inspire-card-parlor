@@ -166,7 +166,7 @@ The service worker (`public/sw.js`) is stamped at build time with the version an
 
 Anonymous product analytics go to PostHog under the suite id `inspire_card_parlor`: `game_opened`, `game_started`, `game_paused`, `game_resumed`, `game_completed`, `game_over`, `round_started`, `round_completed` (capped per game), `achievement_unlocked`, `high_score_achieved`, `difficulty_selected`, `pwa_installed`, `audio_enabled` and `error_encountered`. Each carries `brand`, `game`, `game_version`, `mode`, `difficulty`, `score`, `duration_seconds`, `achievement`, `source` and `referrer` (host only) where they apply. The only identifier is a random anonymous id; IP geolocation is off; nothing is sent when the player switches _Anonymous usage statistics_ off or the browser sends Do Not Track. Events queue while offline and are retried; analytics never throws into the game.
 
-Set the PostHog project key as the repository variable `POSTHOG_KEY` (and optionally `POSTHOG_HOST`, default `https://us.i.posthog.com`); the deploy workflow passes them to the build as `VITE_POSTHOG_KEY` / `VITE_POSTHOG_HOST`. Without a key, nothing leaves the device.
+The production build reads `VITE_POSTHOG_KEY` and `VITE_POSTHOG_HOST` from `.env.production`. These are public browser ingestion values for INSPIRE Analytics, deliberately versioned so GitHub Pages builds work without private settings. Never put personal/admin API keys in this file. Without a key, nothing leaves the device. Browser Do Not Track and Global Privacy Control disable sending.
 
 ## Architecture
 
