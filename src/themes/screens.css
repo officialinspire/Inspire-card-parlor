@@ -1314,17 +1314,21 @@
     0 2px 0 var(--edge),
     var(--elev-1);
   color: var(--ink);
-  animation: deal-in 420ms var(--ease) both;
+  animation: menu-tile-enter 260ms var(--ease) backwards;
   animation-delay: calc(120ms + var(--i, 0) * 45ms);
   transition:
     transform var(--dur-fast) var(--ease-press),
     box-shadow var(--dur) var(--ease),
     border-color var(--dur);
 }
-@keyframes deal-in {
+@keyframes menu-tile-enter {
   from {
     opacity: 0;
-    transform: translateY(14px) rotate(-2deg);
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
 @media (hover: hover) {
@@ -1375,6 +1379,7 @@
   height: 19px;
 }
 .menu-tile-text {
+  width: 100%;
   display: flex;
   flex-direction: column;
   min-width: 0;
@@ -1404,7 +1409,7 @@
   }
 }
 /* Short names when the tiles are narrow (phones, the landscape side panel). */
-@container menu-grid (max-width: 440px) {
+@container menu-grid (max-width: 500px) {
   .menu-tile-label .label-full {
     display: none;
   }
@@ -1597,7 +1602,7 @@
   }
   .menu-tile {
     min-height: 54px;
-    animation-name: deal-in-side;
+    animation-name: menu-tile-enter-side;
   }
   .menu-tile-content {
     flex-direction: row;
@@ -1629,10 +1634,14 @@
     }
   }
 }
-@keyframes deal-in-side {
+@keyframes menu-tile-enter-side {
   from {
     opacity: 0;
-    transform: translateX(-18px);
+    transform: translateX(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
 
@@ -2408,7 +2417,7 @@
 .table-fan .card {
   margin: 0 calc(var(--card-w) * -0.32);
   transform-origin: 50% 140%;
-  animation: deal-in var(--dur-slow) var(--ease) both;
+  animation: table-card-deal-in var(--dur-slow) var(--ease) both;
 }
 .table-fan .card:nth-child(1) {
   rotate: -16deg;
@@ -2428,7 +2437,7 @@
   rotate: 16deg;
   animation-delay: 280ms;
 }
-@keyframes deal-in {
+@keyframes table-card-deal-in {
   from {
     opacity: 0;
     transform: translateY(-40vh) rotate(-30deg);
