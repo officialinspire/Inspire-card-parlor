@@ -327,6 +327,10 @@ export const CollectionScreen: ScreenFactory = ({ store }) => {
       minTileHeight: 170,
       maxTileHeight: 220,
       label: 'Card backs',
+      initialIndex: Math.max(
+        0,
+        backs.findIndex((b) => b.id === (store.state.selection.cardBack ?? '')),
+      ),
       render: (b) => {
         const selected = (store.state.selection.cardBack ?? '') === b.id;
         const theme = b.id
