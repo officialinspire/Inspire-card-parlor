@@ -57,6 +57,7 @@ test('music player: play/pause, next/previous, shuffle, repeat, playlists, volum
   await expect(player.locator('[data-category="woodland-ambience"]')).toHaveAttribute('aria-checked', 'true');
   await expect(player.locator('[data-value="track-title"]')).toHaveText(/Woodland Hush|Turtle Creek/);
   // Only this playlist's tracks are listed (paged on short screens).
+  await expect(player.locator('.mp-tracks [data-track]').first()).toBeVisible();
   const listed = await player
     .locator('.mp-tracks [data-track]')
     .evaluateAll((els) => els.map((e) => (e as HTMLElement).dataset.track));
