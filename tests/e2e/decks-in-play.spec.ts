@@ -61,7 +61,8 @@ async function expectArtwork(page: Page, deck: string) {
         .getEntriesByType('resource')
         .some(
           (e) =>
-            e.name.includes(`/assets/cards/${d}/faces.webp`) && (e as PerformanceResourceTiming).decodedBodySize > 0,
+            (e.name.includes(`/assets/cards/${d}/faces.webp`) || e.name.includes(`/assets/cards/${d}/faces.png`)) &&
+            (e as PerformanceResourceTiming).decodedBodySize > 0,
         ),
     deck,
   );

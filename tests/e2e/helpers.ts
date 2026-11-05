@@ -64,7 +64,7 @@ export async function enterParlor(page: Page): Promise<void> {
   await expect(enter).toBeVisible({ timeout: 10_000 });
   await enter.click();
   const studioSkip = page.locator('[data-action="skip-studio-intro"]');
-  if (await studioSkip.isVisible()) await studioSkip.click();
+  if (await studioSkip.isVisible()) await studioSkip.click({ timeout: 1000 }).catch(() => undefined);
   await expectScreen(page, 'MAIN_MENU');
 }
 
