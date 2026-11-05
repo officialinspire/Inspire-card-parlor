@@ -3,6 +3,7 @@ import {
   ascendingSameSuit,
   descendingAlternating,
   isSequence,
+  fisherYates,
   maxSupermove,
   type Card,
   type Pile,
@@ -32,16 +33,18 @@ export class FreeCellGame extends SolitaireGame {
   }
 
   /** A compact endgame: four ranks remain, with lower cards blocked by higher ones. */
-  static createPuzzle(opts: { seed?: number } = {}): FreeCellGame {
+  static createPuzzle(opts: { seed?: number; shuffle?: boolean } = {}): FreeCellGame {
     const game = FreeCellGame.create(opts);
     const cards = game.tableau.flatMap((p) => p.take(p.size));
     const suits = ['spades', 'hearts', 'clubs', 'diamonds'] as const;
+    const endgame: Card[] = [];
     suits.forEach((suit, i) => {
       const suited = cards.filter((c) => c.suit === suit).sort((a, b) => a.rank - b.rank);
       game.foundations[i]!.push(...suited.slice(0, 9));
-      game.tableau[i * 2]!.push(suited[9]!, suited[11]!);
-      game.tableau[i * 2 + 1]!.push(suited[10]!, suited[12]!);
+      endgame.push(suited[9]!, suited[11]!, suited[10]!, suited[12]!);
     });
+    if (opts.shuffle) fisherYates(endgame, game.table.random);
+    game.tableau.forEach((column, i) => column.push(endgame[2 * i]!, endgame[2 * i + 1]!));
     game.data.puzzle = true;
     return game;
   }

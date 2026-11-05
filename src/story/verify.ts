@@ -1,7 +1,4 @@
-import { KlondikeGame } from '@/games/solitaire/KlondikeGame';
-import { FreeCellGame } from '@/games/solitaire/FreeCellGame';
-import { SpiderGame } from '@/games/solitaire/SpiderGame';
-import type { SolitaireGame } from '@/games/solitaire/SolitaireGame';
+import { createStorySolitaire } from './solitaire';
 import { solve, replay, type SolveResult } from '@/games/solitaire/solver';
 import { WarGame } from '@/games/war/WarGame';
 import { GoFishGame } from '@/games/goFish/GoFishGame';
@@ -24,16 +21,13 @@ import type { StoryLevel } from './campaign';
  *    how often a sensible player meets the objective.
  */
 
-export function createSolitaire(level: StoryLevel): SolitaireGame {
-  const { seed, options = {} } = level.setup;
-  if (level.game === 'klondike') return KlondikeGame.create({ seed, draw: options.draw ?? 1 });
-  if (level.game === 'spider') return SpiderGame.create({ seed, suits: options.suits ?? 1 });
-  return level.setup.options?.freecellPuzzle ? FreeCellGame.createPuzzle({ seed }) : FreeCellGame.create({ seed });
-}
-
-export function verifySolitaire(level: StoryLevel, budget = 200_000): SolveResult & { replayed: boolean } {
-  const r = solve(createSolitaire(level), budget);
-  return { ...r, replayed: r.solved && replay(createSolitaire(level), r.line) };
+export function verifySolitaire(
+  level: StoryLevel,
+  budget = 200_000,
+  seed = level.setup.seed,
+): SolveResult & { replayed: boolean } {
+  const r = solve(createStorySolitaire(level, seed), budget);
+  return { ...r, replayed: r.solved && replay(createStorySolitaire(level, seed), r.line) };
 }
 
 export function simulateWar(seed: number, opponentId = 'jak_gold'): { status: string; rounds: number } {

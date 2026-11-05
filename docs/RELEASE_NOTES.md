@@ -1,3 +1,7 @@
+# v1.4.1 — Solitaire redeals
+
+- Fixed New Game for Kenmore and other Story Mode Klondike, Spider and FreeCell challenges. New hands preserve challenge options and use verified deals. Restart repeats the current hand, including after resuming a save.
+
 # v1.4.0 — Collectibles, shop and chapter audio
 
 - Added the shared Inspire Software MP4 after Touch to Start, with skip, Escape, mute/volume, visibility pause and failure recovery before the menu fade.
