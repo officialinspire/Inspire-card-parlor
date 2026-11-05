@@ -4,7 +4,7 @@ A cozy collection of classic playing-card games featuring collectible illustrate
 
 **Developer:** OFFICIAL INSPIRE · [www.inspireclothing.art](https://www.inspireclothing.art)
 
-> **Status: v1.4.0 — The Thirteenth Hand.** Five card games, nine story chapters (45 challenges), thirteen illustrated decks, collectible tables, a credit shop, ten recorded music tracks, 150 achievements, save import/export and an installable PWA. **[Play the latest build](https://officialinspire.github.io/Inspire-card-parlor/).**
+> **Status: v1.4.1 — The Thirteenth Hand.** Five card games, nine story chapters (45 challenges), thirteen illustrated decks, collectible tables, a credit shop, ten recorded music tracks, 150 achievements, save import/export and an installable PWA. **[Play the latest build](https://officialinspire.github.io/Inspire-card-parlor/).**
 
 ## Games
 
@@ -60,7 +60,7 @@ Games save after every round or turn (IndexedDB) and offer **Resume** when you c
 
 ## Story Mode: The Thirteenth Hand
 
-Nine chapters follow Cheryl, Sophia, Dante, Jak, Mrs. Gray, Steve, Mary Washington’s ghost and George Washington’s ghost through a fictional supernatural mystery in Fredericksburg. Each chapter has five challenges, for 45 total. FreeCell appears three times as a focused puzzle; Klondike, Spider, Go Fish and War provide the rest. Seeded solitaire deals are verified solvable. Historical field notes distinguish sourced history from the fictional tunnels and ghosts.
+Nine chapters follow Cheryl, Sophia, Dante, Jak, Mrs. Gray, Steve, Mary Washington’s ghost and George Washington’s ghost through a fictional supernatural mystery in Fredericksburg. Each chapter has five challenges, for 45 total. FreeCell appears three times as a focused puzzle; Klondike, Spider, Go Fish and War provide the rest. Story solitaire opens with a verified deal. **New Game** chooses a different verified hand with the same challenge rules, and **Restart** repeats the current hand. Historical field notes distinguish sourced history from the fictional tunnels and ghosts.
 
 | Chapter | Setting                           |
 | ------- | --------------------------------- |

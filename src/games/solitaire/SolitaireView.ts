@@ -512,7 +512,7 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
       confirmLabel: 'Yes, deal again',
       cancelLabel: 'Keep playing',
     });
-    if (!ok) return false;
+    if (!ok || destroyed) return false;
     recordGameResult(store, {
       gameId,
       outcome: 'loss',
@@ -520,7 +520,6 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
       durationMs: game.data.elapsedMs,
       key: `${gameId}:${game.data.seed}:${game.data.startedAt}`,
     });
-    await saves.delete(gameId);
     return true;
   }
 

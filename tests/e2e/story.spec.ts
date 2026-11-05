@@ -396,8 +396,10 @@ test('every challenge launches with its own game, deck and table, and seeded dea
       s.dispatch({ type: 'NAVIGATE', to: 'GAMEPLAY' });
     }, id);
     await expectScreen(page, 'GAMEPLAY');
-    const fresh = action(page, 'new');
-    if (await fresh.isVisible({ timeout: 800 }).catch(() => false)) await fresh.click();
+    const resume = action(page, 'resume');
+    const firstCard = page.locator(`${CURRENT} .card`).first();
+    await expect(resume.or(firstCard).first()).toBeVisible();
+    if (await resume.isVisible()) await resume.click();
     await expect(action(page, 'deal')).toHaveCount(0); // no options dialog in story
     await expect(page.locator(`${CURRENT} .card`).first()).toBeVisible();
     await expect(page.locator('.dialog-backdrop')).toHaveCount(0);

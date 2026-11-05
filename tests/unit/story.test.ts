@@ -23,6 +23,7 @@ import {
   objectiveMet,
   storyOf,
 } from '@/story/progress';
+import { createStorySolitaire, nextStorySolitaireSeed, storySolitaireSeeds } from '@/story/solitaire';
 import { goFishWinRate, simulateWar, verifySolitaire } from '@/story/verify';
 import { createDefaultProfile, PROFILE_SCHEMA } from '@/core/defaults';
 import { Store } from '@/core/store';
@@ -368,6 +369,32 @@ describe('every challenge can be won', () => {
       expect(r.replayed, 'the winning line replays on a fresh deal').toBe(true);
     },
     60_000,
+  );
+
+  it('can redeal every solitaire challenge under the same rules', () => {
+    for (const level of solitaire) {
+      const seeds = storySolitaireSeeds(level);
+      expect(seeds.length, level.id).toBeGreaterThan(1);
+      const previous = level.setup.seed!;
+      expect(
+        seeds.filter((seed) => seed !== previous),
+        level.id,
+      ).toContain(nextStorySolitaireSeed(level, previous));
+    }
+  });
+
+  it.each(solitaire.filter((level) => level.setup.options?.freecellPuzzle).map((level) => [level.id, level] as const))(
+    '%s: alternate FreeCell layouts are distinct and solvable',
+    (_, level) => {
+      const seeds = storySolitaireSeeds(level);
+      const layouts = seeds.map((seed) =>
+        JSON.stringify(createStorySolitaire(level, seed).tableau.map((column) => column.all.map((card) => card.code))),
+      );
+      expect(new Set(layouts).size).toBe(seeds.length);
+      for (const seed of seeds) {
+        expect(verifySolitaire(level, 250_000, seed).replayed, `seed ${seed}`).toBe(true);
+      }
+    },
   );
 
   it.each(war.map((l) => [l.id, l] as const))('%s: the seeded War is a player win', (_, level) => {

@@ -3,7 +3,8 @@ import { Store, createInitialState } from '@/core/store';
 import { parseBackup, importBackup, type ParlorBackup } from '@/storage/backup';
 import { idb } from '@/storage/idb';
 import { ALL_LEVELS } from '@/story/campaign';
-import { createSolitaire, verifySolitaire } from '@/story/verify';
+import { verifySolitaire } from '@/story/verify';
+import { createStorySolitaire } from '@/story/solitaire';
 import { migrateProfile } from '@/storage/persistence';
 import { FreeCellGame } from '@/games/solitaire/FreeCellGame';
 import { KlondikeGame } from '@/games/solitaire/KlondikeGame';
@@ -42,7 +43,7 @@ describe('mobile playtest balance', () => {
     const puzzles = ALL_LEVELS.filter((l) => l.game === 'freecell');
     expect(puzzles.map((l) => l.id)).toEqual(['th-1-4', 'th-5-1', 'th-8-1']);
     for (const level of puzzles) {
-      const game = createSolitaire(level);
+      const game = createStorySolitaire(level);
       expect(game.table.cardCount).toBe(52);
       expect(game.tableau.reduce((n, p) => n + p.size, 0)).toBe(16);
       const proof = verifySolitaire(level);
