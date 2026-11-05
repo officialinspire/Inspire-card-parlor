@@ -8,7 +8,7 @@ export const screenState = (page: Page) =>
   );
 
 export async function expectScreen(page: Page, state: string): Promise<void> {
-  await expect.poll(() => screenState(page)).toBe(state);
+  await expect.poll(() => screenState(page), { timeout: state === 'MAIN_MENU' ? 15000 : 5000 }).toBe(state);
   await expect(page.locator(`${CURRENT}[data-state="${state}"]`)).toBeVisible();
   // Wait for the slide transition to finish so layout checks see final positions.
   await page.waitForFunction(() => {
@@ -63,6 +63,8 @@ export async function enterParlor(page: Page): Promise<void> {
   if (await skip.isVisible()) await skip.click().catch(() => undefined);
   await expect(enter).toBeVisible({ timeout: 10_000 });
   await enter.click();
+  const studioSkip = page.locator('[data-action="skip-studio-intro"]');
+  if (await studioSkip.isVisible()) await studioSkip.click();
   await expectScreen(page, 'MAIN_MENU');
 }
 

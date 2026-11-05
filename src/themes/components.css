@@ -1584,3 +1584,17 @@ button.tile:active {
 .tabs-strip[data-more-start='true'][data-more-end='true'] {
   mask-image: linear-gradient(90deg, transparent, #000 36px, #000 calc(100% - 36px), transparent);
 }
+
+.shop-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.shop-item p {
+  font-size: 0.85rem;
+  margin: 4px 0;
+}

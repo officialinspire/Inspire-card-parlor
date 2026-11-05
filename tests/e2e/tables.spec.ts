@@ -1,3 +1,5 @@
+import { allBoards } from '../../src/boards/registry';
+import { allDecks } from '../../src/decks/registry';
 import { expect, test, type Page } from '@playwright/test';
 import { CURRENT, enterParlor, expectScreen, seed } from './helpers';
 
@@ -180,7 +182,13 @@ async function checkTable(page: Page, game: string, deck: string, board: string)
 
 async function play(page: Page, combos: [string, string][]) {
   await seed(page, {
-    profile: { level: 99, storyChapter: 99, unlockedAchievements: ['win-streak-5', 'war-flawless', 'collector-5'] },
+    profile: {
+      level: 99,
+      unlockedBoards: allBoards().map((b) => b.id),
+      unlockedDecks: allDecks().map((d) => d.id),
+      storyChapter: 99,
+      unlockedAchievements: ['win-streak-5', 'war-flawless', 'collector-5'],
+    },
     settings: { cardAnimationSpeed: 'fast', warSpeed: 'fast' },
   });
   await enterParlor(page);

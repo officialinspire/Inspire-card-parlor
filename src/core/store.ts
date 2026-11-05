@@ -1,9 +1,11 @@
+import { purchaseCollectible } from '@/progression/shop';
 import { AppState, canTransition } from './states';
 import type { GameId, ModalRef, Notification, Profile, RootState, Selection, Settings } from './types';
 import { createDefaultProfile, createDefaultSelection, DEFAULT_SETTINGS } from './defaults';
 import { applyJournal, mergeJournals, type JournalUpdate } from '@/achievements/journal';
 
 export type Action =
+  | { type: 'BUY_COLLECTIBLE'; kind: 'deck' | 'board'; id: string }
   | { type: 'RESTORE_BACKUP'; settings: Settings; profile: Profile; selection: Selection }
   | { type: 'NAVIGATE'; to: AppState; replace?: boolean }
   | { type: 'BACK' }
@@ -143,6 +145,10 @@ export function reduce(state: RootState, action: Action): RootState {
         ? favs.filter((d) => d !== action.deckId)
         : [...favs, action.deckId];
       return { ...state, profile: { ...state.profile, favoriteDecks } };
+    }
+    case 'BUY_COLLECTIBLE': {
+      const profile = purchaseCollectible(state.profile, action.kind, action.id);
+      return profile === state.profile ? state : { ...state, profile };
     }
     case 'OWN_VARIANT': {
       const p = state.profile;

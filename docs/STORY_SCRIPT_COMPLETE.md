@@ -283,7 +283,7 @@ _A heron sketch, a trail marker nobody remembers, Sophia’s river map and a let
 
 ## Chapter 3: Neon Commission
 
-**Place:** iSMOKESHOP (fictional). **Host:** Dante. **Cast:** Dante. **Music:** tape-deck.
+**Place:** iSMOKESHOP (fictional). **Host:** Dante. **Cast:** Dante. **Music:** minimal-parlor-loop.
 
 _Dante has been paid, in one-dollar bills, to paint George Washington as thirteen neon monsters._
 
@@ -409,7 +409,7 @@ _Dante has been paid, in one-dollar bills, to paint George Washington as thirtee
 >
 > _You tuck the glowing sketch away with the card. Two corners marked, two to go._
 
-**Chapter rewards:** deck: dantes_world, board: artists_studio, passport stamp (iSMOKESHOP), 400 credits, 260 XP.
+**Chapter rewards:** deck: cannabis_nugs, deck: dantes_world, board: artists_studio, passport stamp (iSMOKESHOP), 400 credits, 260 XP.
 
 **Chapter notes:**
 
@@ -539,11 +539,11 @@ _Jak has filmed, filed and flourished his way to a reply nobody meant him to rea
 >
 > _You leave Jak rewatching his footage and head for the door with no name on it._
 
-**Chapter rewards:** deck: jak_gold, board: jak_golds_casino, passport stamp (Jak’s Backroom Card Parlor), achievement: halfway-home, 450 credits, 280 XP.
+**Chapter rewards:** deck: yummyhole_standard, deck: jak_gold, board: jak_golds_casino, passport stamp (Jak’s Backroom Card Parlor), achievement: halfway-home, 450 credits, 280 XP.
 
 ## Chapter 5: Operation Thirteenth Hand
 
-**Place:** Mrs. Gray’s Intelligence Safehouse (fictional). **Host:** Mrs. Gray. **Cast:** Mrs. Gray. **Music:** window-rain.
+**Place:** Mrs. Gray’s Intelligence Safehouse (fictional). **Host:** Mrs. Gray. **Cast:** Mrs. Gray. **Music:** safehouse-pulse.
 
 _A woman with no first name, a dossier with no happy ending, and a legend somebody borrowed._
 
@@ -683,7 +683,7 @@ _A woman with no first name, a dossier with no happy ending, and a legend somebo
 
 ## Chapter 6: Square and Compasses
 
-**Place:** Fredericksburg Masonic Lodge No. 4 (real). **Host:** Steve Gonzales. **Cast:** Steve Gonzales, Sophia. **Music:** silent-study-hours.
+**Place:** Fredericksburg Masonic Lodge No. 4 (real). **Host:** Steve Gonzales. **Cast:** Steve Gonzales, Sophia. **Music:** sanctum-pulse.
 
 _Steve Gonzales separates what happened at the lodge in 1752 from what someone invented later._
 
@@ -841,7 +841,7 @@ _Steve Gonzales separates what happened at the lodge in 1752 from what someone i
 
 ## Chapter 7: A Mother’s Opinion
 
-**Place:** Kenmore (real). **Host:** Mary Ball Washington. **Cast:** Mary Ball Washington. **Music:** midnight-tea.
+**Place:** Kenmore (real). **Host:** Mary Ball Washington. **Cast:** Mary Ball Washington. **Music:** kenmore-manor-theme.
 
 _At her daughter’s house, Mary Ball Washington’s ghost has a few things to say about her son._
 
@@ -1136,7 +1136,7 @@ _Jak, Steve and Dante, one sealed door, and four suits that have to go in the ri
 
 ## Chapter 9: The Thirteenth Hand
 
-**Place:** Washington’s Spectral Card Parlor (supernatural). **Host:** George Washington’s Ghost. **Cast:** George Washington’s Ghost, Mary Ball Washington. **Music:** shadows-of-the-occult.
+**Place:** Washington’s Spectral Card Parlor (supernatural). **Host:** George Washington’s Ghost. **Cast:** George Washington’s Ghost, Mary Ball Washington. **Music:** esoteric-order-loop.
 
 _George Washington’s ghost has waited a very long time to finish this game. He does not plan to lose it._
 

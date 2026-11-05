@@ -168,6 +168,69 @@ export const InitializationScreen: ScreenFactory = ({ store }) => {
     setStage(store.state.boot.ready ? 'ready' : 'title');
   };
 
+  // Play inside the original gesture so mobile browsers permit media playback.
+  let finishVideo: (() => void) | null = null;
+  const playStudioIntro = () => {
+    const video = h('video', {
+      class: 'studio-video',
+      playsinline: '',
+      preload: 'auto',
+      'aria-label': 'Inspire Software intro',
+    }) as HTMLVideoElement;
+    video.src = `${import.meta.env.BASE_URL}assets/video/inspiresoftwareintro.mp4`;
+    video.muted = settings.muted;
+    video.volume = Math.max(0, Math.min(1, settings.masterVolume * settings.sfxVolume));
+    let finished = false;
+    let watchdog: ReturnType<typeof setTimeout>;
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      clearTimeout(watchdog);
+      video.pause();
+      overlay.remove();
+      finishVideo = null;
+      startMusicFromGesture(store);
+      timeline.clear();
+      timeline.at(times.leave, () => {
+        requestMenuReveal(times.reveal);
+        document.documentElement.dataset.booted = '';
+        navigate(AppState.MAIN_MENU);
+      });
+      timeline.start();
+    };
+    const skipVideo = h(
+      'button',
+      {
+        type: 'button',
+        class: 'btn btn-ghost studio-skip',
+        'data-action': 'skip-studio-intro',
+        onclick: (event: Event) => {
+          event.stopPropagation();
+          finish();
+        },
+      },
+      'Skip video',
+    );
+    const overlay = h('div', { class: 'studio-intro', 'data-studio-intro': '' }, video, skipVideo);
+    el.append(overlay);
+    skipVideo.focus();
+    finishVideo = finish;
+    video.addEventListener('ended', finish, { once: true });
+    video.addEventListener('error', finish, { once: true });
+    // A missing/offline video or stalled decode must never trap the player.
+    watchdog = setTimeout(finish, 20000);
+    void video.play().catch(finish);
+    d.add(() => {
+      finished = true;
+      clearTimeout(watchdog);
+      video.pause();
+      video.removeAttribute('src');
+      video.load();
+      overlay.remove();
+      finishVideo = null;
+    });
+  };
+
   let starting = false;
   const activate = () => {
     // Only once, and only when loading is really done.
@@ -175,17 +238,12 @@ export const InitializationScreen: ScreenFactory = ({ store }) => {
     starting = true;
     // Inside the gesture: unlock audio first (iOS Safari requires it), then the chime and the music.
     void audio.unlock().then(() => audio.play('chime'));
-    startMusicFromGesture(store);
+
     track('enter_parlor');
     store.dispatch({ type: 'JOURNAL', update: { add: { visits: 1 } } });
     setStage('leaving');
     timeline.clear();
-    timeline.at(times.leave, () => {
-      requestMenuReveal(times.reveal);
-      document.documentElement.dataset.booted = '';
-      navigate(AppState.MAIN_MENU);
-    });
-    timeline.start();
+    playStudioIntro();
   };
 
   // Taps anywhere: skip the intro, or (once ready) start.
@@ -196,6 +254,11 @@ export const InitializationScreen: ScreenFactory = ({ store }) => {
   });
   const onKey = (e: KeyboardEvent) => {
     if (e.defaultPrevented || e.repeat) return;
+    if (finishVideo && e.key === 'Escape') {
+      e.preventDefault();
+      finishVideo();
+      return;
+    }
     const skipKey = e.key === 'Escape' || e.key === 'Enter' || e.key === ' ';
     if ((stage === 'black' || stage === 'presents') && skipKey) {
       e.preventDefault();
@@ -211,6 +274,11 @@ export const InitializationScreen: ScreenFactory = ({ store }) => {
   // The sequence (and its CSS animations) pauses with the tab.
   const onVisibility = () => {
     el.classList.toggle('paused', document.hidden);
+    const video = el.querySelector('video');
+    if (video) {
+      if (document.hidden) video.pause();
+      else void video.play().catch(() => finishVideo?.());
+    }
     if (document.hidden) timeline.pause();
     else timeline.start();
   };

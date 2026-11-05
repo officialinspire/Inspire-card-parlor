@@ -14,7 +14,7 @@ import type { ScreenFactory } from '../Screen';
 import { SETUP_STEPS } from './GameSelection';
 
 export const DeckSelectionScreen: ScreenFactory = ({ store }) => {
-  const DECKS = deckThemes.list();
+  const DECKS = deckThemes.list().filter((d) => isDeckUnlocked(d.id, store.state.profile));
   const game = getGame(store.state.selection.gameId);
   const pager = paginator({
     items: DECKS,

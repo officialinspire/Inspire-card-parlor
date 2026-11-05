@@ -29,33 +29,23 @@ test('collection lists the deck registry with mature decks hidden by default', a
   page.on('request', (r) => r.url().includes('/assets/cards/mature/') && matureRequests.push(r.url()));
   await enterParlor(page);
   await clickNav(page, 'COLLECTION');
-  expect(await deckIds(page)).toEqual(
-    [
-      'classic',
-      'dantes_world',
-      'eastern_woodlands',
-      'fredericksburg',
-      'fredericksburg_downtown',
-      'freemasonry',
-      'inspire',
-      'jak_gold',
-      'spycraft',
-      'washington_ghost',
-      'yummyhole_standard',
-    ].sort(),
-  );
+  expect(await deckIds(page)).toEqual(['classic', 'inspire'].sort());
   expect(matureRequests).toEqual([]);
 });
 
-test('deck details show attribution status and fallback cards', async ({ page }) => {
+test('deck details show uploaded YummyHole artwork and attribution', async ({ page }) => {
+  await seed(page, { profile: { unlockedDecks: ['classic', 'inspire', 'yummyhole_standard'] } });
   await enterParlor(page);
   await clickNav(page, 'COLLECTION');
-  // A deck whose artwork has not been uploaded yet.
+  // The chapter reward can be viewed after it is owned.
   await clickInPager(page, '[data-deck="yummyhole_standard"]');
   const pending = page.locator('[data-deck-detail="yummyhole_standard"]');
-  await expect(pending).toContainText('Artist credit coming with the artwork');
-  await expect(pending).toContainText('Art coming soon');
-  await expect(pending.locator('.card[data-art="fallback"]')).toHaveCount(4);
+  await expect(pending).toContainText('OFFICIAL INSPIRE');
+  await expect(pending).not.toContainText('Art coming soon');
+  await expect(pending.locator('[data-preview="image"] img')).toHaveAttribute(
+    'src',
+    /yummyhole_standard\/preview\.png$/,
+  );
   await page.keyboard.press('Escape');
   await expect(pending).toBeHidden();
 
@@ -115,36 +105,16 @@ test('the public edition has no adult-only content at all', async ({ page, reque
   expect(await deckIds(page)).not.toContain('yummyhole_after_dark');
 });
 
-test('placeholder artwork renders cards from the sprite-sheet template', async ({ page }) => {
+test('placeholder mode does not replace delivered YummyHole art', async ({ page }) => {
+  await seed(page, {
+    profile: { unlockedDecks: ['classic', 'inspire', 'yummyhole_standard'] },
+    settings: { placeholderArt: true },
+  });
   await enterParlor(page);
-  await setContent(page, 'placeholderArt');
-  await clickNav(page, 'home', 'MAIN_MENU');
-  await page.locator(`${CURRENT} .menu-grid [data-nav="COLLECTION"]`).click();
-  await expectScreen(page, 'COLLECTION');
+  await clickNav(page, 'COLLECTION');
   await page.locator(`${CURRENT} [data-tab="gallery"]`).click();
-  // The template stands in only for decks whose artwork is still pending.
   await page.locator(`${CURRENT} select[data-gallery-deck]`).selectOption('yummyhole_standard');
-
-  // Scope to the new deck's card so the previous deck's card can't be read mid re-render.
   const card = page.locator(`${CURRENT} .gallery-cell .card[data-code="AS"][data-theme^="yummyhole_standard"]`);
   await expect(card).toHaveAttribute('data-art', 'atlas');
-  const style = await card.locator('.card-art-img').evaluate((el) => {
-    const cs = getComputedStyle(el);
-    return { image: cs.backgroundImage, position: cs.backgroundPosition, size: cs.backgroundSize };
-  });
-  expect(style.image).toContain('/assets/cards/_placeholder/faces.svg');
-  expect(style.position).toBe('0% 0%');
-  expect(style.size).toBe('1300% 500%');
-
-  // The sheet really loads.
-  const loaded = await page.evaluate(
-    () =>
-      new Promise<number>((resolve) => {
-        const img = new Image();
-        img.onload = () => resolve(img.naturalWidth);
-        img.onerror = () => resolve(0);
-        img.src = 'assets/cards/_placeholder/faces.svg';
-      }),
-  );
-  expect(loaded).toBe(1560);
+  await expect(card.locator('.card-art-img')).toHaveCSS('background-size', '1300% 400%');
 });

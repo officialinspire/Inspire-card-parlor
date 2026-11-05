@@ -352,7 +352,7 @@ export function mountGoFish(ctx: GoFishViewContext) {
           : `Here you go: ${countLabel(e.count, e.rank)}.`;
         void say(anchor(e.from), line, { duration: 1300 * f() + 300 });
         mood(e.from, 'lose');
-        gameSound('card_move');
+        gameSound(e.to === human.id ? 'match' : 'card_move');
         await fly(anchor(e.from), anchor(e.to), e.count);
         const receiver = game.players.find((p) => p.id === e.to)!;
         mood(e.to, 'win', 1100);
@@ -392,7 +392,7 @@ export function mountGoFish(ctx: GoFishViewContext) {
       case 'book': {
         const p = game.players.find((x) => x.id === e.p)!;
         // Your book is a success; an opponent's is just a move on the table.
-        gameSound(p.cpu ? 'card_move' : 'valid_move');
+        gameSound(p.cpu ? 'card_move' : 'set_complete');
         spotlight(e.p, 'gf-booked');
         if (p.cpu) void say(anchor(e.p), pickLine(personaOf(p).lines.book), { duration: 1300 * f() + 300 });
         mood(e.p, 'win');

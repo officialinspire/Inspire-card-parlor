@@ -97,6 +97,13 @@ function themes(
   });
 }
 
+registerDeck({
+  ...getDeck('yummyhole_standard'),
+  id: 'pending_fixture',
+  artist: { name: null },
+  assets: { ...getDeck('yummyhole_standard').assets, status: 'pending' },
+});
+
 describe('gameboards', () => {
   const UPLOADED_BOARDS = [
     'picnic_table',
@@ -304,6 +311,8 @@ describe('favorites and completion', () => {
     const everything = {
       ...createDefaultProfile(),
       level: 99,
+      unlockedDecks: allDecks().map((d) => d.id),
+      unlockedBoards: allBoards().map((b) => b.id),
       story: { ...createDefaultProfile().story, completed: ALL_LEVELS.map((l) => l.id) },
       unlockedAchievements: ACHIEVEMENTS.map((a) => a.id),
       ownedVariants: ['collectible_fixture@gilded', 'eastern_woodlands@turtle'],
@@ -334,11 +343,11 @@ describe('uploaded artwork manifest', () => {
   });
 
   it('rejects invalid entries without changing anything', () => {
-    const before = JSON.stringify(getDeck('yummyhole_standard'));
+    const before = JSON.stringify(getDeck('pending_fixture'));
     const result = applyArtworkManifest({
       version: 1,
       decks: {
-        yummyhole_standard: { status: 'ready' }, // ready without an artist credit
+        pending_fixture: { status: 'ready' }, // ready without an artist credit
         nope: { status: 'ready' },
         freemasonry: { faces: { type: 'atlas', image: { path: 'faces' }, grid: { columns: 12, rows: 4 } } }, // missing Kings
       },
@@ -349,10 +358,10 @@ describe('uploaded artwork manifest', () => {
       'freemasonry',
       'nope',
       'nope',
+      'pending_fixture',
       'picnic_table',
-      'yummyhole_standard',
     ]);
-    expect(JSON.stringify(getDeck('yummyhole_standard'))).toBe(before);
+    expect(JSON.stringify(getDeck('pending_fixture'))).toBe(before);
     expect(applyArtworkManifest({ version: 2 }).rejected[0]!.id).toBe('manifest');
   });
 

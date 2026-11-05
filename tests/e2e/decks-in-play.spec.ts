@@ -1,3 +1,5 @@
+import { allBoards } from '../../src/boards/registry';
+import { allDecks } from '../../src/decks/registry';
 import { expect, test, type Page } from '@playwright/test';
 import { CURRENT, clickInPager, clickNav, enterParlor, expectScreen, playGame, seed } from './helpers';
 
@@ -7,6 +9,9 @@ import { CURRENT, clickInPager, clickNav, enterParlor, expectScreen, playGame, s
  * artwork (never the drawn fallback).
  */
 const DECKS = [
+  'yummyhole_standard',
+  'cannabis_nugs',
+  'dante_v2',
   'classic',
   'inspire',
   'jak_gold',
@@ -68,6 +73,8 @@ for (const deck of DECKS) {
     await seed(page, {
       profile: {
         level: 99,
+        unlockedBoards: allBoards().map((b) => b.id),
+        unlockedDecks: allDecks().map((d) => d.id),
         storyChapter: 99,
         unlockedAchievements: ['win-streak-5', 'war-flawless', 'collector-5'],
       },

@@ -93,5 +93,5 @@ export default defineConfig(({ mode }) => ({
     outDir: 'dist',
     assetsInlineLimit: 4096,
   },
-  server: { host: true },
+  server: { host: true, allowedHosts: ['terminal.local'] },
 }));

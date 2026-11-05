@@ -243,8 +243,7 @@ test('collection: real preview art, extras, and a card binder that turns pages a
     await next.click();
     await expect(page.locator(`${CURRENT} .binder .pager-grid`)).toHaveClass(/page-in-right/);
   }
-  await page.locator(`${CURRENT} select[data-gallery-deck]`).selectOption('freemasonry');
-  await expect(page.locator(`${CURRENT} [data-binder="freemasonry"] [data-unlock="locked"]`)).toBeVisible();
+  await expect(page.locator(`${CURRENT} select[data-gallery-deck] option[value="freemasonry"]`)).toHaveCount(0);
   await expectNoOverflow(page);
 });
 

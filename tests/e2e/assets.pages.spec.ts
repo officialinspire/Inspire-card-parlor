@@ -1,3 +1,5 @@
+import { allBoards } from '../../src/boards/registry';
+import { allDecks } from '../../src/decks/registry';
 import { expect, test, type Page } from '@playwright/test';
 import { CURRENT, expectScreen, seed } from './helpers';
 
@@ -44,7 +46,15 @@ const go = (page: Page, to: string) =>
 
 test('every asset loads from the GitHub Pages project path', async ({ page }) => {
   const failed = watchFailures(page);
-  await seed(page, { profile: { level: 99, storyChapter: 99 }, settings: { theme: 'night' } });
+  await seed(page, {
+    profile: {
+      level: 99,
+      unlockedBoards: allBoards().map((b) => b.id),
+      unlockedDecks: allDecks().map((d) => d.id),
+      storyChapter: 99,
+    },
+    settings: { theme: 'night' },
+  });
   await page.goto('./');
   expect(new URL(page.url()).pathname).toBe('/Inspire-card-parlor/');
 
