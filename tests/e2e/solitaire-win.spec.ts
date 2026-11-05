@@ -65,18 +65,21 @@ async function playLine(page: Page, line: SolverStep[]) {
     lastKey = key;
     await target.click({ position });
   };
+  const tapPile = async (pile: string) => {
+    const cards = page.locator(`${CURRENT} .sol-card[data-pile="${pile}"]`);
+    const count = await cards.count();
+    // Cards keep their DOM nodes when they change piles. The pile index, not
+    // DOM order, identifies the card on top.
+    if (count) await tap(cards.and(page.locator(`[data-index="${count - 1}"]`)), tapTop);
+    else await tap(page.locator(`${CURRENT} .sol-slot[data-pile="${pile}"]`));
+  };
   for (const [i, step] of line.entries()) {
     const before = await layout(page);
-    if (step.kind === 'stock') {
-      const stock = page.locator(`${CURRENT} .sol-card[data-pile="stock"]`);
-      if (await stock.count()) await tap(stock.last(), tapTop);
-      else await tap(page.locator(`${CURRENT} .sol-slot[data-pile="stock"]`));
-    } else {
+    if (step.kind === 'stock') await tapPile('stock');
+    else {
       const { from, index, to } = step.move;
       await tap(page.locator(`${CURRENT} .sol-card[data-pile="${from}"][data-index="${index}"]`), tapTop);
-      const dest = page.locator(`${CURRENT} .sol-card[data-pile="${to}"]`);
-      if (await dest.count()) await tap(dest.last(), tapTop);
-      else await tap(page.locator(`${CURRENT} .sol-slot[data-pile="${to}"]`));
+      await tapPile(to);
     }
     if (i < line.length - 1) await expect.poll(() => layout(page), { message: `step ${i + 1}` }).not.toBe(before);
   }
