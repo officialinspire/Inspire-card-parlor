@@ -46,3 +46,14 @@ export function extractedAssets(basePath: string): DeckAssets {
     preview: { path: 'preview', formats: ['webp'] },
   };
 }
+
+/** Uploaded, already-normalized PNG atlas: no missing-format probes. */
+export function uploadedPngAssets(basePath: string): DeckAssets {
+  return {
+    basePath,
+    status: 'ready',
+    faces: { type: 'atlas', image: { path: 'faces', formats: ['png'] }, grid: { columns: 13, rows: 4 } },
+    back: { path: 'back', formats: ['png'] },
+    preview: { path: 'preview', formats: ['png'] },
+  };
+}

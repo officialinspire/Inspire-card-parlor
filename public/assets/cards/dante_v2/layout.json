@@ -1,0 +1,26 @@
+{
+  "faces": "faces.png",
+  "back": "back.png",
+  "size": {
+    "width": 1807,
+    "height": 768
+  },
+  "cell": {
+    "width": 139,
+    "height": 192
+  },
+  "grid": {
+    "columns": 13,
+    "rows": 4,
+    "suitOrder": ["spades", "hearts", "diamonds", "clubs"],
+    "rankOrder": ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"],
+    "margin": 0,
+    "spacing": 0
+  },
+  "backSize": {
+    "width": 139,
+    "height": 192
+  },
+  "dimensionReference": "public/assets/cards/classic/atlas.json",
+  "status": "artwork-review-pending"
+}

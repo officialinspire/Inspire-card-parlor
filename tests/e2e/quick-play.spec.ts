@@ -58,12 +58,11 @@ test('Play → deck → board → table; leaving keeps the game to resume', asyn
   await expectScreen(page, 'MAIN_MENU');
 });
 
-test('locked decks explain how to unlock them', async ({ page }) => {
+test('locked decks stay hidden in Quick Play', async ({ page }) => {
   await enterParlor(page);
   await clickNav(page, 'GAME_SELECTION');
   await playGame(page, 'spider');
-  await clickInPager(page, '[data-deck="fredericksburg"]');
-  await expect(page.locator('.toast', { hasText: 'Reach level 3' })).toBeVisible();
+  await expect(page.locator(`${CURRENT} [data-deck="fredericksburg"]`)).toHaveCount(0);
   await expect(await revealInPager(page, '[data-deck="classic"]')).toHaveAttribute('aria-pressed', 'true');
 });
 

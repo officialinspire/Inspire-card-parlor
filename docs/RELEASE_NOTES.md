@@ -1,3 +1,15 @@
+# v1.4.0 — Collectibles, shop and chapter audio
+
+- Added the shared Inspire Software MP4 after Touch to Start, with skip, Escape, mute/volume, visibility pause and failure recovery before the menu fade.
+- Integrated YummyHole (Chapter 4), Cannabis Nugs (Chapter 3) and Dante V2 (500 credits), with standard-size 52-card atlases and custom backs.
+- Added the Parlor Shop in Collection and Gameboards: Dante V2, UMW Classroom (300 credits) and Germanna Library (250 credits). Purchases deduct once and are included in saved profiles.
+- Hid unowned decks/boards in galleries and play selectors; story tables now require chapter completion.
+- Added distinct matching and completed-book/suit feedback using the existing volume-controlled, deduplicated audio engine. Existing shared buttons retain their click sounds.
+- Added all five supplied chapter recordings; preserved music controls, scene looping and manual overrides.
+- Refreshed README and in-game About text. Existing save transfer, reset/new-game actions and three-FreeCell campaign pacing remain available.
+
+Source artwork is preserved as supplied; dimensions and file coverage are validated independently of the original artwork’s rank/pip quality.
+
 # Release notes
 
 ## Unreleased — story quality upgrades

@@ -31,7 +31,7 @@ describe('music library', () => {
 
   it('keeps the original track ids (saved settings) and lists only recorded files that exist', () => {
     for (const id of ['lamplight', 'window-rain', 'corner-cafe', 'midnight-tea']) expect(getTrack(id).id).toBe(id);
-    expect(RECORDED_TRACKS.length).toBe(5);
+    expect(RECORDED_TRACKS.length).toBe(10);
     for (const t of RECORDED_TRACKS) {
       expect(existsSync(join('public', t.src)), t.src).toBe(true);
       expect(t.artist).toBe('OFFICIAL INSPIRE');
@@ -43,7 +43,15 @@ describe('music library', () => {
     expect(playableTracks().some((t) => t.id === 'shadows-of-the-occult')).toBe(true);
     markUnavailable('shadows-of-the-occult');
     expect(playableTracks().some((t) => t.id === 'shadows-of-the-occult')).toBe(false);
-    expect(tracksIn('midnight-solitaire').map((t) => t.id)).toEqual(['midnight-tea', 'last-hand']);
+    expect(tracksIn('midnight-solitaire').map((t) => t.id)).toEqual([
+      'minimal-parlor-loop',
+      'sanctum-pulse',
+      'safehouse-pulse',
+      'kenmore-manor-theme',
+      'esoteric-order-loop',
+      'midnight-tea',
+      'last-hand',
+    ]);
     expect(getTrack('shadows-of-the-occult').id).toBe(TRACKS[0]!.id);
   });
 });

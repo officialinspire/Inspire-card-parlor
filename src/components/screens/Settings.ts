@@ -329,6 +329,7 @@ export const SettingsScreen: ScreenFactory = ({ store }) => {
           h(
             'p',
             { class: 'about' },
+            'The Thirteenth Hand: five card games, nine story chapters, collectible decks and tables, a credit shop, chapter music, skippable studio intro, achievements and portable saves. ',
             `${APP.name} v${APP.version} · ${APP.developer} · `,
             h('a', { href: APP.website, target: '_blank', rel: 'noopener' }, APP.websiteLabel),
           ),

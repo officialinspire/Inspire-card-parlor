@@ -177,7 +177,7 @@ test('tap-to-move works as an alternative to dragging', async ({ page }) => {
 });
 
 test('gameboard gallery: painted thumbnails, select, ambience and a remembered choice', async ({ page }) => {
-  await seed(page, { profile: { level: 99, storyChapter: 99 } });
+  await seed(page, { profile: { level: 99, storyChapter: 99, unlockedBoards: ['masonic_study'] } });
   await enterParlor(page);
   await clickNav(page, 'GAMEBOARDS');
   // Painted boards come first and show their own artwork.
@@ -190,7 +190,7 @@ test('gameboard gallery: painted thumbnails, select, ambience and a remembered c
       .poll(() => tile.locator('.board-swatch').evaluate((e) => getComputedStyle(e).getPropertyValue('--board-art')))
       .toContain(`assets/backgrounds/${id}/preview.webp`);
   }
-  // Unlock state is shown on locked boards.
+  // An explicitly earned story board can be inspected.
   await clickInPager(page, '[data-board="masonic_study"]');
   await page.keyboard.press('Escape');
 
@@ -207,5 +207,6 @@ test('gameboard gallery: painted thumbnails, select, ambience and a remembered c
   await page.waitForTimeout(400);
   await page.reload();
   await page.getByRole('button', { name: 'Enter Parlor' }).click();
+  await expectScreen(page, 'MAIN_MENU');
   await expect(page.locator(`${CURRENT} [data-value="board"]`)).toHaveText('Rappahannock Riverside');
 });

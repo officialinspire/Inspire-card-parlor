@@ -298,6 +298,7 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
       if (!mark.hidden) mark.style.transform = slots.get(p.id)!.style.transform;
       const before = foundationSize.get(p.id);
       foundationSize.set(p.id, p.size);
+      if (before !== undefined && before < 13 && p.size === 13 && !dealing) gameSound('set_complete');
       if (before !== undefined && before < 13 && p.size === 13 && motion) {
         const slot = slots.get(p.id)!;
         slot.classList.remove('sol-complete');

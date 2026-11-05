@@ -563,7 +563,7 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
     hostId: 'dante',
     cast: ['dante'],
     status: 'final',
-    music: 'tape-deck',
+    music: 'minimal-parlor-loop',
     mysteryThread:
       'A client signing only “G. W.” paid Dante in one-dollar bills to paint George Washington as thirteen neon monsters. Under black light, the client’s reference sketch hides the second mark — a heart — and the payments trace back to the card-case maker Jak Gold uses.',
     beats: [
@@ -785,7 +785,14 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
         rewards: [credits(140), xp(170)],
       }),
     ],
-    rewards: [deck('dantes_world'), board('artists_studio'), stamp('th-neon-monster'), credits(400), xp(260)],
+    rewards: [
+      deck('cannabis_nugs'),
+      deck('dantes_world'),
+      board('artists_studio'),
+      stamp('th-neon-monster'),
+      credits(400),
+      xp(260),
+    ],
     info: [
       {
         id: 'about-dantes-counter',
@@ -990,6 +997,7 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
       }),
     ],
     rewards: [
+      deck('yummyhole_standard'),
       deck('jak_gold'),
       board('jak_golds_casino'),
       stamp('th-cards-camera'),
@@ -1011,7 +1019,7 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
     hostId: 'mrs_gray',
     cast: ['mrs_gray'],
     status: 'final',
-    music: 'window-rain',
+    music: 'safehouse-pulse',
     mysteryThread:
       'In the story, Operation Thirteenth Hand was a fictional 1962 investigation of a phantom card game in the cellars, using a local legend — a game George Washington never finished — as its cover. It was compartmentalized: surveyors photographed the marks, a Freemason from Lodge No. 4 read the history, and nobody saw the whole file. Mrs. Gray inherited it, treats it as a record of what people feared rather than proof, and lets you break the seal no one in her office was cleared to break: the ace of spades holding the fourth mark.',
     beats: [
@@ -1268,7 +1276,7 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
     hostId: 'steve_gonzales',
     cast: ['steve_gonzales', 'sophia'],
     status: 'final',
-    music: 'silent-study-hours',
+    music: 'sanctum-pulse',
     mysteryThread:
       'Steve separates documented history (Washington’s initiation here in 1752, the Capitol cornerstone, the Culper Ring) from the story’s legend. Masons explain the square, compasses, level and plumb as lessons in conduct; suit lore belongs to tarot and other traditions, and the card’s cipher is not Masonic. With compasses, Sophia’s map and the dossier’s survey, he reads the order the card was made to be set in — spade, diamond, heart, club, downstream — and raking light raises two words from the ledger’s blank line: KENMORE — ASK MOTHER.',
     beats: [
@@ -1575,7 +1583,7 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
     hostId: 'mary_ball_washington',
     cast: ['mary_ball_washington'],
     status: 'final',
-    music: 'midnight-tea',
+    music: 'kenmore-manor-theme',
     mysteryThread:
       'At Kenmore — her daughter Betty’s house, not hers — Mary Ball Washington’s ghost tells her version of the legend: twelve hands of cards with her son, scored in her own ledger, and George walking away before the thirteenth because he was losing. A widow who kept the accounts of a farm for nearly thirty years, she wants the ledger closed honestly, not won. She confirms Steve’s reading, seals a letter for George and gives you the iron key to the cellar door where he waits.',
     beats: [
@@ -2093,7 +2101,7 @@ export const STORY_CHAPTERS: readonly StoryChapter[] = [
     hostId: 'george_washington',
     cast: ['george_washington', 'mary_ball_washington'],
     status: 'final',
-    music: 'shadows-of-the-occult',
+    music: 'esoteric-order-loop',
     mysteryThread:
       'The legend resolves: George Washington’s ghost — who planted the card, sketched the heron and commissioned Dante, all to lure a challenger — has waited to play the thirteenth hand he walked away from. Every portrait flatters him; one ledger, in his mother’s hand, says he left. You win it, his mother’s letter turns the loss into a debt paid, and the card awakens with all four corners filled.',
     beats: [

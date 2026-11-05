@@ -12,27 +12,8 @@
   "grid": {
     "columns": 13,
     "rows": 4,
-    "suitOrder": [
-      "spades",
-      "hearts",
-      "diamonds",
-      "clubs"
-    ],
-    "rankOrder": [
-      "A",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "J",
-      "Q",
-      "K"
-    ],
+    "suitOrder": ["spades", "hearts", "diamonds", "clubs"],
+    "rankOrder": ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"],
     "margin": 0,
     "spacing": 0
   },

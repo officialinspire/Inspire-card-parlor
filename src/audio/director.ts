@@ -40,13 +40,13 @@ export const STORY_SOUNDTRACK: {
     'th-1': { scene: 'fxbg-saturday-walk', play: 'silent-study-hours' },
     // Morning on the river; a mossy, calm table.
     'th-2': { scene: 'river-dawn', play: 'turtle-creek' },
-    'th-3': { scene: 'tape-deck', play: 'midnight-tea' },
+    'th-3': { scene: 'minimal-parlor-loop', play: 'minimal-parlor-loop' },
     'th-4': { scene: 'high-roller', play: 'velvet-room' },
-    'th-5': { scene: 'fxbg-after-dark', play: 'window-rain' },
-    'th-6': { scene: 'silent-study-hours', play: 'lamplight' },
-    'th-7': { scene: 'midnight-tea', play: 'falmouth-bridge' },
+    'th-5': { scene: 'safehouse-pulse', play: 'safehouse-pulse' },
+    'th-6': { scene: 'sanctum-pulse', play: 'sanctum-pulse' },
+    'th-7': { scene: 'kenmore-manor-theme', play: 'kenmore-manor-theme' },
     'th-8': { scene: 'shadows-of-the-occult', play: 'last-hand' },
-    'th-9': { scene: 'shadows-of-the-occult', play: 'last-hand' },
+    'th-9': { scene: 'esoteric-order-loop', play: 'esoteric-order-loop' },
   },
 };
 

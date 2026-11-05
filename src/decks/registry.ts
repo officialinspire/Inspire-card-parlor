@@ -1,3 +1,5 @@
+import { DanteV2Deck } from './definitions/dante_v2';
+import { CannabisNugsDeck } from './definitions/cannabis_nugs';
 import type { DeckDefinition, DeckId } from './types';
 import { ClassicDeck } from './definitions/classic';
 import { InspireDeck } from './definitions/inspire';
@@ -26,6 +28,8 @@ export function registerDeck(deck: DeckDefinition): void {
 }
 
 [
+  DanteV2Deck,
+  CannabisNugsDeck,
   ClassicDeck,
   InspireDeck,
   JakGoldDeck,

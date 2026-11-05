@@ -1,3 +1,4 @@
+import { openShop } from '../shop';
 import { h } from '@/utils/dom';
 import type { BoardDefinition } from '@/boards/registry';
 import { boardSwatch } from '@/boards/BoardRenderer';
@@ -38,10 +39,9 @@ export function boardPreview(board: BoardDefinition, deck: DeckDefinition, large
 
 export const GameboardsScreen: ScreenFactory = ({ store }) => {
   // Painted boards first, then the ones still waiting for their artwork.
-  const boards = [...visibleBoards()].sort(
-    (a, b) => Number(b.assets.status === 'ready') - Number(a.assets.status === 'ready'),
-  );
-  const owned = boards.filter((b) => isBoardUnlocked(b.id, store.state.profile)).length;
+  const boards = visibleBoards()
+    .filter((b) => isBoardUnlocked(b.id, store.state.profile))
+    .sort((a, b) => Number(b.assets.status === 'ready') - Number(a.assets.status === 'ready'));
   const deck = () => getDeck(deckThemes.safeDeckId(store.state.selection.deckId));
 
   /** The board choice is part of the saved selection, so it is remembered between visits. */
@@ -156,8 +156,20 @@ export const GameboardsScreen: ScreenFactory = ({ store }) => {
   return {
     el: screenFrame({
       title: 'Gameboards',
-      subtitle: `${owned} of ${boards.length} tables owned`,
+      subtitle: 'Your unlocked tables · Discover more in Story Mode and the Parlor Shop',
       body: h('div', { class: 'stack' }, ambience, pager.el),
+      footer: button(
+        'Parlor Shop',
+        () =>
+          void openShop(store, () => {
+            boards.splice(
+              0,
+              boards.length,
+              ...visibleBoards().filter((b) => isBoardUnlocked(b.id, store.state.profile)),
+            );
+            pager.refresh();
+          }),
+      ),
     }),
     unmount: pager.destroy,
   };

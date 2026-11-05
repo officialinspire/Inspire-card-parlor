@@ -15,7 +15,7 @@ import { SETUP_STEPS } from './GameSelection';
 import { boardPreview } from './Gameboards';
 
 export const BoardSelectionScreen: ScreenFactory = ({ store }) => {
-  const BOARDS = visibleBoards();
+  const BOARDS = visibleBoards().filter((b) => isBoardUnlocked(b.id, store.state.profile));
   const game = getGame(store.state.selection.gameId);
   const deck = getDeck(deckThemes.safeDeckId(store.state.selection.deckId));
   const pager = paginator({
