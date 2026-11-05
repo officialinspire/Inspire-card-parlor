@@ -53,30 +53,33 @@ const layout = (page: Page) =>
   );
 
 /** Taps a card on its visible top strip (cards lower in a column cover the rest). */
-const tapTop = { position: { x: 14, y: 8 } };
+const tapTop = { x: 14, y: 8 };
 
 async function playLine(page: Page, line: SolverStep[]) {
   // Two taps on the same card within 350 ms are a double-tap (send it to its best spot),
   // so a player tapping the card they just dropped onto pauses briefly; so do we.
   let lastKey: string | null = null;
-  const tap = async (target: Locator, opts: Parameters<Locator['click']>[0] = {}) => {
+  const tap = async (target: Locator, position?: typeof tapTop) => {
     const key = await target.getAttribute('data-key').catch(() => null);
     if (key && key === lastKey) await page.waitForTimeout(400);
     lastKey = key;
-    await target.click({ ...tapTop, ...opts });
+    await target.click({ position });
+  };
+  const tapPile = async (pile: string) => {
+    const cards = page.locator(`${CURRENT} .sol-card[data-pile="${pile}"]`);
+    const count = await cards.count();
+    // Cards keep their DOM nodes when they change piles. The pile index, not
+    // DOM order, identifies the card on top.
+    if (count) await tap(cards.and(page.locator(`[data-index="${count - 1}"]`)), tapTop);
+    else await tap(page.locator(`${CURRENT} .sol-slot[data-pile="${pile}"]`));
   };
   for (const [i, step] of line.entries()) {
     const before = await layout(page);
-    if (step.kind === 'stock') {
-      const stock = page.locator(`${CURRENT} .sol-card[data-pile="stock"]`);
-      if (await stock.count()) await tap(stock.last());
-      else await tap(page.locator(`${CURRENT} .sol-slot[data-pile="stock"]`), { force: true });
-    } else {
+    if (step.kind === 'stock') await tapPile('stock');
+    else {
       const { from, index, to } = step.move;
-      await tap(page.locator(`${CURRENT} .sol-card[data-pile="${from}"][data-index="${index}"]`));
-      const dest = page.locator(`${CURRENT} .sol-card[data-pile="${to}"]`);
-      if (await dest.count()) await tap(dest.last(), { force: true });
-      else await tap(page.locator(`${CURRENT} .sol-slot[data-pile="${to}"]`), { force: true });
+      await tap(page.locator(`${CURRENT} .sol-card[data-pile="${from}"][data-index="${index}"]`), tapTop);
+      await tapPile(to);
     }
     if (i < line.length - 1) await expect.poll(() => layout(page), { message: `step ${i + 1}` }).not.toBe(before);
   }
