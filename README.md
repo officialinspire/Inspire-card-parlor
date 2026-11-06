@@ -4,7 +4,7 @@ A cozy collection of classic playing-card games featuring collectible illustrate
 
 **Developer:** OFFICIAL INSPIRE · [www.inspireclothing.art](https://www.inspireclothing.art)
 
-> **Status: v1.4.2 — The Thirteenth Hand.** Five card games, nine story chapters (45 challenges), thirteen illustrated decks, collectible tables, a credit shop, ten recorded music tracks, 150 achievements, save import/export and an installable PWA. **[Play the latest build](https://officialinspire.github.io/Inspire-card-parlor/).**
+> **Status: v1.4.3 — The Thirteenth Hand.** Five card games, nine story chapters (45 challenges), thirteen illustrated decks, collectible tables, a credit shop, ten recorded music tracks, 150 achievements, save import/export and an installable PWA. **[Play the latest build](https://officialinspire.github.io/Inspire-card-parlor/).**
 
 ## Games
 
@@ -93,7 +93,7 @@ Only unlocked decks and boards appear in the collection, binder and play selecto
 
 ## Startup
 
-After loading and **Touch to Start**, `inspiresoftwareintro.mp4` plays inline with a keyboard-accessible **Skip video** button (Escape also skips). The main menu fades in afterward. End, playback failure and a stalled-video timeout all continue safely. Video volume follows master/SFX settings and mute; menu music starts after the video.
+After loading and **Touch to Start**, `inspiresoftwareintro.mp4` plays inline with a keyboard-accessible **Skip video** button (Escape also skips). The main menu fades in afterward. End, playback failure and a stalled-video timeout all continue safely. Only the video soundtrack plays during the studio credit. It follows master volume, SFX volume and mute. Menu music and ambience start when the menu opens, subject to their settings and browser autoplay rules.
 
 ## Music, sound and haptics
 

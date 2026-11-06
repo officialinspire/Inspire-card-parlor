@@ -1,3 +1,9 @@
+# v1.4.3 — Startup audio
+
+- Give the studio credit video its own soundtrack, then start game audio when the menu opens. Keep mute, skip and playback recovery working across visibility changes.
+- Pause recorded tracks with the tab, keep synthesized music on the audio clock, and retry autoplay refusals on the next gesture.
+- Serve the five previously mislabeled music files as MP3, matching their actual encoding.
+
 # v1.4.2 — Story character portraits
 
 - Jak Gold now uses his original BlackJak dealer poses in dialogue, versus screens, and at the table. Story cast portraits load independently of the selected deck.
