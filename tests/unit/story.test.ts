@@ -1,3 +1,5 @@
+import { MOOD_POSE } from '@/components/story/sprites';
+import { TABLE_MOOD_POSE } from '@/components/Avatar';
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import {
@@ -272,19 +274,19 @@ describe('references', () => {
     for (const e of EVIDENCE) expect(e.status, e.id).toBe('final');
   });
 
-  it('casts real characters, each with a portrait sheet that exists (or none yet) and a theme', () => {
+  it('maps every cast member to their own sheet, all UI moods and a theme', () => {
     const tracks = new Set(ALL_TRACKS.map((t) => t.id));
     for (const c of CHARACTERS.filter((x) => x.id !== NARRATOR)) {
       expect(c.portrait, c.id).toBeDefined();
-      if (c.portrait!.sheet) {
-        expect(sheets.has(c.portrait!.sheet), c.id).toBe(true);
-        expect(sprites.has(`${c.portrait!.sheet}/${c.portrait!.pose}`), c.id).toBe(true);
+      const sheet = c.portrait!.sheet;
+      expect(sheet, c.id).toBe(c.id.replaceAll('_', '-'));
+      expect(sheets.has(sheet!), c.id).toBe(true);
+      for (const pose of [c.portrait!.pose, ...Object.values(MOOD_POSE), ...Object.values(TABLE_MOOD_POSE)]) {
+        expect(sprites.has(`${sheet}/${pose}`), `${c.id}: ${pose}`).toBe(true);
       }
       expect(tracks.has(c.music!), `${c.id} music`).toBe(true);
       expect(getPersonality(c.opponentId).id, `${c.id} opponent`).toBe(c.opponentId);
     }
-    // Jak has no sprite sheet yet; it is recorded, not faked.
-    expect(getCharacter('jak_gold')!.portrait!.sheet).toBeNull();
   });
 
   it('keeps story opponents out of Quick Play, each with written table talk', () => {

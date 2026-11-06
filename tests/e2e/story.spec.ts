@@ -108,6 +108,34 @@ test('the map: only Chapter 1 is open; the next place is locked; the rest undisc
   await expectNoOverflow(page);
 });
 
+test('Jak uses his BlackJak expressions in dialogue, versus and on the table', async ({ page }) => {
+  await seed(page, {
+    settings: { reducedMotion: true },
+    profile: {
+      schemaVersion: 3,
+      story: story({ completed: [1, 2, 3].flatMap((n) => chapterLevels(n)), introsSeen: ['th-4'] }),
+    },
+  });
+  await enterParlor(page);
+  await openStory(page);
+  await openChapter(page, 'th-4');
+  await clickInPager(page, '[data-level="th-4-1"]');
+  const expectPose = async (selector: string, pose: string) => {
+    const image = page.locator(selector).locator('img');
+    await expect(image).toHaveAttribute('data-story-sprite', `jak-gold/${pose}`);
+    await expect.poll(() => image.evaluate((img: HTMLImageElement) => img.naturalWidth)).toBeGreaterThan(0);
+  };
+  await expectPose('.dialog-scene [data-portrait="jak_gold"]', 'portrait-talk');
+  await action(page, 'play').click();
+  await expectPose('[data-versus="th-4-1"] [data-portrait="jak_gold"]', 'portrait-greet');
+  await action(page, 'play').click();
+  await expectScreen(page, 'GAMEPLAY');
+  const face = page.locator(`${CURRENT} .war-who [data-avatar="jak_gold"]`);
+  await expect(face).toHaveAttribute('data-art', 'story');
+  await expectPose(`${CURRENT} .war-who [data-avatar="jak_gold"]`, 'portrait-neutral');
+  await expect(face.locator('.avatar-card')).toHaveCount(0);
+});
+
 test('a challenge from intro to reward; rewards persist and are paid only once', async ({ page }) => {
   await seed(page, { settings: { warSpeed: 'instant' } });
   await enterParlor(page);

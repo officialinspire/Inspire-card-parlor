@@ -335,6 +335,24 @@ def do_blobs(sheet: dict, rgba: np.ndarray, warnings: list, check: bool) -> list
     return sprites
 
 
+def do_rects(sheet: dict, rgba: np.ndarray, warnings: list, check: bool) -> list[dict]:
+    """Crop the measured frames of an existing irregular atlas."""
+    height, width = rgba.shape[:2]
+    dest = OUT / sheet['group'] / sheet['id']
+    sprites = []
+    for name, (x, y, w, h) in sheet['layout']['frames'].items():
+        if x < 0 or y < 0 or w <= 0 or h <= 0 or x + w > width or y + h > height:
+            warn(warnings, 'invalid-frame', f'{name}: frame lies outside the source sheet.', 'error')
+            continue
+        block = rgba[y:y+h, x:x+w]
+        if not (block[..., 3] >= ALPHA_SOLID).any():
+            warn(warnings, 'blank', f'{name}: frame is empty.', 'error')
+            continue
+        sprites.append(sprite_entry(name, sheet['id'], (x, y, w, h), to_image(clean(block)),
+                                    dest, (SPRITE_MAX, THUMB_MAX), check))
+    return sprites
+
+
 def do_single(sheet: dict, rgba: np.ndarray, has_alpha: bool, warnings: list, check: bool) -> list[dict]:
     H, W = rgba.shape[:2]
     if has_alpha:
@@ -446,7 +464,7 @@ def process(sheet: dict, check: bool) -> dict:
     transparent = float((a == 0).mean()) if has_alpha else 0.0
     entry['source'].update(width=img.width, height=img.height, mode=img.mode, hasAlpha=has_alpha,
                            transparentShare=round(transparent, 3), sha256=digest)
-    expects_alpha = sheet['layout']['type'] in ('grid', 'blobs')
+    expects_alpha = sheet['layout']['type'] in ('grid', 'blobs', 'rects')
     if expects_alpha and transparent < 0.05:
         warn(warnings, 'no-alpha', 'A sprite sheet without a transparent background; pieces cannot be separated.', 'error')
         entry.update(status='error', warnings=warnings, sprites=[])
@@ -457,6 +475,8 @@ def process(sheet: dict, check: bool) -> dict:
         sprites = do_grid(sheet, rgba, warnings, check)
     elif kind == 'blobs':
         sprites = do_blobs(sheet, rgba, warnings, check)
+    elif kind == 'rects':
+        sprites = do_rects(sheet, rgba, warnings, check)
     elif kind == 'single':
         sprites = do_single(sheet, rgba, has_alpha, warnings, check)
     elif kind == 'board':
@@ -543,7 +563,7 @@ def write_audit(cfg: dict, sheets: list[dict]) -> None:
     add('')
     add('## Found and processed assets')
     add('')
-    titles = {'characters': 'Characters (18 poses each)', 'items': 'Quest items', 'map': 'Map icons, river map and location tiles',
+    titles = {'characters': 'Characters', 'items': 'Quest items', 'map': 'Map icons, river map and location tiles',
               'stamps': 'Passport stamps', 'effects': 'Visual effects', 'ui': 'Story UI', 'illustrations': 'Documents and illustrations',
               'boards': 'Gameboards', 'decks': 'Decks and card backs'}
     for g in ['characters', 'items', 'map', 'stamps', 'effects', 'ui', 'illustrations', 'boards', 'decks']:
@@ -558,7 +578,7 @@ def write_audit(cfg: dict, sheets: list[dict]) -> None:
             src = s['source']
             size = f"{src.get('width', '?')}×{src.get('height', '?')}{' RGBA' if src.get('hasAlpha') else ' opaque'}"
             lay = s['layout']
-            layout = {'grid': f"{lay.get('cols')}×{lay.get('rows')} grid", 'blobs': 'irregular pieces', 'single': 'single image',
+            layout = {'grid': f"{lay.get('cols')}×{lay.get('rows')} grid", 'blobs': 'irregular pieces', 'rects': 'measured frames', 'single': 'single image',
                       'board': 'gameboard', 'audit': lay.get('kind', 'audit')}[lay['type']]
             if s.get('board'):
                 out, path = 'background + preview', s['board']['background'].rsplit('/', 1)[0] + '/'
@@ -573,7 +593,7 @@ def write_audit(cfg: dict, sheets: list[dict]) -> None:
             add(f"| `{Path(src['path']).name}` | {size} | {layout} | {out} | `{path}` |")
         add('')
     if by_group.get('characters'):
-        add('Character pose slots (same position on every sheet; names are slot conventions, not per-character descriptions):')
+        add('Standard grid pose slots (Jak’s BlackJak atlas uses measured frames for the poses the game uses):')
         add('')
         for row in cfg['poseRows']:
             add(f"- **{row['row']}**: " + ', '.join(f'`{row["row"]}-{p}`' for p in row['poses']))
@@ -616,7 +636,7 @@ def write_audit(cfg: dict, sheets: list[dict]) -> None:
     add('| --- | --- | --- |')
     for g in ['characters', 'items', 'map', 'stamps', 'effects', 'ui']:
         for s in by_group.get(g, []):
-            if s['layout']['type'] in ('grid', 'blobs'):
+            if s['layout']['type'] in ('grid', 'blobs', 'rects'):
                 add(f"| {g} | `{RUNTIME}/{g}/{s['id']}/<name>.webp` | `{RUNTIME}/{g}/{s['id']}/thumbs/<name>.webp` |")
     add(f'| map, illustrations | `{RUNTIME}/<group>/<id>.webp` | `{RUNTIME}/<group>/thumbs/<id>.webp` |')
     add(f'| boards | `{RUNTIME}/boards/<id>/background.webp` | `{RUNTIME}/boards/<id>/preview.webp` |')

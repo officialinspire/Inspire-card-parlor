@@ -1,3 +1,7 @@
+# v1.4.2 — Story character portraits
+
+- Jak Gold now uses his original BlackJak dealer poses in dialogue, versus screens, and at the table. Story cast portraits load independently of the selected deck.
+
 # v1.4.1 — Solitaire redeals
 
 - Fixed New Game for Kenmore and other Story Mode Klondike, Spider and FreeCell challenges. New hands preserve challenge options and use verified deals. Restart repeats the current hand, including after resuming a save.
