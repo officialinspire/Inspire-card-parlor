@@ -427,13 +427,13 @@ _Jak has filmed, filed and flourished his way to a reply nobody meant him to rea
 
 > _You knock on a back-room door off Caroline Street. A ring light snaps on in your face. So does a camera._
 >
-> **Jak Gold**: This is my studio, so you’re on camera. Say the word and it goes off. Most people don’t say the word. They wave.
+> **Jak Gold** _(portrait-greet)_: This is my studio, so you’re on camera. Say the word and it goes off. Most people don’t say the word. They wave.
 >
 > **Jak Gold**: Dante sent you? Dante texted me eleven monster emojis. I inferred.
 >
 > _You show Jak the card. He stops talking, which, you sense, is rare._
 >
-> **Jak Gold**: That card is in my records request. I’m cutting that video tonight, and I need someone who isn’t my audience. Deal in. I think better with my hands busy.
+> **Jak Gold** _(portrait-think)_: That card is in my records request. I’m cutting that video tonight, and I need someone who isn’t my audience. Deal in. I think better with my hands busy.
 
 ### 4.1 Rolling
 
@@ -517,7 +517,7 @@ _Jak has filmed, filed and flourished his way to a reply nobody meant him to rea
 
 **Before**
 
-> **Jak Gold**: Let me borrow the card. One flourish: spring, cascade, catch. My phone shoots two hundred and forty frames a second.
+> **Jak Gold** _(cards-fan)_: Let me borrow the card. One flourish: spring, cascade, catch. My phone shoots two hundred and forty frames a second.
 >
 > _You hand Jak the card. It flies between his hands with fifty-two others and lands back on top of the deck._
 
@@ -533,7 +533,7 @@ _Jak has filmed, filed and flourished his way to a reply nobody meant him to rea
 
 **Departure**
 
-> **Jak Gold**: Three corners: club, heart, diamond. The spade is behind that unmarked door; I’d bet my best deck on it. The building manager banned me from the stairwell. You aren’t banned.
+> **Jak Gold** _(portrait-doubt)_: Three corners: club, heart, diamond. The spade is behind that unmarked door; I’d bet my best deck on it. The building manager banned me from the stairwell. You aren’t banned.
 >
 > **Jak Gold**: I’m not coming with you. I’ll be here, cutting a video that’s honest and a little boring. You can tell it’s honest because it’s boring.
 >

@@ -4,7 +4,7 @@ A cozy collection of classic playing-card games featuring collectible illustrate
 
 **Developer:** OFFICIAL INSPIRE · [www.inspireclothing.art](https://www.inspireclothing.art)
 
-> **Status: v1.4.1 — The Thirteenth Hand.** Five card games, nine story chapters (45 challenges), thirteen illustrated decks, collectible tables, a credit shop, ten recorded music tracks, 150 achievements, save import/export and an installable PWA. **[Play the latest build](https://officialinspire.github.io/Inspire-card-parlor/).**
+> **Status: v1.4.2 — The Thirteenth Hand.** Five card games, nine story chapters (45 challenges), thirteen illustrated decks, collectible tables, a credit shop, ten recorded music tracks, 150 achievements, save import/export and an installable PWA. **[Play the latest build](https://officialinspire.github.io/Inspire-card-parlor/).**
 
 ## Games
 
@@ -52,7 +52,7 @@ Rules (`src/games/goFish/GoFishGame.ts`, also shown in-game under **How to play*
 
 `src/games/cpu/personalities.ts` defines **Jak Gold**, **Friendly Local** and **Strategic Opponent**, each with play-style traits (memory, whimsy, pressure on the leader, greed) and their own lines of dialogue. Difficulty (**Easy / Normal / Hard**) limits how much of the game's history a CPU remembers. CPUs decide from a `PlayerView` (`src/games/goFish/view.ts`) that contains only their own hand, card counts, books, the pond size and the public history of requests and replies; other players' cards are never passed in, and a test checks a CPU decides identically whatever the hidden cards are.
 
-Character portraits go in `public/assets/characters/<id>.webp|png`. Until one is uploaded, Jak Gold uses the Jak Gold deck's card back (once that artwork is ready) and otherwise a monogram.
+Story characters use expression sheets under `public/assets/story/characters/`. Jak Gold’s poses come from the original BlackJak dealer atlas. Character initials stand in while story art loads.
 
 ### Saves and statistics
 

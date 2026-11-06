@@ -1,8 +1,6 @@
 import { h } from '@/utils/dom';
-import { storyImage, storySprite } from '@/story/art';
+import { characterPose, loadStoryArt, storyImage, storySprite } from '@/story/art';
 import { getCharacter } from '@/story/chapters';
-import { getPersonality, PERSONALITIES, STORY_OPPONENTS } from '@/games/cpu/personalities';
-import { avatar } from '../Avatar';
 
 /**
  * Story artwork for the Story Mode screens. Everything here is decorative:
@@ -52,9 +50,8 @@ export function deco(id: string, className: string, thumb = true): HTMLElement |
 }
 
 /**
- * Moods a character can show, as poses in their expression sheet. Every sheet
- * is cut to the same pose layout (manifest `poseRows`), so one mapping fits
- * every character; the tests check each pose exists for each sheet.
+ * Common pose names let the story use the same moods across the cast.
+ * Each character sheet maps those names to its own artwork.
  */
 export type Mood = 'neutral' | 'speak' | 'think' | 'surprise' | 'victory' | 'defeat' | 'frustration';
 export const MOOD_POSE: Record<Mood, string> = {
@@ -67,29 +64,34 @@ export const MOOD_POSE: Record<Mood, string> = {
   frustration: 'full-arms-crossed',
 };
 
-/**
- * A character's portrait in a given pose. Uses their expression sheet when
- * it exists; otherwise their opponent avatar (Jak has no sheet yet), or a
- * monogram for anyone else.
- */
+/** Uses the character's own pose, with a monogram while the manifest loads. */
 export function portrait(who: string, pose?: string, className = 'scene-portrait'): HTMLElement {
   const c = getCharacter(who);
+  const el = h(
+    'span',
+    {
+      class: `${className} no-art`,
+      style: { '--who': c?.color ?? '#888' },
+      'aria-hidden': 'true',
+      'data-portrait': who,
+    },
+    h('span', { class: 'portrait-monogram' }, (c?.name ?? who)[0] ?? '?'),
+  );
   const sheet = c?.portrait?.sheet;
-  const wanted = sheet && (pose ?? c?.portrait?.pose);
-  const id = wanted ? `${sheet}/${wanted}` : undefined;
-  const fallbackId = sheet ? `${sheet}/${c!.portrait!.pose}` : undefined;
-  const art =
-    sprite(id, { className: 'portrait-art', alt: '' }) ?? sprite(fallbackId, { className: 'portrait-art', alt: '' });
-  const el = h('span', {
-    class: `${className}${art ? '' : ' no-art'}`,
-    style: { '--who': c?.color ?? '#888' },
-    'aria-hidden': 'true',
-    'data-portrait': who,
-    ...(art && id ? { 'data-pose': wanted } : {}),
-  });
-  if (art) el.append(art);
-  else if (c?.opponentId && [...PERSONALITIES, ...STORY_OPPONENTS].some((p) => p.id === c.opponentId))
-    el.append(avatar(getPersonality(c.opponentId), 'portrait-avatar'));
-  else el.append(h('span', { class: 'portrait-monogram' }, (c?.name ?? who)[0] ?? '?'));
+  if (!sheet) return el;
+  const neutral = c.portrait!.pose;
+  const paint = () => {
+    const art = characterPose(sheet, pose ?? neutral) ?? characterPose(sheet, neutral);
+    if (!art) return false;
+    el.classList.remove('no-art');
+    el.dataset.pose = art.name;
+    el.replaceChildren(storyImage(art.id, { className: 'portrait-art', alt: '' }));
+    return true;
+  };
+  if (!paint()) {
+    void loadStoryArt().then(() => {
+      if (el.isConnected) paint();
+    });
+  }
   return el;
 }

@@ -65,6 +65,19 @@ describe('story artwork manifest', () => {
     ]);
   });
 
+  it('uses the measured BlackJak frames for Jak’s expressions', () => {
+    const jak = sheet('jak-gold');
+    expect(jak.source.path).toBe('art/sources/story/characters/blackjak-sprite-sheet.webp');
+    expect(jak.layout.type).toBe('rects');
+    expect(jak.sprites.find((pose) => pose.name === 'portrait-neutral')?.frame).toEqual({
+      x: 1176,
+      y: 8,
+      w: 246,
+      h: 292,
+    });
+    expect(jak.sprites.every((pose) => pose.src.startsWith('assets/story/characters/jak-gold/'))).toBe(true);
+  });
+
   it('cuts twelve quest items from each item atlas, and the stamps, effects, map icons and 14 UI pieces', () => {
     for (const id of ITEMS) expect(sheet(id).sprites, id).toHaveLength(12);
     expect(sheet('passport-stamps').sprites).toHaveLength(12);

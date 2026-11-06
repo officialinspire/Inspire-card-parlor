@@ -47,7 +47,7 @@ export interface StorySheet {
   id: string;
   title: string;
   group: StoryGroup;
-  layout: { type: 'grid' | 'blobs' | 'single' | 'board' | 'audit'; [key: string]: unknown };
+  layout: { type: 'grid' | 'blobs' | 'rects' | 'single' | 'board' | 'audit'; [key: string]: unknown };
   source: {
     path: string;
     sha256: string;

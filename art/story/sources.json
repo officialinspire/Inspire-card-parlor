@@ -130,6 +130,27 @@
       "sourceMode": "RGBA"
     },
     {
+      "id": "jak-gold",
+      "title": "Jak Gold (BlackJak dealer atlas)",
+      "source": "art/sources/story/characters/blackjak-sprite-sheet.webp",
+      "group": "characters",
+      "sha256": "bd24d6e959cdcee140fbcd598a8d6b52815bfa66ee7a719fd7d7f9a6670eea6c",
+      "layout": {
+        "type": "rects",
+        "frames": {
+          "portrait-neutral": [1176, 8, 246, 292],
+          "portrait-talk": [23, 11, 334, 291],
+          "portrait-think": [907, 8, 263, 293],
+          "portrait-doubt": [602, 9, 295, 292],
+          "portrait-surprise": [357, 10, 233, 290],
+          "portrait-greet": [1251, 606, 190, 248],
+          "cards-fan": [293, 306, 219, 276],
+          "full-arms-crossed": [729, 609, 142, 441]
+        }
+      },
+      "notes": "Original BlackJak runtime atlas, officialinspire/BlackJak at dc610244e33e7169cc4b33ab33c8fc427540a757. Frames follow DEALER_SPRITES in src/data/visual-atlas.ts. Greeting uses the upper portion of full-present."
+    },
+    {
       "id": "steve-gonzales",
       "title": "Steve Gonzales",
       "source": "art/sources/story/characters/Steve Gonzales_ Serious Card Magician.png",
