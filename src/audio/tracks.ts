@@ -350,7 +350,7 @@ export const RECORDED_TRACKS: readonly FileTrack[] = [
     mood: 'The parlor theme',
     category: 'lofi-card-table',
     duration: 181,
-    src: 'assets/music/inspire-card-parlor-menu-track.m4a',
+    src: 'assets/music/inspire-card-parlor-menu-track.mp3',
     artist: 'OFFICIAL INSPIRE',
   },
   {
@@ -360,7 +360,7 @@ export const RECORDED_TRACKS: readonly FileTrack[] = [
     mood: 'A stroll down Caroline Street',
     category: 'downtown-jazz',
     duration: 170,
-    src: 'assets/music/downtown-fxbg-saturday-walk.m4a',
+    src: 'assets/music/downtown-fxbg-saturday-walk.mp3',
     artist: 'OFFICIAL INSPIRE',
   },
   {
@@ -370,7 +370,7 @@ export const RECORDED_TRACKS: readonly FileTrack[] = [
     mood: 'Lamplit streets',
     category: 'downtown-jazz',
     duration: 179,
-    src: 'assets/music/downtown-fredericksburg-after-dark.m4a',
+    src: 'assets/music/downtown-fredericksburg-after-dark.mp3',
     artist: 'OFFICIAL INSPIRE',
   },
   {
@@ -380,7 +380,7 @@ export const RECORDED_TRACKS: readonly FileTrack[] = [
     mood: 'Quiet & focused',
     category: 'lofi-card-table',
     duration: 173,
-    src: 'assets/music/silent-study-hours.m4a',
+    src: 'assets/music/silent-study-hours.mp3',
     artist: 'OFFICIAL INSPIRE',
   },
   {
@@ -390,7 +390,7 @@ export const RECORDED_TRACKS: readonly FileTrack[] = [
     mood: 'Dark & mysterious',
     category: 'midnight-solitaire',
     duration: 178,
-    src: 'assets/music/shadows-of-the-occult.m4a',
+    src: 'assets/music/shadows-of-the-occult.mp3',
     artist: 'OFFICIAL INSPIRE',
   },
 ];

@@ -1,5 +1,6 @@
 import type { Store } from '@/core/store';
 import type { Settings } from '@/core/types';
+import { AppState } from '@/core/states';
 import { audio } from './engine';
 import { getTrack, markUnavailable, playableTracks, type MusicCategoryId, type MusicTrack } from './tracks';
 
@@ -80,7 +81,9 @@ const setSettings = (patch: Partial<Settings>) => bound?.dispatch({ type: 'UPDAT
  */
 export const music = {
   play(): void {
-    void audio.unlock().then(() => setSettings({ musicPaused: false }));
+    const unlocked = audio.unlock();
+    setSettings({ musicPaused: false });
+    void unlocked.then(follow);
   },
   pause(): void {
     setSettings({ musicPaused: true });
@@ -91,10 +94,10 @@ export const music = {
   },
   select(id: string): void {
     playerChoice();
-    void audio.unlock().then(() => {
-      setSettings({ musicTrack: id, musicPaused: false });
-      follow();
-    });
+    const unlocked = audio.unlock();
+    setSettings({ musicTrack: id, musicPaused: false });
+    follow();
+    void unlocked.then(follow);
   },
   next(): void {
     if (!bound) return;
@@ -157,9 +160,11 @@ export function attachAudio(store: Store): void {
     (s) => s.settings,
     (settings) => audio.configure(settings),
   );
+  const opening = (s: Store['state']) => s.screen === AppState.INITIALIZATION || s.screen === AppState.BOOT;
+  audio.setEffectsEnabled(!opening(store.state));
   follow = () => {
     const s = store.state.settings;
-    if (!store.state.boot.ready || store.state.screen === 'INITIALIZATION' || store.state.screen === 'BOOT') return;
+    if (!store.state.boot.ready || opening(store.state) || document.hidden) return;
     const { track, source } = wantedTrack(s);
     const now = store.state.nowPlaying;
     if (now?.track !== track.id || now.source !== source)
@@ -174,20 +179,23 @@ export function attachAudio(store: Store): void {
   store.select((s) => s.settings.musicPaused, follow);
   store.select((s) => s.settings.storySoundtrack, follow);
   store.select((s) => s.boot.ready, follow);
-  // Touch to Start unlocks sound while the title is still fading out; the music
-  // starts once the intro has actually given way to the menu.
-  store.select((s) => s.screen === 'INITIALIZATION' || s.screen === 'BOOT', follow);
-  document.addEventListener('visibilitychange', () => audio.setSuspended(document.hidden));
-
-  // Browsers only allow sound after a gesture: unlock on the first one anywhere.
-  const unlock = () => void audio.unlock().then(follow);
-  addEventListener('pointerdown', unlock, { once: true });
-  addEventListener('keydown', unlock, { once: true });
-}
-
-/** Starts music after the Enter button (a user gesture), unless the player paused it. */
-export function startMusicFromGesture(store: Store): void {
-  void audio.unlock().then(() => {
-    if (!store.state.settings.musicPaused) follow();
+  // The studio video plays before the menu. Keep game effects and music
+  // silent throughout the opening, even if Web Audio is already unlocked.
+  store.select(opening, (inIntro) => {
+    audio.setEffectsEnabled(!inIntro);
+    follow();
   });
+  document.addEventListener('visibilitychange', () => {
+    void audio.setSuspended(document.hidden).then(follow);
+  });
+
+  // A browser can unlock Web Audio yet refuse a later HTML media play.
+  // Retry that recording on the next click or key, with user activation.
+  const onGesture = () => {
+    if (document.hidden) return;
+    audio.retryRecordingFromGesture();
+    if (!audio.unlocked) void audio.unlock().then(follow);
+  };
+  addEventListener('click', onGesture, { capture: true });
+  addEventListener('keydown', onGesture, { capture: true });
 }

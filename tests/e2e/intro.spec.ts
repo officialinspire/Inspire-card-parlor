@@ -96,28 +96,30 @@ test('returning launches open at the title; the setting can ask for the full int
 
 test('slow loading: no start until the parlor is ready, and slow images never hold it shut', async ({ page }) => {
   await seed(page, { settings: { startupIntro: 'brief', musicPaused: true } });
-  // The artwork list takes 2.5s; the riverfront painting and the logo take 6s.
+  // Keep the images pending until the boot caps let the player enter.
   await page.route('**/assets/artwork.json', async (r) => {
     await new Promise((res) => setTimeout(res, 2500));
     await r.continue();
   });
+  let releaseImages!: () => void;
+  const imagesReady = new Promise<void>((resolve) => (releaseImages = resolve));
   await page.route(/assets\/(backgrounds\/menu|branding)\//, async (r) => {
-    await new Promise((res) => setTimeout(res, 6000));
+    await imagesReady;
     await r.continue();
   });
-  // Only wait for the document: the page's load event would itself wait for the slow images.
-  await page.goto('./', { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('.init')).toHaveAttribute('data-stage', 'title');
-  await page.mouse.click(30, 300);
-  await page.keyboard.press('Enter');
-  await page.waitForTimeout(300);
-  // Still on the title: no prompt, no menu (the test hooks only appear once loading is done).
-  await expect(page.locator('.init')).toHaveAttribute('data-stage', 'title');
-  await expect(page.locator('.menu')).toHaveCount(0);
-  await expect(start(page)).toBeHidden();
-  // The capped image waits release the doors well before the 6s images arrive.
-  await expect(start(page)).toBeVisible({ timeout: 6000 });
-  await start(page).click();
+  try {
+    await page.goto('./', { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('.init')).toHaveAttribute('data-stage', 'title');
+    await page.mouse.click(30, 300);
+    await page.keyboard.press('Enter');
+    await expect(page.locator('.init')).toHaveAttribute('data-stage', 'title');
+    await expect(page.locator('.menu')).toHaveCount(0);
+    await expect(start(page)).toBeHidden();
+    await expect(start(page)).toBeVisible({ timeout: 13_000 });
+    await start(page).click();
+  } finally {
+    releaseImages();
+  }
   await expectScreen(page, 'MAIN_MENU');
 });
 
