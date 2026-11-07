@@ -70,9 +70,7 @@ function serviceWorkerManifest(version: string): Plugin {
           return entry.isDirectory() ? walk(path) : [path];
         });
       const releaseFiles = walk('assets').sort();
-      const visualFiles = releaseFiles
-        .filter((f) => /\.(webp|svg|json)$/.test(f) && !f.includes('/mature/'))
-        .sort();
+      const visualFiles = releaseFiles.filter((f) => /\.(webp|svg|json)$/.test(f) && !f.includes('/mature/')).sort();
       writeFileSync(
         resolve(outDir, 'visual-cache.json'),
         JSON.stringify({
