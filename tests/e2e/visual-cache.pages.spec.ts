@@ -52,3 +52,52 @@ test('downloaded visual library decodes offline at the Pages project path', asyn
   await page.locator('[data-action="download-visuals"]').click();
   await expect(page.locator('[data-offline-visual-status]')).toContainText('All visuals saved');
 });
+
+test('installing the PWA automatically saves every visual and resumes after a new release', async ({
+  page,
+  context,
+}) => {
+  test.setTimeout(120000);
+  await enterParlor(page);
+  await page.evaluate(async () => {
+    await navigator.serviceWorker.ready;
+    if (!navigator.serviceWorker.controller)
+      await new Promise((r) => navigator.serviceWorker.addEventListener('controllerchange', r, { once: true }));
+    window.dispatchEvent(new Event('appinstalled'));
+  });
+  const packReady = () =>
+    page.evaluate(async () => {
+      const cacheNames = (await caches.keys()).filter((key) => key.startsWith('icp-') && key !== 'icp-fonts');
+      for (const key of cacheNames) {
+        const cache = await caches.open(key);
+        if (await cache.match(new URL('./visuals-ready', location.href).href)) return true;
+      }
+      return false;
+    });
+  await expect.poll(packReady, { timeout: 90000 }).toBe(true);
+  // The install event itself, without pressing Settings' download button, saved the full pack.
+  const manifest = await page.evaluate(async () => (await fetch('./visual-cache.json')).json());
+  await context.setOffline(true);
+  expect(
+    await page.evaluate(async (files: string[]) => {
+      for (const file of files) if (!(await fetch(file)).ok) return false;
+      return true;
+    }, manifest.files),
+  ).toBe(true);
+  await context.setOffline(false);
+
+  // Simulate an updated/evicted release cache: the installed app restores missing files on launch.
+  await page.evaluate(async () => {
+    for (const name of await caches.keys()) {
+      if (!name.startsWith('icp-') || name === 'icp-fonts') continue;
+      const cache = await caches.open(name);
+      await cache.delete(new URL('./visuals-ready', location.href).href);
+      await cache.delete(new URL('./assets/cards/jak_gold/faces.webp', location.href).href);
+    }
+  });
+  await page.addInitScript(() => Object.defineProperty(navigator, 'standalone', { value: true, configurable: true }));
+  await enterParlor(page);
+  await expect.poll(packReady, { timeout: 90000 }).toBe(true);
+  const cached = await page.evaluate(async () => !!(await caches.match('./assets/cards/jak_gold/faces.webp')));
+  expect(cached).toBe(true);
+});
