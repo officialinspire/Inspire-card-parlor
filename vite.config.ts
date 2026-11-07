@@ -69,7 +69,8 @@ function serviceWorkerManifest(version: string): Plugin {
           const path = `${dir}/${entry.name}`;
           return entry.isDirectory() ? walk(path) : [path];
         });
-      const visualFiles = walk('assets')
+      const releaseFiles = walk('assets').sort();
+      const visualFiles = releaseFiles
         .filter((f) => /\.(webp|svg|json)$/.test(f) && !f.includes('/mature/'))
         .sort();
       writeFileSync(
@@ -84,7 +85,7 @@ function serviceWorkerManifest(version: string): Plugin {
       for (const f of built) hash.update(readFileSync(resolve(outDir, 'assets', f)));
       hash.update(readFileSync(resolve(outDir, 'index.html')));
       // Artwork-only and worker-only releases also invalidate cache-first files.
-      for (const f of visualFiles) hash.update(f).update(readFileSync(resolve(outDir, f)));
+      for (const f of releaseFiles) hash.update(f).update(readFileSync(resolve(outDir, f)));
       hash.update(readFileSync(resolve(outDir, 'sw.js')));
       const swPath = resolve(outDir, 'sw.js');
       const sw = readFileSync(swPath, 'utf8')
