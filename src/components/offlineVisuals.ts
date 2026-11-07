@@ -53,5 +53,5 @@ export function offlineVisuals(): HTMLElement {
     },
     { variant: 'secondary', attrs: { 'data-action': 'download-visuals' } },
   ) as HTMLButtonElement;
-  return h('div', { class: 'control' }, download, status);
+  return h('div', { class: 'control', style: { flexDirection: 'column', alignItems: 'stretch' } }, download, status);
 }
