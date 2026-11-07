@@ -74,11 +74,11 @@ export function tableCustomizer(store: Store): HTMLElement {
       () => store.state.selection.cardBack ?? '',
       (b) =>
         b.id
-          ? cardRenderer.renderBack(deckThemes.resolve(b.deckId, (b as { variantId?: string }).variantId), {
+          ? cardRenderer.renderBack(deckThemes.resolveOwn(b.deckId, (b as { variantId?: string }).variantId), {
               className: 'pick-card',
               cover: !deckThemes.canShowArt(b.deckId, 'ordinary'),
             })
-          : cardRenderer.renderBack(deckThemes.resolve(store.state.selection.deckId), {
+          : cardRenderer.renderBack(deckThemes.resolveOwn(store.state.selection.deckId), {
               className: 'pick-card pick-match',
             }),
       (b) => b.label,

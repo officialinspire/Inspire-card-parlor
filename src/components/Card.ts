@@ -17,13 +17,10 @@ const rankOf = (label: string) => RANKS[RANK_LABELS.indexOf(label as (typeof RAN
  */
 export function cardBack(deck: DeckDefinition, extraClass = '', context: PreviewContext = 'ordinary'): HTMLElement {
   // A deck's own back (catalogs and previews); game tables use the player's chosen back.
-  return cardRenderer.renderBack(
-    { ...deckThemes.resolve(deck.id), backTheme: undefined },
-    {
-      className: extraClass,
-      cover: !deckThemes.canShowArt(deck.id, context),
-    },
-  );
+  return cardRenderer.renderBack(deckThemes.resolveOwn(deck.id), {
+    className: extraClass,
+    cover: !deckThemes.canShowArt(deck.id, context),
+  });
 }
 
 export function cardFace(

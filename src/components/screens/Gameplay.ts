@@ -55,7 +55,8 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
   const deckIdOf = () => story?.setup.deckId ?? store.state.selection.deckId;
   const boardIdOf = () => story?.setup.boardId ?? store.state.selection.boardId;
   let deck = getDeck(story ? story.setup.deckId : deckThemes.safeDeckId(deckId));
-  let theme = deckThemes.resolve(deck.id);
+  const themeOf = () => (story ? deckThemes.resolveOwn(deck.id) : deckThemes.resolve(deck.id));
+  let theme = themeOf();
   let board = getBoard(story ? story.setup.boardId : boardId);
   const d = new Disposer();
   const chapter = CHAPTERS.find((c) => c.id === storyChapterId);
@@ -151,7 +152,7 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
         `${st.selection.deckId}|${st.selection.cardBack}|${JSON.stringify(st.selection.artVariants)}|${st.profile.ownedVariants.length}`,
       () => {
         deck = getDeck(story ? deckIdOf() : deckThemes.safeDeckId(deckIdOf()));
-        theme = deckThemes.resolve(deck.id);
+        theme = themeOf();
         paintBoard();
         if (view && currentTable) mount(currentTable);
       },

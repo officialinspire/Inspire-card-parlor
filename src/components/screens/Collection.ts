@@ -334,13 +334,13 @@ export const CollectionScreen: ScreenFactory = ({ store }) => {
       render: (b) => {
         const selected = (store.state.selection.cardBack ?? '') === b.id;
         const theme = b.id
-          ? deckThemes.resolve(b.deckId, (b as { variantId?: string }).variantId)
-          : deckThemes.resolve(store.state.selection.deckId);
+          ? deckThemes.resolveOwn(b.deckId, (b as { variantId?: string }).variantId)
+          : deckThemes.resolveOwn(store.state.selection.deckId);
         const back = b.id
-          ? cardRenderer.renderBack(
-              { ...theme, backTheme: undefined },
-              { className: 'preview-back solo', cover: !deckThemes.canShowArt(b.deckId, 'ordinary') },
-            )
+          ? cardRenderer.renderBack(theme, {
+              className: 'preview-back solo',
+              cover: !deckThemes.canShowArt(b.deckId, 'ordinary'),
+            })
           : cardBack(getDeck(b.deckId), 'preview-back solo');
         return h(
           'button',

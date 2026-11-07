@@ -208,6 +208,17 @@ describe('gameboards', () => {
 });
 
 describe('card backs', () => {
+  it('keeps story decks and back previews independent of the selected Quick Play back', () => {
+    const m = themes({ back: 'jak_gold' });
+    for (const id of ['dantes_world', 'jak_gold', 'eastern_woodlands', 'freemasonry', 'classic']) {
+      const theme = m.resolveOwn(id);
+      expect(theme.deck.id).toBe(id);
+      expect(theme.backTheme).toBeUndefined();
+      expect(theme.key).not.toContain('|back:');
+    }
+    expect(m.resolve('classic').backTheme?.deck.id).toBe('jak_gold');
+  });
+
   it('pairs any deck with a back from another owned deck', () => {
     const m = themes({ back: 'jak_gold' });
     const t = m.resolve('classic');

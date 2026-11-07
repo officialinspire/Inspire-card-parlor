@@ -404,7 +404,10 @@ test('every challenge launches with its own game, deck and table, and seeded dea
   page,
 }, info) => {
   test.skip(info.project.name !== 'phone-portrait', 'one layout is enough to launch all 45');
-  await seed(page, { profile: { story: story({ completed: allLevels() }), storyChapter: 9, schemaVersion: 3 } });
+  await seed(page, {
+    profile: { level: 10, story: story({ completed: allLevels() }), storyChapter: 9, schemaVersion: 3 },
+    selection: { deckId: 'classic', cardBack: 'dantes_world' },
+  });
   await enterParlor(page);
   const levels = await page.evaluate(
     () =>
@@ -441,6 +444,8 @@ test('every challenge launches with its own game, deck and table, and seeded dea
       await launch(l.id);
       await expect(page.locator(`${CURRENT}.table`)).toHaveAttribute('data-board', l.board);
       await expect(page.locator(`${CURRENT} .card[data-theme^="${l.deck}@"]`).first()).toBeAttached();
+      // Both sides must belong to this chapter, even with another back equipped.
+      await expect(page.locator(`${CURRENT} .card:not([data-theme="${l.deck}@standard"])`)).toHaveCount(0);
       if (l.seeded && ['klondike', 'spider', 'freecell'].includes(l.game)) {
         await expect.poll(faces).not.toBe('');
         const first = await faces();

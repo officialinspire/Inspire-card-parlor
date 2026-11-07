@@ -125,6 +125,11 @@ export class DeckThemeManager {
     return out;
   }
 
+  /** A deck's own faces and back, independent of the Quick Play back selection. */
+  resolveOwn(deckId: DeckId, variantId: string | undefined = this.ctx.variantFor(deckId)): DeckTheme {
+    return this.#resolveBase(deckId, variantId);
+  }
+
   /** Resolve a deck (and its selected or given variant) to a renderable theme. */
   resolve(deckId: DeckId, variantId: string | undefined = this.ctx.variantFor(deckId)): DeckTheme {
     const base = this.#resolveBase(deckId, variantId);
