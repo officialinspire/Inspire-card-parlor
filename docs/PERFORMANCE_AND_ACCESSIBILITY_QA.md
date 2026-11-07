@@ -330,3 +330,14 @@ covered or off-screen control. No page errors. Result: **7/7 passed**.
 ## 7. Full end-to-end run
 
 Recorded after the run; see the commit message for the final counts.
+
+## Visual loading and offline artwork — November 7, 2026
+
+- After boot, prepare the selected deck/table and the next available story challenge, including chapter dialogue poses. Sprite warming uses two low-priority transfers/decodes at a time; speculative boot warming respects Data Saver.
+- Await image decode before publishing card-atlas and board URLs. Concurrent deck requests now await the full deck rather than treating the opening's back-only publication as complete.
+- Failed image requests and story-manifest requests can retry; reconnect clears resolved deck fallbacks before warming again.
+- Release artwork is cache-first without re-fetching cached images. Fetch events retain cache writes. Release cache hashes include emitted visuals, metadata and worker source, so artwork-only deployments refresh correctly.
+- Settings → Data → **Download visuals for offline play** saves the complete standard visual library, including unused story chapters and unlockable decks, without decoding it all. The generated manifest has 673 files / 28.46 MiB in the standard build. Two workers download with per-file timeouts; retries reuse completed files, failures are counted, and success is shown only after all cache writes complete. Mature folders and streamed music are excluded.
+- Offline storage is per device and may be evicted by the browser. Redownload after an update; existing repair and save-transfer controls remain available.
+
+Validation: 538 unit tests; 13 release browser checks covering phone/desktop offline gameplay, saved progress, update/repair isolation, all Pages-path assets, full visual download, offline fetch of every packed file, representative image decoding and repeat download. Deck and story validators reported zero errors (existing artwork warnings remain documented in ART_ASSET_AUDIT.md).

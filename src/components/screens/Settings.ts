@@ -4,6 +4,7 @@ import { AppState } from '@/core/states';
 import { navigate } from '@/core/store';
 import type { Settings } from '@/core/types';
 import { createDefaultProfile, createDefaultSelection, DEFAULT_SETTINGS } from '@/core/defaults';
+import { offlineVisuals } from '../offlineVisuals';
 import { saveTransfer } from '../saveTransfer';
 import { resetAllData } from '@/storage/persistence';
 import { fullscreen } from '@/utils/device';
@@ -262,6 +263,7 @@ export const SettingsScreen: ScreenFactory = ({ store }) => {
       render: () =>
         panel(
           saveTransfer(store),
+          offlineVisuals(),
           tagged(
             toggle(
               'Anonymous usage statistics',

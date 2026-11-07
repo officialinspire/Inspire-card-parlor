@@ -1,3 +1,6 @@
+import { warmImage } from '@/assets/preload';
+import { assetManager, deckThemes } from '@/decks';
+import { getBoard } from '@/boards/registry';
 import type { Profile } from '@/core/types';
 import { storySprite, storyUrl } from '@/story/art';
 import { STORY_CHAPTERS, type StoryChapter } from '@/story/campaign';
@@ -9,19 +12,8 @@ import { MOOD_POSE } from './sprites';
  * Warms the cache for what the player will see next, and nothing else: the
  * current chapter's portraits (the poses its scenes use) and the next
  * place's map tile. Later chapters' artwork loads only when it is shown.
- * Each file is requested once per session, at low priority.
+ * Transfers and image decodes are deduplicated and bounded to two sprites at once.
  */
-const requested = new Set<string>();
-
-function warm(path: string): void {
-  if (requested.has(path)) return;
-  requested.add(path);
-  const img = new Image();
-  img.decoding = 'async';
-  (img as HTMLImageElement & { fetchPriority?: string }).fetchPriority = 'low';
-  img.src = storyUrl(path);
-}
-
 /** Sprite ids a chapter's scenes show (portraits in their poses). */
 export function chapterPortraits(ch: StoryChapter): string[] {
   const lines = [ch.intro, ch.outro, ...ch.levels.flatMap((l) => [l.intro, l.outro])].flat();
@@ -44,9 +36,16 @@ export function preloadPlan(profile: Profile): string[] {
 }
 
 export function preloadStory(profile: Profile): void {
+  const chapter = STORY_CHAPTERS.find((c) => locationState(profile, c) === 'available');
+  const level = chapter?.levels.find((l) => !profile.story.completed.includes(l.id)) ?? chapter?.levels[0];
+  if (level) {
+    void assetManager.loadDeck(deckThemes.resolve(level.setup.deckId));
+    const board = getBoard(level.setup.boardId);
+    if (board.assets.status === 'ready') void assetManager.loadImage(board.assets.basePath, board.assets.background);
+  }
   for (const id of preloadPlan(profile)) {
     const thumb = id.startsWith('thumb:');
     const s = storySprite(thumb ? id.slice(6) : id);
-    if (s) warm(thumb ? s.thumb : s.src);
+    if (s) void warmImage(storyUrl(thumb ? s.thumb : s.src));
   }
 }

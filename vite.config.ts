@@ -1,6 +1,6 @@
 import { defineConfig, loadEnv, type Plugin } from 'vite';
 import { createHash } from 'node:crypto';
-import { readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { fileURLToPath, URL } from 'node:url';
 import pkg from './package.json' with { type: 'json' };
@@ -63,9 +63,28 @@ function serviceWorkerManifest(version: string): Plugin {
       const files = ['./', './index.html', './manifest.webmanifest', './assets/icons/icon.svg']
         .concat(built.map((f) => `./assets/${f}`))
         .concat(ESSENTIAL.map((f) => `./${f}`));
+      // Enumerate emitted visuals, not source PNGs or stripped mature assets.
+      const walk = (dir: string): string[] =>
+        readdirSync(resolve(outDir, dir), { withFileTypes: true }).flatMap((entry) => {
+          const path = `${dir}/${entry.name}`;
+          return entry.isDirectory() ? walk(path) : [path];
+        });
+      const releaseFiles = walk('assets').sort();
+      const visualFiles = releaseFiles.filter((f) => /\.(webp|svg|json)$/.test(f) && !f.includes('/mature/')).sort();
+      writeFileSync(
+        resolve(outDir, 'visual-cache.json'),
+        JSON.stringify({
+          files: visualFiles.map((f) => `./${f}`),
+          bytes: visualFiles.reduce((sum, f) => sum + statSync(resolve(outDir, f)).size, 0),
+        }),
+      );
+      files.push('./visual-cache.json');
       const hash = createHash('sha256');
       for (const f of built) hash.update(readFileSync(resolve(outDir, 'assets', f)));
       hash.update(readFileSync(resolve(outDir, 'index.html')));
+      // Artwork-only and worker-only releases also invalidate cache-first files.
+      for (const f of releaseFiles) hash.update(f).update(readFileSync(resolve(outDir, f)));
+      hash.update(readFileSync(resolve(outDir, 'sw.js')));
       const swPath = resolve(outDir, 'sw.js');
       const sw = readFileSync(swPath, 'utf8')
         .replace(/const CACHE = '[^']*';/, `const CACHE = 'icp-${version}-${hash.digest('hex').slice(0, 10)}';`)
