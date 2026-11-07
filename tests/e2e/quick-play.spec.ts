@@ -66,7 +66,7 @@ test('locked decks stay hidden in Quick Play', async ({ page }) => {
   await expect(await revealInPager(page, '[data-deck="classic"]')).toHaveAttribute('aria-pressed', 'true');
 });
 
-test('remembers deck and board per game across reloads', async ({ page }) => {
+test('keeps the primary deck and remembers boards across reloads', async ({ page }) => {
   // Two full set-ups, a deal and a reload with boot: ~22 s alone, over 30 s on a loaded runner.
   test.slow();
   await seed(page, { profile: { level: 6 } });
@@ -103,9 +103,9 @@ test('remembers deck and board per game across reloads', async ({ page }) => {
   await clickNav(page, 'GAME_SELECTION');
   await expect(page.locator(`${CURRENT} .game-card.last`)).toHaveAttribute('data-game', 'klondike');
 
-  // Picking Spider again restores its own deck and board.
+  // Picking Spider restores its board without overriding the primary deck.
   await playGame(page, 'spider');
-  await expect(page.locator(`${CURRENT} [data-deck="fredericksburg"]`)).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator(`${CURRENT} [data-deck="classic"]`)).toHaveAttribute('aria-pressed', 'true');
   await clickNav(page, 'BOARD_SELECTION');
   await expect(page.locator(`${CURRENT} [data-board="downtown_cafe"]`)).toHaveAttribute('aria-pressed', 'true');
 });

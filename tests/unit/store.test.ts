@@ -66,7 +66,7 @@ describe('navigation', () => {
 });
 
 describe('selection memory', () => {
-  it('remembers the deck and board last dealt for each game', () => {
+  it('keeps the primary deck while restoring each game board', () => {
     const s = boot();
     s.dispatch({ type: 'SELECT_GAME', gameId: 'spider' });
     s.dispatch({ type: 'SELECT_DECK', deckId: 'fredericksburg' });
@@ -79,7 +79,7 @@ describe('selection memory', () => {
     s.dispatch({ type: 'START_GAME' });
 
     s.dispatch({ type: 'SELECT_GAME', gameId: 'spider' });
-    expect(s.state.selection).toMatchObject({ gameId: 'spider', deckId: 'fredericksburg', boardId: 'oxblood-lounge' });
+    expect(s.state.selection).toMatchObject({ gameId: 'spider', deckId: 'classic', boardId: 'oxblood-lounge' });
     s.dispatch({ type: 'SELECT_GAME', gameId: 'klondike' });
     expect(s.state.selection).toMatchObject({ deckId: 'classic', boardId: 'velvet-green' });
   });
