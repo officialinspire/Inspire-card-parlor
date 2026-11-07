@@ -6,7 +6,7 @@ export function offlineVisuals(): HTMLElement {
   const status = h(
     'p',
     { class: 'ask-hint', role: 'status', 'data-offline-visual-status': '' },
-    'Save all standard decks, tables and story artwork before going offline (about 30 MB). Music is streamed separately.',
+    'Installing the app automatically saves all standard visuals (about 30 MB). Use this button to download or retry anytime. Music is streamed separately.',
   );
   const download = button(
     'Download visuals for offline play',
@@ -41,7 +41,7 @@ export function offlineVisuals(): HTMLElement {
             finish(
               failed
                 ? `${completed} of ${total} visuals saved. Retry to download ${failed} missing files.`
-                : 'All visuals saved for offline play on this device. Download again after a game update.',
+                : 'All visuals saved for offline play on this device. Installed apps refresh them automatically after updates.',
             );
           else
             status.textContent = `Saving visuals: ${completed} of ${total} (${Math.ceil(bytes / 1048576)} MB total)…`;

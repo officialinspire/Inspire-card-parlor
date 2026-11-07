@@ -42,10 +42,10 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('message', (event) => {
   if (event.data === 'version') event.ports[0]?.postMessage(CACHE);
-  if (event.data === 'cache-visuals' && event.ports[0]) {
+  if (['cache-visuals', 'cache-installed-visuals'].includes(event.data) && event.ports[0]) {
     const port = event.ports[0];
     event.waitUntil(
-      cacheVisuals((progress) => port.postMessage(progress)).catch(() => {
+      cacheVisuals((progress) => port.postMessage(progress), event.data === 'cache-installed-visuals').catch(() => {
         port.postMessage({ error: 'Download interrupted. Reconnect and try again; saved files are kept.' });
       }),
     );
@@ -84,7 +84,12 @@ const fromCache = async (cacheName, req) => {
 let visualDownload = null;
 const visualListeners = new Set();
 /** Download compressed visuals without decoding hundreds of images into phone memory. */
-async function cacheVisuals(report) {
+async function cacheVisuals(report, onlyIfMissing = false) {
+  const readyKey = new URL('./visuals-ready', self.registration.scope).href;
+  if (onlyIfMissing && (await (await caches.open(CACHE)).match(readyKey))) {
+    report({ done: true, alreadySaved: true });
+    return;
+  }
   visualListeners.add(report);
   try {
     if (!visualDownload) {
@@ -123,6 +128,8 @@ async function cacheVisuals(report) {
             }
           }),
         );
+        // This marker belongs to the release cache: updates automatically download again.
+        if (!failed) await cache.put(readyKey, new Response('ready'));
         emit(true);
       })().finally(() => {
         visualDownload = null;
