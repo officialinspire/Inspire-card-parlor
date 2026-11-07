@@ -9,7 +9,7 @@
  *   network first, cache as fallback. Their names don't change between
  *   releases, so cache-first could hand new scripts last release's data.
  * - Built scripts and styles carry a content hash in their names, and other
- *   same-origin files (artwork): cache first, refreshed in the background.
+ *   same-origin files (artwork): cache first for this content-stamped release.
  * - Google Fonts: cached once fetched, so text keeps its fonts offline.
  * - Music: left to the browser (range requests stream better uncached).
  */
@@ -42,6 +42,14 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('message', (event) => {
   if (event.data === 'version') event.ports[0]?.postMessage(CACHE);
+  if (event.data === 'cache-visuals' && event.ports[0]) {
+    const port = event.ports[0];
+    event.waitUntil(
+      cacheVisuals((progress) => port.postMessage(progress)).catch(() => {
+        port.postMessage({ error: 'Download interrupted. Reconnect and try again; saved files are kept.' });
+      }),
+    );
+  }
 });
 
 const fromNetworkThenCache = (cacheName, req) =>
@@ -63,18 +71,68 @@ const fromNetworkThenCache = (cacheName, req) =>
         .then((r) => r || Response.error()),
     );
 
-const fromCacheThenRefresh = (cacheName, req) =>
-  caches.open(cacheName).then((cache) =>
-    cache.match(req, { ignoreVary: true }).then((cached) => {
-      const network = fetch(req)
-        .then((res) => {
-          if (res.ok || res.type === 'opaque') cache.put(req, res.clone()).catch(() => undefined);
-          return res;
-        })
-        .catch(() => cached || Response.error());
-      return cached || network;
-    }),
-  );
+// Cache writes belong to the fetch event lifetime, including on the first visit.
+const fromCache = async (cacheName, req) => {
+  const cache = await caches.open(cacheName);
+  const cached = await cache.match(req, { ignoreVary: true });
+  if (cached) return cached;
+  const res = await fetch(req).catch(() => Response.error());
+  if (res.ok || res.type === 'opaque') await cache.put(req, res.clone()).catch(() => undefined);
+  return res;
+};
+
+let visualDownload = null;
+const visualListeners = new Set();
+/** Download compressed visuals without decoding hundreds of images into phone memory. */
+async function cacheVisuals(report) {
+  visualListeners.add(report);
+  try {
+    if (!visualDownload) {
+      visualDownload = (async () => {
+        const cache = await caches.open(CACHE);
+        const manifest = await fromCache(CACHE, new Request(new URL('./visual-cache.json', self.registration.scope)));
+        const { files, bytes } = await manifest.json();
+        let cursor = 0,
+          completed = 0,
+          failed = 0;
+        const emit = (done = false) => {
+          for (const listener of visualListeners) listener({ completed, failed, total: files.length, bytes, done });
+        };
+        emit();
+        await Promise.all(
+          Array.from({ length: 2 }, async () => {
+            while (cursor < files.length) {
+              const url = new URL(files[cursor++], self.registration.scope);
+              // Only this game's general-audience visuals from the generated build manifest.
+              if (!url.href.startsWith(self.registration.scope) || url.pathname.includes('/mature/')) {
+                failed++;
+                emit();
+                continue;
+              }
+              try {
+                if (!(await cache.match(url.href))) {
+                  const res = await fetch(url.href, { signal: AbortSignal.timeout(15000) });
+                  if (!res.ok) throw new Error('Asset unavailable');
+                  await cache.put(url.href, res);
+                }
+                completed++;
+              } catch {
+                failed++;
+              }
+              emit();
+            }
+          }),
+        );
+        emit(true);
+      })().finally(() => {
+        visualDownload = null;
+      });
+    }
+    await visualDownload;
+  } finally {
+    visualListeners.delete(report);
+  }
+}
 
 self.addEventListener('fetch', (event) => {
   const req = event.request;
@@ -82,7 +140,9 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(req.url);
 
   if (url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com') {
-    event.respondWith(fromCacheThenRefresh(FONTS, req));
+    const response = fromCache(FONTS, req);
+    event.waitUntil(response.then(() => undefined));
+    event.respondWith(response);
     return;
   }
   if (url.origin !== self.location.origin) return;
@@ -109,5 +169,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  event.respondWith(fromCacheThenRefresh(CACHE, req));
+  const response = fromCache(CACHE, req);
+  event.waitUntil(response.then(() => undefined));
+  event.respondWith(response);
 });

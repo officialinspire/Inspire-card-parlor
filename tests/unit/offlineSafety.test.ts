@@ -64,3 +64,34 @@ describe('offline storage isolation', () => {
     },
   );
 });
+
+describe('release image cache', () => {
+  it('serves a cached image without fetching it again', async () => {
+    const handlers: Record<string, (event: any) => void> = {};
+    const cached = new Response('image');
+    const fetchImage = vi.fn();
+    runInNewContext(readFileSync('public/sw.js', 'utf8'), {
+      self: {
+        location: { origin: 'https://example.com' },
+        addEventListener: (name: string, fn: (event: any) => void) => (handlers[name] = fn),
+      },
+      caches: { open: async () => ({ match: async () => cached }) },
+      fetch: fetchImage,
+      URL,
+    });
+    let result!: Promise<Response>;
+    let lifetime!: Promise<unknown>;
+    handlers.fetch!({
+      request: { url: 'https://example.com/assets/cards/classic/faces.webp', method: 'GET', headers: new Headers() },
+      respondWith: (p: Promise<Response>) => {
+        result = p;
+      },
+      waitUntil: (p: Promise<unknown>) => {
+        lifetime = p;
+      },
+    });
+    expect(await result).toBe(cached);
+    await lifetime;
+    expect(fetchImage).not.toHaveBeenCalled();
+  });
+});

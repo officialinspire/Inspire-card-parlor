@@ -99,9 +99,13 @@ export function loadStoryArt(): Promise<StoryManifest | null> {
     .then((r) => (r.ok ? (r.json() as Promise<StoryManifest>) : null))
     .then((m) => {
       if (m) indexManifest(m);
+      else loading = null;
       return m;
     })
-    .catch(() => null);
+    .catch(() => {
+      loading = null;
+      return null;
+    });
   return loading;
 }
 

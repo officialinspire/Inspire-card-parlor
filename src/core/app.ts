@@ -12,8 +12,8 @@ import { attachAnalytics, track } from '@/analytics/analytics';
 import { attachProductAnalytics } from '@/analytics/productEvents';
 import { recentEvents } from '@/analytics/posthog';
 import { attachInstallPrompt } from '@/utils/install';
-import { attachTheme } from '@/themes/theme';
-import { assetManager, attachDeckThemes } from '@/decks';
+import { attachTheme, resolveTheme } from '@/themes/theme';
+import { assetManager, attachDeckThemes, deckThemes } from '@/decks';
 import { ScreenManager } from '@/components/ScreenManager';
 import { attachDialogs, confirmDialog } from '@/components/Dialog';
 import { attachNotifications } from '@/components/Notifications';
@@ -22,6 +22,9 @@ import { AppState } from './states';
 import { goBack, navigate, store } from './store';
 import { runBoot } from './boot';
 import { attachBrowserBack } from './browserBack';
+import { warmImage } from '@/assets/preload';
+import { getBoard } from '@/boards/registry';
+import { preloadStory } from '@/components/story/preload';
 import { loadStoryArt } from '@/story/art';
 import { attachStoryDirector } from '@/audio/director';
 import { setActiveStoryLevel } from '@/story/session';
@@ -101,16 +104,39 @@ export async function startApp(mount: HTMLElement): Promise<void> {
   let opened!: () => void;
   assetManager.deferFacesUntil(new Promise<void>((r) => (opened = r)));
   navigate(AppState.INITIALIZATION);
-  // Story artwork is decorative: fetch its small manifest once the browser is idle (Story Mode
-  // also asks for it when opened), never during boot work. No image is decoded until shown.
+  // Start speculative artwork only after boot has finished.
   const idle = (fn: () => void) =>
     'requestIdleCallback' in window ? requestIdleCallback(fn, { timeout: 4000 }) : setTimeout(fn, 1500);
-  idle(() => void loadStoryArt());
+
   try {
     await runBoot(store);
   } finally {
     opened();
   }
+
+  // Once the title is ready, prepare the selected table and the next chapter.
+  // Data saver keeps speculative transfers off; visible artwork still loads normally.
+  const warmNext = () => {
+    const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+    if (connection?.saveData) return;
+    idle(() => {
+      const selection = store.state.selection;
+      void assetManager.loadDeck(deckThemes.resolve(deckThemes.safeDeckId(selection.deckId)));
+      const board = getBoard(selection.boardId);
+      if (board.assets.status === 'ready') void assetManager.loadImage(board.assets.basePath, board.assets.background);
+      void loadStoryArt().then((manifest) => {
+        if (manifest) preloadStory(store.state.profile);
+      });
+      const alternate = resolveTheme(store.state.settings.theme) === 'day' ? 'night' : 'day';
+      void warmImage(`${import.meta.env.BASE_URL}assets/backgrounds/menu/${alternate}.webp`);
+    });
+  };
+  warmNext();
+  store.select((s) => `${s.selection.deckId}|${s.selection.boardId}|${s.profile.story.completed.join(',')}`, warmNext);
+  addEventListener('online', () => {
+    assetManager.clear();
+    warmNext();
+  });
 
   if (import.meta.env.PROD && 'serviceWorker' in navigator) {
     // A new worker does not replace JavaScript already running in this tab.
