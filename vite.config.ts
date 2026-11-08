@@ -48,9 +48,13 @@ function serviceWorkerManifest(version: string): Plugin {
     'assets/cards/classic/back.webp',
     'assets/artwork.json',
     'assets/story/manifest.json',
-    'assets/icons/icon-192.png',
-    'assets/icons/icon-512.png',
-    'assets/icons/apple-touch-icon.png',
+    'assets/icons/icon-192-v2.png',
+    'assets/icons/icon-512-v2.png',
+    'assets/icons/icon-maskable-512-v2.png',
+    'assets/icons/favicon-v2.png',
+    'assets/icons/icon.svg?v=2',
+    'assets/icons/icon-maskable.svg?v=2',
+    'assets/icons/apple-touch-icon-v2.png',
   ];
   return {
     name: 'icp-service-worker-manifest',
