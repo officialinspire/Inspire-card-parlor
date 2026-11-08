@@ -52,6 +52,8 @@ function serviceWorkerManifest(version: string): Plugin {
     'assets/icons/icon-512-v2.png',
     'assets/icons/icon-maskable-512-v2.png',
     'assets/icons/favicon-v2.png',
+    'assets/icons/icon.svg?v=2',
+    'assets/icons/icon-maskable.svg?v=2',
     'assets/icons/apple-touch-icon-v2.png',
   ];
   return {
