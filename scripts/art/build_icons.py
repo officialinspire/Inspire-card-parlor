@@ -25,7 +25,7 @@ def main():
     preview = BytesIO()
     image.resize((512, 512), Image.Resampling.LANCZOS).save(preview, format='WEBP', quality=90)
     data = b64encode(preview.getvalue()).decode()
-    svg = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">'
+    svg = ('<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">'
            f'<image width="512" height="512" href="data:image/webp;base64,{data}"/>'
            '</svg>\n')
     for name in ['icon.svg', 'icon-maskable.svg']:
