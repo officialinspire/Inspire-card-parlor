@@ -19,7 +19,20 @@ test('the manifest is installable and its icons load', async ({ page, request })
   expect(manifest).toMatchObject({ name: 'INSPIRE CARD PARLOR', short_name: 'Card Parlor', start_url: './' });
   expect(['fullscreen', 'standalone']).toContain(manifest.display);
   expect(manifest.icons.some((i) => i.sizes === '512x512' && i.purpose === 'maskable')).toBe(true);
-  for (const icon of manifest.icons) expect((await request.get(icon.src)).ok(), icon.src).toBe(true);
+  for (const icon of manifest.icons) {
+    expect((await request.get(icon.src)).ok(), icon.src).toBe(true);
+    const size = await page.evaluate(async (src) => {
+      const image = new Image();
+      image.src = new URL(src, document.baseURI).href;
+      await image.decode();
+      return [image.naturalWidth, image.naturalHeight];
+    }, icon.src);
+    const expected = icon.sizes === 'any' ? 512 : Number(icon.sizes.split('x')[0]);
+    expect(size, icon.src).toEqual([expected, expected]);
+  }
+  const apple = await page.locator('link[rel="apple-touch-icon"]').getAttribute('href');
+  expect(apple).toContain('apple-touch-icon-v2.png');
+  expect((await request.get(apple!)).ok()).toBe(true);
 });
 
 test('after one visit the parlor opens and plays offline, keeping saved progress', async ({ page, context }) => {

@@ -43,7 +43,6 @@ MENU = {
 }
 LOGO = 'Inspire Card Parlor Transparent Logo.png'
 ICON_SOURCE = 'inspire-card-parlor.png'
-ICON_BG = (16, 48, 31, 255)  # the logo's own deep green
 
 
 def fit(img: Image.Image, max_w: int, max_h: int | None = None) -> Image.Image:
@@ -68,14 +67,6 @@ def trim(img: Image.Image) -> Image.Image:
     img.putalpha(alpha)
     box = alpha.getbbox()
     return img.crop(box) if box else img
-
-
-def icon(logo: Image.Image, size: int, safe: float) -> Image.Image:
-    """Logo centred on a solid square; `safe` is the share of the side it may use."""
-    canvas = Image.new('RGBA', (size, size), ICON_BG)
-    mark = fit(logo, round(size * safe), round(size * safe))
-    canvas.alpha_composite(mark, ((size - mark.width) // 2, (size - mark.height) // 2))
-    return canvas
 
 
 def main() -> None:
@@ -107,16 +98,9 @@ def main() -> None:
     (PUBLIC / 'branding').mkdir(parents=True, exist_ok=True)
     card.convert('RGB').save(PUBLIC / 'branding' / 'social-card.jpg', quality=86, optimize=True, progressive=True)
     print('public/assets/branding/social-card.jpg')
-    out = PUBLIC / 'icons'
-    out.mkdir(parents=True, exist_ok=True)
-    for size, safe, file in [
-        (192, 0.9, 'icon-192.png'),
-        (512, 0.9, 'icon-512.png'),
-        (512, 0.72, 'icon-maskable-512.png'),  # maskable: keep inside the 80% safe zone
-        (180, 0.86, 'apple-touch-icon.png'),
-    ]:
-        icon(mark, size, safe).convert('RGB').save(out / file, optimize=True)
-        print(f'public/assets/icons/{file}')
+    # Keep generated branding rebuilds from restoring the old wordmark icons.
+    from build_icons import main as build_icons
+    build_icons()
 
 
 if __name__ == '__main__':
