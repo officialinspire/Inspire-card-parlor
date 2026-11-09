@@ -400,7 +400,7 @@ test('story artwork that fails to load never blocks play', async ({ page }) => {
   await expectScreen(page, 'GAMEPLAY');
 });
 
-test('every challenge launches with its own game, deck and table, and seeded deals repeat exactly', async ({
+test('every challenge keeps its game and table with the preferred deck, and seeded deals repeat exactly', async ({
   page,
 }, info) => {
   test.skip(info.project.name !== 'phone-portrait', 'one layout is enough to launch all 45');
@@ -440,7 +440,7 @@ test('every challenge launches with its own game, deck and table, and seeded dea
     await test.step(l.id, async () => {
       await launch(l.id);
       await expect(page.locator(`${CURRENT}.table`)).toHaveAttribute('data-board', l.board);
-      await expect(page.locator(`${CURRENT} .card[data-theme^="${l.deck}@"]`).first()).toBeAttached();
+      await expect(page.locator(`${CURRENT} .card[data-theme^="classic@"]`).first()).toBeAttached();
       if (l.seeded && ['klondike', 'spider', 'freecell'].includes(l.game)) {
         await expect.poll(faces).not.toBe('');
         const first = await faces();

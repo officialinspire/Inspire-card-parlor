@@ -47,14 +47,14 @@ const SOLITAIRE: GameId[] = ['klondike', 'spider', 'freecell'];
  * saved as they go and offer to resume.
  */
 export const GameplayScreen: ScreenFactory = ({ store }) => {
-  const { deckId, boardId, storyChapterId, storyLevelId } = store.state.selection;
+  const { boardId, storyChapterId, storyLevelId } = store.state.selection;
   // A story challenge brings its own game, deck, board and deal.
   const story = storyLevelId ? getLevel(storyLevelId) : undefined;
   const gameId = story ? story.game : store.state.selection.gameId;
   const game = getGame(gameId);
-  const deckIdOf = () => story?.setup.deckId ?? store.state.selection.deckId;
+  const deckIdOf = () => deckThemes.safeDeckId(store.state.selection.deckId);
   const boardIdOf = () => story?.setup.boardId ?? store.state.selection.boardId;
-  let deck = getDeck(story ? story.setup.deckId : deckThemes.safeDeckId(deckId));
+  let deck = getDeck(deckIdOf());
   let theme = deckThemes.resolve(deck.id);
   let board = getBoard(story ? story.setup.boardId : boardId);
   const d = new Disposer();
@@ -150,7 +150,7 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
       (st) =>
         `${st.selection.deckId}|${st.selection.cardBack}|${JSON.stringify(st.selection.artVariants)}|${st.profile.ownedVariants.length}`,
       () => {
-        deck = getDeck(story ? deckIdOf() : deckThemes.safeDeckId(deckIdOf()));
+        deck = getDeck(deckIdOf());
         theme = deckThemes.resolve(deck.id);
         paintBoard();
         if (view && currentTable) mount(currentTable);
@@ -246,13 +246,15 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
         { class: 'options-body' },
         body,
         hasOptions ? h('p', { class: 'ask-hint' }, 'Game options apply to your next game.') : null,
-        ...(story
-          ? [h('p', { class: 'ask-hint' }, 'Story challenges use their own deck and table.')]
-          : [
-              h('h3', { class: 'options-heading' }, 'Table'),
-              tableCustomizer(store),
-              h('p', { class: 'ask-hint' }, 'Deck, card back and table change right away; your game is untouched.'),
-            ]),
+        h('h3', { class: 'options-heading' }, 'Table'),
+        tableCustomizer(store, { boards: !story }),
+        h(
+          'p',
+          { class: 'ask-hint' },
+          story
+            ? 'Your preferred deck and card back apply here too. The story keeps its own table.'
+            : 'Deck, card back and table change right away; your game is untouched.',
+        ),
       ),
       dismissValue: 'close',
       actions: hasOptions
