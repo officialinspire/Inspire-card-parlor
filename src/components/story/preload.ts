@@ -1,5 +1,5 @@
 import { warmImage } from '@/assets/preload';
-import { assetManager, deckThemes } from '@/decks';
+import { assetManager } from '@/decks';
 import { getBoard } from '@/boards/registry';
 import type { Profile } from '@/core/types';
 import { storySprite, storyUrl } from '@/story/art';
@@ -39,7 +39,6 @@ export function preloadStory(profile: Profile): void {
   const chapter = STORY_CHAPTERS.find((c) => locationState(profile, c) === 'available');
   const level = chapter?.levels.find((l) => !profile.story.completed.includes(l.id)) ?? chapter?.levels[0];
   if (level) {
-    void assetManager.loadDeck(deckThemes.resolve(level.setup.deckId));
     const board = getBoard(level.setup.boardId);
     if (board.assets.status === 'ready') void assetManager.loadImage(board.assets.basePath, board.assets.background);
   }

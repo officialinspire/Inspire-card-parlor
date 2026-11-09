@@ -342,3 +342,11 @@ Recorded after the run; see the commit message for the final counts.
 - Offline storage is per device and may be evicted by the browser. Installed launches restore missing packs; existing repair and save-transfer controls remain available.
 
 Validation: 538 unit tests; 13 release browser checks covering phone/desktop offline gameplay, saved progress, update/repair isolation, all Pages-path assets, full visual download, offline fetch of every packed file, representative image decoding and repeat download. Deck and story validators reported zero errors (existing artwork warnings remain documented in ART_ASSET_AUDIT.md).
+
+## Preferred deck and atlas repair
+
+The latest deck selection is now shared by Story Mode and Quick Play, including restored hands. Picking another game restores its board, without restoring an older deck. Story table settings expose deck/back choices while keeping the chapter board and game rules. Versus previews use the same selected deck; ghost rematches do not replace it.
+
+Dante V2's shipped and source PNGs contained damaged IDAT data. Recovered its matching original illustration, recorded its uneven source column/row boundaries in `scripts/art/normalize-dante-v2.py`, and rebuilt all 52 cells at 139×192. Compressed runtime WebP faces/backs/previews for Dante V2, Cannabis Nugs and YummyHole now join the offline visual pack. PNG fallbacks remain supported. Existing illustration-level pip/index imperfections are distinct from the repaired image decoding and sprite cuts.
+
+Regression checks cover changing decks during Quick Play and a story challenge, switching modes/games with older per-game memory present, and reloading the saved preference. A browser audit fully decodes every ready general deck sheet, including the three PNG fallbacks, and checks 13×4 cell dimensions. These checks are part of the release gate.

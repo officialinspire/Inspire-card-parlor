@@ -11,3 +11,7 @@ New Dante’s World monster artwork inspired by the supplied red-haired turquois
 - Back is visually balanced; exact pixel rotational symmetry is not guaranteed.
 
 Source artwork only; this does not register or activate a runtime deck. AI-generated using the built-in image generator from the user’s reference. Final prompts requested a complete 13-by-4 ivory-faced monster atlas in red, turquoise, yellow and pink, and a separate black-field two-headed monster card back.
+
+## Runtime repair
+
+The original normalized PNG contained damaged IDAT chunks. Recovered matching artwork from `Turquoise monster 52-card sprite atlas.png`, retained as `source-faces.webp`. `scripts/art/normalize-dante-v2.py` records the uneven source ink-rule boundaries, cuts all 52 cards individually, and exports 139×192 cells to the source/runtime PNGs. It also generates runtime WebP copies for Dante V2, Cannabis Nugs and YummyHole so these decks participate in offline visual downloads. Existing illustration/index inconsistencies remain an artwork limitation, separate from card logic and slicing.

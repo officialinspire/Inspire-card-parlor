@@ -47,13 +47,13 @@ export function extractedAssets(basePath: string): DeckAssets {
   };
 }
 
-/** Uploaded, already-normalized PNG atlas: no missing-format probes. */
+/** Uploaded normalized atlas, with compressed WebP copies for online/offline use. */
 export function uploadedPngAssets(basePath: string): DeckAssets {
   return {
     basePath,
     status: 'ready',
-    faces: { type: 'atlas', image: { path: 'faces', formats: ['png'] }, grid: { columns: 13, rows: 4 } },
-    back: { path: 'back', formats: ['png'] },
-    preview: { path: 'preview', formats: ['png'] },
+    faces: { type: 'atlas', image: { path: 'faces', formats: ['webp', 'png'] }, grid: { columns: 13, rows: 4 } },
+    back: { path: 'back', formats: ['webp', 'png'] },
+    preview: { path: 'preview', formats: ['webp', 'png'] },
   };
 }

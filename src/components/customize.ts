@@ -49,7 +49,7 @@ function picker<T extends { id: string }>(
  * Deck, card back and gameboard pickers (owned items only) plus table display
  * options. Selections are independent of each other and purely cosmetic.
  */
-export function tableCustomizer(store: Store): HTMLElement {
+export function tableCustomizer(store: Store, opts: { boards?: boolean } = {}): HTMLElement {
   const p = () => store.state.profile;
   const decks = deckThemes.list().filter((d) => isDeckUnlocked(d.id, p()));
   const backs = [{ id: '', deckId: '', label: 'Match deck' }, ...deckThemes.availableBacks()];
@@ -84,15 +84,17 @@ export function tableCustomizer(store: Store): HTMLElement {
       (b) => b.label,
       (b) => store.dispatch({ type: 'SELECT_CARD_BACK', back: b.id || null }),
     ),
-    picker(
-      'Gameboard',
-      'board',
-      boards,
-      () => store.state.selection.boardId,
-      (b) => boardSwatch(b, { className: 'pick-board' }),
-      (b) => b.name,
-      (b) => store.dispatch({ type: 'SELECT_BOARD', boardId: b.id }),
-    ),
+    opts.boards === false
+      ? null
+      : picker(
+          'Gameboard',
+          'board',
+          boards,
+          () => store.state.selection.boardId,
+          (b) => boardSwatch(b, { className: 'pick-board' }),
+          (b) => b.name,
+          (b) => store.dispatch({ type: 'SELECT_BOARD', boardId: b.id }),
+        ),
     live(
       toggle(
         'Ambient animation',

@@ -87,7 +87,14 @@ export function reduce(state: RootState, action: Action): RootState {
       return { ...state, boot: { progress: 1, label: 'Ready', ready: true } };
     case 'SELECT_GAME': {
       const remembered = state.selection.byGame[action.gameId];
-      return { ...state, selection: { ...state.selection, ...remembered, gameId: action.gameId } };
+      return {
+        ...state,
+        selection: {
+          ...state.selection,
+          ...(remembered ? { boardId: remembered.boardId } : {}),
+          gameId: action.gameId,
+        },
+      };
     }
     case 'SELECT_DECK':
       return { ...state, selection: { ...state.selection, deckId: action.deckId } };
