@@ -76,7 +76,7 @@ const fromCache = async (cacheName, req) => {
   const cache = await caches.open(cacheName);
   const cached = await cache.match(req, { ignoreVary: true });
   if (cached) return cached;
-  const res = await fetch(req).catch(() => Response.error());
+  const res = await fetch(req, { cache: 'reload' }).catch(() => Response.error());
   if (res.ok || res.type === 'opaque') await cache.put(req, res.clone()).catch(() => undefined);
   return res;
 };
@@ -116,7 +116,7 @@ async function cacheVisuals(report, onlyIfMissing = false) {
               }
               try {
                 if (!(await cache.match(url.href))) {
-                  const res = await fetch(url.href, { signal: AbortSignal.timeout(15000) });
+                  const res = await fetch(url.href, { cache: 'reload', signal: AbortSignal.timeout(15000) });
                   if (!res.ok) throw new Error('Asset unavailable');
                   await cache.put(url.href, res);
                 }

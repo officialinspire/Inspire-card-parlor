@@ -46,13 +46,12 @@ function picker<T extends { id: string }>(
 }
 
 /**
- * Deck, card back and gameboard pickers (owned items only) plus table display
- * options. Selections are independent of each other and purely cosmetic.
+ * Deck and gameboard pickers (owned items only) plus table display options.
+ * Each deck always supplies its own matching card back.
  */
 export function tableCustomizer(store: Store, opts: { boards?: boolean } = {}): HTMLElement {
   const p = () => store.state.profile;
   const decks = deckThemes.list().filter((d) => isDeckUnlocked(d.id, p()));
-  const backs = [{ id: '', deckId: '', label: 'Match deck' }, ...deckThemes.availableBacks()];
   const boards = visibleBoards().filter((b) => isBoardUnlocked(b.id, p()));
 
   return h(
@@ -67,23 +66,7 @@ export function tableCustomizer(store: Store, opts: { boards?: boolean } = {}): 
       (d) => d.name,
       (d) => store.dispatch({ type: 'SELECT_DECK', deckId: d.id }),
     ),
-    picker(
-      'Card back',
-      'back',
-      backs,
-      () => store.state.selection.cardBack ?? '',
-      (b) =>
-        b.id
-          ? cardRenderer.renderBack(deckThemes.resolve(b.deckId, (b as { variantId?: string }).variantId), {
-              className: 'pick-card',
-              cover: !deckThemes.canShowArt(b.deckId, 'ordinary'),
-            })
-          : cardRenderer.renderBack(deckThemes.resolve(store.state.selection.deckId), {
-              className: 'pick-card pick-match',
-            }),
-      (b) => b.label,
-      (b) => store.dispatch({ type: 'SELECT_CARD_BACK', back: b.id || null }),
-    ),
+    h('p', { class: 'ask-hint' }, 'Card backs automatically match the selected deck.'),
     opts.boards === false
       ? null
       : picker(

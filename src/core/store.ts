@@ -97,7 +97,7 @@ export function reduce(state: RootState, action: Action): RootState {
       };
     }
     case 'SELECT_DECK':
-      return { ...state, selection: { ...state.selection, deckId: action.deckId } };
+      return { ...state, selection: { ...state.selection, deckId: action.deckId, cardBack: null } };
     case 'SELECT_BOARD':
       return { ...state, selection: { ...state.selection, boardId: action.boardId } };
     case 'SELECT_STORY_CHAPTER':
@@ -145,7 +145,7 @@ export function reduce(state: RootState, action: Action): RootState {
       return { ...state, selection: { ...sel, boardId: ok(sel.boardId) ? sel.boardId : action.fallback, byGame } };
     }
     case 'SELECT_CARD_BACK':
-      return { ...state, selection: { ...state.selection, cardBack: action.back } };
+      return { ...state, selection: { ...state.selection, cardBack: null } };
     case 'TOGGLE_FAVORITE_DECK': {
       const favs = state.profile.favoriteDecks;
       const favoriteDecks = favs.includes(action.deckId)
@@ -191,7 +191,7 @@ export function reduce(state: RootState, action: Action): RootState {
           ...action.selection,
           byGame: { ...state.selection.byGame, ...action.selection?.byGame },
           artVariants: { ...state.selection.artVariants, ...action.selection?.artVariants },
-          cardBack: action.selection?.cardBack !== undefined ? action.selection.cardBack : state.selection.cardBack,
+          cardBack: null, // Migrate old independent backs to the selected deck.
           storyChapterId: null,
           storyLevelId: null,
         },

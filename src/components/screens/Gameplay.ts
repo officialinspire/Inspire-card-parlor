@@ -252,8 +252,8 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
           'p',
           { class: 'ask-hint' },
           story
-            ? 'Your preferred deck and card back apply here too. The story keeps its own table.'
-            : 'Deck, card back and table change right away; your game is untouched.',
+            ? 'Your preferred deck and its matching back apply here too. The story keeps its own table.'
+            : 'Deck and table change right away; your game is untouched.',
         ),
       ),
       dismissValue: 'close',

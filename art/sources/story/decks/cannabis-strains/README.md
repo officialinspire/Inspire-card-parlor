@@ -1,14 +1,7 @@
-# Cannabis Strains deck artwork
+# Cannabis Nugs artwork
 
-Botanical cannabis nug illustrations with ivory faces, emerald and antique gold ornament, and a matching custom card back.
+Botanical nug illustrations with ivory faces, emerald and gold ornament, and a matching custom back. Runtime deck: `cannabis_nugs`.
 
-- `faces.png`: 1807 × 768 pixels; intended 13-column × 4-row layout.
-- `back.png`: 139 × 192 pixels.
-- Target cell size: 139 × 192 pixels, matching BlackJak Standard.
-- Intended rows: spades, hearts, diamonds, clubs; columns A, 2–10, J, Q, K.
-- Generated artwork was resized to the target export dimensions; exact illustrated borders and corner indices still need a per-card slicing review before activation.
-- Botanical appearances are artistic strain-inspired variations, not verified strain identifications. No strain names are embedded in the artwork.
+The original preparation resized an unevenly spaced sheet to 1807×768. Treating that as 13 equal columns split many illustrations between adjacent cards. `source-faces.webp` preserves that uncropped sheet. `scripts/art/normalize-cannabis.py` cuts the complete illustrated cards at the recorded source borders, then exports 52 uniform 139×192 cells to the source and runtime PNGs and the runtime WebP. `layout.json` records the source coordinates. Rows are spades, hearts, diamonds and clubs; columns are A, 2–10, J, Q, K. Back artwork is unchanged.
 
-This commit stores prepared source artwork only. Runtime deck registration and activation are separate work. Review all 52 card identities, frame boundaries and small-size readability before integrating. The back is visually mirrored; exact pixel rotational symmetry is not guaranteed.
-
-AI-generated original artwork for INSPIRE CARD PARLOR. Layout metadata describes intended slicing, not verification of illustration accuracy.
+The browser pixel regression rejects full-height divider lines inside exported cells (48 failures in the previous sheet, zero in the repair), in addition to verifying decoding and dimensions. Botanical appearances are artistic variations, not verified strain identifications. Illustration-level pip/index imperfections are separate from slicing.

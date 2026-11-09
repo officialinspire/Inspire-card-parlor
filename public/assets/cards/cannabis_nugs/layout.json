@@ -22,5 +22,11 @@
     "height": 192
   },
   "dimensionReference": "public/assets/cards/classic/atlas.json",
-  "status": "artwork-review-pending"
+  "status": "card-cuts-verified",
+  "normalization": {
+    "source": "source-faces.webp",
+    "sourceColumns": [1, 168, 324, 476, 626, 772, 907, 1037, 1165, 1285, 1402, 1540, 1675, 1806],
+    "sourceRows": [1, 192, 383, 575, 767],
+    "method": "individual whole-card border cuts, resized to 139x192 cells"
+  }
 }
