@@ -95,3 +95,40 @@ describe('release image cache', () => {
     expect(fetchImage).not.toHaveBeenCalled();
   });
 });
+
+it('fetches a fresh artwork copy when filling a new release cache', async () => {
+  const handlers: Record<string, (event: any) => void> = {};
+  const response = new Response('new artwork');
+  const put = vi.fn(async () => undefined);
+  const fetchImage = vi.fn(async () => response);
+  runInNewContext(readFileSync('public/sw.js', 'utf8'), {
+    self: {
+      location: { origin: 'https://example.com' },
+      addEventListener: (name: string, fn: (event: any) => void) => (handlers[name] = fn),
+    },
+    caches: { open: async () => ({ match: async () => undefined, put }) },
+    fetch: fetchImage,
+    URL,
+    Response,
+  });
+  const request = {
+    url: 'https://example.com/assets/cards/cannabis_nugs/faces.webp',
+    method: 'GET',
+    headers: new Headers(),
+  };
+  let result!: Promise<Response>;
+  let lifetime!: Promise<unknown>;
+  handlers.fetch!({
+    request,
+    respondWith: (p: Promise<Response>) => {
+      result = p;
+    },
+    waitUntil: (p: Promise<unknown>) => {
+      lifetime = p;
+    },
+  });
+  expect(await result).toBe(response);
+  await lifetime;
+  expect(fetchImage).toHaveBeenCalledWith(request, { cache: 'reload' });
+  expect(put).toHaveBeenCalledOnce();
+});
