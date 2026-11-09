@@ -208,15 +208,16 @@ describe('gameboards', () => {
 });
 
 describe('card backs', () => {
-  it('pairs any deck with a back from another owned deck', () => {
+  it('ignores a legacy independent back and keeps the selected deck matched', () => {
     const m = themes({ back: 'jak_gold' });
     const t = m.resolve('classic');
     expect(t.deck.id).toBe('classic');
-    expect(t.backTheme?.deck.id).toBe('jak_gold');
-    expect(t.key).toContain('back:jak_gold');
-    // Rendering uses the chosen back, faces stay with the deck.
+    expect(t.backTheme).toBeUndefined();
+    expect(t.key).toBe('classic@standard');
+    // Both sides use the selected deck, even if an old theme carries an override.
     const r = new CardRenderer(new AssetManager({ loadImage: async () => ({ width: 1, height: 1 }) }));
-    expect(r.renderBack(t).dataset.theme).toBe(t.backTheme!.key);
+    expect(r.renderBack(t).dataset.theme).toBe(t.key);
+    expect(r.renderBack({ ...t, backTheme: m.resolve('jak_gold') }).dataset.theme).toBe(t.key);
     expect(r.renderFace(t, 'AS').dataset.theme).toBe(t.key);
   });
 

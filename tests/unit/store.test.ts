@@ -157,3 +157,14 @@ describe('select()', () => {
     expect(seen).toEqual([10]);
   });
 });
+
+describe('matched deck migration', () => {
+  it('discards a legacy back on hydration and after explicit back actions', () => {
+    const s = boot();
+    s.dispatch({ type: 'HYDRATE', selection: { deckId: 'inspire', cardBack: 'jak_gold' } });
+    expect(s.state.selection).toMatchObject({ deckId: 'inspire', cardBack: null });
+    s.dispatch({ type: 'SELECT_CARD_BACK', back: 'classic' });
+    s.dispatch({ type: 'SELECT_DECK', deckId: 'cannabis_nugs' });
+    expect(s.state.selection).toMatchObject({ deckId: 'cannabis_nugs', cardBack: null });
+  });
+});

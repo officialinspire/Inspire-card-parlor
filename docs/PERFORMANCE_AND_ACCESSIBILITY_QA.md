@@ -350,3 +350,11 @@ The latest deck selection is now shared by Story Mode and Quick Play, including 
 Dante V2's shipped and source PNGs contained damaged IDAT data. Recovered its matching original illustration, recorded its uneven source column/row boundaries in `scripts/art/normalize-dante-v2.py`, and rebuilt all 52 cells at 139×192. Compressed runtime WebP faces/backs/previews for Dante V2, Cannabis Nugs and YummyHole now join the offline visual pack. PNG fallbacks remain supported. Existing illustration-level pip/index imperfections are distinct from the repaired image decoding and sprite cuts.
 
 Regression checks cover changing decks during Quick Play and a story challenge, switching modes/games with older per-game memory present, and reloading the saved preference. A browser audit fully decodes every ready general deck sheet, including the three PNG fallbacks, and checks 13×4 cell dimensions. These checks are part of the release gate.
+
+## Matched backs and whole Cannabis cards
+
+Independent saved card-back overrides are now ignored and migrated to null; both faces and backs resolve from the selected deck/variant. The renderer also rejects an old cross-deck back theme. Table settings explain that backs match automatically; picking an owned design in Collection → Card Backs selects that complete deck/variant. Existing hands keep their game state when the deck changes.
+
+The Cannabis Nugs image had been resized as a complete sheet despite uneven illustrated column widths. `scripts/art/normalize-cannabis.py` now preserves the uncropped sheet and records every source border, then exports each whole card to a uniform 139×192 cell. The new pixel regression checks both PNG and WebP for interior full-height sheet dividers: it flags 48 cells in the old sheet and zero in the repaired sheet. All 52 repaired cuts were checked, including the rightmost court cards.
+
+Release tests switch all 13 general decks in both Quick Play and Story War, verify every visible back's deck key AND actual image URL, cover a switch during a round animation, and seed a legacy mismatched back. Unit tests cover saved-selection migration and rejecting a stale back theme. These checks supplement full sheet decoding, which alone cannot detect incorrect slicing.

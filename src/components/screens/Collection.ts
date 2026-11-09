@@ -317,10 +317,10 @@ export const CollectionScreen: ScreenFactory = ({ store }) => {
   };
 
   const backsPanel = () => {
-    const backs = [
-      { id: '', deckId: store.state.selection.deckId, label: 'Match deck' },
-      ...deckThemes.availableBacks(),
-    ];
+    const backs = deckThemes.availableBacks();
+    const selectedBack = store.state.selection.artVariants[store.state.selection.deckId]
+      ? `${store.state.selection.deckId}@${store.state.selection.artVariants[store.state.selection.deckId]}`
+      : store.state.selection.deckId;
     const panel = paginatorPanel({
       items: backs,
       minTileWidth: 110,
@@ -329,10 +329,10 @@ export const CollectionScreen: ScreenFactory = ({ store }) => {
       label: 'Card backs',
       initialIndex: Math.max(
         0,
-        backs.findIndex((b) => b.id === (store.state.selection.cardBack ?? '')),
+        backs.findIndex((b) => b.id === selectedBack),
       ),
       render: (b) => {
-        const selected = (store.state.selection.cardBack ?? '') === b.id;
+        const selected = selectedBack === b.id;
         const theme = b.id
           ? deckThemes.resolve(b.deckId, (b as { variantId?: string }).variantId)
           : deckThemes.resolve(store.state.selection.deckId);
@@ -351,8 +351,13 @@ export const CollectionScreen: ScreenFactory = ({ store }) => {
             'aria-pressed': String(selected),
             onclick: () => {
               audio.play('tap');
-              store.dispatch({ type: 'SELECT_CARD_BACK', back: b.id || null });
-              notify(b.id ? `Card back: ${b.label}.` : 'Card backs now match your deck.', {
+              store.dispatch({
+                type: 'SELECT_ART_VARIANT',
+                deckId: b.deckId,
+                variantId: (b as { variantId?: string }).variantId ?? null,
+              });
+              store.dispatch({ type: 'SELECT_DECK', deckId: b.deckId });
+              notify(`Deck selected: ${b.label}. Faces and backs match.`, {
                 kind: 'success',
                 sound: false,
               });

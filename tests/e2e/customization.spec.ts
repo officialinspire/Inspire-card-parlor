@@ -144,7 +144,7 @@ test('locked deck art stays hidden until owned', async ({ page }) => {
   await expect(page.locator(`${CURRENT} [data-gallery-deck] option[value="freemasonry"]`)).toHaveCount(0);
 });
 
-test('card back is chosen independently of the deck', async ({ page }) => {
+test('choosing a card back selects its matching deck', async ({ page }) => {
   await seed(page, { profile: { level: 5 } });
   await enterParlor(page);
   await clickNav(page, 'COLLECTION');
@@ -153,12 +153,12 @@ test('card back is chosen independently of the deck', async ({ page }) => {
   await expect(page.locator(`${CURRENT} [data-back="jak_gold"]`)).toHaveAttribute('aria-pressed', 'true');
   await clickNav(page, 'home', 'MAIN_MENU');
   await openKlondike(page);
-  // Faces from the BlackJak Standard (classic) deck, backs from Jak Gold.
-  await expect(page.locator(`${CURRENT} .sol-card.card-face`).first()).toHaveAttribute('data-theme', /^classic@/);
+  // Choosing the back selects the complete Jak Gold deck.
+  await expect(page.locator(`${CURRENT} .sol-card.card-face`).first()).toHaveAttribute('data-theme', /^jak_gold@/);
   await expect(page.locator(`${CURRENT} .sol-card.card-back`).first()).toHaveAttribute('data-theme', /^jak_gold@/);
 });
 
-test('changing board, deck or back mid-game keeps the game exactly as it was', async ({ page }) => {
+test('changing board or matched deck mid-game keeps the game exactly as it was', async ({ page }) => {
   await seed(page, { profile: { level: 6 }, settings: { reducedMotion: false } });
   await page.addInitScript(() => ((window as unknown as { __ICP_TEST_SEED__: number }).__ICP_TEST_SEED__ = 7));
   await enterParlor(page);
@@ -180,11 +180,10 @@ test('changing board, deck or back mid-game keeps the game exactly as it was', a
   await expect(table).toHaveAttribute('data-board', 'woodland_clearing');
   await expect(page.locator(`${CURRENT} [data-ambient="leaves"]`)).toBeAttached();
   await page.locator('[data-pick-deck="inspire"]').click();
-  await page.locator('[data-pick-back="jak_gold"]').click();
   await page.keyboard.press('Escape');
 
   await expect(page.locator(`${CURRENT} .sol-card.card-face`).first()).toHaveAttribute('data-theme', /^inspire@/);
-  await expect(page.locator(`${CURRENT} .sol-card.card-back`).first()).toHaveAttribute('data-theme', /^jak_gold@/);
+  await expect(page.locator(`${CURRENT} .sol-card.card-back`).first()).toHaveAttribute('data-theme', /^inspire@/);
   expect(await moves(page)).toBe(1);
   expect(await layout()).toBe(before);
   await expect(page.locator(`${CURRENT} .screen-subtitle`)).toHaveText('BlackJak INSPIRE · Woodland Clearing');
