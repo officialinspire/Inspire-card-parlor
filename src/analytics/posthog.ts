@@ -1,3 +1,4 @@
+import { createAttribution } from './attribution';
 import { APP } from '@/core/config';
 
 /**
@@ -16,6 +17,8 @@ import { APP } from '@/core/config';
  * Reliability: events are batched; offline or failed batches wait in a small
  * local queue and are retried later. Analytics never throws into the game.
  */
+const attributionProperties = createAttribution();
+
 export const SUITE = 'inspire_card_parlor';
 
 export type ProductEvent =
@@ -75,15 +78,19 @@ const safe = <T>(fn: () => T, fallback: T): T => {
   }
 };
 
+let fallbackId: string | undefined;
 function anonymousId(): string {
-  return safe(() => {
-    let id = localStorage.getItem(ID_KEY);
-    if (!id) {
-      id = crypto.randomUUID?.() ?? `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
-      localStorage.setItem(ID_KEY, id);
-    }
-    return id;
-  }, 'anonymous');
+  return safe(
+    () => {
+      let id = localStorage.getItem(ID_KEY);
+      if (!id) {
+        id = crypto.randomUUID?.() ?? `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+        localStorage.setItem(ID_KEY, id);
+      }
+      return id;
+    },
+    (fallbackId ??= `ephemeral-${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`),
+  );
 }
 
 /** Where the visit came from: an explicit ?source= / utm_source, the installed app, or direct. */
@@ -116,7 +123,7 @@ export const analyticsConfigured = () => KEY !== '';
 
 /** Turns sending on or off (the player's setting). Turning it off also drops anything queued. */
 export function setAnalyticsEnabled(on: boolean): void {
-  enabled = on && !doNotTrack();
+  enabled = on && !doNotTrack() && !(navigator as Navigator & { globalPrivacyControl?: boolean }).globalPrivacyControl;
   if (!enabled) {
     queue = [];
     safe(() => localStorage.removeItem(QUEUE_KEY), undefined);
@@ -137,6 +144,7 @@ export function capture(event: ProductEvent, props: EventProps = {}): void {
       $process_person_profile: false,
       $geoip_disable: true,
     };
+    Object.assign(properties, attributionProperties(), { game_id: 'Inspire-card-parlor' });
     for (const [k, v] of Object.entries(props)) if (v !== undefined) properties[k] = v;
     const item = { event, properties, timestamp: new Date().toISOString() };
     recentEvents.push(item);
