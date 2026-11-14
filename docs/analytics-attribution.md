@@ -29,4 +29,4 @@ The saved PostHog report is https://us.posthog.com/project/651810/insights/15Cp0
 
 `node scripts/verify-storefront-attribution.mjs` verifies consent gating, modal Continue, new IDs per click and campaign propagation without sending production events. The shared helper tests are in GRIDLOCK `tests/unit/attribution.test.mjs`. Existing analytics tests verify deduplication, sanitized fields and network failures. Emoji Elements emits a start only after a valid battle is prepared; GRIDLOCK emits it after match creation; Shells distinguishes `game_resumed` from a new match.
 
-Shopify draft: INSPIRE – Game Attribution – Nov 14 (188570206426). Publish this draft after review to enable the website side.
+Shopify live theme: INSPIRE – Game Attribution – Nov 14 (188570206426), verified published on November 14, 2026.
