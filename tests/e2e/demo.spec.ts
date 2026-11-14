@@ -101,10 +101,10 @@ async function playChallenge(page: Page, chapter: keyof typeof CHAPTERS, index: 
   await expect(vs.locator(`[data-game="${level.game}"]`)).toBeVisible();
   if ('opponent' in level) await expect(vs.locator(`[data-opponent="${level.opponent}"] img`)).toBeVisible();
   await action(page, 'play').click();
-  // The table: the chapter's board and deck.
+  // The table keeps the chapter board and the player's primary deck.
   await expectScreen(page, 'GAMEPLAY');
   await expect(page.locator(`${CURRENT}.table`)).toHaveAttribute('data-board', ch.board);
-  await expect(page.locator(`${CURRENT} .card[data-theme^="${ch.deck}@"]`).first()).toBeAttached();
+  await expect(page.locator(`${CURRENT} .card[data-theme^="classic@"]`).first()).toBeAttached();
   await finishAtTable(page, level);
   // Back in the story: the closing scene (if any), then the results.
   const outro = page.locator('.scene-outro');
@@ -139,7 +139,7 @@ async function playChapter(page: Page, chapter: keyof typeof CHAPTERS) {
 }
 
 test('the opening: Chapter 1 → Chapter 2 → Chapter 3 opens', async ({ page }) => {
-  await seed(page, { settings: { warSpeed: 'instant', musicPaused: true } });
+  await seed(page, { selection: { deckId: 'classic' }, settings: { warSpeed: 'instant', musicPaused: true } });
   await enterParlor(page);
   // Main menu → Story Mode: only the antique shop is open.
   await clickNav(page, 'STORY_MODE');

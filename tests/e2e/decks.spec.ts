@@ -44,7 +44,7 @@ test('deck details show uploaded YummyHole artwork and attribution', async ({ pa
   await expect(pending).not.toContainText('Art coming soon');
   await expect(pending.locator('[data-preview="image"] img')).toHaveAttribute(
     'src',
-    /yummyhole_standard\/preview\.png$/,
+    /yummyhole_standard\/preview\.webp$/,
   );
   await page.keyboard.press('Escape');
   await expect(pending).toBeHidden();
