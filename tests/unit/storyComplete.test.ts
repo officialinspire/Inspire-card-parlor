@@ -250,8 +250,6 @@ describe('characters', () => {
           .filter((x) => x.chapter === c.index && x.line.pose && getCharacter(x.line.who)?.portrait?.sheet)
           .map((x) => `${x.line.who}/${x.line.pose}`),
       );
-      // Jak has no sheet yet (his avatar stands in), so his chapter's other speakers carry it.
-      if (c.id === 'th-4') continue;
       expect(poses.size, c.id).toBeGreaterThanOrEqual(4);
     }
   });

@@ -97,6 +97,13 @@ function themes(
   });
 }
 
+registerDeck({
+  ...getDeck('yummyhole_standard'),
+  id: 'pending_fixture',
+  artist: { name: null },
+  assets: { ...getDeck('yummyhole_standard').assets, status: 'pending' },
+});
+
 describe('gameboards', () => {
   const UPLOADED_BOARDS = [
     'picnic_table',
@@ -201,15 +208,16 @@ describe('gameboards', () => {
 });
 
 describe('card backs', () => {
-  it('pairs any deck with a back from another owned deck', () => {
+  it('ignores a legacy independent back and keeps the selected deck matched', () => {
     const m = themes({ back: 'jak_gold' });
     const t = m.resolve('classic');
     expect(t.deck.id).toBe('classic');
-    expect(t.backTheme?.deck.id).toBe('jak_gold');
-    expect(t.key).toContain('back:jak_gold');
-    // Rendering uses the chosen back, faces stay with the deck.
+    expect(t.backTheme).toBeUndefined();
+    expect(t.key).toBe('classic@standard');
+    // Both sides use the selected deck, even if an old theme carries an override.
     const r = new CardRenderer(new AssetManager({ loadImage: async () => ({ width: 1, height: 1 }) }));
-    expect(r.renderBack(t).dataset.theme).toBe(t.backTheme!.key);
+    expect(r.renderBack(t).dataset.theme).toBe(t.key);
+    expect(r.renderBack({ ...t, backTheme: m.resolve('jak_gold') }).dataset.theme).toBe(t.key);
     expect(r.renderFace(t, 'AS').dataset.theme).toBe(t.key);
   });
 
@@ -304,6 +312,8 @@ describe('favorites and completion', () => {
     const everything = {
       ...createDefaultProfile(),
       level: 99,
+      unlockedDecks: allDecks().map((d) => d.id),
+      unlockedBoards: allBoards().map((b) => b.id),
       story: { ...createDefaultProfile().story, completed: ALL_LEVELS.map((l) => l.id) },
       unlockedAchievements: ACHIEVEMENTS.map((a) => a.id),
       ownedVariants: ['collectible_fixture@gilded', 'eastern_woodlands@turtle'],
@@ -334,11 +344,11 @@ describe('uploaded artwork manifest', () => {
   });
 
   it('rejects invalid entries without changing anything', () => {
-    const before = JSON.stringify(getDeck('yummyhole_standard'));
+    const before = JSON.stringify(getDeck('pending_fixture'));
     const result = applyArtworkManifest({
       version: 1,
       decks: {
-        yummyhole_standard: { status: 'ready' }, // ready without an artist credit
+        pending_fixture: { status: 'ready' }, // ready without an artist credit
         nope: { status: 'ready' },
         freemasonry: { faces: { type: 'atlas', image: { path: 'faces' }, grid: { columns: 12, rows: 4 } } }, // missing Kings
       },
@@ -349,10 +359,10 @@ describe('uploaded artwork manifest', () => {
       'freemasonry',
       'nope',
       'nope',
+      'pending_fixture',
       'picnic_table',
-      'yummyhole_standard',
     ]);
-    expect(JSON.stringify(getDeck('yummyhole_standard'))).toBe(before);
+    expect(JSON.stringify(getDeck('pending_fixture'))).toBe(before);
     expect(applyArtworkManifest({ version: 2 }).rejected[0]!.id).toBe('manifest');
   });
 

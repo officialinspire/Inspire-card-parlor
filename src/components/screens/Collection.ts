@@ -1,3 +1,4 @@
+import { openShop } from '../shop';
 import { h } from '@/utils/dom';
 import { assetManager, cardRenderer, deckThemes, getDeck, visibleBoards } from '@/decks';
 import type { ArtVariant, DeckDefinition } from '@/decks/types';
@@ -89,28 +90,26 @@ function favoriteButton(store: Store, deckId: string): HTMLButtonElement {
 
 export const CollectionScreen: ScreenFactory = ({ store }) => {
   const profile = () => store.state.profile;
-  const decks = deckThemes.list();
+  let decks = deckThemes.list().filter((d) => isDeckUnlocked(d.id, profile()));
   let filter: DeckFilter = 'all';
-  let galleryDeck = deckThemes.safeDeckId(store.state.selection.deckId);
+  let galleryDeck = decks.some((d) => d.id === store.state.selection.deckId) ? store.state.selection.deckId : 'classic';
 
-  const progress = collectionProgress(profile(), decks, visibleBoards());
-  const summary = h(
-    'div',
-    { class: 'summary-row', 'data-completion': String(progress.percent) },
-    h('span', null, `Collection ${progress.percent}% complete`),
-    progressBar(progress.percent / 100, 'Collection completion'),
-    h(
-      'small',
-      { class: 'summary-detail' },
-      [
-        `${progress.decks.owned}/${progress.decks.total} decks`,
-        progress.artwork.total ? `${progress.artwork.owned}/${progress.artwork.total} artwork` : '',
-        `${progress.boards.owned}/${progress.boards.total} boards`,
-      ]
-        .filter(Boolean)
-        .join(' · '),
-    ),
-  );
+  const summary = h('div', { class: 'summary-row' });
+  const refreshSummary = () => {
+    const progress = collectionProgress(profile(), deckThemes.list(), visibleBoards());
+    summary.dataset.completion = String(progress.percent);
+    summary.replaceChildren(
+      h('span', null, `Collection ${progress.percent}% complete`),
+      progressBar(progress.percent / 100, 'Collection completion'),
+      h(
+        'small',
+        { class: 'summary-detail' },
+        `${progress.decks.owned}/${progress.decks.total} decks · ${progress.artwork.owned}/${progress.artwork.total} artwork · ${progress.boards.owned}/${progress.boards.total} boards`,
+      ),
+    );
+  };
+  refreshSummary();
+  const unsubscribe = store.select((s) => s.profile, refreshSummary);
 
   // ----- Deck detail -----
   function variantRow(deck: DeckDefinition, v: ArtVariant, refresh: () => void): HTMLElement {
@@ -318,18 +317,22 @@ export const CollectionScreen: ScreenFactory = ({ store }) => {
   };
 
   const backsPanel = () => {
-    const backs = [
-      { id: '', deckId: store.state.selection.deckId, label: 'Match deck' },
-      ...deckThemes.availableBacks(),
-    ];
+    const backs = deckThemes.availableBacks();
+    const selectedBack = store.state.selection.artVariants[store.state.selection.deckId]
+      ? `${store.state.selection.deckId}@${store.state.selection.artVariants[store.state.selection.deckId]}`
+      : store.state.selection.deckId;
     const panel = paginatorPanel({
       items: backs,
       minTileWidth: 110,
       minTileHeight: 170,
       maxTileHeight: 220,
       label: 'Card backs',
+      initialIndex: Math.max(
+        0,
+        backs.findIndex((b) => b.id === selectedBack),
+      ),
       render: (b) => {
-        const selected = (store.state.selection.cardBack ?? '') === b.id;
+        const selected = selectedBack === b.id;
         const theme = b.id
           ? deckThemes.resolve(b.deckId, (b as { variantId?: string }).variantId)
           : deckThemes.resolve(store.state.selection.deckId);
@@ -348,8 +351,13 @@ export const CollectionScreen: ScreenFactory = ({ store }) => {
             'aria-pressed': String(selected),
             onclick: () => {
               audio.play('tap');
-              store.dispatch({ type: 'SELECT_CARD_BACK', back: b.id || null });
-              notify(b.id ? `Card back: ${b.label}.` : 'Card backs now match your deck.', {
+              store.dispatch({
+                type: 'SELECT_ART_VARIANT',
+                deckId: b.deckId,
+                variantId: (b as { variantId?: string }).variantId ?? null,
+              });
+              store.dispatch({ type: 'SELECT_DECK', deckId: b.deckId });
+              notify(`Deck selected: ${b.label}. Faces and backs match.`, {
                 kind: 'success',
                 sound: false,
               });
@@ -474,7 +482,21 @@ export const CollectionScreen: ScreenFactory = ({ store }) => {
   ]);
 
   return {
-    el: screenFrame({ title: 'Deck Collection', body: h('div', { class: 'stack' }, summary, t.el) }),
-    unmount: t.destroy,
+    el: screenFrame({
+      title: 'Deck Collection',
+      body: h('div', { class: 'stack' }, summary, t.el),
+      footer: button(
+        'Parlor Shop',
+        () =>
+          void openShop(store, () => {
+            decks = deckThemes.list().filter((d) => isDeckUnlocked(d.id, profile()));
+            t.select('decks');
+          }),
+      ),
+    }),
+    unmount: () => {
+      unsubscribe();
+      t.destroy();
+    },
   };
 };

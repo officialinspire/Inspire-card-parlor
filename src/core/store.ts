@@ -1,9 +1,12 @@
+import { purchaseCollectible } from '@/progression/shop';
 import { AppState, canTransition } from './states';
 import type { GameId, ModalRef, Notification, Profile, RootState, Selection, Settings } from './types';
 import { createDefaultProfile, createDefaultSelection, DEFAULT_SETTINGS } from './defaults';
 import { applyJournal, mergeJournals, type JournalUpdate } from '@/achievements/journal';
 
 export type Action =
+  | { type: 'BUY_COLLECTIBLE'; kind: 'deck' | 'board'; id: string }
+  | { type: 'RESTORE_BACKUP'; settings: Settings; profile: Profile; selection: Selection }
   | { type: 'NAVIGATE'; to: AppState; replace?: boolean }
   | { type: 'BACK' }
   | { type: 'BOOT_PROGRESS'; progress: number; label: string }
@@ -84,10 +87,17 @@ export function reduce(state: RootState, action: Action): RootState {
       return { ...state, boot: { progress: 1, label: 'Ready', ready: true } };
     case 'SELECT_GAME': {
       const remembered = state.selection.byGame[action.gameId];
-      return { ...state, selection: { ...state.selection, ...remembered, gameId: action.gameId } };
+      return {
+        ...state,
+        selection: {
+          ...state.selection,
+          ...(remembered ? { boardId: remembered.boardId } : {}),
+          gameId: action.gameId,
+        },
+      };
     }
     case 'SELECT_DECK':
-      return { ...state, selection: { ...state.selection, deckId: action.deckId } };
+      return { ...state, selection: { ...state.selection, deckId: action.deckId, cardBack: null } };
     case 'SELECT_BOARD':
       return { ...state, selection: { ...state.selection, boardId: action.boardId } };
     case 'SELECT_STORY_CHAPTER':
@@ -135,13 +145,17 @@ export function reduce(state: RootState, action: Action): RootState {
       return { ...state, selection: { ...sel, boardId: ok(sel.boardId) ? sel.boardId : action.fallback, byGame } };
     }
     case 'SELECT_CARD_BACK':
-      return { ...state, selection: { ...state.selection, cardBack: action.back } };
+      return { ...state, selection: { ...state.selection, cardBack: null } };
     case 'TOGGLE_FAVORITE_DECK': {
       const favs = state.profile.favoriteDecks;
       const favoriteDecks = favs.includes(action.deckId)
         ? favs.filter((d) => d !== action.deckId)
         : [...favs, action.deckId];
       return { ...state, profile: { ...state.profile, favoriteDecks } };
+    }
+    case 'BUY_COLLECTIBLE': {
+      const profile = purchaseCollectible(state.profile, action.kind, action.id);
+      return profile === state.profile ? state : { ...state, profile };
     }
     case 'OWN_VARIANT': {
       const p = state.profile;
@@ -157,6 +171,8 @@ export function reduce(state: RootState, action: Action): RootState {
       return { ...state, profile: { ...state.profile, ...action.patch } };
     case 'JOURNAL':
       return { ...state, profile: { ...state.profile, journal: applyJournal(state.profile.journal, action.update) } };
+    case 'RESTORE_BACKUP':
+      return { ...state, settings: action.settings, profile: action.profile, selection: action.selection };
     case 'HYDRATE':
       return {
         ...state,
@@ -175,7 +191,7 @@ export function reduce(state: RootState, action: Action): RootState {
           ...action.selection,
           byGame: { ...state.selection.byGame, ...action.selection?.byGame },
           artVariants: { ...state.selection.artVariants, ...action.selection?.artVariants },
-          cardBack: action.selection?.cardBack !== undefined ? action.selection.cardBack : state.selection.cardBack,
+          cardBack: null, // Migrate old independent backs to the selected deck.
           storyChapterId: null,
           storyLevelId: null,
         },

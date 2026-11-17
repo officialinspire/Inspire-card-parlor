@@ -2,13 +2,12 @@ import { h } from '@/utils/dom';
 import { assetManager, cardRenderer, deckThemes } from '@/decks';
 import { hasDeck } from '@/decks/registry';
 import type { CpuPersonality } from '@/games/cpu/personalities';
-import { storySprite, storyUrl } from '@/story/art';
+import { characterPose, loadStoryArt, storyImage, storyUrl } from '@/story/art';
 import { CHARACTERS } from '@/story/cast';
 
 /**
- * Character avatar. Uses the character's uploaded portrait when available,
- * otherwise their deck's uploaded card back, otherwise a monogram.
- * Nothing is requested while artwork is still pending.
+ * Character avatar. Story cast members use their own expression sheets.
+ * Their initials stand in while the story manifest loads.
  */
 export function avatar(p: CpuPersonality, className = ''): HTMLElement {
   const el = h(
@@ -17,12 +16,13 @@ export function avatar(p: CpuPersonality, className = ''): HTMLElement {
     h('span', { class: 'avatar-initials', 'aria-hidden': 'true' }, p.initials),
   );
 
-  // Story characters at the table: their own portrait from the story artwork, when loaded.
-  const sheet = CHARACTERS.find((c) => c.opponentId === p.id)?.portrait?.sheet;
-  const storyFace = sheet ? storySprite(`${sheet}/portrait-neutral`) : undefined;
-  if (storyFace) {
-    el.dataset.art = 'story';
-    el.replaceChildren(h('img', { src: storyUrl(storyFace.thumb), alt: '', draggable: 'false', decoding: 'async' }));
+  const sheet = storySheetFor(p.id);
+  if (sheet) {
+    if (!paintStoryFace(el, sheet)) {
+      void loadStoryArt().then(() => {
+        if (el.isConnected) paintStoryFace(el, sheet);
+      });
+    }
     return el;
   }
 
@@ -60,14 +60,28 @@ export const TABLE_MOOD_POSE: Record<TableMood, string> = {
   lose: 'portrait-doubt',
 };
 
+const storySheetFor = (opponentId: string | undefined) =>
+  CHARACTERS.find((c) => c.opponentId === opponentId)?.portrait?.sheet;
+
+function paintStoryFace(el: HTMLElement, sheet: string): boolean {
+  const pose = TABLE_MOOD_POSE[(el.dataset.mood as TableMood | undefined) ?? 'neutral'];
+  const art = characterPose(sheet, pose) ?? characterPose(sheet, TABLE_MOOD_POSE.neutral);
+  if (!art) return false;
+  if (el.firstElementChild?.getAttribute('data-story-sprite') !== art.id) {
+    el.dataset.art = 'story';
+    el.replaceChildren(storyImage(art.id, { thumb: true, alt: '' }));
+  }
+  return true;
+}
+
 const moodTimers = new WeakMap<HTMLElement, ReturnType<typeof setTimeout>>();
 
 /** Small thumbnails of every table pose, fetched ahead so a change of face never waits on a download. */
 export function preloadMoods(p: CpuPersonality): void {
-  const sheet = CHARACTERS.find((c) => c.opponentId === p.id)?.portrait?.sheet;
+  const sheet = storySheetFor(p.id);
   if (!sheet || typeof Image === 'undefined') return;
   for (const pose of Object.values(TABLE_MOOD_POSE)) {
-    const s = storySprite(`${sheet}/${pose}`);
+    const s = characterPose(sheet, pose);
     if (!s) continue;
     const img = new Image();
     img.decoding = 'async';
@@ -84,17 +98,8 @@ export function setAvatarMood(el: HTMLElement, mood: TableMood, ms?: number): vo
   if (prev) clearTimeout(prev);
   moodTimers.delete(el);
   el.dataset.mood = mood;
-  if (el.dataset.art === 'story') {
-    const sheet = CHARACTERS.find((c) => c.opponentId === el.dataset.avatar)?.portrait?.sheet;
-    const s = sheet
-      ? (storySprite(`${sheet}/${TABLE_MOOD_POSE[mood]}`) ?? storySprite(`${sheet}/portrait-neutral`))
-      : undefined;
-    const img = el.querySelector('img');
-    if (s && img) {
-      const url = storyUrl(s.thumb);
-      if (img.getAttribute('src') !== url) img.setAttribute('src', url);
-    }
-  }
+  const sheet = storySheetFor(el.dataset.avatar);
+  if (sheet) paintStoryFace(el, sheet);
   if (ms !== undefined && mood !== 'neutral')
     moodTimers.set(
       el,

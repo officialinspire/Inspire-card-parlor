@@ -4,6 +4,8 @@ import { AppState } from '@/core/states';
 import { navigate } from '@/core/store';
 import type { Settings } from '@/core/types';
 import { createDefaultProfile, createDefaultSelection, DEFAULT_SETTINGS } from '@/core/defaults';
+import { offlineVisuals } from '../offlineVisuals';
+import { saveTransfer } from '../saveTransfer';
 import { resetAllData } from '@/storage/persistence';
 import { fullscreen } from '@/utils/device';
 import { haptic, hapticsSupported } from '@/utils/haptics';
@@ -193,7 +195,12 @@ export const SettingsScreen: ScreenFactory = ({ store }) => {
       render: () =>
         panel(
           toggle('Left-handed layout', s().leftHanded, (v) => set({ leftHanded: v }), 'Mirror stock and controls'),
-          toggle('Show hints', s().showHints, (v) => set({ showHints: v })),
+          toggle(
+            'Show hints',
+            s().showHints,
+            (v) => set({ showHints: v }),
+            'Three hints per deal, shared across reloads. Undo does not refill them.',
+          ),
           toggle(
             'Auto-complete',
             s().autoComplete,
@@ -255,6 +262,8 @@ export const SettingsScreen: ScreenFactory = ({ store }) => {
       label: 'Data',
       render: () =>
         panel(
+          saveTransfer(store),
+          offlineVisuals(),
           tagged(
             toggle(
               'Anonymous usage statistics',
@@ -322,6 +331,7 @@ export const SettingsScreen: ScreenFactory = ({ store }) => {
           h(
             'p',
             { class: 'about' },
+            'The Thirteenth Hand: five card games, nine story chapters, collectible decks and tables, a credit shop, chapter music, skippable studio intro, achievements and portable saves. ',
             `${APP.name} v${APP.version} · ${APP.developer} · `,
             h('a', { href: APP.website, target: '_blank', rel: 'noopener' }, APP.websiteLabel),
           ),

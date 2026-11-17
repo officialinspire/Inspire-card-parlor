@@ -1,7 +1,6 @@
 {
   "about": "Findings from inspecting the story artwork by eye (Prompt 18). Read into docs/ART_ASSET_AUDIT.md by scripts/art/story_assets.py.",
   "missing": [
-    "No character sprite sheet for **Jak** (Jak Gold): his quest-item atlas, parlor tile and receipt exist, but there are no poses for him.",
     "No pose sheet for the Thirteenth Hand itself (only the two card illustrations and the VFX atlas).",
     "A **top-down table painting for the Underground Tunnels** board: `Card Table Beneath the Sealed Door.png` is an isometric map tile, so `underground_tunnels` keeps its drawn surface (marked \"Art coming soon\").",
     "No illustrated **town map of Fredericksburg**. The story map lays the nine location tiles along a trail, in story order. Sophia's annotated river map is a clue (evidence), not a town map, and is not used as one."
@@ -28,9 +27,8 @@
     "Where neighbouring poses touch (listed under *Cropping and alpha issues*), ask for a re-export with a little more space between cells; the pipeline cuts where the overlap is smallest, but a few pixels of the neighbour's edge can remain or be lost.",
     "Ask for corrected Freemasonry 5s (four pips each) and corrected bottom indices on both new decks, so the build-time index overlay can be removed.",
     "Re-export the Botanical deck with the 8 of diamonds, 9 of diamonds and 3 of spades corrected before building it, and decide where 18+ content rules apply to it.",
-    "Provide a Jak character sheet, and sprite sheets for the Story Mode hosts if they are kept.",
     "Define where each location tile sits on the river map (a coordinate list), so the map screen can be built from data.",
     "Supply a top-down painting for the Underground Tunnels board.",
-    "Source-art defects seen in the Story Mode presentation audit (upgrade series), for a re-export, not a CSS fix: Steve Gonzales's `portrait-greet`, `portrait-neutral` and `portrait-talk` are cut at the bottom by the sheet's cell (49, 21 and 32 px); Mary Ball Washington's `portrait-greet` (17 px), Sophia's `portrait-talk`/`portrait-think` and Dante's `portrait-greet`/`portrait-neutral` (8–10 px), and George Washington's `portrait-think`/`portrait-doubt` (22 px) touch or share an edge with a neighbouring pose. Mrs. Gray's badge reads \"CIA\" in the art, while the story's agency is unnamed; Steve's `portrait-surprise` reads as neutral. Jak still has no pose sheet: his opponent avatar stands in, by design."
+    "Source-art defects seen in the Story Mode presentation audit (upgrade series), for a re-export, not a CSS fix: Steve Gonzales's `portrait-greet`, `portrait-neutral` and `portrait-talk` are cut at the bottom by the sheet's cell (49, 21 and 32 px); Mary Ball Washington's `portrait-greet` (17 px), Sophia's `portrait-talk`/`portrait-think` and Dante's `portrait-greet`/`portrait-neutral` (8–10 px), and George Washington's `portrait-think`/`portrait-doubt` (22 px) touch or share an edge with a neighbouring pose. Mrs. Gray's badge reads \"CIA\" in the art, while the story's agency is unnamed; Steve's `portrait-surprise` reads as neutral."
   ]
 }

@@ -15,6 +15,8 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const INITIAL = [
+  'dante_v2',
+  'cannabis_nugs',
   'classic',
   'inspire',
   'jak_gold',
@@ -31,6 +33,9 @@ const INITIAL = [
 
 /** Decks whose artwork has been uploaded and extracted (art/sources/manifest.json). */
 const UPLOADED = [
+  'dante_v2',
+  'cannabis_nugs',
+  'yummyhole_standard',
   'classic',
   'inspire',
   'jak_gold',
@@ -81,6 +86,13 @@ const fixture: DeckDefinition = {
   ],
 };
 registerDeck(fixture);
+
+registerDeck({
+  ...getDeck('yummyhole_standard'),
+  id: 'pending_fixture',
+  artist: { name: null },
+  assets: { ...getDeck('yummyhole_standard').assets, status: 'pending' },
+});
 
 describe('deck registry', () => {
   it('contains the initial decks', () => {
@@ -213,12 +225,12 @@ describe('deck validation', () => {
 
   it('reports missing files: warnings while pending, errors once ready', async () => {
     const none = () => false;
-    const pending = await validateDeckFiles(getDeck('yummyhole_standard'), none);
+    const pending = await validateDeckFiles(getDeck('pending_fixture'), none);
     expect(pending.ok).toBe(true);
     expect(pending.issues.find((i) => i.code === 'files.missing')?.level).toBe('warning');
     expect(pending.missingFiles.map((f) => f.purpose)).toEqual(['face sprite sheet', 'card back', 'preview image']);
 
-    const strict = await validateDeckFiles(getDeck('yummyhole_standard'), none, { strict: true });
+    const strict = await validateDeckFiles(getDeck('pending_fixture'), none, { strict: true });
     expect(strict.ok).toBe(false);
 
     const ready = await validateDeckFiles(fixture, none);
@@ -281,11 +293,11 @@ describe('DeckThemeManager', () => {
 
   it('substitutes the placeholder template for pending decks on request', () => {
     const m = new DeckThemeManager(ctx({ placeholder: true }));
-    expect(m.resolve('yummyhole_standard').placeholder).toBe(true);
-    expect(m.resolve('yummyhole_standard').assets).toBe(PLACEHOLDER_ASSETS);
+    expect(m.resolve('pending_fixture').placeholder).toBe(true);
+    expect(m.resolve('pending_fixture').assets).toBe(PLACEHOLDER_ASSETS);
     expect(m.resolve('test_fixture').placeholder).toBe(false);
     // Decks with uploaded artwork never fall back to the template.
     expect(m.resolve('classic').placeholder).toBe(false);
-    expect(new DeckThemeManager(ctx()).resolve('yummyhole_standard').placeholder).toBe(false);
+    expect(new DeckThemeManager(ctx()).resolve('pending_fixture').placeholder).toBe(false);
   });
 });

@@ -4,7 +4,7 @@ A cozy collection of classic playing-card games featuring collectible illustrate
 
 **Developer:** OFFICIAL INSPIRE · [www.inspireclothing.art](https://www.inspireclothing.art)
 
-> **Status: v1.0.0 — first production release.** Five complete card games, eight original illustrated decks, painted gameboards, recorded and generative music, 150 achievements, the Card Parlor Passport and The Card Parlor Chronicles story campaign. Installable and playable offline. **Play:** https://officialinspire.github.io/Inspire-card-parlor/
+> **Status: v1.4.3 — The Thirteenth Hand.** Five card games, nine story chapters (45 challenges), thirteen illustrated decks, collectible tables, a credit shop, ten recorded music tracks, 150 achievements, save import/export and an installable PWA. **[Play the latest build](https://officialinspire.github.io/Inspire-card-parlor/).**
 
 ## Games
 
@@ -52,41 +52,55 @@ Rules (`src/games/goFish/GoFishGame.ts`, also shown in-game under **How to play*
 
 `src/games/cpu/personalities.ts` defines **Jak Gold**, **Friendly Local** and **Strategic Opponent**, each with play-style traits (memory, whimsy, pressure on the leader, greed) and their own lines of dialogue. Difficulty (**Easy / Normal / Hard**) limits how much of the game's history a CPU remembers. CPUs decide from a `PlayerView` (`src/games/goFish/view.ts`) that contains only their own hand, card counts, books, the pond size and the public history of requests and replies; other players' cards are never passed in, and a test checks a CPU decides identically whatever the hidden cards are.
 
-Character portraits go in `public/assets/characters/<id>.webp|png`. Until one is uploaded, Jak Gold uses the Jak Gold deck's card back (once that artwork is ready) and otherwise a monogram.
+Story characters use expression sheets under `public/assets/story/characters/`. Jak Gold’s poses come from the original BlackJak dealer atlas. Character initials stand in while story art loads.
 
 ### Saves and statistics
 
 Games save after every round or turn (IndexedDB) and offer **Resume** when you come back. Finished games update per-game statistics (played, wins, streaks, best time, best score), award XP, credits and achievements, and clear the save.
 
-## Story Mode: The Card Parlor Chronicles
+## Story Mode: The Thirteenth Hand
 
-Seven chapters of five challenges each, played with the regular game engines (a challenge only picks the game, its options, deck and table; it never changes a rule):
+Nine chapters follow Cheryl, Sophia, Dante, Jak, Mrs. Gray, Steve, Mary Washington’s ghost and George Washington’s ghost through a fictional supernatural mystery in Fredericksburg. Each chapter has five challenges, for 45 total. FreeCell appears three times as a focused puzzle; Klondike, Spider, Go Fish and War provide the rest. Story solitaire opens with a verified deal. **New Game** chooses a different verified hand with the same challenge rules, and **Restart** repeats the current hand. Historical field notes distinguish sourced history from the fictional tunnels and ghosts.
 
-| #   | Chapter           | Setting                   | Chapter reward                                                        |
-| --- | ----------------- | ------------------------- | --------------------------------------------------------------------- |
-| 1   | The Hometown      | Downtown Fredericksburg   | Downtown Fredericksburg Collector deck, Rappahannock Riverside board  |
-| 2   | Jak Gold's Casino | BlackJak universe         | BlackJak Jak Gold deck, Jak Gold's Casino board                       |
-| 3   | Dante's World     | Neon Monster art          | Dante's World deck                                                    |
-| 4   | The Woodlands     | Eastern Woodland Virginia | Eastern Woodlands deck, Turtle Back card art, Woodland Clearing board |
-| 5   | The Safehouse     | Spycraft                  | Spycraft deck, Safehouse board                                        |
-| 6   | The Builders      | Freemasonry               | Masonic Study board (deck art pending)                                |
-| 7   | Artist's Alley    | Artist collaborations     | Artist's Studio board                                                 |
+| Chapter | Setting                           |
+| ------- | --------------------------------- |
+| 1       | Cheryl’s Antique Shop             |
+| 2       | Rappahannock River ranger station |
+| 3       | iSmokeShop / Dante’s World        |
+| 4       | Jak’s Backroom                    |
+| 5       | Mrs. Gray’s Safehouse             |
+| 6       | Masonic Lodge No. 4               |
+| 7       | Kenmore                           |
+| 8       | Underground Tunnels               |
+| 9       | Washington’s final table          |
 
-Every chapter also stamps the **passport**; chapters 1, 4 and 7 award story achievements. Each challenge pays credits and XP the first time it is completed.
+Chapter completion awards passport stamps, credits, XP and cosmetics once. Replays retain progress without duplicating first-clear rewards. Older saves migrate forward, and completed chapters automatically qualify for new chapter-linked cosmetics.
 
-- **Data-driven.** Chapters live in `src/story/campaign.ts` (`id`, `title`, `description`, `artwork`, `levels`, objectives, `rewards`, `unlockRequirements`). Progress rules are pure functions in `src/story/progress.ts`.
-- **Always winnable.** Seeded Klondike, Spider and FreeCell deals are proven solvable by `src/games/solitaire/solver.ts`, which searches with the game's own move rules and replays the winning line. War seeds are simulated to a player win. Go Fish challenges are unseeded on the Easy table and are checked for a reachable win rate. `tests/unit/story.test.ts` re-verifies every seed; `scripts/story/find-seeds.ts` finds new ones.
-- **Retry any time.** A failed challenge stays open with a **Try again** button; seeded deals repeat exactly.
-- **Rewards once.** Payouts are keyed in `profile.story.rewarded`, so replays never pay twice, and unlocks already owned are skipped.
-- **Saves.** Older saves keep everything (`profile.storyChapter` is never lowered). Story games use their own save slot, so they never overwrite a Quick Play game.
-- **Artwork.** Chapter art reuses the decks' and tables' own images. The Builders chapter shows a labelled "Freemasonry artwork coming soon" placeholder until that art is supplied. No artwork is attributed to an artist beyond the credits already on file.
+## Collectibles and Parlor Shop
+
+Open **Collection → Parlor Shop** or **Gameboards → Parlor Shop**. Credits are earned in game; no real-money payments are involved. Purchases use the catalog price, prevent duplicate charges, and persist with the profile, including save export/import.
+
+| Collectible            | Unlock                             |
+| ---------------------- | ---------------------------------- |
+| YummyHole deck         | Complete Chapter 4, Jak’s Backroom |
+| Cannabis Nugs deck     | Complete Chapter 3, iSmokeShop     |
+| Dante V2 deck          | Buy for 500 credits                |
+| UMW Classroom board    | Buy for 300 credits                |
+| Germanna Library board | Buy for 250 credits                |
+| Story-location boards  | Complete their associated chapters |
+
+Only unlocked decks and boards appear in the collection, binder and play selectors. The shop lists purchasable items separately; unreached story rewards remain hidden. Existing explicitly owned items remain owned. New deck atlases retain the standard 139 × 192 pixel card cells in a 13 × 4 grid, with custom backs.
+
+## Startup
+
+After loading and **Touch to Start**, `inspiresoftwareintro.mp4` plays inline with a keyboard-accessible **Skip video** button (Escape also skips). The main menu fades in afterward. End, playback failure and a stalled-video timeout all continue safely. Only the video soundtrack plays during the studio credit. It follows master volume, SFX volume and mute. Menu music and ambience start when the menu opens, subject to their settings and browser autoplay rules.
 
 ## Music, sound and haptics
 
 - **Music player** (Settings → Music, the main menu's now-playing strip, and **More → Music player** at a table): play/pause, next/previous, track selection, shuffle, repeat (playlist / track / off), volume and mute. Six playlists: **Downtown Jazz, Rappahannock Morning, Woodland Ambience, Casino Lounge, Lo-Fi Card Table, Midnight Solitaire**.
-- **The library.** Five recorded tracks by OFFICIAL INSPIRE (in `public/assets/music`): _Inspire Card Parlor Menu Track_ (the default for new players), _Downtown FXBG Saturday Walk_ and _Downtown Fredericksburg After Dark_ (Downtown Jazz), _Silent Study Hours_ (Lo-Fi Card Table) and _Shadows of the Occult_ (Midnight Solitaire). Alongside them, twelve generative tracks synthesized in the browser (chords, bells, a plucked bass, and textures such as rain, river water, wind and tape crackle) fill every playlist, including Rappahannock Morning, Woodland Ambience and Casino Lounge, which have no recordings yet. Recorded tracks are registered in `RECORDED_TRACKS` (`src/audio/tracks.ts`); a file the browser can't play is skipped for the session.
+- **The library.** Ten recorded tracks by OFFICIAL INSPIRE (in `public/assets/music`): _Inspire Card Parlor Menu Track_ (the default for new players), _Downtown FXBG Saturday Walk_ and _Downtown Fredericksburg After Dark_ (Downtown Jazz), _Silent Study Hours_ (Lo-Fi Card Table) and _Shadows of the Occult_ (Midnight Solitaire). The chapter themes are Minimal Parlor Loop (iSmokeShop), Sanctum Pulse (Masonic Lodge), Safehouse Pulse (Safehouse), Kenmore Manor Theme (Kenmore) and Esoteric Order Loop (Washington’s boss fight). Each loops while its chapter is active and respects manual music overrides. Alongside them, twelve generative tracks synthesized in the browser (chords, bells, a plucked bass, and textures such as rain, river water, wind and tape crackle) fill every playlist, including Rappahannock Morning, Woodland Ambience and Casino Lounge, which have no recordings yet. Recorded tracks are registered in `RECORDED_TRACKS` (`src/audio/tracks.ts`); a file the browser can't play is skipped for the session.
 - **Transitions.** Tracks crossfade; pausing fades out. Music carries on from menus into games and back, and a pause is remembered (also across reloads). Sound starts only after the first tap or key, as browsers require.
-- **Sound effects** for button presses, card flips, shuffles, placements, valid and invalid moves, War battles, Go Fish requests, victories, achievements, deck unlocks and level-ups. Effects sit well above the music, and everything passes through a limiter so stacked sounds never clip.
+- **Sound effects** for button presses, card flips, shuffles, placements, valid and invalid moves, War battles, Go Fish requests and matches, completed Go Fish books and solitaire suits, victories, achievements, deck unlocks and level-ups. Effects sit well above the music, and everything passes through a limiter so stacked sounds never clip.
 - **Haptics** (Settings → Audio → Haptic feedback): short vibrations for wins, wars and mistakes on devices that support them. On by default where available; never used while the page is hidden.
 
 ## Achievements, progression and the Passport
@@ -166,7 +180,7 @@ The service worker (`public/sw.js`) is stamped at build time with the version an
 
 Anonymous product analytics go to PostHog under the suite id `inspire_card_parlor`: `game_opened`, `game_started`, `game_paused`, `game_resumed`, `game_completed`, `game_over`, `round_started`, `round_completed` (capped per game), `achievement_unlocked`, `high_score_achieved`, `difficulty_selected`, `pwa_installed`, `audio_enabled` and `error_encountered`. Each carries `brand`, `game`, `game_version`, `mode`, `difficulty`, `score`, `duration_seconds`, `achievement`, `source` and `referrer` (host only) where they apply. The only identifier is a random anonymous id; IP geolocation is off; nothing is sent when the player switches _Anonymous usage statistics_ off or the browser sends Do Not Track. Events queue while offline and are retried; analytics never throws into the game.
 
-Set the PostHog project key as the repository variable `POSTHOG_KEY` (and optionally `POSTHOG_HOST`, default `https://us.i.posthog.com`); the deploy workflow passes them to the build as `VITE_POSTHOG_KEY` / `VITE_POSTHOG_HOST`. Without a key, nothing leaves the device.
+The production build reads `VITE_POSTHOG_KEY` and `VITE_POSTHOG_HOST` from `.env.production`. These are public browser ingestion values for INSPIRE Analytics, deliberately versioned so GitHub Pages builds work without private settings. Never put personal/admin API keys in this file. Without a key, nothing leaves the device. Browser Do Not Track and Global Privacy Control disable sending.
 
 ## Architecture
 

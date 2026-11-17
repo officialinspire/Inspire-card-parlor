@@ -1,7 +1,7 @@
 # Recorded music
 
 Recorded music for the parlor's player. The five tracks here were uploaded by
-OFFICIAL INSPIRE (MP3 audio in an MP4 container, hence `.m4a`). Playlists with no
+OFFICIAL INSPIRE (MP3 audio, served as `.mp3`). Playlists with no
 recording yet are filled by the generative (synthesized) tracks.
 
 To add a track:

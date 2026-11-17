@@ -661,7 +661,6 @@ export const StoryModeScreen: ScreenFactory = ({ store }) => {
     store.dispatch({ type: 'SELECT_STORY_LEVEL', levelId: null, chapterId: null });
     store.dispatch({ type: 'UPDATE_SETTINGS', patch: { warOpponent: r.opponent } });
     store.dispatch({ type: 'SELECT_GAME', gameId: 'war' });
-    store.dispatch({ type: 'SELECT_DECK', deckId: r.deckId });
     store.dispatch({ type: 'SELECT_BOARD', boardId: r.boardId });
     navigate(AppState.GAMEPLAY);
   }

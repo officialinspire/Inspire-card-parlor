@@ -146,7 +146,7 @@ export interface Selection extends TableChoice {
   storyChapterId: string | null;
   /** The story challenge being played (not saved between sessions). */
   storyLevelId: string | null;
-  /** Last deck/board used for each game, restored when that game is picked again. */
+  /** Last table choices per game. Only the board is restored; deckId remains the global preference. */
   byGame: Partial<Record<GameId, TableChoice>>;
   /** Chosen alternate artwork per deck (deck id → variant id). Purely cosmetic. */
   artVariants: Record<string, string>;

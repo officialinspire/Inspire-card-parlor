@@ -52,7 +52,7 @@ test('ticking the confirmation is required', async ({ page }) => {
 });
 
 test('adults can opt in; adult art never appears in ordinary previews; opting out resets', async ({ page }) => {
-  await seed(page, { profile: { level: 10 } });
+  await seed(page, { profile: { level: 10, unlockedBoards: ['ismokeshop_counter'] } });
   await enterParlor(page);
   await openContentSettings(page);
   await page.locator(`${CURRENT} [data-setting="matureContent"]`).click();
@@ -79,7 +79,7 @@ test('adults can opt in; adult art never appears in ordinary previews; opting ou
 
 test('adult-only gameboards appear only after opting in, and opting out resets them', async ({ page, request }) => {
   expect((await request.get('assets/backgrounds/mature/ismokeshop_counter/preview.webp')).ok()).toBe(true);
-  await seed(page, { profile: { level: 10 } });
+  await seed(page, { profile: { level: 10, unlockedBoards: ['ismokeshop_counter'] } });
   await enterParlor(page);
   await clickNav(page, 'GAMEBOARDS');
   await expect(page.locator(`${CURRENT} [data-board="ismokeshop_counter"]`)).toHaveCount(0);

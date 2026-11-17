@@ -5,7 +5,7 @@ import { CardRenderer, describeBack, describeFace } from '@/engine/CardRenderer'
 import { CardAnimator } from '@/engine/CardAnimator';
 import { Card } from '@/engine/Card';
 import { DeckThemeManager, PLACEHOLDER_ASSETS, type DeckTheme } from '@/decks/DeckThemeManager';
-import { getDeck } from '@/decks/registry';
+import { getDeck, registerDeck } from '@/decks/registry';
 import { standardAssets } from '@/decks/assets';
 import type { DeckDefinition } from '@/decks/types';
 
@@ -36,6 +36,13 @@ function loader(exists: Record<string, [number, number]>) {
   });
   return { fn, calls };
 }
+
+registerDeck({
+  ...getDeck('yummyhole_standard'),
+  id: 'pending_fixture',
+  artist: { name: null },
+  assets: { ...getDeck('yummyhole_standard').assets, status: 'pending' },
+});
 
 describe('atlas math', () => {
   it('slices a 13×4 grid in suit rows and rank columns', () => {
@@ -120,7 +127,7 @@ describe('AssetManager', () => {
 
   it('never requests files for pending decks', async () => {
     const { fn } = loader({});
-    const art = await new AssetManager({ loadImage: fn }).loadDeck(themes().resolve('yummyhole_standard'));
+    const art = await new AssetManager({ loadImage: fn }).loadDeck(themes().resolve('pending_fixture'));
     expect(fn).not.toHaveBeenCalled();
     expect(art.faces).toBeNull();
     expect(art.missing).toHaveLength(52);
@@ -140,7 +147,7 @@ describe('AssetManager', () => {
 
   it('uses grid back cells and variant overrides', async () => {
     const theme: DeckTheme = {
-      ...themes(true).resolve('yummyhole_standard'),
+      ...themes(true).resolve('pending_fixture'),
       key: 'ph-test',
       overrides: { QH: { path: 'qh', formats: ['png'] } },
     };
@@ -176,7 +183,7 @@ describe('CardRenderer', () => {
   });
 
   it('draws procedural cards while artwork is pending', () => {
-    const theme = themes().resolve('yummyhole_standard');
+    const theme = themes().resolve('pending_fixture');
     const face = renderer.renderCard(new Card(12, 'hearts', 0, true), theme);
     expect(face.dataset.art).toBe('fallback');
     expect(face.dataset.code).toBe('QH');
@@ -198,7 +205,7 @@ describe('CardRenderer', () => {
   });
 
   it('renders sprite-sheet art once loaded and upgrades existing elements', async () => {
-    const theme = { ...themes(true).resolve('yummyhole_standard'), key: 'upgrade-test' };
+    const theme = { ...themes(true).resolve('pending_fixture'), key: 'upgrade-test' };
     const sheet = '/assets/cards/_placeholder/faces.svg';
     am = new AssetManager({ baseUrl: '/', loadImage: loader({ [sheet]: [1560, 840] }).fn });
     renderer = new CardRenderer(am);

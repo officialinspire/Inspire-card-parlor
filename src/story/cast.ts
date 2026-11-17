@@ -8,8 +8,8 @@ import { NARRATOR, type Character } from './types';
  * second person ("You examine the old ledger.").
  *
  * Portraits point at the character sheets cut from the uploaded story art
- * (public/assets/story/characters/<sheet>/<pose>.webp). Jak Gold has no sheet
- * yet (see docs/ART_ASSET_AUDIT.md), so his portrait falls back to his avatar.
+ * (public/assets/story/characters/<sheet>/<pose>.webp), including Jak Gold's
+ * dealer poses from BlackJak.
  *
  * Two characters are fictionalized portrayals of real people (Jak Gold and
  * Steve Gonzales): they are written respectfully, and nothing in the story
@@ -68,7 +68,7 @@ export const CHARACTERS: readonly Character[] = [
     voice:
       'Fast and theatrical on camera, slower and careful off it. Cites sources rather than slogans; knows which law covers what, and says “probably” when he isn’t sure.',
     music: 'high-roller',
-    portrait: { sheet: null, pose: 'portrait-neutral' },
+    portrait: { sheet: 'jak-gold', pose: 'portrait-neutral' },
     opponentId: 'jak_gold',
     basedOnRealPerson: true,
   },

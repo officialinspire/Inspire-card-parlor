@@ -12,6 +12,7 @@ import { moreItem, setTool, toolButton, type GameToolbar } from '@/components/ga
 import { confirmDialog, openDialog } from '@/components/Dialog';
 import { dismissNotification, notify } from '@/components/Notifications';
 import { recordGameResult } from '@/progression/results';
+import { HINT_LIMIT, hintsRemaining, useHint } from './hints';
 import { saves, sleep } from '../session';
 import type { BoardMove, SolitaireGame } from './SolitaireGame';
 import type { KlondikeGame } from './KlondikeGame';
@@ -129,7 +130,12 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
 
   // Keyboard play reports where its cursor is, and what happened, to screen readers.
   const kbStatus = h('p', { class: 'sr-only', 'aria-live': 'polite', 'data-kb-status': '' });
-  const el = h('div', { class: 'solitaire' }, board, kbStatus);
+  const inspect = h(
+    'p',
+    { class: 'sol-inspect', 'data-card-preview': '', 'aria-live': 'polite' },
+    'Select a card, then choose its destination.',
+  );
+  const el = h('div', { class: 'solitaire' }, board, inspect, kbStatus);
   ctx.surface.replaceChildren(el);
   ctx.surface.classList.add('table-surface-game');
 
@@ -146,7 +152,7 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
     if (!W || !H) return;
     const cols = game.tableau.length;
     // Ten Spider columns on a phone need every pixel: tighter gutters there.
-    let gap = cols > 8 ? Math.max(2.5, Math.min(10, W * 0.008)) : Math.max(4, Math.min(12, W * 0.012));
+    let gap = cols > 8 ? Math.max(2.5, Math.min(10, W * 0.008)) : Math.max(2, Math.min(10, W * 0.008));
     const byWidth = (W - gap * (cols + 1)) / cols;
     // Leave room for the top row plus a reasonable column below it.
     const byHeight = (H - gap * 3) / (1.4 * 2 + 1.5);
@@ -292,6 +298,7 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
       if (!mark.hidden) mark.style.transform = slots.get(p.id)!.style.transform;
       const before = foundationSize.get(p.id);
       foundationSize.set(p.id, p.size);
+      if (before !== undefined && before < 13 && p.size === 13 && !dealing) gameSound('set_complete');
       if (before !== undefined && before < 13 && p.size === 13 && motion) {
         const slot = slots.get(p.id)!;
         slot.classList.remove('sol-complete');
@@ -304,6 +311,10 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
     if (flipped && !dealing) gameSound('card_flip');
     markLegal(selection);
     paintCursor();
+    const held = selection ? game.pile(selection.pile).at(selection.index) : undefined;
+    inspect.textContent = held
+      ? `${held.label} selected — tap a destination or drag to place.`
+      : 'Select a card, then choose its destination.';
     renderHud();
   }
 
@@ -321,7 +332,9 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
       stockCount.textContent = spider ? (n ? `${n / 10} deals` : '') : n ? String(n) : '';
     }
     undoBtn.disabled = !game.canUndo || paused || busy;
-    hintBtn.disabled = paused || game.data.won;
+    const left = hintsRemaining(game.data);
+    setTool(hintBtn, 'hint', `Hint ${left}/${HINT_LIMIT}`);
+    hintBtn.disabled = paused || busy || game.data.won || !left || !store.state.settings.showHints;
     if (pauseBtn.getAttribute('aria-pressed') !== String(paused)) {
       setTool(pauseBtn, paused ? 'play' : 'pause', paused ? 'Resume' : 'Pause');
       pauseBtn.setAttribute('aria-pressed', String(paused));
@@ -364,6 +377,7 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
 
   // ----- Actions -----
   async function afterAction(ok: boolean, rejectEl?: Element | null, reason?: string | null): Promise<void> {
+    if (destroyed) return;
     selection = null;
     if (ok) {
       gameSound('card_move');
@@ -420,7 +434,7 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
   }
 
   function doUndo(): void {
-    if (paused || busy) return;
+    if (destroyed || paused || busy) return;
     selection = null;
     if (game.undo()) {
       game.data.undos = Number(game.data.undos ?? 0) + 1;
@@ -435,7 +449,7 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
   }
 
   function showHint(): void {
-    if (paused || game.data.won) return;
+    if (paused || busy || game.data.won || !store.state.settings.showHints || !hintsRemaining(game.data)) return;
     clearHints();
     const hnt = game.hint();
     if (!hnt) {
@@ -443,7 +457,9 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
       return;
     }
     audio.play('tap');
-    game.data.hints = Number(game.data.hints ?? 0) + 1;
+    useHint(game.data);
+    renderHud();
+    void saves.save(game.table);
     if (hnt.kind === 'stock') {
       slots.get('stock')!.dataset.hint = 'target';
       for (const e of board.querySelectorAll<HTMLElement>('.sol-card[data-pile="stock"]')) e.dataset.hint = 'target';
@@ -496,7 +512,7 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
       confirmLabel: 'Yes, deal again',
       cancelLabel: 'Keep playing',
     });
-    if (!ok) return false;
+    if (!ok || destroyed) return false;
     recordGameResult(store, {
       gameId,
       outcome: 'loss',
@@ -504,7 +520,6 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
       durationMs: game.data.elapsedMs,
       key: `${gameId}:${game.data.seed}:${game.data.startedAt}`,
     });
-    await saves.delete(gameId);
     return true;
   }
 
@@ -1053,6 +1068,7 @@ export function mountSolitaire(ctx: SolitaireViewContext) {
       ro.disconnect();
       removeEventListener('keydown', onKey);
       document.removeEventListener('visibilitychange', onVisibility);
+      endDeal(true);
       if (!game.data.won) void saves.save(game.table);
     },
   };

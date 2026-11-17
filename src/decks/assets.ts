@@ -46,3 +46,14 @@ export function extractedAssets(basePath: string): DeckAssets {
     preview: { path: 'preview', formats: ['webp'] },
   };
 }
+
+/** Uploaded normalized atlas, with compressed WebP copies for online/offline use. */
+export function uploadedPngAssets(basePath: string): DeckAssets {
+  return {
+    basePath,
+    status: 'ready',
+    faces: { type: 'atlas', image: { path: 'faces', formats: ['webp', 'png'] }, grid: { columns: 13, rows: 4 } },
+    back: { path: 'back', formats: ['webp', 'png'] },
+    preview: { path: 'preview', formats: ['webp', 'png'] },
+  };
+}

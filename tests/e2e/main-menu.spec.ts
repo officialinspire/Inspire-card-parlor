@@ -165,6 +165,7 @@ test('day and night scenes can be chosen from the menu', async ({ page }) => {
   // The choice is remembered.
   await page.reload();
   await page.getByRole('button', { name: 'Enter Parlor' }).click();
+  await expectScreen(page, 'MAIN_MENU');
   await expect(page.locator(`${CURRENT} [data-env-choice="day"]`)).toHaveAttribute('aria-checked', 'true');
 });
 

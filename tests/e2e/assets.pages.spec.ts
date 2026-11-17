@@ -1,5 +1,7 @@
+import { allBoards } from '../../src/boards/registry';
+import { allDecks } from '../../src/decks/registry';
 import { expect, test, type Page } from '@playwright/test';
-import { CURRENT, expectScreen, seed } from './helpers';
+import { CURRENT, enterParlor, expectScreen, seed } from './helpers';
 
 /**
  * The production build served from /Inspire-card-parlor/, as GitHub Pages
@@ -44,7 +46,15 @@ const go = (page: Page, to: string) =>
 
 test('every asset loads from the GitHub Pages project path', async ({ page }) => {
   const failed = watchFailures(page);
-  await seed(page, { profile: { level: 99, storyChapter: 99 }, settings: { theme: 'night' } });
+  await seed(page, {
+    profile: {
+      level: 99,
+      unlockedBoards: allBoards().map((b) => b.id),
+      unlockedDecks: allDecks().map((d) => d.id),
+      storyChapter: 99,
+    },
+    settings: { theme: 'night' },
+  });
   await page.goto('./');
   expect(new URL(page.url()).pathname).toBe('/Inspire-card-parlor/');
 
@@ -97,4 +107,31 @@ test('every asset loads from the GitHub Pages project path', async ({ page }) =>
     expect((await page.request.get(icon)).status(), icon).toBe(200);
   }
   expect(failed).toEqual([]);
+});
+
+test('a late character manifest upgrades the portrait at the Pages path', async ({ page }) => {
+  let release!: () => void;
+  const ready = new Promise<void>((resolve) => (release = resolve));
+  await page.route('**/assets/story/manifest.json', async (route) => {
+    await ready;
+    await route.continue();
+  });
+  await enterParlor(page);
+  await page.evaluate(() => {
+    const store = (window as unknown as { __ICP__: { store: { dispatch(a: unknown): void } } }).__ICP__.store;
+    store.dispatch({ type: 'NAVIGATE', to: 'STORY_MODE' });
+    store.dispatch({ type: 'SELECT_STORY_LEVEL', levelId: 'th-4-1', chapterId: 'th-4' });
+    store.dispatch({ type: 'NAVIGATE', to: 'GAMEPLAY' });
+  });
+  await expectScreen(page, 'GAMEPLAY');
+  const face = page.locator(`${CURRENT} .war-who [data-avatar="jak_gold"]`);
+  try {
+    await expect(face.locator('.avatar-initials')).toHaveText('JG');
+    await expect(face.locator('.avatar-card')).toHaveCount(0);
+  } finally {
+    release();
+  }
+  const image = face.locator('img');
+  await expect(image).toHaveAttribute('src', /\.\/assets\/story\/characters\/jak-gold\/thumbs\/portrait-/);
+  await expect.poll(() => image.evaluate((img: HTMLImageElement) => img.naturalWidth)).toBeGreaterThan(0);
 });

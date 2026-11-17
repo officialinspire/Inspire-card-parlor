@@ -122,5 +122,7 @@ export function upgradeCampaignVersion(story: StoryProgress): StoryProgress {
       version: 2,
     };
   }
+  // v3 changes pacing and puzzle setups, retaining the same story beats and rewards.
+  // Existing clears keep their IDs; nothing is paid a second time.
   return { ...s, version: CAMPAIGN_VERSION };
 }

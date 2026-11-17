@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { CURRENT, clickNav, enterParlor } from './helpers';
+import { CURRENT, clickNav, enterParlor, seed } from './helpers';
 
 /**
  * Release check of the original artwork, in a real browser: every image
@@ -131,6 +131,7 @@ test('menu paintings, logo, title graphic, icons and the three painted gameboard
 });
 
 test('cards on screen keep their proportions and show the real artwork', async ({ page }) => {
+  await seed(page, { profile: { unlockedDecks: DECKS.map(([id]) => id) } });
   await enterParlor(page);
   await clickNav(page, 'COLLECTION');
   await page.locator(`${CURRENT} [data-tab="gallery"]`).click();

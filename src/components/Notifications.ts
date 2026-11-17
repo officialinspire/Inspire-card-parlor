@@ -116,7 +116,7 @@ export function attachNotifications(root: HTMLElement, s: Store): void {
                 ? h(
                     'span',
                     { class: 'toast-medal toast-medal-art' },
-                    medal(getAchievement(n.badge)!, { earned: true, size: 40 }),
+                    medal(getAchievement(n.badge)!, { earned: true, size: 60 }),
                   )
                 : h('span', { class: 'toast-medal' }, icon((n.icon as IconName | undefined) ?? 'trophy')),
               h(

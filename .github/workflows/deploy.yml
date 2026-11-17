@@ -39,11 +39,8 @@ jobs:
           retention-days: 7
       # Rebuild after browser tests so the published artifact uses production analytics variables.
       - run: npm run build
-        env:
-          # PostHog project key (public by design; set it as a repository variable).
-          # Without it the build sends no analytics.
-          VITE_POSTHOG_KEY: ${{ vars.POSTHOG_KEY }}
-          VITE_POSTHOG_HOST: ${{ vars.POSTHOG_HOST }}
+        # Vite loads the public ingestion values from .env.production.
+        # No personal/admin credentials belong in this file or the browser bundle.
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

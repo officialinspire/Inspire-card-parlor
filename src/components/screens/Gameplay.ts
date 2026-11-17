@@ -7,6 +7,7 @@ import { deckThemes, getDeck } from '@/decks';
 import { getGame } from '@/games/registry';
 import { CHAPTERS } from '@/story/chapters';
 import { getLevel, type StoryLevel } from '@/story/campaign';
+import { createStorySolitaire, nextStorySolitaireSeed } from '@/story/solitaire';
 import { setActiveStoryLevel, setLastStoryOutcome, setStoryReturn } from '@/story/session';
 import { goFishPlayers } from '@/story/players';
 import { RULES } from '@/games/rules';
@@ -19,7 +20,7 @@ import { WarGame } from '@/games/war/WarGame';
 import { mountWar } from '@/games/war/WarView';
 import { GoFishGame } from '@/games/goFish/GoFishGame';
 import { mountGoFish } from '@/games/goFish/GoFishView';
-import type { Table } from '@/engine';
+import { Random, type Table } from '@/engine';
 import { KlondikeGame } from '@/games/solitaire/KlondikeGame';
 import { SpiderGame } from '@/games/solitaire/SpiderGame';
 import { FreeCellGame } from '@/games/solitaire/FreeCellGame';
@@ -46,14 +47,14 @@ const SOLITAIRE: GameId[] = ['klondike', 'spider', 'freecell'];
  * saved as they go and offer to resume.
  */
 export const GameplayScreen: ScreenFactory = ({ store }) => {
-  const { deckId, boardId, storyChapterId, storyLevelId } = store.state.selection;
+  const { boardId, storyChapterId, storyLevelId } = store.state.selection;
   // A story challenge brings its own game, deck, board and deal.
   const story = storyLevelId ? getLevel(storyLevelId) : undefined;
   const gameId = story ? story.game : store.state.selection.gameId;
   const game = getGame(gameId);
-  const deckIdOf = () => story?.setup.deckId ?? store.state.selection.deckId;
+  const deckIdOf = () => deckThemes.safeDeckId(store.state.selection.deckId);
   const boardIdOf = () => story?.setup.boardId ?? store.state.selection.boardId;
-  let deck = getDeck(story ? story.setup.deckId : deckThemes.safeDeckId(deckId));
+  let deck = getDeck(deckIdOf());
   let theme = deckThemes.resolve(deck.id);
   let board = getBoard(story ? story.setup.boardId : boardId);
   const d = new Disposer();
@@ -149,10 +150,10 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
       (st) =>
         `${st.selection.deckId}|${st.selection.cardBack}|${JSON.stringify(st.selection.artVariants)}|${st.profile.ownedVariants.length}`,
       () => {
-        deck = getDeck(story ? deckIdOf() : deckThemes.safeDeckId(deckIdOf()));
+        deck = getDeck(deckIdOf());
         theme = deckThemes.resolve(deck.id);
         paintBoard();
-        if (currentTable) mount(currentTable);
+        if (view && currentTable) mount(currentTable);
       },
     ),
   );
@@ -245,13 +246,15 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
         { class: 'options-body' },
         body,
         hasOptions ? h('p', { class: 'ask-hint' }, 'Game options apply to your next game.') : null,
-        ...(story
-          ? [h('p', { class: 'ask-hint' }, 'Story challenges use their own deck and table.')]
-          : [
-              h('h3', { class: 'options-heading' }, 'Table'),
-              tableCustomizer(store),
-              h('p', { class: 'ask-hint' }, 'Deck, card back and table change right away; your game is untouched.'),
-            ]),
+        h('h3', { class: 'options-heading' }, 'Table'),
+        tableCustomizer(store, { boards: !story }),
+        h(
+          'p',
+          { class: 'ask-hint' },
+          story
+            ? 'Your preferred deck and its matching back apply here too. The story keeps its own table.'
+            : 'Deck and table change right away; your game is untouched.',
+        ),
       ),
       dismissValue: 'close',
       actions: hasOptions
@@ -376,14 +379,12 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
     return h('div', { class: 'options-body', 'data-options': gameId! }, lineup, ...controls);
   }
 
-  /** A story challenge: always its own verified deal and options. */
-  function createStoryGame(level: StoryLevel): Table {
+  /** A story challenge keeps its own options and uses a verified deal. */
+  function createStoryGame(level: StoryLevel, solitaireSeed: number | undefined): Table {
     const o = level.setup.options ?? {};
     const seed = level.setup.seed !== undefined ? { seed: level.setup.seed } : {};
     let table: Table;
-    if (level.game === 'klondike') table = KlondikeGame.create({ ...seed, draw: o.draw ?? 1 }).table;
-    else if (level.game === 'spider') table = SpiderGame.create({ ...seed, suits: o.suits ?? 1 }).table;
-    else if (level.game === 'freecell') table = FreeCellGame.create(seed).table;
+    if (SOLITAIRE.includes(level.game)) table = createStorySolitaire(level, solitaireSeed).table;
     else if (level.game === 'war') table = WarGame.create({ opponentId: o.opponent ?? 'jak_gold', ...seed }).table;
     else
       table = GoFishGame.create({
@@ -396,28 +397,39 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
     return table;
   }
 
-  function createGame(sameDealAs?: Table): Table {
-    if (story) return createStoryGame(story);
+  function createGame(previous?: Table, restart = false): Table {
+    const previousSeed = previous?.random.seed;
+    if (story) {
+      const seed =
+        previousSeed !== undefined && SOLITAIRE.includes(story.game)
+          ? restart
+            ? previousSeed
+            : nextStorySolitaireSeed(story, previousSeed)
+          : story.setup.seed;
+      return createStoryGame(story, seed);
+    }
     const s = store.state.settings;
-    const seed = sameDealAs ? (sameDealAs.data as SolitaireData).seed : nextSeed();
-    const seedOpt = seed !== undefined ? { seed } : {};
+    const sameDealAs = restart ? previous : undefined;
+    const testSeed = nextSeed();
+    let seed = sameDealAs?.random.seed ?? testSeed ?? Random.newSeed();
+    if (!restart && testSeed === undefined && seed === previousSeed) seed = (seed + 1) >>> 0;
     if (gameId === 'klondike') {
       const draw = sameDealAs ? (Number(sameDealAs.data.draw) as 1 | 3) : s.klondikeDraw;
-      return KlondikeGame.create({ ...seedOpt, draw }).table;
+      return KlondikeGame.create({ seed, draw }).table;
     }
     if (gameId === 'spider') {
       const suits = sameDealAs ? (Number(sameDealAs.data.suits) as 1 | 2 | 4) : s.spiderSuits;
-      return SpiderGame.create({ ...seedOpt, suits }).table;
+      return SpiderGame.create({ seed, suits }).table;
     }
-    if (gameId === 'freecell') return FreeCellGame.create(seedOpt).table;
+    if (gameId === 'freecell') return FreeCellGame.create({ seed }).table;
     if (gameId === 'war') {
-      return WarGame.create({ opponentId: s.warOpponent, ...(seed !== undefined ? { seed } : {}) }).table;
+      return WarGame.create({ opponentId: s.warOpponent, seed }).table;
     }
     const players = [
       { id: 'you', name: 'You' },
       ...PERSONALITIES.slice(0, s.goFishOpponents).map((p) => ({ id: p.id, name: p.name, cpu: p.id })),
     ];
-    return GoFishGame.create({ players, difficulty: s.cpuDifficulty, ...(seed !== undefined ? { seed } : {}) }).table;
+    return GoFishGame.create({ players, difficulty: s.cpuDifficulty, seed }).table;
   }
 
   let currentTable: Table | null = null;
@@ -445,7 +457,12 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
       labels: story ? { again: 'Play again', exit: 'Continue story' } : undefined,
     };
     if (gameId === 'war') view = mountWar({ ...common, game: WarGame.restore(table) });
-    else if (gameId === 'go-fish') view = mountGoFish({ ...common, game: GoFishGame.restore(table) });
+    else if (gameId === 'go-fish')
+      view = mountGoFish({
+        ...common,
+        game: GoFishGame.restore(table),
+        goalBooks: story?.objective.kind === 'books' ? story.objective.min : undefined,
+      });
     else {
       const solitaire =
         gameId === 'klondike'
@@ -457,30 +474,60 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
     }
   }
 
-  /** Same deal, same options, from the beginning. */
-  async function restartDeal(): Promise<void> {
-    if (!currentTable) return;
-    const table = createGame(currentTable);
-    gameEvent('game_started', { start: 'restart' });
-    await saves.save(table);
-    mount(table);
+  let replacing = false;
+  let disposed = false;
+
+  async function replaceDeal(table: Table, start: 'new' | 'restart'): Promise<void> {
+    replacing = true;
+    gameEvent('game_started', { start });
+    view?.destroy();
+    view = null;
+    try {
+      await saves.save(table);
+      if (!disposed) mount(table);
+    } finally {
+      replacing = false;
+    }
   }
 
-  async function newGame(askOptions: boolean): Promise<void> {
+  /** Same deal, same options, from the beginning. */
+  async function restartDeal(): Promise<void> {
+    if (!currentTable || replacing || disposed) return;
+    await replaceDeal(createGame(currentTable, true), 'restart');
+  }
+
+  async function newGame(askOptions: boolean, previous = currentTable): Promise<void> {
     if (askOptions && !story && !(await chooseOptions())) {
-      goBack();
+      if (!disposed) goBack();
       return;
     }
-    const table = createGame();
-    gameEvent('game_started', { start: 'new' });
-    await saves.save(table);
-    mount(table);
+    if (replacing || disposed) return;
+    if (askOptions && previous && SOLITAIRE.includes(gameId!)) {
+      const sd = previous.data as SolitaireData;
+      if (sd.moves > 0 && !sd.won) {
+        recordGameResult(store, {
+          gameId: gameId!,
+          outcome: 'loss',
+          score: sd.score,
+          durationMs: sd.elapsedMs,
+          key: `${gameId}:${sd.seed}:${sd.startedAt}`,
+        });
+      }
+    }
+    await replaceDeal(createGame(previous ?? undefined), 'new');
   }
 
   async function start(): Promise<void> {
     let saved = await saves.load(gameId!);
+    if (disposed) return;
     // The story slot only resumes the same challenge.
-    if (saved && story && saved.data.storyLevel !== story.id) {
+    if (
+      saved &&
+      story &&
+      (saved.data.storyLevel !== story.id ||
+        saved.gameId !== story.game ||
+        !!story.setup.options?.freecellPuzzle !== !!saved.data.puzzle)
+    ) {
       await saves.delete(gameId!);
       saved = null;
     }
@@ -502,22 +549,13 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
           { label: 'Resume', value: 'resume', icon: 'play' },
         ],
       });
+      if (disposed) return;
       if (choice === 'resume') {
         gameEvent('game_resumed', { start: 'saved_game' });
         return mount(saved);
       }
-      if (SOLITAIRE.includes(gameId!) && sd.moves > 0 && !sd.won) {
-        recordGameResult(store, {
-          gameId: gameId!,
-          outcome: 'loss',
-          score: sd.score,
-          durationMs: sd.elapsedMs,
-          key: `${gameId}:${sd.seed}:${sd.startedAt}`,
-        });
-      }
-      await saves.delete(gameId!);
     }
-    await newGame(true);
+    await newGame(true, saved);
   }
 
   return {
@@ -528,6 +566,7 @@ export const GameplayScreen: ScreenFactory = ({ store }) => {
       else goBack();
     },
     unmount() {
+      disposed = true;
       view?.destroy();
       setPlayInProgress(false);
       setTableInfo(null);

@@ -330,3 +330,31 @@ covered or off-screen control. No page errors. Result: **7/7 passed**.
 ## 7. Full end-to-end run
 
 Recorded after the run; see the commit message for the final counts.
+
+## Visual loading and offline artwork — November 7, 2026
+
+- After boot, prepare the selected deck/table and the next available story challenge, including chapter dialogue poses. Sprite warming uses two low-priority transfers/decodes at a time; speculative boot warming respects Data Saver.
+- Await image decode before publishing card-atlas and board URLs. Concurrent deck requests now await the full deck rather than treating the opening's back-only publication as complete.
+- Failed image requests and story-manifest requests can retry; reconnect clears resolved deck fallbacks before warming again.
+- Release artwork is cache-first without re-fetching cached images. Fetch events retain cache writes. Release cache hashes include emitted visuals, metadata and worker source, so artwork-only deployments refresh correctly.
+- Settings → Data → **Download visuals for offline play** saves the complete standard visual library, including unused story chapters and unlockable decks, without decoding it all. The generated manifest has 673 files / 28.46 MiB in the standard build. Two workers download with per-file timeouts; retries reuse completed files, failures are counted, and success is shown only after all cache writes complete. Mature folders and streamed music are excluded.
+- Installing the PWA automatically downloads the visual pack. Installed launches (including iOS home-screen launches), reconnects and worker updates recheck it. A completion marker lives in the release cache, so completed packs are reused and a new release downloads its visuals automatically. Interrupted packs reuse saved files on retry. Download start/completion notices are silent; the Settings button remains available.
+- Offline storage is per device and may be evicted by the browser. Installed launches restore missing packs; existing repair and save-transfer controls remain available.
+
+Validation: 538 unit tests; 13 release browser checks covering phone/desktop offline gameplay, saved progress, update/repair isolation, all Pages-path assets, full visual download, offline fetch of every packed file, representative image decoding and repeat download. Deck and story validators reported zero errors (existing artwork warnings remain documented in ART_ASSET_AUDIT.md).
+
+## Preferred deck and atlas repair
+
+The latest deck selection is now shared by Story Mode and Quick Play, including restored hands. Picking another game restores its board, without restoring an older deck. Story table settings expose deck/back choices while keeping the chapter board and game rules. Versus previews use the same selected deck; ghost rematches do not replace it.
+
+Dante V2's shipped and source PNGs contained damaged IDAT data. Recovered its matching original illustration, recorded its uneven source column/row boundaries in `scripts/art/normalize-dante-v2.py`, and rebuilt all 52 cells at 139×192. Compressed runtime WebP faces/backs/previews for Dante V2, Cannabis Nugs and YummyHole now join the offline visual pack. PNG fallbacks remain supported. Existing illustration-level pip/index imperfections are distinct from the repaired image decoding and sprite cuts.
+
+Regression checks cover changing decks during Quick Play and a story challenge, switching modes/games with older per-game memory present, and reloading the saved preference. A browser audit fully decodes every ready general deck sheet, including the three PNG fallbacks, and checks 13×4 cell dimensions. These checks are part of the release gate.
+
+## Matched backs and whole Cannabis cards
+
+Independent saved card-back overrides are now ignored and migrated to null; both faces and backs resolve from the selected deck/variant. The renderer also rejects an old cross-deck back theme. Table settings explain that backs match automatically; picking an owned design in Collection → Card Backs selects that complete deck/variant. Existing hands keep their game state when the deck changes.
+
+The Cannabis Nugs image had been resized as a complete sheet despite uneven illustrated column widths. `scripts/art/normalize-cannabis.py` now preserves the uncropped sheet and records every source border, then exports each whole card to a uniform 139×192 cell. The new pixel regression checks both PNG and WebP for interior full-height sheet dividers: it flags 48 cells in the old sheet and zero in the repaired sheet. All 52 repaired cuts were checked, including the rightmost court cards.
+
+Release tests switch all 13 general decks in both Quick Play and Story War, verify every visible back's deck key AND actual image URL, cover a switch during a round animation, and seed a legacy mismatched back. Unit tests cover saved-selection migration and rejecting a stale back theme. These checks supplement full sheet decoding, which alone cannot detect incorrect slicing.

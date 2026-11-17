@@ -108,6 +108,34 @@ test('the map: only Chapter 1 is open; the next place is locked; the rest undisc
   await expectNoOverflow(page);
 });
 
+test('Jak uses his BlackJak expressions in dialogue, versus and on the table', async ({ page }) => {
+  await seed(page, {
+    settings: { reducedMotion: true },
+    profile: {
+      schemaVersion: 3,
+      story: story({ completed: [1, 2, 3].flatMap((n) => chapterLevels(n)), introsSeen: ['th-4'] }),
+    },
+  });
+  await enterParlor(page);
+  await openStory(page);
+  await openChapter(page, 'th-4');
+  await clickInPager(page, '[data-level="th-4-1"]');
+  const expectPose = async (selector: string, pose: string) => {
+    const image = page.locator(selector).locator('img');
+    await expect(image).toHaveAttribute('data-story-sprite', `jak-gold/${pose}`);
+    await expect.poll(() => image.evaluate((img: HTMLImageElement) => img.naturalWidth)).toBeGreaterThan(0);
+  };
+  await expectPose('.dialog-scene [data-portrait="jak_gold"]', 'portrait-talk');
+  await action(page, 'play').click();
+  await expectPose('[data-versus="th-4-1"] [data-portrait="jak_gold"]', 'portrait-greet');
+  await action(page, 'play').click();
+  await expectScreen(page, 'GAMEPLAY');
+  const face = page.locator(`${CURRENT} .war-who [data-avatar="jak_gold"]`);
+  await expect(face).toHaveAttribute('data-art', 'story');
+  await expectPose(`${CURRENT} .war-who [data-avatar="jak_gold"]`, 'portrait-neutral');
+  await expect(face.locator('.avatar-card')).toHaveCount(0);
+});
+
 test('a challenge from intro to reward; rewards persist and are paid only once', async ({ page }) => {
   await seed(page, { settings: { warSpeed: 'instant' } });
   await enterParlor(page);
@@ -372,7 +400,7 @@ test('story artwork that fails to load never blocks play', async ({ page }) => {
   await expectScreen(page, 'GAMEPLAY');
 });
 
-test('every challenge launches with its own game, deck and table, and seeded deals repeat exactly', async ({
+test('every challenge keeps its game and table with the preferred deck, and seeded deals repeat exactly', async ({
   page,
 }, info) => {
   test.skip(info.project.name !== 'phone-portrait', 'one layout is enough to launch all 45');
@@ -396,8 +424,10 @@ test('every challenge launches with its own game, deck and table, and seeded dea
       s.dispatch({ type: 'NAVIGATE', to: 'GAMEPLAY' });
     }, id);
     await expectScreen(page, 'GAMEPLAY');
-    const fresh = action(page, 'new');
-    if (await fresh.isVisible({ timeout: 800 }).catch(() => false)) await fresh.click();
+    const resume = action(page, 'resume');
+    const firstCard = page.locator(`${CURRENT} .card`).first();
+    await expect(resume.or(firstCard).first()).toBeVisible();
+    if (await resume.isVisible()) await resume.click();
     await expect(action(page, 'deal')).toHaveCount(0); // no options dialog in story
     await expect(page.locator(`${CURRENT} .card`).first()).toBeVisible();
     await expect(page.locator('.dialog-backdrop')).toHaveCount(0);
@@ -410,7 +440,7 @@ test('every challenge launches with its own game, deck and table, and seeded dea
     await test.step(l.id, async () => {
       await launch(l.id);
       await expect(page.locator(`${CURRENT}.table`)).toHaveAttribute('data-board', l.board);
-      await expect(page.locator(`${CURRENT} .card[data-theme^="${l.deck}@"]`).first()).toBeAttached();
+      await expect(page.locator(`${CURRENT} .card[data-theme^="classic@"]`).first()).toBeAttached();
       if (l.seeded && ['klondike', 'spider', 'freecell'].includes(l.game)) {
         await expect.poll(faces).not.toBe('');
         const first = await faces();

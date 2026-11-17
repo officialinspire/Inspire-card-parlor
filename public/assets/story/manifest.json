@@ -1017,6 +1017,207 @@
       ]
     },
     {
+      "id": "jak-gold",
+      "title": "Jak Gold (BlackJak dealer atlas)",
+      "group": "characters",
+      "layout": {
+        "type": "rects",
+        "frames": {
+          "portrait-neutral": [
+            1176,
+            8,
+            246,
+            292
+          ],
+          "portrait-talk": [
+            23,
+            11,
+            334,
+            291
+          ],
+          "portrait-think": [
+            907,
+            8,
+            263,
+            293
+          ],
+          "portrait-doubt": [
+            602,
+            9,
+            295,
+            292
+          ],
+          "portrait-surprise": [
+            357,
+            10,
+            233,
+            290
+          ],
+          "portrait-greet": [
+            1251,
+            606,
+            190,
+            248
+          ],
+          "cards-fan": [
+            293,
+            306,
+            219,
+            276
+          ],
+          "full-arms-crossed": [
+            729,
+            609,
+            142,
+            441
+          ]
+        }
+      },
+      "source": {
+        "path": "art/sources/story/characters/blackjak-sprite-sheet.webp",
+        "sha256": "bd24d6e959cdcee140fbcd598a8d6b52815bfa66ee7a719fd7d7f9a6670eea6c",
+        "width": 1448,
+        "height": 1086,
+        "mode": "RGBA",
+        "hasAlpha": true,
+        "transparentShare": 0.346
+      },
+      "verified": false,
+      "notes": "Original BlackJak runtime atlas, officialinspire/BlackJak at dc610244e33e7169cc4b33ab33c8fc427540a757. Frames follow DEALER_SPRITES in src/data/visual-atlas.ts. Greeting uses the upper portion of full-present.",
+      "sprites": [
+        {
+          "id": "jak-gold/portrait-neutral",
+          "name": "portrait-neutral",
+          "frame": {
+            "x": 1176,
+            "y": 8,
+            "w": 246,
+            "h": 292
+          },
+          "src": "assets/story/characters/jak-gold/portrait-neutral.webp",
+          "width": 246,
+          "height": 292,
+          "thumb": "assets/story/characters/jak-gold/thumbs/portrait-neutral.webp",
+          "thumbWidth": 108,
+          "thumbHeight": 128
+        },
+        {
+          "id": "jak-gold/portrait-talk",
+          "name": "portrait-talk",
+          "frame": {
+            "x": 23,
+            "y": 11,
+            "w": 334,
+            "h": 291
+          },
+          "src": "assets/story/characters/jak-gold/portrait-talk.webp",
+          "width": 334,
+          "height": 291,
+          "thumb": "assets/story/characters/jak-gold/thumbs/portrait-talk.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 112
+        },
+        {
+          "id": "jak-gold/portrait-think",
+          "name": "portrait-think",
+          "frame": {
+            "x": 907,
+            "y": 8,
+            "w": 263,
+            "h": 293
+          },
+          "src": "assets/story/characters/jak-gold/portrait-think.webp",
+          "width": 263,
+          "height": 293,
+          "thumb": "assets/story/characters/jak-gold/thumbs/portrait-think.webp",
+          "thumbWidth": 115,
+          "thumbHeight": 128
+        },
+        {
+          "id": "jak-gold/portrait-doubt",
+          "name": "portrait-doubt",
+          "frame": {
+            "x": 602,
+            "y": 9,
+            "w": 295,
+            "h": 292
+          },
+          "src": "assets/story/characters/jak-gold/portrait-doubt.webp",
+          "width": 295,
+          "height": 292,
+          "thumb": "assets/story/characters/jak-gold/thumbs/portrait-doubt.webp",
+          "thumbWidth": 128,
+          "thumbHeight": 127
+        },
+        {
+          "id": "jak-gold/portrait-surprise",
+          "name": "portrait-surprise",
+          "frame": {
+            "x": 357,
+            "y": 10,
+            "w": 233,
+            "h": 290
+          },
+          "src": "assets/story/characters/jak-gold/portrait-surprise.webp",
+          "width": 233,
+          "height": 290,
+          "thumb": "assets/story/characters/jak-gold/thumbs/portrait-surprise.webp",
+          "thumbWidth": 103,
+          "thumbHeight": 128
+        },
+        {
+          "id": "jak-gold/portrait-greet",
+          "name": "portrait-greet",
+          "frame": {
+            "x": 1251,
+            "y": 606,
+            "w": 190,
+            "h": 248
+          },
+          "src": "assets/story/characters/jak-gold/portrait-greet.webp",
+          "width": 190,
+          "height": 248,
+          "thumb": "assets/story/characters/jak-gold/thumbs/portrait-greet.webp",
+          "thumbWidth": 98,
+          "thumbHeight": 128
+        },
+        {
+          "id": "jak-gold/cards-fan",
+          "name": "cards-fan",
+          "frame": {
+            "x": 293,
+            "y": 306,
+            "w": 219,
+            "h": 276
+          },
+          "src": "assets/story/characters/jak-gold/cards-fan.webp",
+          "width": 219,
+          "height": 276,
+          "thumb": "assets/story/characters/jak-gold/thumbs/cards-fan.webp",
+          "thumbWidth": 102,
+          "thumbHeight": 128
+        },
+        {
+          "id": "jak-gold/full-arms-crossed",
+          "name": "full-arms-crossed",
+          "frame": {
+            "x": 729,
+            "y": 609,
+            "w": 142,
+            "h": 441
+          },
+          "src": "assets/story/characters/jak-gold/full-arms-crossed.webp",
+          "width": 142,
+          "height": 441,
+          "thumb": "assets/story/characters/jak-gold/thumbs/full-arms-crossed.webp",
+          "thumbWidth": 41,
+          "thumbHeight": 128
+        }
+      ],
+      "status": "processed",
+      "warnings": []
+    },
+    {
       "id": "steve-gonzales",
       "title": "Steve Gonzales",
       "group": "characters",

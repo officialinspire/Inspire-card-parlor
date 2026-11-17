@@ -479,12 +479,13 @@ export function attachAmbience(store: Store): void {
   const player = new WebAmbience();
   const controller = new AmbienceController(player);
   const sync = () => {
+    if (document.hidden || !audio.context) return;
     const s = store.state;
     controller.update(
       ambienceTarget({
         screen: s.screen,
         enabled: s.settings.ambience && s.boot.ready,
-        unlocked: audio.context !== null,
+        unlocked: true,
         theme: resolveTheme(s.settings.theme),
       }),
     );
@@ -493,15 +494,7 @@ export function attachAmbience(store: Store): void {
   store.select((s) => `${s.settings.ambience}|${s.settings.theme}`, sync);
   // "Auto" lighting follows the clock: check now and then for dusk and dawn.
   setInterval(sync, 60_000);
-  // Sound is allowed only after a gesture; pick up as soon as it is.
-  const onGesture = () => {
-    if (audio.context) return;
-    void audio.unlock().then(sync);
-  };
-  addEventListener('pointerdown', onGesture);
-  addEventListener('keydown', onGesture);
-  document.addEventListener('visibilitychange', () => {
-    if (!document.hidden) sync();
-  });
+  // Use the actual resumed context, rather than racing the visibility event.
+  audio.onContextRunning(sync);
   debug = () => ({ ...player.state, target: controller.target });
 }

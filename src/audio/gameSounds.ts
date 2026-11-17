@@ -15,6 +15,8 @@ import { audio, type Sfx } from './engine';
  * event), with `played` telling whether it made a sound.
  */
 export type GameSound =
+  | 'match'
+  | 'set_complete'
   | 'card_flip'
   | 'card_deal'
   | 'card_move'
@@ -37,6 +39,8 @@ export type GameSound =
   | 'celebrate';
 
 export const GAME_SOUND_SFX: Record<GameSound, Sfx> = {
+  match: 'valid',
+  set_complete: 'chime',
   card_flip: 'flip',
   card_deal: 'deal',
   card_move: 'slide',
@@ -68,6 +72,8 @@ export const GAME_SOUND_HAPTIC: Partial<Record<GameSound, 'tap' | 'error' | 'imp
 
 /** Minimum time between two plays of the same event. */
 const MIN_GAP: Record<GameSound, number> = {
+  match: 100,
+  set_complete: 250,
   card_flip: 50,
   card_deal: 38,
   card_move: 60,
@@ -110,6 +116,8 @@ const SUPERSEDES: Partial<Record<GameSound, GameSound[]>> = {
   puzzle_solved: ['suit_set'],
   war_battle: ['card_flip', 'card_move'],
   invalid_move: ['card_move', 'valid_move'],
+  set_complete: ['match', 'valid_move', 'card_move', 'card_flip'],
+  match: ['card_move', 'valid_move'],
   valid_move: ['card_move'],
   card_shuffle: ['card_deal'],
 };

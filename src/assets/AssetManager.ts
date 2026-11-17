@@ -32,7 +32,11 @@ export const browserImageLoader: ImageLoader = (url) =>
   new Promise((resolve, reject) => {
     const img = new Image();
     img.decoding = 'async';
-    img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight });
+    img.onload = async () => {
+      // Finish decode before publishing CSS atlas/board URLs to avoid a blank first paint.
+      await img.decode?.().catch(() => undefined);
+      resolve({ width: img.naturalWidth, height: img.naturalHeight });
+    };
     img.onerror = () => reject(new Error(`Failed to load ${url}`));
     img.src = url;
   });
@@ -128,6 +132,10 @@ export class AssetManager {
       })();
       this.#images.set(key, p);
     }
+    // A temporary offline miss must be retryable when the connection returns.
+    void p.then((image) => {
+      if (!image && this.#images.get(key) === p) this.#images.delete(key);
+    });
     return p;
   }
 
@@ -162,19 +170,19 @@ export class AssetManager {
    * without requesting files that do not exist yet.
    */
   loadDeck(theme: DeckTheme): Promise<DeckArt> {
+    // An opening back-only publication is not a completed deck.
+    const pending = this.#pending.get(theme.key);
+    if (pending) return pending;
     const cached = this.#decks.get(theme.key);
     if (cached) return Promise.resolve(cached);
-    let p = this.#pending.get(theme.key);
-    if (!p) {
-      p = this.#load(theme).then((art) => {
-        this.#decks.set(theme.key, art);
-        this.#pending.delete(theme.key);
-        for (const l of this.#listeners) l(theme.key);
-        return art;
-      });
-      this.#pending.set(theme.key, p);
-    }
-    return p;
+    const loading = this.#load(theme).then((art) => {
+      this.#decks.set(theme.key, art);
+      this.#pending.delete(theme.key);
+      for (const l of this.#listeners) l(theme.key);
+      return art;
+    });
+    this.#pending.set(theme.key, loading);
+    return loading;
   }
 
   async #load(theme: DeckTheme): Promise<DeckArt> {

@@ -57,6 +57,7 @@ test('music player: play/pause, next/previous, shuffle, repeat, playlists, volum
   await expect(player.locator('[data-category="woodland-ambience"]')).toHaveAttribute('aria-checked', 'true');
   await expect(player.locator('[data-value="track-title"]')).toHaveText(/Woodland Hush|Turtle Creek/);
   // Only this playlist's tracks are listed (paged on short screens).
+  await expect(player.locator('.mp-tracks [data-track]').first()).toBeVisible();
   const listed = await player
     .locator('.mp-tracks [data-track]')
     .evaluateAll((els) => els.map((e) => (e as HTMLElement).dataset.track));
@@ -243,8 +244,7 @@ test('collection: real preview art, extras, and a card binder that turns pages a
     await next.click();
     await expect(page.locator(`${CURRENT} .binder .pager-grid`)).toHaveClass(/page-in-right/);
   }
-  await page.locator(`${CURRENT} select[data-gallery-deck]`).selectOption('freemasonry');
-  await expect(page.locator(`${CURRENT} [data-binder="freemasonry"] [data-unlock="locked"]`)).toBeVisible();
+  await expect(page.locator(`${CURRENT} select[data-gallery-deck] option[value="freemasonry"]`)).toHaveCount(0);
   await expectNoOverflow(page);
 });
 

@@ -47,7 +47,7 @@ export interface StorySheet {
   id: string;
   title: string;
   group: StoryGroup;
-  layout: { type: 'grid' | 'blobs' | 'single' | 'board' | 'audit'; [key: string]: unknown };
+  layout: { type: 'grid' | 'blobs' | 'rects' | 'single' | 'board' | 'audit'; [key: string]: unknown };
   source: {
     path: string;
     sha256: string;
@@ -99,9 +99,13 @@ export function loadStoryArt(): Promise<StoryManifest | null> {
     .then((r) => (r.ok ? (r.json() as Promise<StoryManifest>) : null))
     .then((m) => {
       if (m) indexManifest(m);
+      else loading = null;
       return m;
     })
-    .catch(() => null);
+    .catch(() => {
+      loading = null;
+      return null;
+    });
   return loading;
 }
 

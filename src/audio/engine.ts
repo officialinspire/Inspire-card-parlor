@@ -38,6 +38,7 @@ interface Voice {
   nodes: AudioNode[];
   step: number;
   alive: boolean;
+  waitingForGesture?: boolean;
 }
 
 const FADE_IN = 1.6;
@@ -72,6 +73,7 @@ class AudioEngine {
   };
   #ambienceNoise: AudioBuffer | null = null;
   #noise: AudioBuffer | null = null;
+  #effectsEnabled = true;
   #track: MusicTrack = ALL_TRACKS[0]!;
   #voice: Voice | null = null;
   /** Seconds of the current track already played (before the current run). */
@@ -81,6 +83,7 @@ class AudioEngine {
   #onEnded: (() => void) | null = null;
   #onFailed: ((track: MusicTrack) => void) | null = null;
   #unlockListener: (() => void) | null = null;
+  #contextRunning = new Set<() => void>();
 
   get unlocked(): boolean {
     return this.#ctx?.state === 'running';
@@ -121,8 +124,13 @@ class AudioEngine {
       this.#ambience.connect(this.#master);
       this.#master.connect(this.#limiter).connect(ctx.destination);
       this.#applyVolumes();
+      const notifyRunning = () => {
+        if (this.unlocked) for (const listener of this.#contextRunning) listener();
+      };
+      ctx.addEventListener('statechange', notifyRunning);
+      notifyRunning();
     }
-    if (this.#ctx.state === 'suspended') await this.#ctx.resume().catch(() => undefined);
+    if (!this.unlocked && this.#ctx.state !== 'closed') await this.#ctx.resume().catch(() => undefined);
     if (this.unlocked && this.#unlockListener) {
       const fn = this.#unlockListener;
       this.#unlockListener = null;
@@ -134,6 +142,12 @@ class AudioEngine {
   onUnlock(fn: () => void): void {
     if (this.unlocked) fn();
     else this.#unlockListener = fn;
+  }
+
+  /** Re-sync listeners on initial unlock and after browser interruptions. */
+  onContextRunning(listener: () => void): void {
+    this.#contextRunning.add(listener);
+    if (this.unlocked) listener();
   }
 
   configure(settings: VolumeSettings): void {
@@ -228,12 +242,16 @@ class AudioEngine {
     this.#tone(freq * 1.6, start, dur, 'sine', peak, this.#out ?? this.#sfx, freq * 0.6);
   }
 
+  setEffectsEnabled(enabled: boolean): void {
+    this.#effectsEnabled = enabled;
+  }
+
   /**
    * Plays an effect. `level` (0–1) plays it quieter, e.g. the fifth card of a
    * quick run; it rides the sfx bus, so the player's volumes still apply.
    */
   play(name: Sfx, level = 1): void {
-    if (!this.unlocked) return;
+    if (!this.#effectsEnabled || !this.unlocked || document.hidden) return;
     const ctx = this.#ctx!;
     const t = ctx.currentTime;
     let sfx: AudioNode = this.#sfx;
@@ -390,10 +408,10 @@ class AudioEngine {
 
   /** Plays `track`, crossfading from whatever is playing. Same track: keeps playing (or resumes). */
   startMusic(track: MusicTrack = this.#track): void {
+    if (!this.unlocked) return;
     const switching = track.id !== this.#track.id;
     if (switching) this.#elapsedBefore = 0;
     this.#track = track;
-    if (!this.unlocked) return;
     if (this.#voice && !switching) return;
     if (this.#voice) this.#release(this.#voice, FADE_OUT);
     this.#voice = this.#begin(track);
@@ -443,18 +461,34 @@ class AudioEngine {
       el.addEventListener('ended', () => this.#voice === voice && this.#onEnded?.());
       // Missing file or a format this browser can't decode: hand over to the controller.
       el.addEventListener('error', () => this.#voice === voice && this.#onFailed?.(track));
-      void el.play().catch((e: unknown) => {
-        // Autoplay refusals are retried on the next gesture; real decode errors fire 'error'.
-        if (e instanceof DOMException && e.name === 'NotSupportedError' && this.#voice === voice)
-          this.#onFailed?.(track);
-      });
+      this.#playRecording(voice);
     } else {
       this.#texture(voice, track.texture ?? 'none');
       this.#schedule(voice, track);
-      const remaining = Math.max(1, track.duration - this.#elapsedBefore);
-      this.#endTimer = setTimeout(() => this.#voice === voice && this.#onEnded?.(), remaining * 1000);
+      const checkEnd = () => {
+        if (this.#voice !== voice) return;
+        const remaining = track.duration - this.position;
+        if (remaining <= 0) this.#onEnded?.();
+        else this.#endTimer = setTimeout(checkEnd, Math.max(100, remaining * 1000));
+      };
+      this.#endTimer = setTimeout(checkEnd, Math.max(100, (track.duration - this.#elapsedBefore) * 1000));
     }
     return voice;
+  }
+
+  #playRecording(voice: Voice): void {
+    voice.waitingForGesture = false;
+    void voice.element?.play().catch((error: unknown) => {
+      if (this.#voice !== voice || !(error instanceof DOMException)) return;
+      if (error.name === 'NotAllowedError') voice.waitingForGesture = true;
+      else if (error.name === 'NotSupportedError') this.#onFailed?.(voice.track);
+    });
+  }
+
+  /** Retry autoplay refusals on the same media element and inside the gesture. */
+  retryRecordingFromGesture(): void {
+    const voice = this.#voice;
+    if (voice?.waitingForGesture && !document.hidden) this.#playRecording(voice);
   }
 
   #fading = new Set<Voice>();
@@ -489,8 +523,14 @@ class AudioEngine {
 
   /** Chords, bells, bass and birds, one bar at a time. */
   #schedule(voice: Voice, track: SynthTrack): void {
+    const ctx = this.#ctx!;
+    let nextBarAt = ctx.currentTime;
     const loop = () => {
-      const ctx = this.#ctx!;
+      const untilNextBar = nextBarAt - ctx.currentTime;
+      if (!this.unlocked || untilNextBar > 0.005) {
+        voice.timer = setTimeout(loop, this.unlocked ? untilNextBar * 1000 : 250);
+        return;
+      }
       const t = ctx.currentTime + 0.05;
       const { chords, bar, bells, bellOctave } = track;
       const chord = chords[voice.step % chords.length]!;
@@ -510,6 +550,7 @@ class AudioEngine {
           this.#tone(base, at + i * 0.13, 0.09, 'sine', 0.025, voice.gain, base * 1.35);
       }
       voice.step++;
+      nextBarAt = t + bar - 0.05;
       voice.timer = setTimeout(loop, bar * 1000);
     };
     loop();
@@ -580,11 +621,20 @@ class AudioEngine {
     }
   }
 
-  /** Pause everything while the tab is hidden. */
-  setSuspended(suspended: boolean): void {
-    if (!this.#ctx) return;
-    if (suspended) void this.#ctx.suspend();
-    else void this.#ctx.resume();
+  /** Keep the recorded track's playhead still while the context is suspended. */
+  async setSuspended(suspended: boolean): Promise<void> {
+    const ctx = this.#ctx;
+    if (!ctx) return;
+    if (suspended) {
+      this.#voice?.element?.pause();
+      for (const voice of this.#fading) voice.element?.pause();
+      await ctx.suspend().catch(() => undefined);
+    } else {
+      await ctx.resume().catch(() => undefined);
+      const voice = this.#voice;
+      if (!document.hidden && this.unlocked && voice?.element?.paused && !voice.waitingForGesture)
+        this.#playRecording(voice);
+    }
   }
 }
 

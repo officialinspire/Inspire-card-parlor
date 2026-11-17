@@ -151,9 +151,12 @@ test('Story Mode loads only what is shown and what comes next', async ({ page })
     if (u.pathname.includes('/assets/story/')) story.push(u.pathname.replace(/^.*\/assets\/story\//, ''));
   });
   await enterParlor(page);
-  // The menu decodes no story artwork (at most the small manifest).
+  // Idle preloading warms only the current chapter and the next map thumbnail.
   await page.waitForTimeout(800);
-  expect(story.filter((p) => p.endsWith('.webp'))).toEqual([]);
+  const warmImages = story.filter((p) => p.endsWith('.webp'));
+  expect(warmImages.length).toBeLessThanOrEqual(24);
+  for (const image of warmImages)
+    expect(image).toMatch(/^(characters\/cheryl\/|map\/thumbs\/location-(antique-shop|ranger-station)\.webp$)/);
 
   await clickNav(page, 'STORY_MODE');
   await expect(page.locator(`${CURRENT} [data-chapter="th-1"] img.map-place`)).toBeVisible();

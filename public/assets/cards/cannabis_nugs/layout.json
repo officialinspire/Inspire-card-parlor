@@ -1,0 +1,32 @@
+{
+  "faces": "faces.png",
+  "back": "back.png",
+  "size": {
+    "width": 1807,
+    "height": 768
+  },
+  "cell": {
+    "width": 139,
+    "height": 192
+  },
+  "grid": {
+    "columns": 13,
+    "rows": 4,
+    "suitOrder": ["spades", "hearts", "diamonds", "clubs"],
+    "rankOrder": ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"],
+    "margin": 0,
+    "spacing": 0
+  },
+  "backSize": {
+    "width": 139,
+    "height": 192
+  },
+  "dimensionReference": "public/assets/cards/classic/atlas.json",
+  "status": "card-cuts-verified",
+  "normalization": {
+    "source": "source-faces.webp",
+    "sourceColumns": [1, 168, 324, 476, 626, 772, 907, 1037, 1165, 1285, 1402, 1540, 1675, 1806],
+    "sourceRows": [1, 192, 383, 575, 767],
+    "method": "individual whole-card border cuts, resized to 139x192 cells"
+  }
+}

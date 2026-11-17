@@ -5,7 +5,7 @@ import { gameSound } from '@/audio';
 import { haptic } from '@/utils/haptics';
 import { allDecks } from '@/decks/registry';
 import { allBoards } from '@/boards/registry';
-import { getAchievement } from '@/achievements/registry';
+import { RARITY_LABEL, getAchievement } from '@/achievements/registry';
 import { onAchievementsEarned } from '@/achievements/engine';
 import { notify } from '@/components/Notifications';
 import { isBoardUnlocked, isDeckUnlocked } from './levels';
@@ -107,11 +107,11 @@ function show(a: Announcement, index: number): void {
         if (!def) return;
         gameSound('achievement');
         haptic('success');
-        notify(def.name, {
+        notify(`${def.name} · ${RARITY_LABEL[def.rarity]} · +${def.xp} XP`, {
           kind: 'celebrate',
-          title: 'Achievement unlocked',
+          title: 'Badge earned · saved in Achievements',
           badge: def.id,
-          duration: 4200,
+          duration: 6000,
           sound: false,
         });
         break;
@@ -181,7 +181,7 @@ export function attachAnnouncer(store: Store): void {
       const nowDecks = visibleDecks(p);
       const nowBoards = visibleBoards(p);
       // Hydrating a save is not an unlock.
-      if (action.type !== 'HYDRATE') {
+      if (action.type !== 'HYDRATE' && action.type !== 'RESTORE_BACKUP') {
         for (const id of nowDecks)
           if (!decks.has(id)) announce({ kind: 'deck', id, name: allDecks().find((d) => d.id === id)!.name });
         for (const id of nowBoards)

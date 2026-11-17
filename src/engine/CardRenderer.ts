@@ -94,8 +94,8 @@ export class CardRenderer {
   }
 
   renderBack(deckTheme: DeckTheme, opts: RenderOptions = {}): HTMLElement {
-    // The player may pair any deck with a card back from another deck or artwork.
-    const theme = deckTheme.backTheme ?? deckTheme;
+    // Faces and backs are an inseparable deck/variant pair, including legacy themes.
+    const theme = deckTheme;
     const el = this.#base(theme, 'back', opts);
     el.setAttribute('aria-hidden', 'true');
     if (opts.cover) {

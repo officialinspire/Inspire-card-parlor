@@ -3,7 +3,7 @@ import { APP } from '@/core/config';
 import { AppState } from '@/core/states';
 import { navigate } from '@/core/store';
 import { deckThemes, getDeck } from '@/decks';
-import { audio, startMusicFromGesture } from '@/audio';
+import { audio } from '@/audio';
 import { track } from '@/analytics/analytics';
 import { introPlan, introTimeline, readLaunchHistory, recordIntroPlayed, type IntroStage } from '@/core/intro';
 import { prefersReducedMotion } from '@/utils/device';
@@ -27,8 +27,8 @@ import { Disposer, type ScreenFactory } from '../Screen';
  *  · Any tap, Enter, Space or Escape — or the Skip button — jumps to the
  *    title. The start itself needs its own tap or key, so a skip never starts
  *    the game by accident, and a second tap never starts it twice.
- *  · The start gesture unlocks Web Audio, plays a soft chime and starts the
- *    menu music (if it isn't paused).
+ *  · The start gesture unlocks Web Audio and plays the studio video. The
+ *    video has the only soundtrack until the menu opens.
  *  · Reduced motion (the setting or the system preference) and Low effects
  *    keep only short fades. The sequence pauses with the tab and every timer
  *    and listener is released when the screen goes.
@@ -150,7 +150,9 @@ export const InitializationScreen: ScreenFactory = ({ store }) => {
   // ----- Stages -----
   let stage: IntroStage = plan === 'full' ? 'black' : 'title';
   const timeline = new Timeline();
+  const exit = new Timeline();
   d.add(() => timeline.clear());
+  d.add(() => exit.clear());
 
   const setStage = (next: IntroStage) => {
     stage = next;
@@ -168,24 +170,102 @@ export const InitializationScreen: ScreenFactory = ({ store }) => {
     setStage(store.state.boot.ready ? 'ready' : 'title');
   };
 
+  // Play inside the original gesture so mobile browsers permit media playback.
+  let studio: { finish: () => void; setHidden: (hidden: boolean) => void } | null = null;
+  const playStudioIntro = () => {
+    const video = h('video', {
+      class: 'studio-video',
+      playsinline: '',
+      preload: 'auto',
+      'aria-label': 'Inspire Software intro',
+    }) as HTMLVideoElement;
+    const applyVolume = ({ masterVolume, sfxVolume, muted }: typeof settings) => {
+      const volume = Math.max(0, Math.min(1, masterVolume * sfxVolume));
+      video.muted = muted || volume === 0;
+      video.volume = volume;
+    };
+    applyVolume(store.state.settings);
+    video.src = `${import.meta.env.BASE_URL}assets/video/inspiresoftwareintro.mp4`;
+
+    const watchdog = new Timeline();
+    const unsubscribe = store.select((s) => s.settings, applyVolume);
+    let finished = false;
+    let attempt = 0;
+    const cleanup = () => {
+      if (finished) return;
+      finished = true;
+      unsubscribe();
+      watchdog.clear();
+      video.removeEventListener('ended', finish);
+      video.removeEventListener('error', finish);
+      video.pause();
+      video.removeAttribute('src');
+      video.load();
+      overlay.remove();
+      studio = null;
+    };
+    const finish = () => {
+      if (finished) return;
+      cleanup();
+      exit.at(times.leave, () => {
+        requestMenuReveal(times.reveal);
+        document.documentElement.dataset.booted = '';
+        navigate(AppState.MAIN_MENU);
+      });
+      if (!document.hidden) exit.start();
+    };
+    const setHidden = (hidden: boolean) => {
+      const request = ++attempt;
+      if (hidden) {
+        watchdog.pause();
+        video.pause();
+        return;
+      }
+      watchdog.start();
+      void video.play().catch(() => {
+        // A visibility pause can abort a pending play request. Let the
+        // foreground attempt, not the stale rejection, decide what happens.
+        if (request === attempt && !document.hidden) finish();
+      });
+    };
+    const skipVideo = h(
+      'button',
+      {
+        type: 'button',
+        class: 'btn btn-ghost studio-skip',
+        'data-action': 'skip-studio-intro',
+        onclick: (event: Event) => {
+          event.stopPropagation();
+          finish();
+        },
+      },
+      'Skip video',
+    );
+    const overlay = h('div', { class: 'studio-intro', 'data-studio-intro': '' }, video, skipVideo);
+    el.append(overlay);
+    skipVideo.focus();
+    studio = { finish, setHidden };
+    video.addEventListener('ended', finish, { once: true });
+    video.addEventListener('error', finish, { once: true });
+    // A stalled video gets at most 20 seconds of foreground time.
+    watchdog.at(20_000, finish);
+    d.add(cleanup);
+    setHidden(document.hidden);
+  };
+
   let starting = false;
   const activate = () => {
     // Only once, and only when loading is really done.
     if (starting || stage !== 'ready' || !store.state.boot.ready) return;
     starting = true;
-    // Inside the gesture: unlock audio first (iOS Safari requires it), then the chime and the music.
-    void audio.unlock().then(() => audio.play('chime'));
-    startMusicFromGesture(store);
+    // Unlock during the gesture, but give the studio video the audio to itself.
+    void audio.unlock();
+
     track('enter_parlor');
     store.dispatch({ type: 'JOURNAL', update: { add: { visits: 1 } } });
     setStage('leaving');
     timeline.clear();
-    timeline.at(times.leave, () => {
-      requestMenuReveal(times.reveal);
-      document.documentElement.dataset.booted = '';
-      navigate(AppState.MAIN_MENU);
-    });
-    timeline.start();
+    playStudioIntro();
   };
 
   // Taps anywhere: skip the intro, or (once ready) start.
@@ -196,6 +276,11 @@ export const InitializationScreen: ScreenFactory = ({ store }) => {
   });
   const onKey = (e: KeyboardEvent) => {
     if (e.defaultPrevented || e.repeat) return;
+    if (studio && e.key === 'Escape') {
+      e.preventDefault();
+      studio.finish();
+      return;
+    }
     const skipKey = e.key === 'Escape' || e.key === 'Enter' || e.key === ' ';
     if ((stage === 'black' || stage === 'presents') && skipKey) {
       e.preventDefault();
@@ -211,8 +296,14 @@ export const InitializationScreen: ScreenFactory = ({ store }) => {
   // The sequence (and its CSS animations) pauses with the tab.
   const onVisibility = () => {
     el.classList.toggle('paused', document.hidden);
-    if (document.hidden) timeline.pause();
-    else timeline.start();
+    studio?.setHidden(document.hidden);
+    if (document.hidden) {
+      timeline.pause();
+      exit.pause();
+    } else {
+      timeline.start();
+      if (starting && !studio) exit.start();
+    }
   };
   document.addEventListener('visibilitychange', onVisibility);
   d.add(() => document.removeEventListener('visibilitychange', onVisibility));

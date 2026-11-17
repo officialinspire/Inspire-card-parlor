@@ -63,6 +63,24 @@ async function run<T>(
 }
 
 export const idb = {
+  async replaceSaves(entries: Record<string, unknown>): Promise<void> {
+    const db = await open();
+    if (!db) throw new Error('Game storage is unavailable; your current progress was kept.');
+    await new Promise<void>((resolve, reject) => {
+      const tx = db.transaction('saves', 'readwrite');
+      const target = tx.objectStore('saves');
+      target.clear();
+      for (const [key, value] of Object.entries(entries)) target.put(value, key);
+      tx.oncomplete = () => {
+        reportWrite('games', true);
+        resolve();
+      };
+      tx.onabort = tx.onerror = () => {
+        reportWrite('games', false);
+        reject(new Error('Could not import games; your current games were kept.'));
+      };
+    });
+  },
   ready: () => open().then((db) => db !== null),
   get: <T>(store: StoreName, key: IDBValidKey) => run<T>(store, 'readonly', (s) => s.get(key)),
   set: (store: StoreName, key: IDBValidKey, value: unknown) => run(store, 'readwrite', (s) => s.put(value, key)),

@@ -92,7 +92,7 @@ export const AchievementsScreen: ScreenFactory = ({ store }) => {
         'aria-label': `${secret ? 'Secret achievement' : a.name}. ${got ? 'Earned.' : secret ? '' : progressText(a, f)}`,
         onclick: () => detail(a, store.state.profile, f),
       },
-      h('span', { class: 'achievement-medal' }, medal(a, { earned: got, size: 44 })),
+      h('span', { class: 'achievement-medal' }, medal(a, { earned: got, size: 60 })),
       h(
         'span',
         { class: 'tile-body' },
@@ -132,6 +132,22 @@ export const AchievementsScreen: ScreenFactory = ({ store }) => {
 
   const t = tabs([
     { id: 'all', label: 'All', render: () => panel([...ACHIEVEMENTS], 'All') },
+    {
+      id: 'badges',
+      label: `My badges ${earned}`,
+      render: () =>
+        earned
+          ? panel(
+              ACHIEVEMENTS.filter((a) => unlocked.has(a.id)),
+              'My badges',
+            )
+          : h(
+              'p',
+              { class: 'empty-state' },
+              'Your badges will live here. Play a hand or explore the story to earn your first medal.',
+            ),
+    },
+
     ...CATEGORIES.map((c) => ({
       id: c.id,
       label: categoryLabel(c.id),

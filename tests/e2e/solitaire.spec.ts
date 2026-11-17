@@ -160,8 +160,18 @@ for (const [gameId, total] of GAMES) {
           .evaluateAll((els) => els.map((e) => e.getAttribute('data-code')).join()),
       ).toBe(firstCodes);
 
+      await page.evaluate(() => {
+        (window as unknown as { __ICP_TEST_SEED__: number }).__ICP_TEST_SEED__ = 8;
+      });
       await page.locator(`${CURRENT} [data-action="new-game"]`).click();
       await expect(page.locator(`${CURRENT} .sol-card`)).toHaveCount(total);
+      await expect
+        .poll(() =>
+          page
+            .locator(`${CURRENT} .sol-card.card-face`)
+            .evaluateAll((els) => els.map((e) => e.getAttribute('data-code')).join()),
+        )
+        .not.toBe(firstCodes);
       expect(await moves(page)).toBe(0);
     });
 

@@ -262,7 +262,10 @@ export function paginator<T>(opts: PaginatorOptions<T>) {
   return {
     el,
     /** Re-render the current page (e.g. after a selection changed). */
-    refresh: () => draw(),
+    refresh: () => {
+      drawnKey = '';
+      measure();
+    },
     goTo: go,
     get page() {
       return page;

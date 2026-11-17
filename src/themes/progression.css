@@ -775,3 +775,14 @@
   letter-spacing: var(--label-track);
   text-transform: uppercase;
 }
+
+.toast-medal-art {
+  min-width: 60px;
+  min-height: 60px;
+}
+.achievement-medal {
+  min-width: 60px;
+}
+.achievement-tile.earned .medal {
+  filter: drop-shadow(0 0 5px #d8ae5b80);
+}

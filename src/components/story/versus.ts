@@ -1,3 +1,4 @@
+import { store } from '@/core/store';
 import { h } from '@/utils/dom';
 import { getDeck } from '@/decks/registry';
 import { getBoard } from '@/boards/registry';
@@ -36,7 +37,7 @@ function deckPreview(deckId: string): HTMLElement {
 export function versus(level: StoryLevel): Promise<'play' | 'back'> {
   const opponents = opponentsOf(level);
   const game = getGame(level.game);
-  const deck = getDeck(level.setup.deckId);
+  const deck = getDeck(deckThemes.safeDeckId(store.state.selection.deckId));
   const board = getBoard(level.setup.boardId);
   const names = opponents.map((id) => characterFor(id)?.name ?? getPersonality(id).name);
   const side = (id: string) => {

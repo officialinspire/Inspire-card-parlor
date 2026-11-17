@@ -184,8 +184,8 @@ describe('two-deck Spider with artwork', () => {
       .list()
       .filter((d) => d.assets.status === 'ready')
       .map((d) => d.id);
-    expect(playable.sort()).toEqual([...EXTRACTED].sort());
-    expect(allDecks().filter((d) => d.assets.status === 'ready')).toHaveLength(EXTRACTED.length);
+    expect(playable.sort()).toEqual([...EXTRACTED, 'dante_v2', 'cannabis_nugs', 'yummyhole_standard'].sort());
+    expect(allDecks().filter((d) => d.assets.status === 'ready')).toHaveLength(EXTRACTED.length + 3);
   });
 });
 

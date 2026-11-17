@@ -1,3 +1,5 @@
+import { MOOD_POSE } from '@/components/story/sprites';
+import { TABLE_MOOD_POSE } from '@/components/Avatar';
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import {
@@ -23,6 +25,7 @@ import {
   objectiveMet,
   storyOf,
 } from '@/story/progress';
+import { createStorySolitaire, nextStorySolitaireSeed, storySolitaireSeeds } from '@/story/solitaire';
 import { goFishWinRate, simulateWar, verifySolitaire } from '@/story/verify';
 import { createDefaultProfile, PROFILE_SCHEMA } from '@/core/defaults';
 import { Store } from '@/core/store';
@@ -122,8 +125,8 @@ describe('campaign structure', () => {
         c.levels.filter((l) => l.finale),
         c.id,
       ).toHaveLength(1);
-      // Each chapter plays all five games once.
-      expect(new Set(c.levels.map((l) => l.game)).size, c.id).toBe(5);
+      // Revised pacing reserves FreeCell for three authored puzzle encounters.
+      expect(new Set(c.levels.map((l) => l.game)).size, c.id).toBeGreaterThanOrEqual(4);
       expect(c.beats.length, c.id).toBeGreaterThanOrEqual(4);
       expect(c.mysteryThread.length, c.id).toBeGreaterThan(20);
       expect(c.unlockRequirements).toEqual(i === 0 ? {} : { chapter: `th-${i}` });
@@ -271,19 +274,19 @@ describe('references', () => {
     for (const e of EVIDENCE) expect(e.status, e.id).toBe('final');
   });
 
-  it('casts real characters, each with a portrait sheet that exists (or none yet) and a theme', () => {
+  it('maps every cast member to their own sheet, all UI moods and a theme', () => {
     const tracks = new Set(ALL_TRACKS.map((t) => t.id));
     for (const c of CHARACTERS.filter((x) => x.id !== NARRATOR)) {
       expect(c.portrait, c.id).toBeDefined();
-      if (c.portrait!.sheet) {
-        expect(sheets.has(c.portrait!.sheet), c.id).toBe(true);
-        expect(sprites.has(`${c.portrait!.sheet}/${c.portrait!.pose}`), c.id).toBe(true);
+      const sheet = c.portrait!.sheet;
+      expect(sheet, c.id).toBe(c.id.replaceAll('_', '-'));
+      expect(sheets.has(sheet!), c.id).toBe(true);
+      for (const pose of [c.portrait!.pose, ...Object.values(MOOD_POSE), ...Object.values(TABLE_MOOD_POSE)]) {
+        expect(sprites.has(`${sheet}/${pose}`), `${c.id}: ${pose}`).toBe(true);
       }
       expect(tracks.has(c.music!), `${c.id} music`).toBe(true);
       expect(getPersonality(c.opponentId).id, `${c.id} opponent`).toBe(c.opponentId);
     }
-    // Jak has no sprite sheet yet; it is recorded, not faked.
-    expect(getCharacter('jak_gold')!.portrait!.sheet).toBeNull();
   });
 
   it('keeps story opponents out of Quick Play, each with written table talk', () => {
@@ -370,6 +373,32 @@ describe('every challenge can be won', () => {
     60_000,
   );
 
+  it('can redeal every solitaire challenge under the same rules', () => {
+    for (const level of solitaire) {
+      const seeds = storySolitaireSeeds(level);
+      expect(seeds.length, level.id).toBeGreaterThan(1);
+      const previous = level.setup.seed!;
+      expect(
+        seeds.filter((seed) => seed !== previous),
+        level.id,
+      ).toContain(nextStorySolitaireSeed(level, previous));
+    }
+  });
+
+  it.each(solitaire.filter((level) => level.setup.options?.freecellPuzzle).map((level) => [level.id, level] as const))(
+    '%s: alternate FreeCell layouts are distinct and solvable',
+    (_, level) => {
+      const seeds = storySolitaireSeeds(level);
+      const layouts = seeds.map((seed) =>
+        JSON.stringify(createStorySolitaire(level, seed).tableau.map((column) => column.all.map((card) => card.code))),
+      );
+      expect(new Set(layouts).size).toBe(seeds.length);
+      for (const seed of seeds) {
+        expect(verifySolitaire(level, 250_000, seed).replayed, `seed ${seed}`).toBe(true);
+      }
+    },
+  );
+
   it.each(war.map((l) => [l.id, l] as const))('%s: the seeded War is a player win', (_, level) => {
     const r = simulateWar(level.setup.seed!, level.setup.options?.opponent);
     expect(r.status).toBe('won');
@@ -379,7 +408,7 @@ describe('every challenge can be won', () => {
   it.each(goFish.map((l) => [l.id, l] as const))(
     '%s: the objective is regularly reachable',
     (_, level) => {
-      expect(level.setup.options?.difficulty).toBe('easy');
+      expect(['easy', 'normal']).toContain(level.setup.options?.difficulty);
       expect(goFishWinRate(level, 40)).toBeGreaterThanOrEqual(0.25);
     },
     60_000,
