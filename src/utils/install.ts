@@ -54,14 +54,15 @@ function saveInstalledVisuals(): void {
         armTimeout();
         if (data.alreadySaved) return finish();
         if (data.error || (data.done && data.failed)) {
-          notify('Some visuals couldn’t be saved. Reconnect or use Settings → Data to retry.', { sound: false });
+          notify('Some offline files couldn’t be saved. Reconnect or use Settings → Data to retry.', { sound: false });
           finish();
         } else if (data.done) {
-          notify('Visuals saved. The parlor is ready for offline play.', { kind: 'success', sound: false });
+          notify('Visuals and music saved. The parlor is ready for offline play.', { kind: 'success', sound: false });
           finish();
         } else if (!announced) {
           announced = true;
-          notify('Downloading game visuals for offline play (about 30 MB)…', { sound: false, duration: 5000 });
+          const size = data.bytes ? ` (about ${Math.max(1, Math.round(data.bytes / 1048576))} MB)` : '';
+          notify(`Downloading visuals, music and the intro for offline play${size}…`, { sound: false, duration: 5000 });
         }
       };
       registration.active.postMessage('cache-installed-visuals', [channel.port2]);
