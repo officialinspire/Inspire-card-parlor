@@ -13,7 +13,9 @@ test('downloaded visual library decodes offline at the Pages project path', asyn
   await expectScreen(page, 'SETTINGS');
   await page.getByRole('tab', { name: 'Data', exact: true }).click();
   await page.locator('[data-action="download-visuals"]').click();
-  await expect(page.locator('[data-offline-visual-status]')).toContainText('All visuals saved', { timeout: 90000 });
+  await expect(page.locator('[data-offline-visual-status]')).toContainText('All visuals and music saved', {
+    timeout: 90000,
+  });
   const manifest = await page.evaluate(async () => (await fetch('./visual-cache.json')).json());
   expect(manifest.files.length).toBeGreaterThan(600);
   expect(manifest.files.some((p: string) => p.includes('/mature/'))).toBe(false);
@@ -50,7 +52,7 @@ test('downloaded visual library decodes offline at the Pages project path', asyn
   await expectScreen(page, 'SETTINGS');
   await page.getByRole('tab', { name: 'Data', exact: true }).click();
   await page.locator('[data-action="download-visuals"]').click();
-  await expect(page.locator('[data-offline-visual-status]')).toContainText('All visuals saved');
+  await expect(page.locator('[data-offline-visual-status]')).toContainText('All visuals and music saved');
 });
 
 test('installing the PWA automatically saves every visual and resumes after a new release', async ({

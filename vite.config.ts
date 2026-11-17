@@ -31,10 +31,13 @@ function stripMatureAssets(enabled: boolean): Plugin {
 /**
  * Stamps the service worker for this release: a cache name made of the
  * version and a hash of the built files (so every deploy refreshes the
- * cache), and the files to precache — the app shell plus the artwork a
- * first visit needs (logo, menu paintings, the default deck and table).
- * Everything else (other decks, boards, music) is fetched on demand and
- * cached as it is used.
+ * cache), a media cache name made of a hash of the music and video files
+ * (so code-only releases keep the saved soundtrack), and the files to
+ * precache — the app shell, the artwork a first visit needs (logo, menu
+ * paintings, the default deck and table) and the studio intro video.
+ * It also writes visual-cache.json, the offline pack that installing the app
+ * downloads: every general-audience visual, music track and video.
+ * Everything else is fetched on demand and cached as it is used.
  */
 function serviceWorkerManifest(version: string): Plugin {
   let outDir = 'dist';
@@ -55,7 +58,10 @@ function serviceWorkerManifest(version: string): Plugin {
     'assets/icons/icon.svg?v=2',
     'assets/icons/icon-maskable.svg?v=2',
     'assets/icons/apple-touch-icon-v2.png',
+    // Plays right after Touch to Start, so it must be on hand offline from the first visit.
+    'assets/video/inspiresoftwareintro.mp4',
   ];
+  const MEDIA = /\.(mp3|m4a|aac|ogg|oga|opus|wav|flac|mp4|m4v|webm)$/i;
   return {
     name: 'icp-service-worker-manifest',
     apply: 'build',
@@ -74,14 +80,27 @@ function serviceWorkerManifest(version: string): Plugin {
           return entry.isDirectory() ? walk(path) : [path];
         });
       const releaseFiles = walk('assets').sort();
-      const visualFiles = releaseFiles.filter((f) => /\.(webp|svg|json)$/.test(f) && !f.includes('/mature/')).sort();
+      const mediaFiles = releaseFiles.filter((f) => MEDIA.test(f) && !f.includes('/mature/'));
+      for (const f of ESSENTIAL) {
+        if (!releaseFiles.includes(f.replace(/\?.*$/, ''))) throw new Error(`Precached file missing from build: ${f}`);
+      }
+      // The offline pack: visuals and data, then the music and video library.
+      const packFiles = releaseFiles
+        .filter((f) => /\.(webp|svg|json)$/.test(f) && !f.includes('/mature/'))
+        .concat(mediaFiles)
+        .sort();
+      const sizes = packFiles.map((f) => statSync(resolve(outDir, f)).size);
       writeFileSync(
         resolve(outDir, 'visual-cache.json'),
         JSON.stringify({
-          files: visualFiles.map((f) => `./${f}`),
-          bytes: visualFiles.reduce((sum, f) => sum + statSync(resolve(outDir, f)).size, 0),
+          files: packFiles.map((f) => `./${f}`),
+          sizes,
+          bytes: sizes.reduce((sum, n) => sum + n, 0),
+          mediaBytes: mediaFiles.reduce((sum, f) => sum + statSync(resolve(outDir, f)).size, 0),
         }),
       );
+      const mediaHash = createHash('sha256');
+      for (const f of mediaFiles) mediaHash.update(f).update(readFileSync(resolve(outDir, f)));
       files.push('./visual-cache.json');
       const hash = createHash('sha256');
       for (const f of built) hash.update(readFileSync(resolve(outDir, 'assets', f)));
@@ -92,6 +111,7 @@ function serviceWorkerManifest(version: string): Plugin {
       const swPath = resolve(outDir, 'sw.js');
       const sw = readFileSync(swPath, 'utf8')
         .replace(/const CACHE = '[^']*';/, `const CACHE = 'icp-${version}-${hash.digest('hex').slice(0, 10)}';`)
+        .replace(/const MEDIA = '[^']*';/, `const MEDIA = 'icp-media-${mediaHash.digest('hex').slice(0, 10)}';`)
         .replace(/const PRECACHE = \[[^\]]*\];/, `const PRECACHE = ${JSON.stringify(files)};`);
       writeFileSync(swPath, sw);
     },

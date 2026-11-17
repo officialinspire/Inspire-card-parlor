@@ -1,15 +1,21 @@
 import { h } from '@/utils/dom';
 import { button } from './ui';
 
-/** Explicit download: ordinary play only warms nearby assets, respecting mobile data. */
+const mb = (bytes: number) => Math.max(1, Math.round(bytes / 1048576));
+
+/**
+ * Explicit download of the whole offline pack — every visual, every music
+ * track and the studio intro video. Ordinary play only saves what it uses,
+ * respecting mobile data.
+ */
 export function offlineVisuals(): HTMLElement {
   const status = h(
     'p',
     { class: 'ask-hint', role: 'status', 'data-offline-visual-status': '' },
-    'Installing the app automatically saves all standard visuals (about 30 MB). Use this button to download or retry anytime. Music is streamed separately.',
+    'Installing the app automatically saves all visuals, music and the intro video for offline play. Use this button to download or retry anytime.',
   );
   const download = button(
-    'Download visuals for offline play',
+    'Download visuals & music for offline play',
     async () => {
       download.disabled = true;
       status.textContent = 'Preparing download…';
@@ -36,15 +42,18 @@ export function offlineVisuals(): HTMLElement {
         port.onmessage = ({ data }) => {
           armTimeout();
           if (data.error) return finish(data.error);
-          const { completed, total, failed, bytes, done } = data;
+          const { completed, total, failed, bytes, saved, done } = data;
           if (done)
             finish(
               failed
-                ? `${completed} of ${total} visuals saved. Retry to download ${failed} missing files.`
-                : 'All visuals saved for offline play on this device. Installed apps refresh them automatically after updates.',
+                ? `${completed} of ${total} files saved. Retry to download ${failed} missing files.`
+                : 'All visuals and music saved for offline play on this device. Installed apps refresh them automatically after updates.',
             );
           else
-            status.textContent = `Saving visuals: ${completed} of ${total} (${Math.ceil(bytes / 1048576)} MB total)…`;
+            status.textContent =
+              typeof saved === 'number'
+                ? `Saving visuals & music: ${mb(saved)} of ${mb(bytes)} MB (${completed} of ${total} files)…`
+                : `Saving visuals & music: ${completed} of ${total} (${mb(bytes)} MB total)…`;
         };
         worker.postMessage('cache-visuals', [channel.port2]);
       } catch (error) {
